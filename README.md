@@ -11,6 +11,14 @@ npm run dev
 
 Open [http://127.0.0.1:4317](http://127.0.0.1:4317). The project review is at [http://127.0.0.1:4317/estimate](http://127.0.0.1:4317/estimate).
 
+A static export does not need a server:
+
+```bash
+npm run build
+```
+
+That writes the site to `out/`. Pages are `out/index.html` and `out/estimate.html`. Search engines are asked not to index it.
+
 ```bash
 npm test
 npm run lint
