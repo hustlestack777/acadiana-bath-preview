@@ -1,0 +1,41 @@
+1:"$Sreact.fragment"
+2:"/_next/static/chunks/3qfy96eoyh-ek.js"
+3:I[39756,["$2"],"default"]
+4:I[37457,["$2"],"default"]
+5:"/_next/static/chunks/371cckwqgmd_e.js"
+6:"/_next/static/chunks/00h55vc0gegb0.js"
+7:I[48303,["$2","$5","$6"],"SiteHeader"]
+8:I[22016,["$2","$5","$6"],""]
+9:I[22524,["$2","$5","$6"],"ChatWidget"]
+10:I[60443,["$2","$5","$6"],"EstimateWizard"]
+17:"ViewportBoundary"
+18:I[97367,["$2"],"$17"]
+19:"MetadataBoundary"
+1a:I[97367,["$2"],"$19"]
+:HL["/_next/static/chunks/3doqjhgc8yc5u.css","style"]
+b:X
+e:X
+e:C
+f:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[[["$","$L7",null,{}],["$","div",null,{"className":"pb-16 md:pb-0","children":[["$","$L10",null,{}],"$L11"]}],null,"$L12"],["$L13","$L14"],"$L15"]}],"p":"$@16","v":null,"s":"$b"}}]]
+c:[["children",{"s":"estimate","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}]}]]}],"p":"$@d","v":"$e","s":"$b"},"c":"$Qf"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/3doqjhgc8yc5u.css","precedence":"next"}],["$","script","script-0",{"src":"/_next/static/chunks/3qfy96eoyh-ek.js","async":true}]],["$","html",null,{"lang":"en","data-theme":"bayou","className":"_4LtYgq_variable _5PBLiG_variable h-full antialiased","suppressHydrationWarning":true,"children":[["$","head",null,{"children":["$","script",null,{"dangerouslySetInnerHTML":{"__html":"(function(){try{var t=localStorage.getItem(\"ab-theme\");if(t===\"bayou\"||t===\"marigold\"||t===\"indigo\"){document.documentElement.setAttribute(\"data-theme\",t)}}catch(e){}})();"}}]}],["$","body",null,{"className":"min-h-full flex flex-col","children":["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}],"notFound":[[["$","$L7",null,{}],["$","div",null,{"className":"pb-16 md:pb-0","children":[["$","main",null,{"id":"content","className":"mx-auto w-full max-w-3xl px-5 py-20","children":[["$","h1",null,{"className":"text-4xl","children":"That page is not on this site."}],["$","p",null,{"className":"mt-4 text-lg text-muted-foreground","children":"The homepage and the project review are the two pages in this prototype."}],["$","$L8",null,{"href":"/","className":"group/button inline-flex shrink-0 items-center justify-center border border-transparent bg-clip-padding font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 bg-primary text-primary-foreground hover:bg-primary/80 gap-1.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 mt-6 h-12 rounded-xl px-5 text-base","children":"Back to the homepage"}]]}],["$","footer",null,{"className":"bg-hero text-hero-foreground","children":[["$","div",null,{"className":"mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 md:grid-cols-3","children":[["$","div",null,{"children":[["$","p",null,{"className":"font-heading text-2xl","children":"[BUSINESS NAME]"}],["$","p",null,{"className":"mt-3 text-sm leading-6 text-hero-muted","children":"Bathroom remodeling with Onyx Collection showers. Product statements on this site come from manufacturer materials and are separate from installation."}]]}],["$","div",null,{"children":[["$","p",null,{"className":"text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft","children":"Contact placeholders"}],["$","p",null,{"className":"mt-3","children":"[PHONE]"}],["$","p",null,{"children":"[EMAIL]"}],["$","$L8",null,{"href":"/estimate","className":"mt-4 inline-block text-sm underline underline-offset-4","children":"Request My Project Review"}]]}],["$","div",null,{"children":[["$","p",null,{"className":"text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft","children":"Planned towns"}],["$","p",null,{"className":"mt-3 text-sm leading-6 text-hero-muted","children":["Lake Charles, Jennings, Crowley, Lafayette, Opelousas, Baton Rouge, Broussard, Youngsville, New Iberia, Franklin, Morgan City, Thibodaux, Houma, Alexandria",". Prairieville and Gonzales are not included. Not an office in each town."]}]]}]]}],["$","p",null,{"className":"border-t border-hero-muted/20 px-5 py-4 text-center text-xs text-hero-muted","children":"Prototype only. Nothing submitted here is stored. No labor coverage is promised."}]]}]]}],null,["$","$L9",null,{"raised":false}]],[]]}]}]]}]]}],"p":"$@a","v":null,"s":"$b"},"c":"$Qc"},"h":{"r":["$","$1","h",{"children":[null,["$","$L18",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#173844"}]]}],["$","$L1a",null,{"children":["$L1b","$L1c"]}],"$L1d"]}],"p":"$@1e","v":null,"s":"$b"}},"a":"$@1f","u":"$@20","b":"eY4wNnpmC5-U1etQq7a2n"}
+21:I[97367,["$2"],"OutletBoundary"]
+22:"$Sreact.suspense"
+24:I[27201,["$2"],"IconMark"]
+11:["$","footer",null,{"className":"bg-hero text-hero-foreground","children":[["$","div",null,{"className":"mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 md:grid-cols-3","children":[["$","div",null,{"children":[["$","p",null,{"className":"font-heading text-2xl","children":"[BUSINESS NAME]"}],["$","p",null,{"className":"mt-3 text-sm leading-6 text-hero-muted","children":"Bathroom remodeling with Onyx Collection showers. Product statements on this site come from manufacturer materials and are separate from installation."}]]}],["$","div",null,{"children":[["$","p",null,{"className":"text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft","children":"Contact placeholders"}],["$","p",null,{"className":"mt-3","children":"[PHONE]"}],["$","p",null,{"children":"[EMAIL]"}],["$","$L8",null,{"href":"/estimate","className":"mt-4 inline-block text-sm underline underline-offset-4","children":"Request My Project Review"}]]}],["$","div",null,{"children":[["$","p",null,{"className":"text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft","children":"Planned towns"}],["$","p",null,{"className":"mt-3 text-sm leading-6 text-hero-muted","children":["Lake Charles, Jennings, Crowley, Lafayette, Opelousas, Baton Rouge, Broussard, Youngsville, New Iberia, Franklin, Morgan City, Thibodaux, Houma, Alexandria",". Prairieville and Gonzales are not included. Not an office in each town."]}]]}]]}],["$","p",null,{"className":"border-t border-hero-muted/20 px-5 py-4 text-center text-xs text-hero-muted","children":"Prototype only. Nothing submitted here is stored. No labor coverage is promised."}]]}]
+12:["$","$L9",null,{"raised":false}]
+13:["$","script","script-0",{"src":"/_next/static/chunks/371cckwqgmd_e.js","async":true}]
+14:["$","script","script-1",{"src":"/_next/static/chunks/00h55vc0gegb0.js","async":true}]
+15:["$","$L21",null,{"children":["$","$22",null,{"name":"Next.MetadataOutlet","children":"$@23"}]}]
+1b:["$","div",null,{"hidden":true,"children":["$","$22",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Project review · [BUSINESS NAME]"}],["$","meta","1",{"name":"description","content":"Show us your space and tell us what you have in mind. Placeholder range only. Nothing is submitted."}],["$","meta","2",{"name":"robots","content":"noindex, nofollow"}],["$","link","3",{"rel":"icon","href":"/favicon.svg"}],["$","$L24","4",{}]]}]}]
+1c:null
+1d:["$","meta",null,{"name":"next-size-adjust","content":""}]
+b:300
+23:null
+20:true
+b:C
+1f:0
+d:"$undefined"
+a:"$undefined"
+1e:"$undefined"
+16:"$undefined"
