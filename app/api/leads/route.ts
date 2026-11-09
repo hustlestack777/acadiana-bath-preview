@@ -11,6 +11,14 @@ function text(form: FormData, key: string) {
   return typeof value === "string" ? value : "";
 }
 
+function coordinate(raw: string, min: number, max: number) {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  const value = Number(trimmed);
+  if (!Number.isFinite(value) || value < min || value > max) return null;
+  return value;
+}
+
 function clientIp(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
@@ -57,6 +65,9 @@ export async function POST(request: Request) {
 
   const input = {
     sourcePage: text(form, "sourcePage") || "/estimate",
+    street: text(form, "street"),
+    latitude: coordinate(text(form, "latitude"), -90, 90),
+    longitude: coordinate(text(form, "longitude"), -180, 180),
     city: text(form, "city"),
     zip: text(form, "zip"),
     project: text(form, "project"),

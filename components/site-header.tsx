@@ -23,6 +23,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const home = pathname === "/";
+  const consult = pathname === "/estimate";
   const overHero = home && !scrolled && !open;
 
   useEffect(() => {
@@ -60,9 +61,13 @@ export function SiteHeader() {
         Skip to content
       </a>
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3">
-        <Link href="/" aria-label={brand.name} className={overHero ? "text-[#fbf6f2]" : undefined}>
-          <MaisonLogo compact className="sm:hidden" />
-          <MaisonLogo className="hidden sm:inline-flex" />
+        <Link href="/" aria-label={brand.name} className={cn("min-w-0", overHero ? "text-[#fbf6f2]" : undefined)}>
+          {consult ? <MaisonLogo /> : (
+            <>
+              <MaisonLogo compact className="sm:hidden" />
+              <MaisonLogo className="hidden sm:inline-flex" />
+            </>
+          )}
         </Link>
         <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary">
           {LINKS.map((link) => (
@@ -75,12 +80,19 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-3 md:flex">
-          <a href={brand.phoneHref} className={cn("text-sm font-medium", overHero ? "text-white" : "text-foreground")}>
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <a
+            href={brand.phoneHref}
+            className={cn(
+              "text-[13px] font-semibold whitespace-nowrap sm:text-sm",
+              !consult && "max-md:hidden",
+              overHero ? "text-white" : "text-foreground",
+            )}
+          >
             {brand.phone}
           </a>
           <ConsultLink
-            className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground"
+            className="hidden h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground md:inline-flex"
           >
             {hero.primary}
           </ConsultLink>
@@ -88,7 +100,8 @@ export function SiteHeader() {
         <button
           type="button"
           className={cn(
-            "inline-flex size-11 items-center justify-center rounded-full border md:hidden",
+            "inline-flex size-11 shrink-0 items-center justify-center rounded-full border md:hidden",
+            consult && "hidden",
             overHero ? "border-white/40 bg-black/20 text-white" : "border-border bg-card",
           )}
           aria-expanded={open}

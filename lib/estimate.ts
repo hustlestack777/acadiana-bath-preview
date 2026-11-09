@@ -34,6 +34,17 @@ function emailOk(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
+/** Street address for the visit. A house number is required so the crew can find the house. */
+export function validateStreet(street: string) {
+  const trimmed = street.trim();
+  if (!trimmed) return "Enter the street address so we can find the house.";
+  if (trimmed.length < 5 || trimmed.length > 200) {
+    return "Enter the street address, including the house number.";
+  }
+  if (!/\d/.test(trimmed)) return "Include the house number so we can find the house.";
+  return "";
+}
+
 export function validateZip(zip: string) {
   const trimmed = zip.trim();
   if (!trimmed) return "";
