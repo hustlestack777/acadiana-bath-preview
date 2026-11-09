@@ -215,20 +215,22 @@ export async function saveLead(input: LeadInput, ip: string) {
   };
 }
 
-export const DEFAULT_LEAD_NOTIFY_EMAILS = ["shaun.brasher@gmail.com", "shaun@lagniapperealmlabs.com"] as const;
+export const DEFAULT_LEAD_NOTIFY_EMAIL = "shaun.brasher@gmail.com,shaun@lagniapperealmlabs.com";
 
-export function parseNotifyEmails(value: string | undefined | null) {
-  const emails = (value ?? "")
+/** Comma-separated LEAD_NOTIFY_EMAIL, trimmed. Empty pieces are dropped. */
+export function leadNotifyRecipients(raw = process.env.LEAD_NOTIFY_EMAIL || DEFAULT_LEAD_NOTIFY_EMAIL) {
+  const recipients = raw
     .split(",")
-    .map((part) => part.trim())
+    .map((address) => address.trim())
     .filter(Boolean);
-  return emails.length ? emails : [...DEFAULT_LEAD_NOTIFY_EMAILS];
+  if (recipients.length) return recipients;
+  return DEFAULT_LEAD_NOTIFY_EMAIL.split(",").map((address) => address.trim());
 }
 
 async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
-  const to = parseNotifyEmails(process.env.LEAD_NOTIFY_EMAIL);
+  const to = leadNotifyRecipients();
   if (!apiKey) return { sent: false, error: "RESEND_API_KEY is not set." };
   if (!from) return { sent: false, error: "RESEND_FROM is not set." };
 

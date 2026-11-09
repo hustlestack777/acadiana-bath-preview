@@ -25,14 +25,18 @@ export const cardClaims = {
 } as const;
 
 export const hero = {
-  eyebrow: "Lafayette",
+  eyebrow: "Lafayette, Louisiana",
   title: "Bring a little beautiful to every day.",
-  line: "Less stepping over. More stepping into.",
-  pull: "A shower you’ll love looking at—and won’t dread cleaning.",
   support:
-    "Custom-fit Onyx Collection showers for the bathroom you actually want. Tell us what you want to change, share a few photos, and let’s explore the options for your space.",
-  primary: cardClaims.consult,
-  secondary: brand.phone,
+    "Onyx Collection showers, tubs, and lavatories for the bathroom you actually want. Tell us what you want to change, and let’s explore the options for your space.",
+  primary: "Free Consult",
+  secondary: "337-522-0023",
+} as const;
+
+export const editorial = {
+  eyebrow: "The room, considered",
+  title: "Less stepping over. More stepping into.",
+  body: "A shower, a tub, a lavatory, the floor underfoot. Acadiana Bathrooms and Countertops plans the work with Onyx Collection solid-surface products, then Justin confirms the scope before anything is approved.",
 } as const;
 
 export const reasons = [
@@ -95,19 +99,56 @@ export const area = {
   faq: "Planned coverage for Justin to confirm: Lake Charles, Jennings, Crowley, Lafayette, Broussard, Youngsville, New Iberia, Opelousas, Alexandria, Franklin, Morgan City, Thibodaux, Houma and Baton Rouge. Prairieville and Gonzales are not included. This is not an office in each town.",
 } as const;
 
-export const finishesLook = {
-  title: "Wall panel finishes",
-  body: "The Onyx Collection publishes wall panels in gloss, subway tile, stone tile, wavy tile, shiplap, and artisan tile. These photographs show those finishes. Justin confirms which options fit your room.",
+export const beforeAfter = {
+  title: "Before and after, as Onyx published them",
+  body: "These composites are labeled by the Onyx Collection. They are manufacturer examples, not completed jobs by Acadiana Bathrooms and Countertops.",
 } as const;
 
 export const gallery = {
   title: "Examples from the Onyx Collection",
-  body: "These photographs are published by the Onyx Collection. They are product and installation examples, not completed jobs by Acadiana Bathrooms and Countertops. Colors are not named here, because the manufacturer says photography and lighting make color lists inaccurate. Some shower gallery pictures show Onyx wall panels and/or ceramic tile walls.",
+  body: "These photographs are published by the Onyx Collection. They are manufacturer product and installation examples, not completed jobs by Acadiana Bathrooms and Countertops. Onyx notes that a shower-gallery photo may show Onyx wall panels and/or ceramic tile, and that photography does not reliably show color.",
 } as const;
 
-export const beforeAfter = {
-  title: "Before and after, as Onyx published it",
-  body: "These pairs are before-and-after photographs published by the Onyx Collection, already labeled Before and After. They are examples, not completed jobs by Acadiana Bathrooms and Countertops.",
+export const patterns = {
+  title: "Wall patterns the manufacturer publishes",
+  body: "Onyx names these solid-surface wall patterns. A photograph is an example. Justin confirms what can be made for a room before you approve the work.",
+  items: [
+    {
+      id: "gloss",
+      name: "Gloss smooth",
+      note: "Onyx calls this its most popular finish: a smooth surface cared for with non-abrasive cleaners.",
+    },
+    {
+      id: "subway",
+      name: "Subway tile",
+      note: "A smooth panel molded with the look of subway tile and shallow grout lines.",
+    },
+    {
+      id: "stone",
+      name: "Stone tile",
+      note: "A panel molded from a stone-tile pattern, cast as a solid surface.",
+    },
+    {
+      id: "wavy",
+      name: "Wavy tile",
+      note: "A vertical wave texture across the panel.",
+    },
+    {
+      id: "shiplap",
+      name: "Shiplap",
+      note: "A smooth panel with recessed grooves.",
+    },
+    {
+      id: "artisan",
+      name: "Artisan tile",
+      note: "A larger tile look with molded grout lines.",
+    },
+  ],
+} as const;
+
+export const swatches = {
+  title: "Color-selector photographs",
+  body: "These chips are photographs from the Onyx Collection color selector, labeled with the names Onyx publishes. Onyx says photography and lighting do not reliably show color. Confirm a finish with a physical sample.",
 } as const;
 
 export const faqs = [
@@ -144,7 +185,7 @@ export const close = {
 } as const;
 
 export const lead = {
-  title: "What could your bathroom upgrade cost?",
+  title: "Free Consult",
   subhead:
     "Show us your space and tell us what you have in mind. Start with the details below so Justin can help narrow down the options.",
   submit: "Request My Project Review",

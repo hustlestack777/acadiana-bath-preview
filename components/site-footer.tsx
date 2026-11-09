@@ -14,8 +14,8 @@ export function SiteFooter() {
             <a href={brand.onyxHref} className="underline underline-offset-4">
               {brand.onyx}
             </a>{" "}
-            solid-surface products. Photographs are Onyx Collection examples, not completed jobs by {brand.name}.
-            Product statements on this site come from manufacturer materials and are separate from installation.
+            solid-surface products. Product statements on this site come from manufacturer materials and are separate
+            from installation.
           </p>
         </div>
         <div>
@@ -34,7 +34,7 @@ export function SiteFooter() {
             {cardClaims.consult}. {cardClaims.lifetime}.
           </p>
           <Link href="/estimate" className="mt-4 inline-block text-sm underline underline-offset-4">
-            Request My Project Review
+            Free Consult
           </Link>
         </div>
         <div>
@@ -46,8 +46,9 @@ export function SiteFooter() {
           </p>
         </div>
       </div>
-      <p className="border-t border-white/15 px-5 py-4 text-center text-xs text-fig-muted">
-        No labor coverage is added on this site. Manufacturer product terms are separate from installation.
+      <p className="border-t border-white/15 px-5 py-4 text-center text-xs leading-5 text-fig-muted">
+        Photographs are Onyx Collection product and gallery examples, not completed jobs by {brand.name}. No labor
+        coverage is added on this site. Manufacturer product terms are separate from installation.
       </p>
     </footer>
   );

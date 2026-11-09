@@ -2,150 +2,136 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import type { Photo } from "@/lib/photos";
-import { cn } from "cn";
+import type { Photo } from "@/lib/images";
 
-export function PhotoGallery({
-  photos,
-  layout = "grid",
-}: {
-  photos: Photo[];
-  layout?: "grid" | "rail";
-}) {
-  const [index, setIndex] = useState<number | null>(null);
-
-  return (
-    <>
-      <ul
-        className={
-          layout === "rail"
-            ? "flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-6 md:overflow-visible"
-            : "grid grid-cols-2 gap-3 md:grid-cols-6 md:gap-4"
-        }
-      >
-        {photos.map((photo, photoIndex) => (
-          <li
-            key={photo.src}
-            className={cn(layout === "rail" ? "w-[72%] shrink-0 snap-start sm:w-[44%] md:w-auto" : photo.span)}
-          >
-            <button
-              type="button"
-              className="group block w-full text-left"
-              onClick={() => setIndex(photoIndex)}
-              aria-haspopup="dialog"
-            >
-              <span className="relative block overflow-hidden rounded-[1.25rem] bg-[#e7d7c8]">
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  width={photo.width}
-                  height={photo.height}
-                  sizes={layout === "rail" ? "(min-width: 768px) 16vw, 72vw" : "(min-width: 768px) 33vw, 50vw"}
-                  className="photo-zoom aspect-[3/4] w-full object-cover"
-                />
-              </span>
-              <span className="mt-2 block text-xs leading-5 tracking-wide text-muted-foreground">{photo.caption}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-      {index !== null ? (
-        <Lightbox photos={photos} index={index} onIndex={setIndex} onClose={() => setIndex(null)} />
-      ) : null}
-    </>
-  );
-}
-
-function Lightbox({
-  photos,
-  index,
-  onIndex,
-  onClose,
-}: {
-  photos: Photo[];
-  index: number;
-  onIndex: (index: number) => void;
-  onClose: () => void;
-}) {
+export function PhotoGallery({ photos }: { photos: Photo[] }) {
+  const [active, setActive] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const photo = photos[index];
+  const photo = active === null ? null : photos[active];
 
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
+    if (active === null) {
+      if (dialog.open) dialog.close();
+      return;
+    }
     if (!dialog.open) dialog.showModal();
-  }, [index]);
+  }, [active]);
 
   useEffect(() => {
-    function onKey(event: KeyboardEvent) {
-      if (event.key === "ArrowRight") onIndex((index + 1) % photos.length);
-      if (event.key === "ArrowLeft") onIndex((index - 1 + photos.length) % photos.length);
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [index, onIndex, photos.length]);
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const onClose = () => setActive(null);
+    dialog.addEventListener("close", onClose);
+    return () => dialog.removeEventListener("close", onClose);
+  }, []);
 
-  if (!photo) return null;
+  function step(delta: number) {
+    setActive((current) => {
+      if (current === null) return current;
+      return (current + delta + photos.length) % photos.length;
+    });
+  }
 
   return (
-    <dialog
-      ref={dialogRef}
-      className="fixed inset-0 m-0 h-full max-h-none w-full max-w-none border-0 bg-[#241810]/92 p-0 text-[#fbf6f2] backdrop:bg-black/70"
-      aria-label={photo.caption}
-      onClose={onClose}
-      onClick={(event) => {
-        if (event.target === dialogRef.current) dialogRef.current?.close();
-      }}
-    >
-      <div className="flex h-full flex-col">
-        <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e7c3a8]">
-            {index + 1} / {photos.length}
-          </p>
-          <button
-            type="button"
-            className="inline-flex h-11 items-center rounded-full border border-white/25 px-4 text-sm"
-            onClick={() => dialogRef.current?.close()}
-            autoFocus
-          >
-            Close
-          </button>
-        </div>
-        <div className="flex min-h-0 flex-1 items-center justify-center px-4">
-          <Image
-            src={photo.src}
-            alt={photo.alt}
-            width={photo.width}
-            height={photo.height}
-            sizes="92vw"
-            className="max-h-[72vh] w-auto max-w-full rounded-xl object-contain"
-          />
-        </div>
-        <div className="grid gap-4 px-4 py-4 sm:grid-cols-[1fr_auto] sm:items-end sm:px-6 sm:pb-6">
-          <div>
-            <p className="font-heading text-2xl">{photo.caption}</p>
-            <p className="mt-1 max-w-xl text-sm leading-6 text-[#f0d5de]">
-              Published by the Onyx Collection. Not a completed job by Acadiana Bathrooms and Countertops.
-            </p>
+    <>
+      <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12">
+        {photos.map((item, index) => (
+          <li key={item.src} className={spanFor(index)}>
+            <figure className="group h-full">
+              <button
+                type="button"
+                className="relative block h-full w-full overflow-hidden rounded-2xl bg-[#1c1014] text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                onClick={() => setActive(index)}
+              >
+                <span className={frameFor(index)}>
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    fill
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
+                </span>
+              </button>
+              <figcaption className="mt-2 flex items-baseline justify-between gap-3 px-1 text-sm">
+                <span>{item.caption}</span>
+                <span className="text-xs text-muted-foreground">Onyx Collection</span>
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+
+      <dialog
+        ref={dialogRef}
+        className="m-auto w-[min(96vw,1100px)] max-w-none border-0 bg-transparent p-0 text-[#fbf6f2] backdrop:bg-[#1c1014]/80"
+        aria-label={photo ? photo.caption : "Photograph"}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            step(1);
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            step(-1);
+          }
+        }}
+      >
+        {photo ? (
+          <div className="overflow-hidden rounded-2xl bg-[#24181a]">
+            <div className="relative aspect-[4/5] bg-black sm:aspect-[16/10]">
+              <Image src={photo.src} alt={photo.alt} fill sizes="96vw" className="object-contain" />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+              <p className="text-sm">
+                {photo.caption}.{" "}
+                <a href={photo.page} className="underline underline-offset-2">
+                  Onyx Collection example
+                </a>
+              </p>
+              <div className="flex gap-2">
+                <button type="button" className="h-10 rounded-full border border-white/30 px-4 text-sm" onClick={() => step(-1)}>
+                  Previous
+                </button>
+                <button type="button" className="h-10 rounded-full border border-white/30 px-4 text-sm" onClick={() => step(1)}>
+                  Next
+                </button>
+                <button
+                  type="button"
+                  className="h-10 rounded-full bg-[#fbf6f2] px-4 text-sm text-[#2c211c]"
+                  onClick={() => dialogRef.current?.close()}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className="h-11 rounded-full border border-white/25 px-4 text-sm"
-              onClick={() => onIndex((index - 1 + photos.length) % photos.length)}
-            >
-              Previous
-            </button>
-            <button
-              type="button"
-              className="h-11 rounded-full bg-[#f6f0e8] px-4 text-sm text-[#2c211c]"
-              onClick={() => onIndex((index + 1) % photos.length)}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
-    </dialog>
+        ) : null}
+      </dialog>
+    </>
   );
+}
+
+function spanFor(index: number) {
+  const spans = [
+    "lg:col-span-7",
+    "lg:col-span-5",
+    "lg:col-span-4",
+    "lg:col-span-4",
+    "lg:col-span-4",
+    "lg:col-span-5",
+    "lg:col-span-7",
+    "lg:col-span-6",
+    "lg:col-span-6",
+    "lg:col-span-12",
+  ];
+  return spans[index] ?? "lg:col-span-4";
+}
+
+function frameFor(index: number) {
+  if (index === 0 || index === 6) return "relative block aspect-[4/3] w-full";
+  if (index === 9) return "relative block aspect-[16/8] w-full";
+  return "relative block aspect-[4/5] w-full sm:aspect-[3/4]";
 }

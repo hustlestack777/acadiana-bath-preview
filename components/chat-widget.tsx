@@ -26,7 +26,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
   }
 
   return (
-    <div className={cn("fixed right-4 z-40", raised ? "bottom-[9rem] md:bottom-6" : "bottom-4 md:bottom-6")}>
+    <div className={cn("fixed right-4 z-40", raised ? "bottom-24 md:bottom-6" : "bottom-4 md:bottom-6")}>
       {open ? (
         <section
           className="mb-3 flex max-h-[min(32rem,70vh)] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl"
@@ -95,13 +95,13 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="ml-auto flex size-12 items-center justify-center rounded-full bg-fig text-sm font-semibold text-fig-foreground shadow-lg md:h-auto md:w-auto md:gap-2 md:px-4 md:py-3"
+        className="ml-auto flex items-center gap-2 rounded-full bg-fig px-4 py-3 text-sm font-semibold text-fig-foreground shadow-lg"
         aria-expanded={open}
       >
         <span className="rounded-full bg-fig-foreground px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-fig">
           AI
         </span>
-        <span className="sr-only md:not-sr-only">Assistant</span>
+        Assistant
       </button>
     </div>
   );

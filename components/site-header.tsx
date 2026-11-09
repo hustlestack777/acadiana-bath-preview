@@ -4,27 +4,28 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
 import { MaisonLogo } from "@/components/logo";
 import { brand, hero } from "@/lib/copy";
 import { cn } from "cn";
 
 const LINKS = [
-  { href: "#surface", label: "The surface" },
-  { href: "#finishes", label: "Finishes" },
   { href: "#gallery", label: "Gallery" },
+  { href: "#finishes", label: "Patterns" },
+  { href: "#surface", label: "The surface" },
   { href: "#process", label: "How it works" },
   { href: "#area", label: "Service area" },
   { href: "#questions", label: "Questions" },
 ];
 
-export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
+export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const home = pathname === "/";
+  const overHero = home && !scrolled && !open;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -50,62 +51,63 @@ export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 transition-colors duration-300",
-        open
-          ? "border-b border-transparent bg-transparent"
-          : overlay && !scrolled
-            ? "border-b border-transparent bg-transparent"
-            : "border-b border-border bg-background/92 backdrop-blur-md",
+        "fixed inset-x-0 top-0 z-40 transition-colors duration-300",
+        overHero ? "bg-transparent text-[#fbf6f2]" : "border-b border-border bg-background/95 text-foreground backdrop-blur-md",
       )}
     >
       <a className="skip-link" href="#content">
         Skip to content
       </a>
-      <div className="mx-auto w-full max-w-6xl px-5">
-        <div className="flex items-center justify-between gap-3 py-3">
-          <Link href="/" aria-label={brand.name}>
-            <MaisonLogo compact className="sm:hidden" />
-            <MaisonLogo className="hidden sm:inline-flex" />
-          </Link>
-          <div className="hidden items-center gap-3 md:flex">
-            <a href={brand.phoneHref} className="text-sm font-medium text-foreground">
-              {brand.phone}
-            </a>
-            <Link
-              href="/estimate"
-              className={cn(buttonVariants({ variant: "default" }), "h-11 rounded-full px-5 text-sm")}
-            >
-              {hero.primary}
-            </Link>
-          </div>
-          <button
-            type="button"
-            className="inline-flex size-11 items-center justify-center rounded-xl border border-border bg-card md:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            aria-hidden={open}
-            tabIndex={open ? -1 : 0}
-            onClick={() => setOpen((value) => !value)}
-          >
-            <span className="sr-only">Open menu</span>
-            <Menu />
-          </button>
-        </div>
-        <nav className="hidden items-center gap-5 pb-3 md:flex" aria-label="Primary">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3">
+        <Link href="/" aria-label={brand.name} className={overHero ? "text-[#fbf6f2]" : undefined}>
+          <MaisonLogo compact className="sm:hidden" />
+          <MaisonLogo className="hidden sm:inline-flex" />
+        </Link>
+        <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary">
           {LINKS.map((link) => (
-            <Link key={link.href} href={hrefFor(link.href)} className="text-sm text-muted-foreground hover:text-foreground">
+            <Link
+              key={link.href}
+              href={hrefFor(link.href)}
+              className={cn("text-sm", overHero ? "text-white/85 hover:text-white" : "text-muted-foreground hover:text-foreground")}
+            >
               {link.label}
             </Link>
           ))}
         </nav>
+        <div className="hidden items-center gap-3 md:flex">
+          <a href={brand.phoneHref} className={cn("text-sm font-medium", overHero ? "text-white" : "text-foreground")}>
+            {brand.phone}
+          </a>
+          <Link
+            href="/estimate"
+            className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground"
+          >
+            {hero.primary}
+          </Link>
+        </div>
+        <button
+          type="button"
+          className={cn(
+            "inline-flex size-11 items-center justify-center rounded-full border md:hidden",
+            overHero ? "border-white/40 bg-black/20 text-white" : "border-border bg-card",
+          )}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
+          aria-hidden={open}
+          tabIndex={open ? -1 : 0}
+          onClick={() => setOpen((value) => !value)}
+        >
+          <span className="sr-only">Open menu</span>
+          <Menu />
+        </button>
       </div>
       {open ? (
-        <div id="mobile-nav" className="fixed inset-0 z-50 overflow-y-auto bg-background px-5 py-4 md:hidden">
+        <div id="mobile-nav" className="fixed inset-0 z-50 overflow-y-auto bg-background px-5 py-4 text-foreground md:hidden">
           <div className="flex items-center justify-between">
             <MaisonLogo />
             <button
               type="button"
-              className="inline-flex size-11 items-center justify-center rounded-xl border border-border"
+              className="inline-flex size-11 items-center justify-center rounded-full border border-border"
               onClick={() => setOpen(false)}
             >
               <span className="sr-only">Close menu</span>
@@ -134,7 +136,7 @@ export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
             <Link
               href="/estimate"
               onClick={() => setOpen(false)}
-              className={cn(buttonVariants({ variant: "default" }), "h-12 rounded-xl text-base")}
+              className="inline-flex h-12 items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground"
             >
               {hero.primary}
             </Link>

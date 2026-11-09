@@ -1,28 +1,37 @@
 # Photograph sources
 
-Every image in this folder is a photograph published by [The Onyx Collection](https://onyxcollection.com). They are product and installation examples. They are not completed jobs by Acadiana Bathrooms and Countertops.
+Every image in this folder is a file published by the Onyx Collection at [onyxcollection.com](https://onyxcollection.com). These are manufacturer product and gallery photographs. They are not completed jobs by Acadiana Bathrooms and Countertops.
 
-Files were saved from the Onyx media library. Direct requests to `onyxcollection.com` returned HTTP 403 from this environment, so the bytes were retrieved through the site’s Jetpack image address (`i0.wp.com`), which serves those same files. The URLs below are the canonical Onyx Collection files.
+Onyx’s shower gallery says colors are not listed on those photos because photography and lighting are unreliable, and that a gallery picture may show Onyx wall panels and/or ceramic tile. Wall-panel photographs below are the images Onyx uses for the named patterns. Color chips are the photographs on Onyx’s color selector, labeled with the names Onyx publishes there.
 
-The manufacturer’s shower gallery says colors are not listed because photography and lighting vary, and that some shower gallery pictures show Onyx wall panels and/or ceramic tile walls. Wall-panel filenames below match product names Onyx publishes (gloss, subway tile, stone tile, wavy tile, shiplap, artisan tile). Before-and-after files are the composites Onyx published, already labeled Before and After.
+Two before-and-after composites are included. Onyx published them already labeled Before and After. They are manufacturer examples, not jobs by this business.
 
-| File | Caption | Source file | Page |
-| --- | --- | --- | --- |
-| gloss-bath.webp | Onyx Collection gloss wall panels | https://onyxcollection.com/wp-content/uploads/2023/10/WP_Gloss_main2.jpg | https://onyxcollection.com/shower-wall-panels/ |
-| panel-subway.webp | Onyx Collection subway tile wall panels | https://onyxcollection.com/wp-content/uploads/2023/10/WP_Subway12-scaled.jpg | https://onyxcollection.com/shower-wall-panels/ |
-| panel-stone.webp | Onyx Collection stone tile wall panels | https://onyxcollection.com/wp-content/uploads/2023/10/WP_Stone11-scaled.jpg | https://onyxcollection.com/shower-wall-panels/ |
-| panel-wavy.webp | Onyx Collection wavy tile wall panels | https://onyxcollection.com/wp-content/uploads/2023/10/WP_Wavy11.jpg | https://onyxcollection.com/shower-wall-panels/ |
-| panel-shiplap.webp | Onyx Collection shiplap wall panels | https://onyxcollection.com/wp-content/uploads/2023/10/WP_Shiplap_main2.jpg | https://onyxcollection.com/shower-wall-panels/ |
-| panel-artisan.webp | Onyx Collection artisan tile wall panels | https://onyxcollection.com/wp-content/uploads/2023/10/OW_ArtisanTile03.png | https://onyxcollection.com/shower-wall-panels/ |
-| shower-arch.webp | Onyx Collection shower gallery | https://onyxcollection.com/wp-content/uploads/2026/01/OW_G_CustomShower88.png | https://onyxcollection.com/shower-gallery/ |
-| shower-subway.webp | Onyx Collection shower gallery | https://onyxcollection.com/wp-content/uploads/2026/01/OW_G_CustomShower104.jpg | https://onyxcollection.com/shower-gallery/ |
-| shower-cream.webp | Onyx Collection shower gallery | https://onyxcollection.com/wp-content/uploads/2026/10/OW_G_CustomShower122.png | https://onyxcollection.com/shower-gallery/ |
-| shower-seat.webp | Onyx Collection shower gallery | https://onyxcollection.com/wp-content/uploads/2026/08/OW_G_CustomShower118.jpg | https://onyxcollection.com/shower-gallery/ |
-| shower-warm.webp | Onyx Collection shower gallery | https://onyxcollection.com/wp-content/uploads/2026/01/OW_G_CustomShower96.jpg | https://onyxcollection.com/shower-gallery/ |
-| shower-neo.webp | Onyx Collection shower gallery | https://onyxcollection.com/wp-content/uploads/2026/08/OW_G_CustomShower116.jpg | https://onyxcollection.com/shower-gallery/ |
-| shower-room.webp | Onyx Collection shower gallery | https://onyxcollection.com/wp-content/uploads/2026/07/OW_G_CustomShower113.jpg | https://onyxcollection.com/shower-gallery/ |
-| tub-detail.webp | Onyx Collection tub surround | https://onyxcollection.com/wp-content/uploads/2024/10/Tub_gallery-36.jpg | https://onyxcollection.com/tub-surround-tub-deck-gallery/ |
-| tub-room.webp | Onyx Collection tub surround | https://onyxcollection.com/wp-content/uploads/2023/02/Tub_gallery-28.jpg | https://onyxcollection.com/tub-surround-tub-deck-gallery/ |
-| lavatory.webp | Onyx Collection lavatory | https://onyxcollection.com/wp-content/uploads/2026/08/lav_bowl_rectangular63.png | https://onyxcollection.com/lavatory-gallery/ |
-| before-after-shower.webp | Onyx Collection before-and-after example | https://onyxcollection.com/wp-content/uploads/2023/09/OW_Before_after01.jpg | https://onyxcollection.com/wp-content/uploads/2023/09/OW_Before_after01.jpg |
-| before-after-tub.webp | Onyx Collection before-and-after example | https://onyxcollection.com/wp-content/uploads/2024/01/OW_Before_after07.jpg | https://onyxcollection.com/wp-content/uploads/2024/01/OW_Before_after07.jpg |
+Files were saved on 9 November 2026 and re-encoded as WebP for this site. The source URL is the original file on onyxcollection.com.
+
+| File | Source URL | Page |
+| --- | --- | --- |
+| hero-tub.webp | https://onyxcollection.com/wp-content/uploads/2023/10/WP_Gloss_main2.jpg | https://onyxcollection.com/shower-wall-panels/ |
+| shower-arch.webp | https://onyxcollection.com/wp-content/uploads/2026/01/OW_G_CustomShower88.png | https://onyxcollection.com/shower-gallery/ |
+| hero-walkin.webp | https://onyxcollection.com/wp-content/uploads/2026/01/OW_G_CustomShower104.jpg | https://onyxcollection.com/shower-gallery/ |
+| hero-rain.webp | https://onyxcollection.com/wp-content/uploads/2026/02/OW_G_StandardShower84-scaled.jpg | https://onyxcollection.com/shower-gallery/ |
+| shower-barn.webp | https://onyxcollection.com/wp-content/uploads/2026/09/OW_G_StandardShower101.jpg | https://onyxcollection.com/shower-gallery/ |
+| shower-warm.webp | https://onyxcollection.com/wp-content/uploads/2026/01/OW_G_CustomShower73.jpg | https://onyxcollection.com/shower-gallery/ |
+| shower-niche.webp | https://onyxcollection.com/wp-content/uploads/2026/05/OW_G_CustomShower109.jpg | https://onyxcollection.com/shower-gallery/ |
+| tub-surround.webp | https://onyxcollection.com/wp-content/uploads/2024/01/Tub_gallery-34.jpg | https://onyxcollection.com/tub-surround-tub-deck-gallery/ |
+| tub-alcove.webp | https://onyxcollection.com/wp-content/uploads/2026/07/Tub_gallery-40-scaled.jpeg | https://onyxcollection.com/tub-surround-tub-deck-gallery/ |
+| lav-vanity.webp | https://onyxcollection.com/wp-content/uploads/2026/07/lav_bowl_oval3.jpg | https://onyxcollection.com/lavatory-gallery/ |
+| finish-subway.webp | https://onyxcollection.com/wp-content/uploads/2023/10/WP_Subway_Main.jpg | https://onyxcollection.com/shower-wall-panels/ |
+| finish-stone.webp | https://onyxcollection.com/wp-content/uploads/2023/10/WP_Stone_main2.jpg | https://onyxcollection.com/shower-wall-panels/ |
+| finish-wavy.webp | https://onyxcollection.com/wp-content/uploads/2022/10/WP_Wavy_main1.jpg | https://onyxcollection.com/shower-wall-panels/ |
+| finish-shiplap.webp | https://onyxcollection.com/wp-content/uploads/2023/10/WP_Shiplap_main2.jpg | https://onyxcollection.com/shower-wall-panels/ |
+| finish-artisan.webp | https://onyxcollection.com/wp-content/uploads/2023/10/OW_ArtisanTile03.png | https://onyxcollection.com/shower-wall-panels/ |
+| color-white-onyx.webp | https://onyxcollection.com/wp-content/uploads/2025/06/WhiteOnyx-1.jpg | https://onyxcollection.com/color-selection/ |
+| color-carrara.webp | https://onyxcollection.com/wp-content/uploads/2025/06/Carrara-1.jpg | https://onyxcollection.com/color-selection/ |
+| color-feather.webp | https://onyxcollection.com/wp-content/uploads/2025/06/Feather-1.jpg | https://onyxcollection.com/color-selection/ |
+| color-sandstone.webp | https://onyxcollection.com/wp-content/uploads/2025/06/Sandstone-1.jpg | https://onyxcollection.com/color-selection/ |
+| color-travertine.webp | https://onyxcollection.com/wp-content/uploads/2025/06/Travertine-1.jpg | https://onyxcollection.com/color-selection/ |
+| color-tiramisu.webp | https://onyxcollection.com/wp-content/uploads/2025/06/Tiramisu-1.jpg | https://onyxcollection.com/color-selection/ |
+| color-henna.webp | https://onyxcollection.com/wp-content/uploads/2025/06/Henna-1.jpg | https://onyxcollection.com/color-selection/ |
+| color-charcoal.webp | https://onyxcollection.com/wp-content/uploads/2025/06/Charcoal-1.jpg | https://onyxcollection.com/color-selection/ |
+| before-after-shower.webp | https://onyxcollection.com/wp-content/uploads/2023/09/OW_Before_after01.jpg | https://onyxcollection.com/wp-content/uploads/2023/09/OW_Before_after01.jpg |
+| before-after-tub.webp | https://onyxcollection.com/wp-content/uploads/2024/01/OW_Before_after07.jpg | https://onyxcollection.com/wp-content/uploads/2024/01/OW_Before_after07.jpg |

@@ -22,9 +22,9 @@ npm start
 
 The review form validates the fields, rejects a filled honeypot, and rate-limits by IP. It stores the lead, including photos, when `DATABASE_URL` is set. It emails every field, the timestamp, and the source page when both `RESEND_API_KEY` and `RESEND_FROM` are set.
 
-`LEAD_NOTIFY_EMAIL` accepts one address or a comma-separated list. The default is `shaun.brasher@gmail.com,shaun@lagniapperealmlabs.com`, and each address receives the lead. `RESEND_FROM` must be an address on a domain verified in Resend. If email is not configured, the lead can still be stored and the response says the notification was not sent. The page does not claim success when storage fails.
+`LEAD_NOTIFY_EMAIL` defaults to `shaun.brasher@gmail.com,shaun@lagniapperealmlabs.com`. A comma-separated list is split, trimmed, and every address receives the lead email. `RESEND_FROM` must be an address on a domain verified in Resend. If email is not configured, the lead can still be stored and the response says the notification was not sent. The page does not claim success when storage fails.
 
-Photographs on the site are Onyx Collection product and installation examples. Sources are listed in `public/images/SOURCES.md`. They are not completed jobs by Acadiana Bathrooms and Countertops.
+Photographs in `public/images` are Onyx Collection product and gallery files. Sources are listed in `public/images/SOURCES.md`. They are not completed jobs by this business.
 
 ## Render
 
