@@ -101,7 +101,7 @@ export function Hero() {
             Scroll
           </a>
         </div>
-        <p className="mt-3 max-w-xl text-[0.72rem] leading-5 text-white/85">
+        <p className="mt-3 max-w-xl pe-36 text-[0.72rem] leading-5 text-white/85 md:pe-0">
           Photograph: {slide.caption}.{" "}
           <a href={slide.page} className="underline underline-offset-2">
             Onyx Collection
