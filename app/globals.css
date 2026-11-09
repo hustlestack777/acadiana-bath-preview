@@ -268,3 +268,20 @@
     transition: none !important;
   }
 }
+
+/* Video hero overlay: dark enough for white type over any frame. */
+.hero-video-scrim {
+  background:
+    linear-gradient(100deg, rgba(18, 10, 14, 0.78) 0%, rgba(18, 10, 14, 0.45) 48%, rgba(18, 10, 14, 0.15) 78%),
+    linear-gradient(180deg, rgba(18, 10, 14, 0.6) 0%, rgba(18, 10, 14, 0.12) 26%, rgba(18, 10, 14, 0.55) 66%, rgba(18, 10, 14, 0.94) 100%);
+}
+
+@media (max-width: 767px) {
+  .hero-video-scrim {
+    background: linear-gradient(180deg, rgba(18, 10, 14, 0.66) 0%, rgba(18, 10, 14, 0.38) 26%, rgba(18, 10, 14, 0.66) 58%, rgba(18, 10, 14, 0.95) 100%);
+  }
+}
+
+#start {
+  scroll-margin-top: 5.5rem;
+}

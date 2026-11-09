@@ -224,7 +224,7 @@ export const featureNote =
   "Describe the layout, finishes, and features you want to talk about. Listing something here does not mean it is available. Justin confirms the options.";
 
 export const photoNote =
-  "Optional photos: one wide bathroom view, the shower or tub, and visible problem areas. Do not include people, financial documents, or unrelated personal information. Photos help; they are not required. Up to four images, 1.5 MB each, are saved with the request.";
+  "Optional photos: one wide bathroom view, the shower or tub, and any problem areas. Leave out people and personal documents. Up to 8 photos. They are resized in your browser before sending.";
 
 export const dimensionNote =
-  "Approximate existing shower or tub width and depth, in inches. Choose Not sure if you don’t have a number. A state estimate is fine for this first review.";
+  "Rough numbers are fine. Justin measures everything in person.";

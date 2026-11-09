@@ -3,8 +3,12 @@ import { Resend } from "resend";
 import { validateDetails, validateZip } from "./estimate";
 import { checkCity } from "./coverage";
 
-const MAX_PHOTOS = 4;
-const MAX_PHOTO_BYTES = Math.floor(1.5 * 1024 * 1024);
+// Photos are resized in the browser (about 1600 px JPEG, usually 200-600 KB).
+// 8 x 2 MB worst case stays well under Resend's 40 MB email limit after base64,
+// and keeps the free Postgres (1 GB) from filling with large blobs.
+export const MAX_PHOTOS = 8;
+export const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
+export const MAX_TOTAL_PHOTO_BYTES = 12 * 1024 * 1024;
 const RATE_LIMIT = 5;
 
 export type LeadPhoto = {
@@ -21,6 +25,8 @@ export type LeadInput = {
   notSure: boolean;
   width: string;
   depth: string;
+  height: string;
+  measurements: string;
   finish: string;
   features: string;
   name: string;
@@ -88,6 +94,9 @@ async function ensureSchema(db: Pool) {
           content_type text NOT NULL,
           bytes bytea NOT NULL
         );
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS height text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS measurements text NOT NULL DEFAULT '';
+        ALTER TABLE lead_photos ADD COLUMN IF NOT EXISTS size_bytes integer NOT NULL DEFAULT 0;
       `)
       .then(() => undefined)
       .catch((error) => {
@@ -130,7 +139,10 @@ export function validateLead(input: LeadInput) {
     errors.photos = `Send up to ${MAX_PHOTOS} photos.`;
   }
   if (input.photos.some((photo) => photo.bytes.length > MAX_PHOTO_BYTES)) {
-    errors.photos = "Each photo must be 1.5 MB or smaller.";
+    errors.photos = "Each photo must be 2 MB or smaller.";
+  }
+  if (input.photos.reduce((sum, photo) => sum + photo.bytes.length, 0) > MAX_TOTAL_PHOTO_BYTES) {
+    errors.photos = "The photos are too large together. Remove one or two and try again.";
   }
   if (input.photos.some((photo) => !/^image\/(jpeg|png|webp|gif)$/.test(photo.contentType))) {
     errors.photos = "Use JPEG, PNG, WebP, or GIF photos.";
@@ -160,9 +172,10 @@ export async function saveLead(input: LeadInput, ip: string) {
     await client.query(
       `INSERT INTO leads (
         id, created_at, source_page, name, phone, email, preferred, city, zip, project,
-        not_sure, width, depth, finish, features, timing, budget, marketing, ip, email_status
+        not_sure, width, depth, finish, features, timing, budget, marketing, ip, email_status,
+        height, measurements
       ) VALUES (
-        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending'
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21
       )`,
       [
         id,
@@ -184,12 +197,14 @@ export async function saveLead(input: LeadInput, ip: string) {
         input.budget.trim(),
         input.marketing,
         ip || "unknown",
+        input.height.trim(),
+        input.measurements.trim(),
       ],
     );
     for (const photo of input.photos) {
       await client.query(
-        `INSERT INTO lead_photos (id, lead_id, filename, content_type, bytes) VALUES ($1,$2,$3,$4,$5)`,
-        [crypto.randomUUID(), id, photo.filename, photo.contentType, photo.bytes],
+        `INSERT INTO lead_photos (id, lead_id, filename, content_type, bytes, size_bytes) VALUES ($1,$2,$3,$4,$5,$6)`,
+        [crypto.randomUUID(), id, photo.filename, photo.contentType, photo.bytes, photo.bytes.length],
       );
     }
     await client.query("COMMIT");
@@ -227,6 +242,11 @@ export function leadNotifyRecipients(raw = process.env.LEAD_NOTIFY_EMAIL || DEFA
   return DEFAULT_LEAD_NOTIFY_EMAIL.split(",").map((address) => address.trim());
 }
 
+function inches(value: string) {
+  const trimmed = value.trim();
+  return trimmed ? `${trimmed} in (customer estimate)` : "(not given)";
+}
+
 async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
@@ -245,13 +265,16 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
     `City: ${input.city.trim()}`,
     `ZIP: ${input.zip.trim() || "(none)"}`,
     `Services: ${input.project}`,
-    `Size: ${input.notSure ? "Not sure" : `${input.width.trim()} in wide by ${input.depth.trim()} in deep`}`,
+    `Width: ${inches(input.width)}`,
+    `Depth: ${inches(input.depth)}`,
+    `Height: ${inches(input.height)}`,
+    `Measurements / notes: ${input.measurements.trim() || "(none)"}`,
     `Finish direction: ${input.finish}`,
     `Features: ${input.features.trim() || "(none)"}`,
     `Timing: ${input.timing}`,
     `Budget note: ${input.budget.trim() || "(none)"}`,
     `Marketing opt-in: ${input.marketing ? "yes" : "no"}`,
-    `Photos: ${input.photos.length}`,
+    `Photos: ${input.photos.length}${input.photos.length ? " (attached to this email, also saved with the lead)" : ""}`,
   ];
   const text = lines.join("\n");
   const html = `<pre>${escapeHtml(text)}</pre>`;
@@ -260,11 +283,11 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
     {
       from,
       to,
-      subject: `Bathroom lead ${id.slice(0, 8)} from ${input.sourcePage}`,
+      subject: `${input.name.trim().toUpperCase().startsWith("TEST") ? "[TEST] " : ""}Bathroom lead ${id.slice(0, 8)}: ${input.name.trim()}, ${input.city.trim()}${input.photos.length ? ` (${input.photos.length} photo${input.photos.length === 1 ? "" : "s"})` : ""}`,
       text,
       html,
-      attachments: input.photos.map((photo) => ({
-        filename: photo.filename,
+      attachments: input.photos.map((photo, index) => ({
+        filename: `${String(index + 1).padStart(2, "0")}-${photo.filename}`,
         content: photo.bytes.toString("base64"),
         contentType: photo.contentType,
       })),

@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { MaisonLogo } from "@/components/logo";
 import { brand, cardClaims, services } from "@/lib/copy";
 import { ALSO_PLANNED, CORRIDOR } from "@/lib/coverage";
+import { ConsultLink } from "@/components/consult-link";
 
 export function SiteFooter() {
   return (
@@ -33,9 +33,9 @@ export function SiteFooter() {
           <p className="mt-3 text-sm">
             {cardClaims.consult}. {cardClaims.lifetime}.
           </p>
-          <Link href="/estimate" className="mt-4 inline-block text-sm underline underline-offset-4">
+          <ConsultLink className="mt-4 inline-block text-sm underline underline-offset-4">
             Free Consult
-          </Link>
+          </ConsultLink>
         </div>
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Services</p>

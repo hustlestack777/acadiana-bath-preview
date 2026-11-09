@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { saveLead, validateLead, type LeadPhoto } from "@/lib/leads";
+import { MAX_PHOTOS, saveLead, validateLead, type LeadPhoto } from "@/lib/leads";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -30,7 +30,11 @@ export async function POST(request: Request) {
   }
 
   const photos: LeadPhoto[] = [];
-  for (const entry of form.getAll("photos")) {
+  const entries = form.getAll("photos");
+  if (entries.length > MAX_PHOTOS) {
+    return NextResponse.json({ ok: false, error: `Send up to ${MAX_PHOTOS} photos.` }, { status: 400 });
+  }
+  for (const entry of entries) {
     if (!(entry instanceof File) || entry.size === 0) continue;
     const contentType = entry.type || "application/octet-stream";
     if (!ALLOWED_TYPES.has(contentType)) {
@@ -49,6 +53,8 @@ export async function POST(request: Request) {
     notSure: text(form, "notSure") === "true",
     width: text(form, "width"),
     depth: text(form, "depth"),
+    height: text(form, "height"),
+    measurements: text(form, "measurements"),
     finish: text(form, "finish"),
     features: text(form, "features"),
     name: text(form, "name"),

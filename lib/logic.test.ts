@@ -40,7 +40,7 @@ test("zip is optional and is not a coverage decision", () => {
   assert.match(validateZip("abc"), /5-digit ZIP/);
 });
 
-test("the review requires a project, a way to measure, and one contact path", () => {
+test("the review requires a project and one contact path; size is optional", () => {
   const errors = validateDetails({
     project: "",
     notSure: false,
@@ -55,7 +55,7 @@ test("the review requires a project, a way to measure, and one contact path", ()
     timing: "",
   });
   assert.ok(errors.project);
-  assert.ok(errors.dimensions);
+  assert.equal(errors.dimensions, undefined);
   assert.ok(errors.name);
   assert.ok(errors.preferred);
   assert.ok(errors.timing);
@@ -74,6 +74,24 @@ test("the review requires a project, a way to measure, and one contact path", ()
     timing: "exploring",
   });
   assert.deepEqual(ok, {});
+
+  const sized = validateDetails({
+    project: "showers",
+    notSure: false,
+    width: "60",
+    depth: "32",
+    height: "abc",
+    measurements: "Tub to ceiling is about 8 ft",
+    finish: "unsure",
+    features: "",
+    name: "Ada",
+    phone: "337-555-0100",
+    email: "",
+    preferred: "phone",
+    timing: "exploring",
+  });
+  assert.ok(sized.dimensions);
+  assert.equal(validateDetails({ ...{ project: "showers", notSure: false, width: "60", depth: "", height: "72", finish: "unsure", features: "", name: "Ada", phone: "337-555-0100", email: "", preferred: "phone", timing: "exploring" } }).dimensions, undefined);
 });
 
 test("assistant answers stay inside the published facts", () => {

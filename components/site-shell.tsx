@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { ChatWidget } from "@/components/chat-widget";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { brand, hero } from "@/lib/copy";
 import { cn } from "cn";
+import { ConsultLink } from "@/components/consult-link";
 
 export function SiteShell({
   children,
@@ -31,12 +31,11 @@ export function SiteShell({
             >
               {brand.phone}
             </a>
-            <Link
-              href="/estimate"
+            <ConsultLink
               className="inline-flex h-12 items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground"
             >
               {hero.primary}
-            </Link>
+            </ConsultLink>
           </div>
         </div>
       ) : null}

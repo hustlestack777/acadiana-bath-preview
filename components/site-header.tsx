@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import { MaisonLogo } from "@/components/logo";
 import { brand, hero } from "@/lib/copy";
 import { cn } from "cn";
+import { ConsultLink } from "@/components/consult-link";
 
 const LINKS = [
   { href: "#gallery", label: "Gallery" },
@@ -78,12 +79,11 @@ export function SiteHeader() {
           <a href={brand.phoneHref} className={cn("text-sm font-medium", overHero ? "text-white" : "text-foreground")}>
             {brand.phone}
           </a>
-          <Link
-            href="/estimate"
+          <ConsultLink
             className="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground"
           >
             {hero.primary}
-          </Link>
+          </ConsultLink>
         </div>
         <button
           type="button"
@@ -133,13 +133,12 @@ export function SiteHeader() {
             <a href={brand.websiteHref} className="underline underline-offset-4">
               {brand.website}
             </a>
-            <Link
-              href="/estimate"
+            <ConsultLink
               onClick={() => setOpen(false)}
               className="inline-flex h-12 items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground"
             >
               {hero.primary}
-            </Link>
+            </ConsultLink>
           </div>
         </div>
       ) : null}

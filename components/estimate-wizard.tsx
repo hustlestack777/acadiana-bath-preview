@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { OPEN_FORM_EVENT } from "@/components/consult-link";
+import { resizePhoto } from "@/lib/photo-resize";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -29,8 +31,8 @@ type Photo = { id: string; name: string; url: string; file: File };
 type Step = "town" | "details" | "result";
 
 const fieldClass = "h-12 rounded-xl bg-card px-3 text-base md:text-base";
-const MAX_PHOTOS = 4;
-const MAX_PHOTO_BYTES = Math.floor(1.5 * 1024 * 1024);
+const MAX_PHOTOS = 8;
+const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
 
 const empty = {
   city: "",
@@ -40,6 +42,8 @@ const empty = {
   notSure: false,
   width: "",
   depth: "",
+  height: "",
+  measurements: "",
   finish: "",
   features: "",
   name: "",
@@ -61,6 +65,30 @@ export function EstimateWizard() {
   const [photoMessage, setPhotoMessage] = useState("");
   const [coverageNote, setCoverageNote] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const [processing, setProcessing] = useState(false);
+
+  /** Bring the whole form on screen under the fixed header and focus its first field. */
+  const focusForm = useCallback(() => {
+    const target = document.getElementById("start");
+    if (!target) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    window.setTimeout(() => {
+      // Town step: the City field. Details step: the first question.
+      const field = target.querySelector<HTMLElement>("#city") ?? target.querySelector<HTMLElement>("#project");
+      field?.focus({ preventScroll: true });
+    }, reduce ? 0 : 450);
+  }, []);
+
+  useEffect(() => {
+    if (window.location.hash === "#start") {
+      // Wait a frame so fonts and the banner have their final height.
+      requestAnimationFrame(() => requestAnimationFrame(focusForm));
+    }
+    window.addEventListener(OPEN_FORM_EVENT, focusForm);
+    return () => window.removeEventListener(OPEN_FORM_EVENT, focusForm);
+  }, [focusForm]);
 
   const finishLabel = finishes.find((item) => item.id === form.finish)?.label ?? "";
   const projectLabel = projects.find((item) => item.id === form.project)?.label ?? "";
@@ -101,31 +129,43 @@ export function EstimateWizard() {
     );
     patch({ town: coverage.name });
     setStep("details");
+    requestAnimationFrame(() => requestAnimationFrame(focusForm));
   }
 
-  function addFiles(list: FileList | File[]) {
+  async function addFiles(list: FileList | File[]) {
     const incoming = Array.from(list);
-    const images = incoming.filter((file) => file.type.startsWith("image/"));
+    const images = incoming.filter((file) => file.type.startsWith("image/") || /\.(heic|heif)$/i.test(file.name));
     const skippedType = incoming.length - images.length;
-    const tooBig = images.filter((file) => file.size > MAX_PHOTO_BYTES);
-    const ok = images.filter((file) => file.size <= MAX_PHOTO_BYTES);
     const room = MAX_PHOTOS - photos.length;
-    const accepted = ok.slice(0, Math.max(room, 0));
+    const toProcess = images.slice(0, Math.max(room, 0));
     const notes: string[] = [];
     if (skippedType) notes.push("Documents were skipped. Use image files only.");
-    if (tooBig.length) notes.push("Images over 1.5 MB were skipped.");
-    if (ok.length > room) notes.push("You can add up to 4 photos.");
-    setPhotoMessage(notes.join(" "));
-    if (!accepted.length) return;
-    setPhotos((current) => [
-      ...current,
-      ...accepted.map((file) => ({
+    if (images.length > room) notes.push(`You can add up to ${MAX_PHOTOS} photos.`);
+    if (!toProcess.length) {
+      setPhotoMessage(notes.join(" "));
+      return;
+    }
+    setProcessing(true);
+    const ready: Photo[] = [];
+    let failed = 0;
+    for (const original of toProcess) {
+      const file = await resizePhoto(original).catch(() => null);
+      if (!file || file.size > MAX_PHOTO_BYTES) {
+        failed += 1;
+        continue;
+      }
+      ready.push({
         id: `${file.name}-${file.size}-${crypto.randomUUID()}`,
         name: file.name,
         url: URL.createObjectURL(file),
         file,
-      })),
-    ]);
+      });
+    }
+    if (failed) notes.push(`${failed} photo${failed === 1 ? "" : "s"} couldn't be read. Try a JPEG or a screenshot of it.`);
+    setPhotoMessage(notes.join(" "));
+    setProcessing(false);
+    if (!ready.length) return;
+    setPhotos((current) => [...current, ...ready].slice(0, MAX_PHOTOS));
   }
 
   function removePhoto(id: string) {
@@ -155,6 +195,8 @@ export function EstimateWizard() {
     body.set("notSure", String(form.notSure));
     body.set("width", form.width);
     body.set("depth", form.depth);
+    body.set("height", form.height);
+    body.set("measurements", form.measurements);
     body.set("finish", form.finish);
     body.set("features", form.features);
     body.set("name", form.name);
@@ -197,10 +239,10 @@ export function EstimateWizard() {
 
   return (
     <main id="content" tabIndex={-1}>
-      <section className="relative flex min-h-[72svh] items-end overflow-hidden bg-[#1c1014] text-[#fbf6f2]">
+      <section className="relative flex min-h-[44svh] items-end md:min-h-[52svh] overflow-hidden bg-[#1c1014] text-[#fbf6f2]">
         <Image src={banner.src} alt={banner.alt} fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1c1014] via-[#1c1014]/55 to-[#1c1014]/40" />
-        <div className="relative z-10 mx-auto w-full max-w-3xl px-5 pb-12 pt-32">
+        <div className="relative z-10 mx-auto w-full max-w-3xl px-5 pb-10 pt-28">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#f3d7cb]">{hero.eyebrow}</p>
           <h1 className="mt-3 max-w-xl text-5xl leading-[0.95] md:text-7xl">{lead.title}</h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-white/85">{lead.subhead}</p>
@@ -211,7 +253,7 @@ export function EstimateWizard() {
           </p>
         </div>
       </section>
-      <div className="mx-auto w-full max-w-3xl px-5 py-10 md:py-14">
+      <div id="start" className="mx-auto w-full max-w-3xl px-5 py-8 md:py-12">
       <Stepper step={step} />
 
       {step === "town" ? (
@@ -324,45 +366,45 @@ export function EstimateWizard() {
           </fieldset>
 
           <fieldset className="grid gap-3 outline-none" id="dimensions" tabIndex={-1}>
-            <legend className="text-xl font-heading">3. Approximate size</legend>
+            <legend className="text-xl font-heading">3. Size of the shower or tub (optional)</legend>
             <p id="dimensions-hint" className="text-sm leading-6 text-muted-foreground">{dimensionNote}</p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field id="width" label="Width (inches)">
-                <Input
-                  id="width"
-                  inputMode="decimal"
-                  value={form.width}
-                  disabled={form.notSure}
-                  onChange={(event) => patch({ width: event.target.value })}
-                  className={fieldClass}
-                  aria-describedby="dimensions-hint"
-                />
-              </Field>
-              <Field id="depth" label="Depth (inches)">
-                <Input
-                  id="depth"
-                  inputMode="decimal"
-                  value={form.depth}
-                  disabled={form.notSure}
-                  onChange={(event) => patch({ depth: event.target.value })}
-                  className={fieldClass}
-                />
-              </Field>
+            {/* TODO: AI dimension estimate from the uploaded photos (using known fixture sizes). Not built yet. */}
+            <div className="grid grid-cols-3 gap-3">
+              {(
+                [
+                  ["width", "Width (in)"],
+                  ["depth", "Depth (in)"],
+                  ["height", "Height (in)"],
+                ] as const
+              ).map(([key, label]) => (
+                <Field key={key} id={key} label={label}>
+                  <Input
+                    id={key}
+                    inputMode="decimal"
+                    placeholder={key === "width" ? "60" : key === "depth" ? "32" : "72"}
+                    value={form[key]}
+                    onChange={(event) => patch({ [key]: event.target.value })}
+                    className={fieldClass}
+                    aria-describedby="dimensions-hint"
+                    aria-invalid={Boolean(errors.dimensions)}
+                  />
+                </Field>
+              ))}
             </div>
-            <label className="flex items-start gap-3 text-sm leading-6" htmlFor="not-sure">
-              <Checkbox
-                id="not-sure"
-                checked={form.notSure}
-                onCheckedChange={(checked) => patch({ notSure: checked })}
-                className="mt-1 size-5"
-              />
-              Not sure
-            </label>
             {errors.dimensions ? (
               <p id="dimensions-error" className="text-sm text-destructive" role="alert">
                 {errors.dimensions}
               </p>
             ) : null}
+            <Field id="measurements" label="Measurements / notes" error={errors.measurements}>
+              <Textarea
+                id="measurements"
+                value={form.measurements}
+                placeholder="Anything you measured or noticed: tub to ceiling, window in the shower, door width…"
+                onChange={(event) => patch({ measurements: event.target.value })}
+                className="min-h-24 text-base md:text-base"
+              />
+            </Field>
           </fieldset>
 
           <fieldset id="finish" tabIndex={-1} className="grid gap-3 outline-none">
@@ -391,7 +433,7 @@ export function EstimateWizard() {
             </Field>
           </fieldset>
 
-          <fieldset className="grid gap-3">
+          <fieldset className="grid gap-3" id="photos-field">
             <legend className="text-xl font-heading">5. Photos, if you have them</legend>
             <p className="rounded-2xl bg-tint-clay px-4 py-3 text-sm leading-6">{photoNote}</p>
             <div
@@ -399,15 +441,49 @@ export function EstimateWizard() {
               onDragOver={(event) => event.preventDefault()}
               onDrop={(event) => {
                 event.preventDefault();
-                if (event.dataTransfer.files.length) addFiles(event.dataTransfer.files);
+                if (event.dataTransfer.files.length) void addFiles(event.dataTransfer.files);
               }}
             >
-              <p className="text-sm text-muted-foreground">
-                {photos.length ? `${photos.length} photo preview${photos.length === 1 ? "" : "s"} in this browser.` : "No photos added. Photos are optional."}
+              <p className="text-sm text-muted-foreground" aria-live="polite">
+                {processing
+                  ? "Preparing photos…"
+                  : photos.length
+                    ? `${photos.length} of ${MAX_PHOTOS} photos added.`
+                    : "No photos yet. Photos are optional."}
               </p>
-              <Button type="button" variant="outline" className="mt-3 h-11 rounded-xl" onClick={() => fileRef.current?.click()}>
-                Choose images
-              </Button>
+              <div className="mt-3 flex flex-col justify-center gap-2 sm:flex-row">
+                <Button
+                  type="button"
+                  className="h-12 rounded-xl"
+                  disabled={processing || photos.length >= MAX_PHOTOS}
+                  onClick={() => cameraRef.current?.click()}
+                >
+                  Take a photo
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-12 rounded-xl"
+                  disabled={processing || photos.length >= MAX_PHOTOS}
+                  onClick={() => fileRef.current?.click()}
+                >
+                  Choose from library
+                </Button>
+              </div>
+              <input
+                ref={cameraRef}
+                id="photos-camera"
+                className="sr-only"
+                type="file"
+                accept="image/*"
+                capture="environment"
+                tabIndex={-1}
+                aria-hidden="true"
+                onChange={(event) => {
+                  if (event.target.files) void addFiles(event.target.files);
+                  event.target.value = "";
+                }}
+              />
               <input
                 ref={fileRef}
                 id="photos"
@@ -415,21 +491,30 @@ export function EstimateWizard() {
                 type="file"
                 accept="image/*"
                 multiple
+                tabIndex={-1}
+                aria-hidden="true"
+                data-testid="photo-input"
                 onChange={(event) => {
-                  if (event.target.files) addFiles(event.target.files);
+                  if (event.target.files) void addFiles(event.target.files);
                   event.target.value = "";
                 }}
               />
             </div>
             {photoMessage ? <p className="text-sm text-destructive" role="alert">{photoMessage}</p> : null}
+            {errors.photos ? <p className="text-sm text-destructive" role="alert">{errors.photos}</p> : null}
             {photos.length ? (
-              <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {photos.map((photo) => (
-                  <li key={photo.id} className="overflow-hidden rounded-xl border border-border bg-card">
+              <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4" data-testid="photo-previews">
+                {photos.map((photo, index) => (
+                  <li key={photo.id} className="relative overflow-hidden rounded-xl border border-border bg-card">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={photo.url} alt="Photo you selected, previewed only in this browser" className="aspect-square w-full object-cover" />
-                    <button type="button" className="w-full px-2 py-2 text-sm underline" onClick={() => removePhoto(photo.id)}>
-                      Remove
+                    <img src={photo.url} alt={`Photo ${index + 1} you added`} className="aspect-square w-full object-cover" />
+                    <button
+                      type="button"
+                      className="absolute right-1 top-1 inline-flex size-8 items-center justify-center rounded-full bg-black/65 text-sm text-white"
+                      onClick={() => removePhoto(photo.id)}
+                      aria-label={`Remove photo ${index + 1}`}
+                    >
+                      ✕
                     </button>
                   </li>
                 ))}
@@ -518,7 +603,15 @@ export function EstimateWizard() {
           <dl className="grid gap-3 rounded-2xl border border-border bg-card p-5 text-sm leading-6">
             <Row label="Town" value={form.town} />
             <Row label="Project" value={projectLabel} />
-            <Row label="Size" value={form.notSure ? "Not sure" : `${form.width} in wide by ${form.depth} in deep, your estimate`} />
+            <Row
+              label="Size"
+              value={
+                [form.width && `${form.width} in wide`, form.depth && `${form.depth} in deep`, form.height && `${form.height} in high`]
+                  .filter(Boolean)
+                  .join(", ") || "Not given. Justin measures in person."
+              }
+            />
+            <Row label="Measurements / notes" value={form.measurements.trim() || "None added"} />
             <Row label="Finish direction" value={finishLabel} />
             <Row label="Features" value={form.features.trim() || "None added"} />
             <Row label="Photos" value={`${photos.length} saved with this request`} />

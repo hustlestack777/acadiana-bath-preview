@@ -5,6 +5,8 @@ export type DetailInput = {
   notSure: boolean;
   width: string;
   depth: string;
+  height?: string;
+  measurements?: string;
   finish: string;
   features: string;
   name: string;
@@ -43,15 +45,24 @@ export function validateDetails(input: DetailInput) {
     errors.project = "Choose at least one service.";
   }
 
-  if (!input.notSure) {
-    const width = Number(input.width);
-    const depth = Number(input.depth);
-    const widthOk = input.width.trim() !== "" && Number.isFinite(width) && width > 0 && width <= 240;
-    const depthOk = input.depth.trim() !== "" && Number.isFinite(depth) && depth > 0 && depth <= 240;
-    if (!widthOk || !depthOk) {
-      errors.dimensions =
-        "Enter a rough width and depth in inches, or choose Not sure.";
+  // Dimensions are optional. Rough numbers are fine; Justin measures in person.
+  // TODO: AI dimension estimate from photos (known fixture sizes) - not built yet.
+  const dims: Array<[string, string | undefined]> = [
+    ["width", input.width],
+    ["depth", input.depth],
+    ["height", input.height],
+  ];
+  for (const [, raw] of dims) {
+    const value = (raw ?? "").trim();
+    if (!value) continue;
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed) || parsed <= 0 || parsed > 240) {
+      errors.dimensions = "Use rough numbers in inches (1 to 240), or leave the size blank.";
+      break;
     }
+  }
+  if ((input.measurements ?? "").trim().length > 600) {
+    errors.measurements = "Keep the measurements note under 600 characters.";
   }
 
   if (!FINISH_IDS.has(input.finish)) {

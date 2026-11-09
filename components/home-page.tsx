@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
 import { PhotoGallery } from "@/components/photo-gallery";
 import { Hero } from "@/components/hero";
+import { ConsultLink } from "@/components/consult-link";
 import {
   area,
   beforeAfter,
@@ -280,12 +280,11 @@ export function HomePage() {
           <p className="mt-4 text-sm font-semibold">
             {cardClaims.consult}. {cardClaims.lifetime}.
           </p>
-          <Link
-            href="/estimate"
+          <ConsultLink
             className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-medium text-primary-foreground"
           >
             {hero.primary}
-          </Link>
+          </ConsultLink>
         </div>
       </section>
 
@@ -304,12 +303,11 @@ export function HomePage() {
             <p className="mt-4 max-w-xl text-lg leading-8 text-white/85">{close.body}</p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/estimate"
+            <ConsultLink
               className="inline-flex h-12 items-center justify-center rounded-full bg-[#fbf6f2] px-6 text-base font-medium text-[#2c211c]"
             >
               {hero.primary}
-            </Link>
+            </ConsultLink>
             <a
               href={brand.phoneHref}
               className="inline-flex h-12 items-center justify-center rounded-full border border-white/70 px-6 text-base"
