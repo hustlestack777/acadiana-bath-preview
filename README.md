@@ -28,7 +28,7 @@ Customers can add up to 8 photos (camera or library). The browser resizes each o
 
 Every Free Consult button links to `/estimate#start`. The form scrolls fully into view under the fixed header and focuses the first field.
 
-The home hero is a looping muted background video in `public/video`. It is PLACEHOLDER stock footage (see `public/video/SOURCES.md`) until Justin's own shots arrive.
+The home hero is a looping muted background video in `public/video`. It is built from Onyx Collection gallery photographs (see `public/video/SOURCES.md`). Dealer usage rights must be confirmed before public launch.
 
 Photographs in `public/images` are Onyx Collection product and gallery files. Sources are listed in `public/images/SOURCES.md`. They are not completed jobs by this business.
 

@@ -1,24 +1,41 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ConsultLink } from "@/components/consult-link";
 import { brand, cardClaims, hero, services } from "@/lib/copy";
 
 /**
- * PLACEHOLDER hero video: Pexels stock footage (see public/video/SOURCES.md).
- * Swap the three files in public/video for Justin's own shots when they arrive,
- * keeping the same names, or update HERO_VIDEO below.
+ * Hero video built from Onyx Collection gallery photographs (see public/video/SOURCES.md).
+ * Dealer usage rights still need to be confirmed with Justin and Onyx before public launch.
+ * Desktop gets a three-panel landscape cut, phones get a full-screen portrait cut.
  */
 const HERO_VIDEO = {
-  webm: "/video/hero-placeholder.webm",
-  mp4: "/video/hero-placeholder.mp4",
-  poster: "/video/hero-placeholder-poster.webp",
-  credit: "Stock video via Pexels, placeholder until Justin's own shots",
-  creditHref: "https://www.pexels.com/video/video-of-a-bathroom-855250/",
+  desktop: {
+    webm: "/video/hero-onyx-desktop.webm",
+    mp4: "/video/hero-onyx-desktop.mp4",
+    poster: "/video/hero-onyx-desktop-poster.webp",
+  },
+  mobile: {
+    webm: "/video/hero-onyx-mobile.webm",
+    mp4: "/video/hero-onyx-mobile.mp4",
+    poster: "/video/hero-onyx-mobile-poster.webp",
+  },
+  caption: "Onyx Collection showers",
 } as const;
+
+type Variant = keyof Omit<typeof HERO_VIDEO, "caption">;
 
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [variant, setVariant] = useState<Variant | null>(null);
+
+  useEffect(() => {
+    const small = window.matchMedia("(max-width: 767px)");
+    const pick = () => setVariant(small.matches ? "mobile" : "desktop");
+    pick();
+    small.addEventListener("change", pick);
+    return () => small.removeEventListener("change", pick);
+  }, []);
   const [before, word, after] = hero.title.split(/(beautiful)/i);
 
   useEffect(() => {
@@ -37,31 +54,39 @@ export function Hero() {
     sync();
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
-  }, []);
+  }, [variant]);
 
   return (
     <section className="relative min-h-[100svh] overflow-hidden bg-[#1c1014] text-[#fbf6f2]" aria-label="Introduction">
       <div className="absolute inset-0" aria-hidden="true">
-        <video
-          ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover"
-          poster={HERO_VIDEO.poster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          disablePictureInPicture
-          data-testid="hero-video"
-        >
-          <source src={HERO_VIDEO.webm} type="video/webm" />
-          <source src={HERO_VIDEO.mp4} type="video/mp4" />
-        </video>
+        {/* Poster first, so the first paint shows showers before the video loads. */}
+        <picture>
+          <source media="(max-width: 767px)" srcSet={HERO_VIDEO.mobile.poster} />
+          <img src={HERO_VIDEO.desktop.poster} alt="" className="absolute inset-0 h-full w-full object-cover" fetchPriority="high" />
+        </picture>
+        {variant ? (
+          <video
+            key={variant}
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover"
+            poster={HERO_VIDEO[variant].poster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            data-testid="hero-video"
+          >
+            <source src={HERO_VIDEO[variant].webm} type="video/webm" />
+            <source src={HERO_VIDEO[variant].mp4} type="video/mp4" />
+          </video>
+        ) : null}
         <div className="hero-video-scrim absolute inset-0" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-6xl flex-col justify-end px-5 pb-48 pt-24 md:pb-12 md:pt-28">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#f3d7cb]">{hero.eyebrow}</p>
+        <p className="hero-copy text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#f3d7cb]">{hero.eyebrow}</p>
         <h1
           className="hero-copy mt-4 max-w-5xl font-heading text-[clamp(3.1rem,8.4vw,7.4rem)] leading-[0.92] font-medium text-[#fbf6f2]"
           data-testid="hero-title"
@@ -76,7 +101,7 @@ export function Hero() {
             hero.title
           )}
         </h1>
-        <p className="hero-copy mt-6 max-w-xl text-lg leading-8 text-[#fbf6f2]">{hero.support}</p>
+        <p className="hero-copy mt-6 hidden max-w-xl text-lg leading-8 text-[#fbf6f2] sm:block">{hero.support}</p>
         <p className="hero-copy mt-4 text-sm font-semibold tracking-wide text-[#f3d7cb]">
           {cardClaims.consult}
           <span className="mx-2 opacity-60">·</span>
@@ -107,12 +132,7 @@ export function Hero() {
             Scroll
           </a>
         </div>
-        <p className="mt-3 max-w-xl pe-36 text-[0.7rem] leading-5 text-white/70 md:pe-0">
-          <a href={HERO_VIDEO.creditHref} className="underline underline-offset-2">
-            {HERO_VIDEO.credit}
-          </a>
-          , not a completed job by {brand.name}.
-        </p>
+        <p className="mt-3 pe-36 text-[0.7rem] uppercase tracking-[0.2em] text-white/60 md:pe-0">{HERO_VIDEO.caption}</p>
       </div>
     </section>
   );
