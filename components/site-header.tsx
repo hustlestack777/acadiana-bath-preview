@@ -11,16 +11,24 @@ import { cn } from "cn";
 
 const LINKS = [
   { href: "#surface", label: "The surface" },
-  { href: "#care", label: "Care" },
-  { href: "#warranty", label: "Product warranty" },
+  { href: "#finishes", label: "Finishes" },
+  { href: "#gallery", label: "Gallery" },
   { href: "#process", label: "How it works" },
   { href: "#area", label: "Service area" },
   { href: "#questions", label: "Questions" },
 ];
 
-export function SiteHeader() {
+export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -40,7 +48,16 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+    <header
+      className={cn(
+        "sticky top-0 z-40 transition-colors duration-300",
+        open
+          ? "border-b border-transparent bg-transparent"
+          : overlay && !scrolled
+            ? "border-b border-transparent bg-transparent"
+            : "border-b border-border bg-background/92 backdrop-blur-md",
+      )}
+    >
       <a className="skip-link" href="#content">
         Skip to content
       </a>
@@ -56,7 +73,7 @@ export function SiteHeader() {
             </a>
             <Link
               href="/estimate"
-              className={cn(buttonVariants({ variant: "default" }), "h-11 rounded-xl px-4 text-sm")}
+              className={cn(buttonVariants({ variant: "default" }), "h-11 rounded-full px-5 text-sm")}
             >
               {hero.primary}
             </Link>
@@ -74,7 +91,7 @@ export function SiteHeader() {
             <Menu />
           </button>
         </div>
-        <nav className="hidden items-center gap-5 pb-3 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-5 pb-3 md:flex" aria-label="Primary">
           {LINKS.map((link) => (
             <Link key={link.href} href={hrefFor(link.href)} className="text-sm text-muted-foreground hover:text-foreground">
               {link.label}

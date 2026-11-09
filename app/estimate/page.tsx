@@ -5,7 +5,7 @@ import { SiteShell } from "@/components/site-shell";
 export const metadata: Metadata = {
   title: "Project review",
   description:
-    "Show us your space and tell us what you have in mind. Placeholder range only. Nothing is submitted.",
+    "Show us your space and tell us what you have in mind. Free Consult with Acadiana Bathrooms and Countertops. Call 337-522-0023.",
 };
 
 export default function EstimatePage() {

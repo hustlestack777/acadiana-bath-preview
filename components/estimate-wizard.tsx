@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,6 +22,7 @@ import {
   timings,
 } from "@/lib/copy";
 import { validateDetails, validateZip } from "@/lib/estimate";
+import { estimatePhoto } from "@/lib/photos";
 import { cn } from "cn";
 
 type Photo = { id: string; name: string; url: string; file: File };
@@ -190,13 +192,45 @@ export function EstimateWizard() {
   }
 
   return (
-    <main id="content" tabIndex={-1} className="mx-auto w-full max-w-3xl px-5 py-10 md:py-16">
-      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brass">Project review</p>
-      <h1 className="mt-3 text-4xl leading-[1.1] md:text-5xl">{lead.title}</h1>
+    <div className="lg:grid lg:grid-cols-[minmax(16rem,0.9fr)_minmax(0,46rem)]">
+      <aside className="relative hidden lg:block">
+        <div className="sticky top-28 h-[calc(100svh-7rem)]">
+          <Image
+            src={estimatePhoto.src}
+            alt={estimatePhoto.alt}
+            fill
+            sizes="42vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-x-6 bottom-6 rounded-[1.4rem] bg-[#fffbf6]/95 p-5 text-[#2c211c]">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brass">{estimatePhoto.caption}</p>
+            <p className="mt-2 font-heading text-3xl leading-tight">{cardClaims.consult}</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              Manufacturer photograph. Not a completed job by {brand.name}.
+            </p>
+          </div>
+        </div>
+      </aside>
+      <div>
+        <div className="relative h-56 lg:hidden">
+          <Image
+            src={estimatePhoto.src}
+            alt={estimatePhoto.alt}
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
+    <main id="content" tabIndex={-1} className="mx-auto w-full max-w-3xl px-5 py-10 md:px-10 md:py-16">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brass">Project review</p>
+      <h1 className="mt-3 text-4xl leading-[1.05] md:text-5xl">{lead.title}</h1>
       <p className="mt-4 text-lg leading-8 text-muted-foreground">{lead.subhead}</p>
       <p className="mt-4 text-sm font-semibold">
-        {brand.phone} · {cardClaims.consult}
+        <a href={brand.phoneHref}>{brand.phone}</a>
+        <span className="mx-2 text-muted-foreground">·</span>
+        {cardClaims.consult}
       </p>
+      <Progress step={step} />
 
       {step === "town" ? (
         <form className="mt-8 grid gap-5" onSubmit={checkTown} noValidate>
@@ -241,7 +275,7 @@ export function EstimateWizard() {
               {coverageNote}
             </p>
           ) : null}
-          <Button type="submit" className="h-12 rounded-xl text-base">
+          <Button type="submit" className="h-12 rounded-full text-base">
             Check my town
           </Button>
         </form>
@@ -483,19 +517,23 @@ export function EstimateWizard() {
               {submitError}
             </p>
           ) : null}
-          <Button type="submit" className="h-12 rounded-xl text-base" disabled={submitting}>
+          <Button type="submit" className="h-12 rounded-full text-base" disabled={submitting}>
             {submitting ? "Saving your request…" : lead.submit}
           </Button>
         </form>
       ) : null}
 
       {step === "result" ? (
-        <section className="mt-8 grid gap-5" aria-live="polite">
-          <h2 id="result-title" tabIndex={-1} className="text-3xl outline-none">
+        <section className="mt-10 grid gap-6" aria-live="polite">
+          <div className="h-px w-16 bg-[#c46a4a]" aria-hidden="true" />
+          <h2 id="result-title" tabIndex={-1} className="text-4xl leading-tight outline-none md:text-5xl">
             {lead.savedTitle}
           </h2>
           <p className="text-lg leading-8">{lead.thanks}</p>
           <p className="leading-7">No payment was collected. Final pricing follows scope and measurement confirmation.</p>
+          <p className="font-heading text-3xl">
+            <a href={brand.phoneHref}>{brand.phone}</a>
+          </p>
           <dl className="grid gap-3 rounded-2xl border border-border bg-card p-5 text-sm leading-6">
             <Row label="Town" value={form.town} />
             <Row label="Project" value={projectLabel} />
@@ -510,16 +548,48 @@ export function EstimateWizard() {
             <Row label="Budget note" value="Held in this browser and not displayed." />
           </dl>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Button type="button" variant="outline" className="h-12 rounded-xl" onClick={() => setStep("details")}>
+            <Button type="button" variant="outline" className="h-12 rounded-full" onClick={() => setStep("details")}>
               Edit details
             </Button>
-            <Button type="button" className="h-12 rounded-xl" onClick={reset}>
+            <Button type="button" className="h-12 rounded-full" onClick={reset}>
               Start over
             </Button>
           </div>
         </section>
       ) : null}
     </main>
+      </div>
+    </div>
+  );
+}
+
+function Progress({ step }: { step: Step }) {
+  const items = [
+    ["town", "Town"],
+    ["details", "Project"],
+    ["result", "Saved"],
+  ] as const;
+  const order = { town: 0, details: 1, result: 2 } as const;
+  return (
+    <ol className="mt-8 grid grid-cols-3 gap-3" aria-label="Review progress">
+      {items.map(([id, label], index) => {
+        const current = order[step] === index;
+        const done = order[step] > index;
+        return (
+          <li key={id} aria-current={current ? "step" : undefined} className="grid gap-2">
+            <span className={cn("h-1 rounded-full", current || done ? "bg-primary" : "bg-border")} />
+            <span
+              className={cn(
+                "text-[11px] font-semibold uppercase tracking-[0.14em]",
+                current || done ? "text-foreground" : "text-muted-foreground",
+              )}
+            >
+              0{index + 1} {label}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 

@@ -215,10 +215,20 @@ export async function saveLead(input: LeadInput, ip: string) {
   };
 }
 
+export const DEFAULT_LEAD_NOTIFY_EMAILS = ["shaun.brasher@gmail.com", "shaun@lagniapperealmlabs.com"] as const;
+
+export function parseNotifyEmails(value: string | undefined | null) {
+  const emails = (value ?? "")
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return emails.length ? emails : [...DEFAULT_LEAD_NOTIFY_EMAILS];
+}
+
 async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
-  const to = process.env.LEAD_NOTIFY_EMAIL || "shaun.brasher@gmail.com";
+  const to = parseNotifyEmails(process.env.LEAD_NOTIFY_EMAIL);
   if (!apiKey) return { sent: false, error: "RESEND_API_KEY is not set." };
   if (!from) return { sent: false, error: "RESEND_FROM is not set." };
 
@@ -247,7 +257,7 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
   const { error } = await resend.emails.send(
     {
       from,
-      to: [to],
+      to,
       subject: `Bathroom lead ${id.slice(0, 8)} from ${input.sourcePage}`,
       text,
       html,

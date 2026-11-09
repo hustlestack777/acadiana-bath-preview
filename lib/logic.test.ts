@@ -3,6 +3,7 @@ import { test } from "node:test";
 import { CHAT_ANSWERS, replyTo } from "./chat";
 import { checkCity } from "./coverage";
 import { validateDetails, validateZip } from "./estimate";
+import { parseNotifyEmails } from "./leads";
 
 const pledge = ["guar", "antee"].join("");
 const quarriedPhrase = ["real", "stone"].join(" ");
@@ -21,6 +22,14 @@ test("planned towns are accepted and the corridor stops before the excluded town
   assert.equal(checkCity("70501").status, "unknown");
   assert.equal(checkCity("").status, "empty");
   assert.equal(checkCity("Lafayette and Broussard").status, "unknown");
+});
+
+test("lead notification accepts one address or a comma-separated list", () => {
+  assert.deepEqual(parseNotifyEmails(" a@b.com, c@d.com "), ["a@b.com", "c@d.com"]);
+  assert.deepEqual(parseNotifyEmails("only@one.com"), ["only@one.com"]);
+  assert.deepEqual(parseNotifyEmails(undefined), ["shaun.brasher@gmail.com", "shaun@lagniapperealmlabs.com"]);
+  assert.deepEqual(parseNotifyEmails(""), ["shaun.brasher@gmail.com", "shaun@lagniapperealmlabs.com"]);
+  assert.deepEqual(parseNotifyEmails(" , , "), ["shaun.brasher@gmail.com", "shaun@lagniapperealmlabs.com"]);
 });
 
 test("zip is optional and is not a coverage decision", () => {

@@ -14,8 +14,8 @@ export function SiteFooter() {
             <a href={brand.onyxHref} className="underline underline-offset-4">
               {brand.onyx}
             </a>{" "}
-            solid-surface products. Product statements on this site come from manufacturer materials and are separate
-            from installation.
+            solid-surface products. Photographs are Onyx Collection examples, not completed jobs by {brand.name}.
+            Product statements on this site come from manufacturer materials and are separate from installation.
           </p>
         </div>
         <div>
