@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { CHAT_ANSWERS, replyTo } from "./chat";
 import { checkCity } from "./coverage";
-import { validateDetails, validateExtras, validateZip } from "./estimate";
-import { leadNotifyRecipients } from "./leads";
+import { validateDetails, validateExtras, validateStreet, validateZip } from "./estimate";
+import { leadNotifyRecipients, validateLead } from "./leads";
 import { projects } from "./copy";
 
 const pledge = ["guar", "antee"].join("");
@@ -32,6 +32,47 @@ test("planned towns are accepted and the corridor stops before the excluded town
   assert.equal(checkCity("70501").status, "unknown");
   assert.equal(checkCity("").status, "empty");
   assert.equal(checkCity("Lafayette and Broussard").status, "unknown");
+});
+
+test("street address requires a house number and stays optional for zip", () => {
+  assert.match(validateStreet(""), /street address/);
+  assert.match(validateStreet("Main"), /house number/);
+  assert.match(validateStreet("Main Street"), /house number/);
+  assert.equal(validateStreet("401 Renaud Dr"), "");
+  assert.equal(validateStreet("  12 County Road 4  "), "");
+});
+
+test("a consult lead is rejected without a street address", () => {
+  const base = {
+    sourcePage: "/estimate" as const,
+    street: "",
+    latitude: null,
+    longitude: null,
+    city: "Lafayette",
+    zip: "",
+    project: "tub-to-shower",
+    notSure: false,
+    width: "",
+    depth: "",
+    height: "",
+    measurements: "",
+    finish: "unsure",
+    features: "",
+    name: "Ada",
+    phone: "337-555-0100",
+    email: "",
+    preferred: "phone" as const,
+    marketing: false,
+    timing: "exploring",
+    budget: "",
+    homeowner: "own",
+    payment: "not-sure",
+    consent: true,
+    preferredCallTime: "",
+    photos: [],
+  };
+  assert.match(validateLead(base).errors.street ?? "", /street address/);
+  assert.equal(validateLead({ ...base, street: "401 Renaud Dr" }).errors.street, undefined);
 });
 
 test("zip is optional and is not a coverage decision", () => {

@@ -189,9 +189,12 @@ export const lead = {
   subhead:
     "Four quick steps. Tell us where you are, what you want to change, and how to reach you. Justin follows up — this is not a final quote.",
   submit: "Request My Free Consult",
-  thanks:
-    "Thanks—your request is saved. Acadiana Bathrooms and Countertops will follow up. This is not a final quote or a confirmed appointment.",
-  savedTitle: "We saved your free consult request.",
+  thanks: "Thanks — Justin has this consult and will follow up.",
+  savedNote: "No payment was collected. Final pricing follows what he sees on site.",
+  savedTitle: "Request saved",
+  photosTitle: "Their photos",
+  addressLabel: "Street address",
+  addressHint: "So we can find the house for the visit. Start typing and pick your address.",
   extrasTitle: "Want to help Justin prepare?",
   extrasBody:
     "Optional: pick a good time to call, add rough measurements, and share up to 8 photos. Rough numbers are fine. Justin measures everything in person.",

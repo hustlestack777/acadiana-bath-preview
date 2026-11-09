@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { checkCity, SUPPORTED_TOWNS } from "@/lib/coverage";
 import {
   brand,
@@ -26,7 +27,8 @@ import {
   projects,
   timings,
 } from "@/lib/copy";
-import { validateDetails, validateExtras, validateZip } from "@/lib/estimate";
+import { validateDetails, validateExtras, validateStreet, validateZip } from "@/lib/estimate";
+import { formatPhone, formatThankYouSize, localityLine, phoneTel } from "@/lib/lead-display";
 import { heroSlides } from "@/lib/images";
 import { cn } from "cn";
 
@@ -38,6 +40,9 @@ const MAX_PHOTOS = 8;
 const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
 
 const empty = {
+  street: "",
+  latitude: "",
+  longitude: "",
   city: "",
   zip: "",
   town: "",
@@ -87,6 +92,7 @@ export function EstimateWizard() {
     target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     window.setTimeout(() => {
       const field =
+        target.querySelector<HTMLElement>("#street") ??
         target.querySelector<HTMLElement>("#city") ??
         target.querySelector<HTMLElement>("#project") ??
         target.querySelector<HTMLElement>("#homeowner") ??
@@ -111,7 +117,6 @@ export function EstimateWizard() {
   }, [form.project]);
   const timingLabel = timings.find((item) => item.id === form.timing)?.label ?? "";
   const homeownerLabel = homeowners.find((item) => item.id === form.homeowner)?.label ?? "";
-  const paymentLabel = payments.find((item) => item.id === form.payment)?.label ?? "";
   const errorList = useMemo(() => Object.entries(errors), [errors]);
 
   function patch(partial: Partial<typeof empty>) {
@@ -128,6 +133,8 @@ export function EstimateWizard() {
   function checkTown(event: FormEvent) {
     event.preventDefault();
     const next: Record<string, string> = {};
+    const streetError = validateStreet(form.street);
+    if (streetError) next.street = streetError;
     const zipError = validateZip(form.zip);
     if (zipError) next.zip = zipError;
     const coverage = checkCity(form.city);
@@ -248,6 +255,9 @@ export function EstimateWizard() {
     setSubmitError("");
     const body = new FormData();
     body.set("sourcePage", "/estimate");
+    body.set("street", form.street);
+    body.set("latitude", form.latitude);
+    body.set("longitude", form.longitude);
     body.set("city", form.city);
     body.set("zip", form.zip);
     body.set("project", form.project);
@@ -356,8 +366,14 @@ export function EstimateWizard() {
 
   const banner = heroSlides[0];
 
+  const sizeLine = formatThankYouSize(form.width, form.depth, form.height, form.measurements);
+  const townValue = localityLine(form.town || form.city, form.zip);
+  const phoneHref = phoneTel(form.phone);
+  const phoneLabel = formatPhone(form.phone);
+
   return (
-    <main id="content" tabIndex={-1}>
+    <main id="content" tabIndex={-1} className={step === "result" ? "bg-[#f6f0e8]" : undefined}>
+      {step === "result" ? null : (
       <section className="relative flex min-h-[44svh] items-end md:min-h-[52svh] overflow-hidden bg-[#1c1014] text-[#fbf6f2]">
         <Image src={banner.src} alt={banner.alt} fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1c1014] via-[#1c1014]/55 to-[#1c1014]/40" />
@@ -372,12 +388,37 @@ export function EstimateWizard() {
           </p>
         </div>
       </section>
-      <div id="start" className="mx-auto w-full max-w-3xl px-5 py-8 md:py-12">
-        <Stepper step={step} />
+      )}
+      <div
+        id="start"
+        className={cn(
+          "mx-auto w-full px-5",
+          step === "result" ? "max-w-[420px] pb-16 pt-24" : "max-w-3xl py-8 md:py-12",
+        )}
+      >
+        {step === "result" ? null : <Stepper step={step} />}
 
         {step === "town" ? (
           <form className="mt-8 grid gap-5" onSubmit={checkTown} noValidate>
-            <p className="text-sm font-semibold text-muted-foreground">1. ZIP / town</p>
+            <p className="text-sm font-semibold text-muted-foreground">1. Where should we visit?</p>
+            <Field id="street" label={lead.addressLabel} error={errors.street} hint={lead.addressHint} hintFirst>
+              <AddressAutocomplete
+                id="street"
+                value={form.street}
+                invalid={Boolean(errors.street)}
+                describedBy={["street-hint", errors.street ? "street-error" : ""].filter(Boolean).join(" ")}
+                onChange={(street) => patch({ street, latitude: "", longitude: "" })}
+                onSelect={(address) =>
+                  patch({
+                    street: address.street,
+                    city: address.city || form.city,
+                    zip: address.zip || form.zip,
+                    latitude: address.lat != null ? String(address.lat) : "",
+                    longitude: address.lon != null ? String(address.lon) : "",
+                  })
+                }
+              />
+            </Field>
             <Field id="city" label="City / town" error={errors.city} hint="Enter one city. The planned list is checked before you continue.">
               <Input
                 id="city"
@@ -554,13 +595,13 @@ export function EstimateWizard() {
             <fieldset className="grid gap-4">
               <legend className="text-xl font-heading">4. How can Justin reach you?</legend>
               <Field id="name" label="Name" error={errors.name}>
-                <Input id="name" autoComplete="name" value={form.name} onChange={(event) => patch({ name: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.name)} />
+                <Input id="name" name="name" autoComplete="name" value={form.name} onChange={(event) => patch({ name: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.name)} />
               </Field>
               <Field id="phone" label="Phone" error={errors.phone} hint="Phone or email is enough. Add the one you prefer below.">
-                <Input id="phone" type="tel" autoComplete="tel" value={form.phone} onChange={(event) => patch({ phone: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.phone)} />
+                <Input id="phone" name="phone" type="tel" autoComplete="tel" value={form.phone} onChange={(event) => patch({ phone: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.phone)} />
               </Field>
               <Field id="email" label="Email" error={errors.email}>
-                <Input id="email" type="email" autoComplete="email" value={form.email} onChange={(event) => patch({ email: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.email)} />
+                <Input id="email" name="email" type="email" autoComplete="email" value={form.email} onChange={(event) => patch({ email: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.email)} />
               </Field>
               <div id="preferred" tabIndex={-1} className="grid gap-2 outline-none">
                 <p className="text-sm font-medium">Preferred contact for this project</p>
@@ -603,27 +644,64 @@ export function EstimateWizard() {
         ) : null}
 
         {step === "result" ? (
-          <section className="mt-2 grid gap-5" aria-live="polite">
-            <div className="flex size-14 items-center justify-center rounded-full bg-primary text-2xl text-primary-foreground" aria-hidden="true">
+          <section className="text-[#1c1014]" aria-live="polite">
+            <div className="flex size-14 items-center justify-center rounded-full bg-[#c46a4a] text-[26px] text-white" aria-hidden="true">
               ✓
             </div>
-            <h2 id="result-title" tabIndex={-1} className="text-4xl outline-none md:text-5xl">
+            <h1 id="result-title" tabIndex={-1} className="mt-4 font-heading text-[40px] font-medium leading-[0.95] outline-none">
               {lead.savedTitle}
-            </h2>
-            <p className="text-lg leading-8">{lead.thanks}</p>
-            <p className="leading-7">No payment was collected. Final pricing follows scope and measurement confirmation.</p>
-            <dl className="grid gap-3 rounded-2xl border border-border bg-card p-5 text-sm leading-6">
-              <Row label="Town" value={form.town} />
-              <Row label="ZIP" value={form.zip.trim() || "Not given"} />
-              <Row label="Project" value={projectLabel} />
-              <Row label="Home" value={homeownerLabel} />
-              <Row label="Timing" value={timingLabel} />
-              <Row label="Payment" value={paymentLabel} />
-              <Row label="Name" value={form.name} />
-              <Row label="Preferred contact" value={form.preferred === "phone" ? "Phone" : "Email"} />
-            </dl>
+            </h1>
+            <p className="mt-2.5 text-lg leading-snug">{lead.thanks}</p>
+            <p className="mt-2 mb-5 leading-snug text-[#6d5a54]">{lead.savedNote}</p>
+            <section className="rounded-[24px] border border-[#e8ddd4] bg-[#fffdf9] px-5 py-[22px]">
+              <p className="font-heading text-[32px] leading-[1.05]">{form.name.trim()}</p>
+              <div className="mt-2.5">
+                {phoneHref ? (
+                  <a href={phoneHref} className="block text-xl font-semibold text-[#8c4030] underline underline-offset-4">
+                    {phoneLabel}
+                  </a>
+                ) : null}
+                {form.email.trim() ? (
+                  <a href={`mailto:${form.email.trim()}`} className="mt-1 block text-[17px] font-medium text-[#1c1014] underline underline-offset-4">
+                    {form.email.trim()}
+                  </a>
+                ) : null}
+              </div>
+              <hr className="my-[18px] border-0 border-t border-[#e8ddd4]" />
+              <dl className="grid gap-3.5">
+                <RecapRow label="Town" value={townValue} />
+                <RecapRow label="Project" value={projectLabel} />
+                <RecapRow label="Size" value={sizeLine} />
+                <RecapRow label="Home" value={homeownerLabel} />
+                <RecapRow label="Timing" value={timingLabel} />
+              </dl>
+            </section>
 
-            <div className="rounded-3xl border border-border bg-card p-5 md:p-6">
+            {photos.length ? (
+              <div className="mt-[22px]">
+                <h2 className="font-heading text-2xl font-medium">{lead.photosTitle}</h2>
+                <ul className="mt-3 grid grid-cols-2 gap-2.5" data-testid="photo-previews">
+                  {photos.map((photo, index) => (
+                    <li key={photo.id} className="relative overflow-hidden rounded-2xl border border-[#e8ddd4] bg-[#fffdf9]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={photo.url} alt={`Photo ${index + 1}`} className="aspect-square w-full object-cover" />
+                      {extrasSaved ? null : (
+                        <button
+                          type="button"
+                          className="absolute right-1 top-1 inline-flex size-8 items-center justify-center rounded-full bg-black/65 text-sm text-white"
+                          onClick={() => removePhoto(photo.id)}
+                          aria-label={`Remove photo ${index + 1}`}
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            <div className="mt-6 rounded-[24px] border border-[#e8ddd4] bg-[#fffdf9] p-5">
               <h3 className="text-2xl font-heading">{lead.extrasTitle}</h3>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{lead.extrasBody}</p>
               {extrasSaved ? (
@@ -753,24 +831,6 @@ export function EstimateWizard() {
                       />
                     </div>
                     {photoMessage ? <p className="text-sm text-destructive" role="alert">{photoMessage}</p> : null}
-                    {photos.length ? (
-                      <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4" data-testid="photo-previews">
-                        {photos.map((photo, index) => (
-                          <li key={photo.id} className="relative overflow-hidden rounded-xl border border-border bg-background">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={photo.url} alt={`Photo ${index + 1} you added`} className="aspect-square w-full object-cover" />
-                            <button
-                              type="button"
-                              className="absolute right-1 top-1 inline-flex size-8 items-center justify-center rounded-full bg-black/65 text-sm text-white"
-                              onClick={() => removePhoto(photo.id)}
-                              aria-label={`Remove photo ${index + 1}`}
-                            >
-                              ✕
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
                   </fieldset>
 
                   {extrasError ? (
@@ -785,14 +845,9 @@ export function EstimateWizard() {
               )}
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button type="button" className="h-12 rounded-xl" onClick={reset}>
-                Start over
-              </Button>
-              <a href={brand.phoneHref} className="inline-flex h-12 items-center justify-center rounded-xl border border-border bg-background px-4 text-sm font-medium hover:bg-muted">
-                Call {brand.phone}
-              </a>
-            </div>
+            <button type="button" className="mt-4 text-sm underline underline-offset-4" onClick={reset}>
+              Start over
+            </button>
           </section>
         ) : null}
       </div>
@@ -858,11 +913,12 @@ function Field({
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function RecapRow({ label, value }: { label: string; value: string }) {
+  if (!value.trim()) return null;
   return (
-    <div className="grid gap-1 sm:grid-cols-[10rem_1fr]">
-      <dt className="font-medium">{label}</dt>
-      <dd>{value}</dd>
+    <div className="grid grid-cols-[92px_1fr] gap-2 text-base leading-snug">
+      <dt className="font-semibold text-[#6d5a54]">{label}</dt>
+      <dd className="font-medium">{value}</dd>
     </div>
   );
 }

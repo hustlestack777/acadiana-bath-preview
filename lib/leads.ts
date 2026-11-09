@@ -1,7 +1,10 @@
 import { Pool } from "pg";
 import { Resend } from "resend";
-import { validateDetails, validateExtras, validateZip } from "./estimate";
+import { validateDetails, validateExtras, validateStreet, validateZip } from "./estimate";
 import { checkCity } from "./coverage";
+import { buildLeadEmail } from "./lead-email";
+import { fetchStreetViewImage } from "./street-view";
+import { fullAddress } from "./lead-display";
 
 // Photos are resized in the browser (about 1600 px JPEG, usually 200-600 KB).
 // 8 x 2 MB worst case stays well under Resend's 40 MB email limit after base64,
@@ -19,6 +22,9 @@ export type LeadPhoto = {
 
 export type LeadInput = {
   sourcePage: string;
+  street: string;
+  latitude: number | null;
+  longitude: number | null;
   city: string;
   zip: string;
   project: string;
@@ -113,6 +119,9 @@ async function ensureSchema(db: Pool) {
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS payment text NOT NULL DEFAULT '';
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS consent boolean NOT NULL DEFAULT false;
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS preferred_call_time text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS street text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS latitude double precision;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS longitude double precision;
         ALTER TABLE lead_photos ADD COLUMN IF NOT EXISTS size_bytes integer NOT NULL DEFAULT 0;
       `)
       .then(() => undefined)
@@ -124,21 +133,10 @@ async function ensureSchema(db: Pool) {
   await schemaReady;
 }
 
-function escapeHtml(value: string) {
-  return value.replace(/[&<>"']/g, (character) => {
-    const map: Record<string, string> = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;",
-    };
-    return map[character] ?? character;
-  });
-}
-
 export function validateLead(input: LeadInput) {
   const errors = validateDetails(input);
+  const streetError = validateStreet(input.street);
+  if (streetError) errors.street = streetError;
   const zipError = validateZip(input.zip);
   if (zipError) errors.zip = zipError;
   const coverage = checkCity(input.city);
@@ -190,9 +188,10 @@ export async function saveLead(input: LeadInput, ip: string) {
       `INSERT INTO leads (
         id, created_at, source_page, name, phone, email, preferred, city, zip, project,
         not_sure, width, depth, finish, features, timing, budget, marketing, ip, email_status,
-        height, measurements, homeowner, payment, consent, preferred_call_time
+        height, measurements, homeowner, payment, consent, preferred_call_time,
+        street, latitude, longitude
       ) VALUES (
-        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21,$22,$23,$24,$25
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21,$22,$23,$24,$25,$26,$27,$28
       )`,
       [
         id,
@@ -220,6 +219,9 @@ export async function saveLead(input: LeadInput, ip: string) {
         input.payment,
         input.consent,
         input.preferredCallTime.trim(),
+        input.street.trim(),
+        input.latitude,
+        input.longitude,
       ],
     );
     for (const photo of input.photos) {
@@ -265,12 +267,22 @@ export async function updateLeadExtras(id: string, extras: LeadExtras) {
     id: string;
     name: string;
     city: string;
+    zip: string;
+    street: string;
+    latitude: number | null;
+    longitude: number | null;
     phone: string;
     email: string;
     project: string;
+    homeowner: string;
+    payment: string;
+    timing: string;
+    features: string;
+    budget: string;
     photo_count: string;
   }>(
-    `SELECT l.id, l.name, l.city, l.phone, l.email, l.project,
+    `SELECT l.id, l.name, l.city, l.zip, l.street, l.latitude, l.longitude, l.phone, l.email, l.project,
+            l.homeowner, l.payment, l.timing, l.features, l.budget,
             (SELECT count(*)::text FROM lead_photos p WHERE p.lead_id = l.id) AS photo_count
      FROM leads l WHERE l.id = $1`,
     [id],
@@ -353,9 +365,18 @@ export async function updateLeadExtras(id: string, extras: LeadExtras) {
   const notification = await notifyLeadExtras(id, {
     name: row.name,
     city: row.city,
+    zip: row.zip,
+    street: row.street,
+    latitude: coordinate(row.latitude, -90, 90),
+    longitude: coordinate(row.longitude, -180, 180),
     phone: row.phone,
     email: row.email,
     project: row.project,
+    homeowner: row.homeowner,
+    payment: row.payment,
+    timing: row.timing,
+    features: row.features,
+    budget: row.budget,
     width: current?.width ?? "",
     depth: current?.depth ?? "",
     height: current?.height ?? "",
@@ -391,9 +412,17 @@ export function leadNotifyRecipients(raw = process.env.LEAD_NOTIFY_EMAIL || DEFA
   return DEFAULT_LEAD_NOTIFY_EMAIL.split(",").map((address) => address.trim());
 }
 
-function inches(value: string) {
-  const trimmed = value.trim();
-  return trimmed ? `${trimmed} in (customer estimate)` : "(not given)";
+function coordinate(value: unknown, min: number, max: number) {
+  if (value == null || value === "") return null;
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < min || parsed > max) return null;
+  return parsed;
+}
+
+async function housePreview(input: { street: string; city: string; zip: string; latitude: number | null; longitude: number | null }) {
+  const address = fullAddress(input.street, input.city, input.zip);
+  if (!input.street.trim() || !address) return null;
+  return fetchStreetViewImage({ address, lat: input.latitude, lon: input.longitude });
 }
 
 async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
@@ -403,47 +432,42 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
   if (!apiKey) return { sent: false, error: "RESEND_API_KEY is not set." };
   if (!from) return { sent: false, error: "RESEND_FROM is not set." };
 
-  const lines = [
-    `Lead ${id}`,
-    `Saved at: ${createdAt.toISOString()}`,
-    `Source page: ${input.sourcePage}`,
-    `Name: ${input.name.trim()}`,
-    `Phone: ${input.phone.trim() || "(none)"}`,
-    `Email: ${input.email.trim() || "(none)"}`,
-    `Preferred contact: ${input.preferred}`,
-    `Preferred call time: ${input.preferredCallTime.trim() || "(none yet)"}`,
-    `City: ${input.city.trim()}`,
-    `ZIP: ${input.zip.trim() || "(none)"}`,
-    `Services: ${input.project}`,
-    `Homeowner: ${input.homeowner || "(none)"}`,
-    `Payment preference: ${input.payment || "(none)"}`,
-    `Consent: ${input.consent ? "yes (Acadiana Bathrooms and Countertops)" : "no"}`,
-    `Width: ${inches(input.width)}`,
-    `Depth: ${inches(input.depth)}`,
-    `Height: ${inches(input.height)}`,
-    `Measurements / notes: ${input.measurements.trim() || "(none)"}`,
-    `Finish direction: ${input.finish || "unsure"}`,
-    `Features: ${input.features.trim() || "(none)"}`,
-    `Timing: ${input.timing}`,
-    `Budget note: ${input.budget.trim() || "(none)"}`,
-    `Marketing opt-in: ${input.marketing ? "yes" : "no"}`,
-    `Photos: ${input.photos.length}${input.photos.length ? " (attached to this email, also saved with the lead)" : ""}`,
-  ];
-  const text = lines.join("\n");
-  const html = `<pre>${escapeHtml(text)}</pre>`;
+  const houseImage = await housePreview(input);
+  const message = buildLeadEmail({
+    kind: "new",
+    id,
+    createdAt,
+    name: input.name,
+    phone: input.phone,
+    email: input.email,
+    street: input.street,
+    city: input.city,
+    zip: input.zip,
+    latitude: input.latitude,
+    longitude: input.longitude,
+    project: input.project,
+    width: input.width,
+    depth: input.depth,
+    height: input.height,
+    measurements: input.measurements,
+    features: input.features,
+    budget: input.budget,
+    homeowner: input.homeowner,
+    payment: input.payment,
+    timing: input.timing,
+    preferredCallTime: input.preferredCallTime,
+    photos: input.photos,
+    houseImage,
+  });
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send(
     {
       from,
       to,
-      subject: `${input.name.trim().toUpperCase().startsWith("TEST") ? "[TEST] " : ""}Bathroom lead ${id.slice(0, 8)}: ${input.name.trim()}, ${input.city.trim()}${input.photos.length ? ` (${input.photos.length} photo${input.photos.length === 1 ? "" : "s"})` : ""}`,
-      text,
-      html,
-      attachments: input.photos.map((photo, index) => ({
-        filename: `${String(index + 1).padStart(2, "0")}-${photo.filename}`,
-        content: photo.bytes.toString("base64"),
-        contentType: photo.contentType,
-      })),
+      subject: message.subject,
+      text: message.text,
+      html: message.html,
+      attachments: message.attachments,
     },
     { idempotencyKey: `lead/${id}` },
   );
@@ -456,9 +480,18 @@ async function notifyLeadExtras(
   input: {
     name: string;
     city: string;
+    zip: string;
+    street: string;
+    latitude: number | null;
+    longitude: number | null;
     phone: string;
     email: string;
     project: string;
+    homeowner: string;
+    payment: string;
+    timing: string;
+    features: string;
+    budget: string;
     width: string;
     depth: string;
     height: string;
@@ -474,35 +507,43 @@ async function notifyLeadExtras(
   if (!apiKey) return { sent: false, error: "RESEND_API_KEY is not set." };
   if (!from) return { sent: false, error: "RESEND_FROM is not set." };
 
-  const lines = [
-    `Lead extras update for ${id}`,
-    `Name: ${input.name}`,
-    `City: ${input.city}`,
-    `Phone: ${input.phone || "(none)"}`,
-    `Email: ${input.email || "(none)"}`,
-    `Services: ${input.project}`,
-    `Preferred call time: ${input.preferredCallTime || "(none)"}`,
-    `Width: ${inches(input.width)}`,
-    `Depth: ${inches(input.depth)}`,
-    `Height: ${inches(input.height)}`,
-    `Measurements / notes: ${input.measurements || "(none)"}`,
-    `Photos now on lead: ${input.photos.length} (just added ${input.newPhotoCount})`,
-  ];
-  const text = lines.join("\n");
-  const html = `<pre>${escapeHtml(text)}</pre>`;
+  const houseImage = await housePreview(input);
+  const message = buildLeadEmail({
+    kind: "update",
+    id,
+    createdAt: new Date(),
+    name: input.name,
+    phone: input.phone,
+    email: input.email,
+    street: input.street,
+    city: input.city,
+    zip: input.zip,
+    latitude: input.latitude,
+    longitude: input.longitude,
+    project: input.project,
+    width: input.width,
+    depth: input.depth,
+    height: input.height,
+    measurements: input.measurements,
+    features: input.features,
+    budget: input.budget,
+    homeowner: input.homeowner,
+    payment: input.payment,
+    timing: input.timing,
+    preferredCallTime: input.preferredCallTime,
+    photos: input.photos,
+    newPhotoCount: input.newPhotoCount,
+    houseImage,
+  });
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send(
     {
       from,
       to,
-      subject: `${input.name.toUpperCase().startsWith("TEST") ? "[TEST] " : ""}Bathroom lead extras ${id.slice(0, 8)}: ${input.name}, ${input.city}${input.photos.length ? ` (${input.photos.length} photo${input.photos.length === 1 ? "" : "s"})` : ""}`,
-      text,
-      html,
-      attachments: input.photos.map((photo, index) => ({
-        filename: `${String(index + 1).padStart(2, "0")}-${photo.filename}`,
-        content: photo.bytes.toString("base64"),
-        contentType: photo.contentType,
-      })),
+      subject: message.subject,
+      text: message.text,
+      html: message.html,
+      attachments: message.attachments,
     },
     { idempotencyKey: `lead-extras/${id}/${Date.now()}` },
   );
