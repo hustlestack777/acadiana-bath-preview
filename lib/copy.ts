@@ -1,14 +1,31 @@
-/** Customer-facing copy. Prices stay the placeholder token. */
+/** Customer-facing copy. No invented prices or coverage terms. */
 
 export const brand = {
-  name: "[BUSINESS NAME]",
-  phone: "[PHONE]",
-  email: "[EMAIL]",
-  priceRange: "[PRICE RANGE]",
+  name: "Acadiana Bathrooms and Countertops",
+  phone: "337-522-0023",
+  phoneHref: "tel:+13375220023",
+  website: "abclafayette.com",
+  websiteHref: "https://abclafayette.com",
+  onyx: "Onyx Collection",
+  onyxHref: "https://onyxcollection.com",
+} as const;
+
+export const services = [
+  "Showers",
+  "Tubs",
+  "Lavatories",
+  "Flooring",
+  "Toilets",
+  "Wallpaper",
+] as const;
+
+export const cardClaims = {
+  consult: "Free Consult",
+  lifetime: "Lifetime Guarantee",
 } as const;
 
 export const hero = {
-  eyebrow: "Onyx Collection showers",
+  eyebrow: "Bring a little beautiful to every day.",
   title: "A shower you’ll love looking at—and won’t dread cleaning.",
   support:
     "Custom-fit Onyx Collection showers for the bathroom you actually want. Tell us what you want to change, share a few photos, and let’s explore the options for your space.",
@@ -45,7 +62,7 @@ export const care = {
 
 export const warranty = {
   title: "A manufacturer that stands behind its products.",
-  body: "The Onyx Collection publishes a manufacturer product warranty. Its published statement says that if its product fails, it will provide a new item or refund the cost. Ask us to review the manufacturer’s current terms with you. Installation workmanship and any labor coverage are separate and must be confirmed with Justin.",
+  body: "Acadiana Bathrooms and Countertops states Lifetime Guarantee. That phrase is not expanded with extra terms here. The Onyx Collection publishes a manufacturer product warranty. Its published statement says that if its product fails, it will provide a new item or refund the cost. Ask us to review the manufacturer’s current terms with you. Installation workmanship and any labor coverage are separate and must be confirmed before work begins.",
   asideTitle: "Separate from installation",
   aside:
     "The manufacturer product warranty covers the product. It is not a labor promise. Workmanship and any labor coverage must be confirmed with Justin. This site does not add installer labor coverage.",
@@ -114,12 +131,12 @@ export const faqs = [
 
 export const talk = {
   title: "Talk about your project",
-  body: "Call or email when you would rather talk than fill out the review. This prototype does not place a call or send a message for you.",
+  body: "Call when you would rather talk than fill out the review. There is no email address on the card, so this site does not list one.",
 } as const;
 
 export const close = {
   title: "Start with the bathroom you have.",
-  body: "Tell us what you want to change and, if you want, share a few photos. Justin can help narrow the options after a real review is connected.",
+  body: "Tell us what you want to change and, if you want, share a few photos. The request is saved for follow-up. It is not a final quote.",
 } as const;
 
 export const lead = {
@@ -128,37 +145,17 @@ export const lead = {
     "Show us your space and tell us what you have in mind. Start with the details below so Justin can help narrow down the options.",
   submit: "Request My Project Review",
   thanks:
-    "Thanks—your project details are ready for review. Justin will follow up to discuss options and the next step. This is not a final quote or a confirmed appointment.",
-  prototype:
-    "Prototype: nothing you entered was submitted or saved, and Justin was not contacted. Follow-up happens only after a real lead endpoint is connected.",
-  rangeLabel: "Estimated project range",
-  rangeNote:
-    "This is a placeholder, not a dollar amount, and not a calculated range. A tested range engine is not connected.",
-  rangeDisclaimer:
-    "Based on the options and approximate dimensions you selected. This is a planning estimate, not a binding quote. Final pricing follows scope and measurement confirmation; hidden damage, plumbing changes and other work outside the stated scope may change the proposal. Inclusions and exclusions have not been supplied, so none are listed here. Justin confirms them before any work.",
+    "Thanks—your project details are saved. Acadiana Bathrooms and Countertops will follow up to discuss options and the next step. This is not a final quote or a confirmed appointment.",
+  savedTitle: "We saved your project review.",
 } as const;
 
 export const projects = [
-  {
-    id: "half-bath",
-    label: "Half bath",
-    detail: "A smaller room you want changed.",
-  },
-  {
-    id: "full-bath",
-    label: "Full bath",
-    detail: "A full bathroom.",
-  },
-  {
-    id: "primary-bath",
-    label: "Primary bath",
-    detail: "The main bathroom.",
-  },
-  {
-    id: "shower-only",
-    label: "Shower only",
-    detail: "Only the shower.",
-  },
+  { id: "showers", label: "Showers", detail: "Including Onyx Collection solid-surface showers." },
+  { id: "tubs", label: "Tubs", detail: "Tub work in the bathroom." },
+  { id: "lavatories", label: "Lavatories", detail: "Sinks and the surrounding area." },
+  { id: "flooring", label: "Flooring", detail: "Flooring in the bathroom." },
+  { id: "toilets", label: "Toilets", detail: "Toilet work in the room." },
+  { id: "wallpaper", label: "Wallpaper", detail: "Wall covering in the room." },
 ] as const;
 
 export const finishes = [
@@ -176,13 +173,13 @@ export const timings = [
 ] as const;
 
 export const projectNote =
-  "These four project types are the choices on this prototype. Justin confirms which services he installs before any work is scheduled.";
+  "These are the services on the Acadiana Bathrooms and Countertops card. Choose every one that applies. Listing a wish does not mean every option is available until the visit.";
 
 export const featureNote =
   "Describe the layout, finishes, and features you want to talk about. Listing something here does not mean it is available. Justin confirms the options.";
 
 export const photoNote =
-  "Optional photos: one wide bathroom view, the shower or tub, and visible problem areas. Do not include people, financial documents, or unrelated personal information. Photos help; they are not required to ask a question. Previews stay in this browser and are not uploaded.";
+  "Optional photos: one wide bathroom view, the shower or tub, and visible problem areas. Do not include people, financial documents, or unrelated personal information. Photos help; they are not required. Up to four images, 1.5 MB each, are saved with the request.";
 
 export const dimensionNote =
   "Approximate existing shower or tub width and depth, in inches. Choose Not sure if you don’t have a number. A state estimate is fine for this first review.";

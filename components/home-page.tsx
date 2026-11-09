@@ -4,6 +4,7 @@ import { GalleryArt, ShowerStudy } from "@/components/illustrations";
 import {
   area,
   brand,
+  cardClaims,
   care,
   close,
   faqs,
@@ -11,6 +12,7 @@ import {
   hero,
   material,
   reasons,
+  services,
   steps,
   talk,
   warranty,
@@ -31,6 +33,18 @@ export function HomePage() {
               {hero.title}
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-8 text-hero-muted">{hero.support}</p>
+            <ul className="mt-6 flex flex-wrap gap-2">
+              {services.map((service) => (
+                <li key={service} className="rounded-full border border-foreground/15 px-3 py-1 text-sm">
+                  {service}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-sm font-semibold tracking-wide">
+              {cardClaims.consult}
+              <span className="mx-2 text-muted-foreground">·</span>
+              {cardClaims.lifetime}
+            </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/estimate"
@@ -55,6 +69,8 @@ export function HomePage() {
         </div>
       </section>
 
+      <div className="checkerboard h-3" aria-hidden="true" />
+
       <section className="mx-auto -mt-6 w-full max-w-6xl px-5" aria-label="Why these showers">
         <div className="grid gap-3 md:grid-cols-3">
           {reasons.map((reason, index) => (
@@ -76,6 +92,13 @@ export function HomePage() {
           <h2 className="mt-2 text-3xl md:text-4xl">{material.title}</h2>
           <p className="mt-4 text-lg leading-8">{material.body}</p>
           <p className="mt-4 leading-7 text-muted-foreground">{material.close}</p>
+          <p className="mt-4 leading-7">
+            {brand.name} uses{" "}
+            <a href={brand.onyxHref} className="underline underline-offset-4">
+              {brand.onyx}
+            </a>{" "}
+            solid-surface products.
+          </p>
         </div>
         <div className="grid content-start gap-3 md:col-span-5">
           <p className="rounded-2xl bg-tint-lagoon p-5 leading-7">
@@ -132,11 +155,11 @@ export function HomePage() {
         </ol>
       </section>
 
-      <section id="area" className="scroll-mt-40 bg-hero text-hero-foreground">
+      <section id="area" className="scroll-mt-40 bg-secondary text-secondary-foreground">
         <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brass-soft">Service area</p>
           <h2 className="mt-2 max-w-2xl text-3xl md:text-4xl">{area.title}</h2>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-hero-muted">{area.intro}</p>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-fig-muted">{area.intro}</p>
           <p className="mt-8 text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">{area.corridorLabel}</p>
           <ol className="mt-4 space-y-3 border-l border-hero-muted/40 ps-5 md:flex md:flex-wrap md:items-center md:gap-x-3 md:space-y-0 md:border-0 md:ps-0">
             {CORRIDOR.map((town, index) => (
@@ -151,7 +174,7 @@ export function HomePage() {
               </li>
             ))}
           </ol>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-hero-muted">{area.stop}</p>
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-fig-muted">{area.stop}</p>
           <p className="mt-8 text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">{area.alsoLabel}</p>
           <ul className="mt-4 flex flex-wrap gap-2">
             {ALSO_PLANNED.map((town) => (
@@ -160,7 +183,7 @@ export function HomePage() {
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-sm text-hero-muted">Not included: {EXCLUDED.join(" and ")}.</p>
+          <p className="mt-4 text-sm text-fig-muted">Not included: {EXCLUDED.join(" and ")}.</p>
         </div>
       </section>
 
@@ -210,9 +233,18 @@ export function HomePage() {
           <p className="mt-4 leading-7 text-muted-foreground">{talk.body}</p>
         </div>
         <div className="rounded-2xl border border-border bg-card p-6">
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass">Placeholders</p>
-          <p className="mt-3 font-heading text-3xl">{brand.phone}</p>
-          <p className="mt-1 text-lg">{brand.email}</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass">Call</p>
+          <p className="mt-3 font-heading text-3xl">
+            <a href={brand.phoneHref}>{brand.phone}</a>
+          </p>
+          <p className="mt-2">
+            <a href={brand.websiteHref} className="underline underline-offset-4">
+              {brand.website}
+            </a>
+          </p>
+          <p className="mt-3 text-sm font-semibold">
+            {cardClaims.consult}. {cardClaims.lifetime}.
+          </p>
           <Link
             href="/estimate"
             className={cn(buttonVariants({ variant: "default" }), "mt-6 h-12 rounded-xl px-5 text-base")}

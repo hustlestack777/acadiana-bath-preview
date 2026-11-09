@@ -3,7 +3,6 @@ import { test } from "node:test";
 import { CHAT_ANSWERS, replyTo } from "./chat";
 import { checkCity } from "./coverage";
 import { validateDetails, validateZip } from "./estimate";
-import { brand } from "./copy";
 
 const pledge = ["guar", "antee"].join("");
 const quarriedPhrase = ["real", "stone"].join(" ");
@@ -52,7 +51,7 @@ test("the review requires a project, a way to measure, and one contact path", ()
   assert.ok(errors.timing);
 
   const ok = validateDetails({
-    project: "shower-only",
+    project: "showers",
     notSure: true,
     width: "",
     depth: "",
@@ -85,7 +84,8 @@ test("assistant answers stay inside the published facts", () => {
   ];
   const outputs = [...probes.map((probe) => replyTo(probe)), ...Object.values(CHAT_ANSWERS)];
   for (const output of outputs) {
-    assert.equal(output.toLowerCase().includes(pledge), false, output);
+    const withoutCardPhrase = output.replaceAll("Lifetime Guarantee", "");
+    assert.equal(withoutCardPhrase.toLowerCase().includes(pledge), false, output);
     assert.equal(output.toLowerCase().includes(quarriedPhrase), false, output);
     assert.equal(/bath fitter|re-bath|rebath/i.test(output), false, output);
     assert.equal(/\$\s?\d/.test(output), false, output);
@@ -94,6 +94,6 @@ test("assistant answers stay inside the published facts", () => {
   assert.match(replyTo("What is the product warranty?"), /manufacturer product warranty/i);
   assert.match(replyTo(`what is your ${pledge}?`), /manufacturer product warranty/i);
   assert.match(replyTo("Is it natural stone?"), /not a slab of quarried natural onyx/i);
-  assert.match(replyTo("how much"), new RegExp(brand.priceRange.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(replyTo("how much"), /No dollar amount is published/i);
   assert.match(replyTo("are you a person"), /AI assistant/i);
 });

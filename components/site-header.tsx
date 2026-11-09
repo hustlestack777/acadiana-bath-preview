@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { ThemeSwitcher } from "@/components/theme-switcher";
+import { MaisonLogo } from "@/components/logo";
 import { brand, hero } from "@/lib/copy";
 import { cn } from "cn";
 
@@ -44,17 +44,16 @@ export function SiteHeader() {
       <a className="skip-link" href="#content">
         Skip to content
       </a>
-      <p className="bg-fig px-4 py-2 text-center text-sm text-fig-foreground" data-testid="prototype-banner">
-        Prototype. Nothing you enter is submitted or saved.
-      </p>
       <div className="mx-auto w-full max-w-6xl px-5">
         <div className="flex items-center justify-between gap-3 py-3">
-          <Link href="/" className="font-heading text-lg leading-tight text-foreground sm:text-xl">
-            {brand.name}
+          <Link href="/" aria-label={brand.name}>
+            <MaisonLogo compact className="sm:hidden" />
+            <MaisonLogo className="hidden sm:inline-flex" />
           </Link>
           <div className="hidden items-center gap-3 md:flex">
-            <ThemeSwitcher />
-            <span className="text-sm font-medium text-foreground">{brand.phone}</span>
+            <a href={brand.phoneHref} className="text-sm font-medium text-foreground">
+              {brand.phone}
+            </a>
             <Link
               href="/estimate"
               className={cn(buttonVariants({ variant: "default" }), "h-11 rounded-xl px-4 text-sm")}
@@ -86,7 +85,7 @@ export function SiteHeader() {
       {open ? (
         <div id="mobile-nav" className="fixed inset-0 z-50 overflow-y-auto bg-background px-5 py-4 md:hidden">
           <div className="flex items-center justify-between">
-            <p className="font-heading text-xl">{brand.name}</p>
+            <MaisonLogo />
             <button
               type="button"
               className="inline-flex size-11 items-center justify-center rounded-xl border border-border"
@@ -109,9 +108,12 @@ export function SiteHeader() {
             ))}
           </nav>
           <div className="mt-6 grid gap-3 border-t border-border pt-6 text-base">
-            <p>{brand.phone}</p>
-            <p>{brand.email}</p>
-            <ThemeSwitcher />
+            <a href={brand.phoneHref} className="font-medium">
+              {brand.phone}
+            </a>
+            <a href={brand.websiteHref} className="underline underline-offset-4">
+              {brand.website}
+            </a>
             <Link
               href="/estimate"
               onClick={() => setOpen(false)}

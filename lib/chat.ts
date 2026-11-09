@@ -1,18 +1,18 @@
 import { area, brand, care, faqs, hero, warranty } from "./copy";
 
 const answers = {
-  disclosure: `I’m an AI assistant for ${brand.name}. I am not Justin and not a person on the crew. I only use the facts published on this site. What you type stays in this browser and is not submitted or saved.`,
+  disclosure: `I’m an AI assistant for ${brand.name}. I am not a person on the crew. I only use the facts published on this site. What you type in this chat stays in this browser and is not submitted or saved.`,
   material: faqs[0].a,
   care: care.body,
   warranty: warranty.body,
   area: area.faq,
   quote: faqs[1].a,
-  cost: `${faqs[2].a} No dollar amount is published. The review page shows the placeholder ${brand.priceRange}.`,
+  cost: `${faqs[2].a} No dollar amount is published on this site.`,
   fit: `${hero.support} Justin confirms measurements and project scope before you approve the work.`,
   timing:
     "Installation times are not listed. Justin confirms measurements and project scope before you approve the work.",
   proof:
-    "This site does not publish ratings, job counts, licenses, or testimonials. Genuine project photos and permissioned testimonials are not on this prototype.",
+    "This site does not publish ratings, job counts, licenses, or testimonials.",
   compare:
     "This site does not compare other companies. I can only repeat the Onyx Collection statements published here.",
   human: `I’m an AI assistant, not a person at ${brand.name} and not Justin. For your room, use Request My Project Review.`,

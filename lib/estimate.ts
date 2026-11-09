@@ -38,8 +38,9 @@ export function validateZip(zip: string) {
 export function validateDetails(input: DetailInput) {
   const errors: Record<string, string> = {};
 
-  if (!PROJECT_IDS.has(input.project)) {
-    errors.project = "Choose what you would like to change.";
+  const selected = input.project.split(",").map((item) => item.trim()).filter(Boolean);
+  if (!selected.length || selected.some((item) => !PROJECT_IDS.has(item))) {
+    errors.project = "Choose at least one service.";
   }
 
   if (!input.notSure) {

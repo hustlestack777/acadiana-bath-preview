@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { checkCity, SUPPORTED_TOWNS } from "@/lib/coverage";
 import {
   brand,
+  cardClaims,
   dimensionNote,
   featureNote,
   finishes,
@@ -22,7 +23,7 @@ import {
 import { validateDetails, validateZip } from "@/lib/estimate";
 import { cn } from "cn";
 
-type Photo = { id: string; name: string; url: string };
+type Photo = { id: string; name: string; url: string; file: File };
 type Step = "town" | "details" | "result";
 
 const fieldClass = "h-12 rounded-xl px-3 text-base md:text-base";
@@ -48,6 +49,8 @@ const empty = {
 
 export function EstimateWizard() {
   const [step, setStep] = useState<Step>("town");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [form, setForm] = useState(empty);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -116,6 +119,7 @@ export function EstimateWizard() {
         id: `${file.name}-${file.size}-${crypto.randomUUID()}`,
         name: file.name,
         url: URL.createObjectURL(file),
+        file,
       })),
     ]);
   }
@@ -128,7 +132,7 @@ export function EstimateWizard() {
     });
   }
 
-  function submitDetails(event: FormEvent) {
+  async function submitDetails(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const next = validateDetails(form);
     setErrors(next);
@@ -137,10 +141,42 @@ export function EstimateWizard() {
       document.getElementById(first)?.focus();
       return;
     }
-    setStep("result");
-    requestAnimationFrame(() => {
-      document.getElementById("result-title")?.focus();
-    });
+    setSubmitting(true);
+    setSubmitError("");
+    const body = new FormData(event.currentTarget);
+    body.set("sourcePage", "/estimate");
+    body.set("city", form.city);
+    body.set("zip", form.zip);
+    body.set("project", form.project);
+    body.set("notSure", String(form.notSure));
+    body.set("width", form.width);
+    body.set("depth", form.depth);
+    body.set("finish", form.finish);
+    body.set("features", form.features);
+    body.set("name", form.name);
+    body.set("phone", form.phone);
+    body.set("email", form.email);
+    body.set("preferred", form.preferred);
+    body.set("marketing", String(form.marketing));
+    body.set("timing", form.timing);
+    body.set("budget", form.budget);
+    photos.forEach((photo) => body.append("photos", photo.file, photo.file.name));
+    try {
+      const response = await fetch("/api/leads", { method: "POST", body });
+      const data = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!response.ok || !data?.ok) {
+        setSubmitError(data?.error || "We couldn't save your request. Nothing was confirmed.");
+        return;
+      }
+      setStep("result");
+      requestAnimationFrame(() => {
+        document.getElementById("result-title")?.focus();
+      });
+    } catch {
+      setSubmitError("We couldn't reach the server. Your request was not saved.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   function reset() {
@@ -158,8 +194,8 @@ export function EstimateWizard() {
       <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brass">Project review</p>
       <h1 className="mt-3 text-4xl leading-[1.1] md:text-5xl">{lead.title}</h1>
       <p className="mt-4 text-lg leading-8 text-muted-foreground">{lead.subhead}</p>
-      <p className="mt-4 rounded-2xl bg-tint-brass px-4 py-3 text-sm leading-6">
-        Static prototype. Nothing you enter is submitted or saved. No payment is collected.
+      <p className="mt-4 text-sm font-semibold">
+        {brand.phone} · {cardClaims.consult}
       </p>
 
       {step === "town" ? (
@@ -187,7 +223,7 @@ export function EstimateWizard() {
             id="zip"
             label="ZIP code (optional)"
             error={errors.zip}
-            hint="A ZIP is not used to approve or decline coverage on this prototype."
+            hint="A ZIP is not used to approve or decline coverage. The city decides."
           >
             <Input
               id="zip"
@@ -212,7 +248,11 @@ export function EstimateWizard() {
       ) : null}
 
       {step === "details" ? (
-        <form className="mt-8 grid gap-8" onSubmit={submitDetails} noValidate>
+        <form className="relative mt-8 grid gap-8" onSubmit={submitDetails} noValidate>
+          <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+            <label htmlFor="company_fax">Fax</label>
+            <input id="company_fax" name="company_fax" tabIndex={-1} autoComplete="off" />
+          </div>
           <p className="rounded-2xl bg-tint-lagoon px-4 py-3 text-sm leading-6" data-testid="coverage-message">
             {coverageNote}
           </p>
@@ -233,28 +273,37 @@ export function EstimateWizard() {
           <fieldset id="project" tabIndex={-1} className="grid gap-3 outline-none">
             <legend className="text-xl font-heading">2. What would you like to change?</legend>
             <p className="text-sm leading-6 text-muted-foreground">{projectNote}</p>
-            <RadioGroup
-              value={form.project}
-              onValueChange={(value) => patch({ project: value })}
-              aria-label="What would you like to change?"
-              className="grid gap-3 sm:grid-cols-2"
-            >
-              {projects.map((item) => (
-                <label
-                  key={item.id}
-                  className={cn(
-                    "flex cursor-pointer gap-3 rounded-2xl border bg-card p-4",
-                    form.project === item.id ? "border-primary ring-2 ring-primary/30" : "border-border",
-                  )}
-                >
-                  <RadioGroupItem value={item.id} id={item.id} className="mt-1" />
-                  <span>
-                    <span className="block font-medium">{item.label}</span>
-                    <span className="block text-sm text-muted-foreground">{item.detail}</span>
-                  </span>
-                </label>
-              ))}
-            </RadioGroup>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {projects.map((item) => {
+                const selected = form.project.split(",").filter(Boolean);
+                const checked = selected.includes(item.id);
+                return (
+                  <label
+                    key={item.id}
+                    className={cn(
+                      "flex cursor-pointer gap-3 rounded-2xl border bg-card p-4",
+                      checked ? "border-primary ring-2 ring-primary/30" : "border-border",
+                    )}
+                  >
+                    <Checkbox
+                      id={item.id}
+                      checked={checked}
+                      onCheckedChange={(value) => {
+                        const next = value
+                          ? [...selected, item.id]
+                          : selected.filter((entry) => entry !== item.id);
+                        patch({ project: next.join(",") });
+                      }}
+                      className="mt-1 size-5"
+                    />
+                    <span>
+                      <span className="block font-medium">{item.label}</span>
+                      <span className="block text-sm text-muted-foreground">{item.detail}</span>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
             {errors.project ? <p className="text-sm text-destructive" role="alert">{errors.project}</p> : null}
           </fieldset>
 
@@ -429,8 +478,13 @@ export function EstimateWizard() {
             </Field>
           </fieldset>
 
-          <Button type="submit" className="h-12 rounded-xl text-base">
-            {lead.submit}
+          {submitError ? (
+            <p className="rounded-2xl border border-destructive/40 bg-card px-4 py-3 text-sm leading-6" role="alert">
+              {submitError}
+            </p>
+          ) : null}
+          <Button type="submit" className="h-12 rounded-xl text-base" disabled={submitting}>
+            {submitting ? "Saving your request…" : lead.submit}
           </Button>
         </form>
       ) : null}
@@ -438,24 +492,17 @@ export function EstimateWizard() {
       {step === "result" ? (
         <section className="mt-8 grid gap-5" aria-live="polite">
           <h2 id="result-title" tabIndex={-1} className="text-3xl outline-none">
-            Ready for a later review
+            {lead.savedTitle}
           </h2>
-          <p className="rounded-2xl bg-fig px-4 py-3 text-sm leading-6 text-fig-foreground">{lead.prototype}</p>
           <p className="text-lg leading-8">{lead.thanks}</p>
-          <div className="rounded-2xl border-2 border-dashed border-brass bg-brass-soft p-5" data-testid="price-range">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brass">Placeholder · not a dollar amount</p>
-            <p className="mt-3 text-sm">{lead.rangeLabel}</p>
-            <p className="font-heading text-4xl text-foreground md:text-5xl">{brand.priceRange}</p>
-            <p className="mt-3 text-sm leading-6">{lead.rangeNote}</p>
-          </div>
-          <p className="leading-7">{lead.rangeDisclaimer}</p>
+          <p className="leading-7">No payment was collected. Final pricing follows scope and measurement confirmation.</p>
           <dl className="grid gap-3 rounded-2xl border border-border bg-card p-5 text-sm leading-6">
             <Row label="Town" value={form.town} />
             <Row label="Project" value={projectLabel} />
             <Row label="Size" value={form.notSure ? "Not sure" : `${form.width} in wide by ${form.depth} in deep, your estimate`} />
             <Row label="Finish direction" value={finishLabel} />
             <Row label="Features" value={form.features.trim() || "None added"} />
-            <Row label="Photos" value={`${photos.length} held in this browser only`} />
+            <Row label="Photos" value={`${photos.length} saved with this request`} />
             <Row label="Name" value={form.name} />
             <Row label="Preferred contact" value={form.preferred === "phone" ? "Phone" : "Email"} />
             <Row label="Timing" value={timingLabel} />

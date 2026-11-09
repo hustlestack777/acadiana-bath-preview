@@ -15,15 +15,13 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-const themeBoot = `(function(){try{var t=localStorage.getItem("ab-theme");if(t==="bayou"||t==="marigold"||t==="indigo"){document.documentElement.setAttribute("data-theme",t)}}catch(e){}})();`;
-
 export const metadata: Metadata = {
   title: {
-    default: "[BUSINESS NAME] · Onyx Collection showers",
-    template: "%s · [BUSINESS NAME]",
+    default: "Acadiana Bathrooms and Countertops",
+    template: "%s · Acadiana Bathrooms and Countertops",
   },
   description:
-    "Custom-fit Onyx Collection showers for the bathroom you actually want. A Louisiana remodeler prototype. Nothing submitted here is saved.",
+    "Custom-fit Onyx Collection showers and bathroom work from Acadiana Bathrooms and Countertops. Free Consult. Call 337-522-0023.",
   robots: { index: false, follow: false },
   icons: { icon: "/favicon.svg" },
 };
@@ -38,13 +36,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      data-theme="bayou"
       className={`${outfit.variable} ${fraunces.variable} h-full antialiased`}
-      suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeBoot }} />
-      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
