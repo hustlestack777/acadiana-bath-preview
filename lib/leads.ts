@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { Resend } from "resend";
-import { validateDetails, validateZip } from "./estimate";
+import { validateDetails, validateExtras, validateZip } from "./estimate";
 import { checkCity } from "./coverage";
 
 // Photos are resized in the browser (about 1600 px JPEG, usually 200-600 KB).
@@ -36,6 +36,19 @@ export type LeadInput = {
   marketing: boolean;
   timing: string;
   budget: string;
+  homeowner: string;
+  payment: string;
+  consent: boolean;
+  preferredCallTime: string;
+  photos: LeadPhoto[];
+};
+
+export type LeadExtras = {
+  width: string;
+  depth: string;
+  height: string;
+  measurements: string;
+  preferredCallTime: string;
   photos: LeadPhoto[];
 };
 
@@ -96,6 +109,10 @@ async function ensureSchema(db: Pool) {
         );
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS height text NOT NULL DEFAULT '';
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS measurements text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS homeowner text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS payment text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS consent boolean NOT NULL DEFAULT false;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS preferred_call_time text NOT NULL DEFAULT '';
         ALTER TABLE lead_photos ADD COLUMN IF NOT EXISTS size_bytes integer NOT NULL DEFAULT 0;
       `)
       .then(() => undefined)
@@ -173,9 +190,9 @@ export async function saveLead(input: LeadInput, ip: string) {
       `INSERT INTO leads (
         id, created_at, source_page, name, phone, email, preferred, city, zip, project,
         not_sure, width, depth, finish, features, timing, budget, marketing, ip, email_status,
-        height, measurements
+        height, measurements, homeowner, payment, consent, preferred_call_time
       ) VALUES (
-        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21,$22,$23,$24,$25
       )`,
       [
         id,
@@ -191,7 +208,7 @@ export async function saveLead(input: LeadInput, ip: string) {
         input.notSure,
         input.width.trim(),
         input.depth.trim(),
-        input.finish,
+        input.finish || "unsure",
         input.features.trim(),
         input.timing,
         input.budget.trim(),
@@ -199,6 +216,10 @@ export async function saveLead(input: LeadInput, ip: string) {
         ip || "unknown",
         input.height.trim(),
         input.measurements.trim(),
+        input.homeowner,
+        input.payment,
+        input.consent,
+        input.preferredCallTime.trim(),
       ],
     );
     for (const photo of input.photos) {
@@ -227,6 +248,134 @@ export async function saveLead(input: LeadInput, ip: string) {
     id,
     emailSent: notification.sent,
     emailError: notification.error,
+  };
+}
+
+export async function updateLeadExtras(id: string, extras: LeadExtras) {
+  const db = getPool();
+  if (!db) {
+    return { ok: false as const, status: 503, error: "Lead storage is not configured. DATABASE_URL is missing." };
+  }
+  if (!/^[0-9a-f-]{36}$/i.test(id)) {
+    return { ok: false as const, status: 400, error: "Unknown request." };
+  }
+
+  await ensureSchema(db);
+  const existing = await db.query<{
+    id: string;
+    name: string;
+    city: string;
+    phone: string;
+    email: string;
+    project: string;
+    photo_count: string;
+  }>(
+    `SELECT l.id, l.name, l.city, l.phone, l.email, l.project,
+            (SELECT count(*)::text FROM lead_photos p WHERE p.lead_id = l.id) AS photo_count
+     FROM leads l WHERE l.id = $1`,
+    [id],
+  );
+  const row = existing.rows[0];
+  if (!row) {
+    return { ok: false as const, status: 404, error: "That request was not found." };
+  }
+
+  const fieldErrors = validateExtras(extras);
+  if (Object.keys(fieldErrors).length) {
+    return { ok: false as const, status: 400, error: "Check the highlighted fields.", errors: fieldErrors };
+  }
+
+  const already = Number(row.photo_count ?? 0);
+  if (already + extras.photos.length > MAX_PHOTOS) {
+    return {
+      ok: false as const,
+      status: 400,
+      error: `You can add up to ${MAX_PHOTOS} photos total. This request already has ${already}.`,
+    };
+  }
+  if (extras.photos.some((photo) => photo.bytes.length > MAX_PHOTO_BYTES)) {
+    return { ok: false as const, status: 400, error: "Each photo must be 2 MB or smaller." };
+  }
+  if (extras.photos.reduce((sum, photo) => sum + photo.bytes.length, 0) > MAX_TOTAL_PHOTO_BYTES) {
+    return { ok: false as const, status: 400, error: "The photos are too large together. Remove one or two and try again." };
+  }
+  if (extras.photos.some((photo) => !/^image\/(jpeg|png|webp|gif)$/.test(photo.contentType))) {
+    return { ok: false as const, status: 400, error: "Use JPEG, PNG, WebP, or GIF photos." };
+  }
+
+  const client = await db.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query(
+      `UPDATE leads SET
+        width = CASE WHEN $2 <> '' THEN $2 ELSE width END,
+        depth = CASE WHEN $3 <> '' THEN $3 ELSE depth END,
+        height = CASE WHEN $4 <> '' THEN $4 ELSE height END,
+        measurements = CASE WHEN $5 <> '' THEN $5 ELSE measurements END,
+        preferred_call_time = CASE WHEN $6 <> '' THEN $6 ELSE preferred_call_time END
+       WHERE id = $1`,
+      [
+        id,
+        extras.width.trim(),
+        extras.depth.trim(),
+        extras.height.trim(),
+        extras.measurements.trim(),
+        extras.preferredCallTime.trim(),
+      ],
+    );
+    for (const photo of extras.photos) {
+      await client.query(
+        `INSERT INTO lead_photos (id, lead_id, filename, content_type, bytes, size_bytes) VALUES ($1,$2,$3,$4,$5,$6)`,
+        [crypto.randomUUID(), id, photo.filename, photo.contentType, photo.bytes, photo.bytes.length],
+      );
+    }
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+
+  const updated = await db.query<{
+    width: string;
+    depth: string;
+    height: string;
+    measurements: string;
+    preferred_call_time: string;
+  }>(`SELECT width, depth, height, measurements, preferred_call_time FROM leads WHERE id = $1`, [id]);
+  const current = updated.rows[0];
+  const allPhotos = await db.query<{ filename: string; content_type: string; bytes: Buffer }>(
+    `SELECT filename, content_type, bytes FROM lead_photos WHERE lead_id = $1 ORDER BY filename`,
+    [id],
+  );
+
+  const notification = await notifyLeadExtras(id, {
+    name: row.name,
+    city: row.city,
+    phone: row.phone,
+    email: row.email,
+    project: row.project,
+    width: current?.width ?? "",
+    depth: current?.depth ?? "",
+    height: current?.height ?? "",
+    measurements: current?.measurements ?? "",
+    preferredCallTime: current?.preferred_call_time ?? "",
+    photos: allPhotos.rows.map((photo) => ({
+      filename: photo.filename,
+      contentType: photo.content_type,
+      bytes: photo.bytes,
+    })),
+    newPhotoCount: extras.photos.length,
+  });
+
+  return {
+    ok: true as const,
+    status: 200,
+    id,
+    emailSent: notification.sent,
+    emailError: notification.error,
+    photoCount: allPhotos.rows.length,
   };
 }
 
@@ -262,14 +411,18 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
     `Phone: ${input.phone.trim() || "(none)"}`,
     `Email: ${input.email.trim() || "(none)"}`,
     `Preferred contact: ${input.preferred}`,
+    `Preferred call time: ${input.preferredCallTime.trim() || "(none yet)"}`,
     `City: ${input.city.trim()}`,
     `ZIP: ${input.zip.trim() || "(none)"}`,
     `Services: ${input.project}`,
+    `Homeowner: ${input.homeowner || "(none)"}`,
+    `Payment preference: ${input.payment || "(none)"}`,
+    `Consent: ${input.consent ? "yes (Acadiana Bathrooms and Countertops)" : "no"}`,
     `Width: ${inches(input.width)}`,
     `Depth: ${inches(input.depth)}`,
     `Height: ${inches(input.height)}`,
     `Measurements / notes: ${input.measurements.trim() || "(none)"}`,
-    `Finish direction: ${input.finish}`,
+    `Finish direction: ${input.finish || "unsure"}`,
     `Features: ${input.features.trim() || "(none)"}`,
     `Timing: ${input.timing}`,
     `Budget note: ${input.budget.trim() || "(none)"}`,
@@ -293,6 +446,65 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
       })),
     },
     { idempotencyKey: `lead/${id}` },
+  );
+  if (error) return { sent: false, error: error.message };
+  return { sent: true as const, error: undefined };
+}
+
+async function notifyLeadExtras(
+  id: string,
+  input: {
+    name: string;
+    city: string;
+    phone: string;
+    email: string;
+    project: string;
+    width: string;
+    depth: string;
+    height: string;
+    measurements: string;
+    preferredCallTime: string;
+    photos: LeadPhoto[];
+    newPhotoCount: number;
+  },
+) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.RESEND_FROM;
+  const to = leadNotifyRecipients();
+  if (!apiKey) return { sent: false, error: "RESEND_API_KEY is not set." };
+  if (!from) return { sent: false, error: "RESEND_FROM is not set." };
+
+  const lines = [
+    `Lead extras update for ${id}`,
+    `Name: ${input.name}`,
+    `City: ${input.city}`,
+    `Phone: ${input.phone || "(none)"}`,
+    `Email: ${input.email || "(none)"}`,
+    `Services: ${input.project}`,
+    `Preferred call time: ${input.preferredCallTime || "(none)"}`,
+    `Width: ${inches(input.width)}`,
+    `Depth: ${inches(input.depth)}`,
+    `Height: ${inches(input.height)}`,
+    `Measurements / notes: ${input.measurements || "(none)"}`,
+    `Photos now on lead: ${input.photos.length} (just added ${input.newPhotoCount})`,
+  ];
+  const text = lines.join("\n");
+  const html = `<pre>${escapeHtml(text)}</pre>`;
+  const resend = new Resend(apiKey);
+  const { error } = await resend.emails.send(
+    {
+      from,
+      to,
+      subject: `${input.name.toUpperCase().startsWith("TEST") ? "[TEST] " : ""}Bathroom lead extras ${id.slice(0, 8)}: ${input.name}, ${input.city}${input.photos.length ? ` (${input.photos.length} photo${input.photos.length === 1 ? "" : "s"})` : ""}`,
+      text,
+      html,
+      attachments: input.photos.map((photo, index) => ({
+        filename: `${String(index + 1).padStart(2, "0")}-${photo.filename}`,
+        content: photo.bytes.toString("base64"),
+        contentType: photo.contentType,
+      })),
+    },
+    { idempotencyKey: `lead-extras/${id}/${Date.now()}` },
   );
   if (error) return { sent: false, error: error.message };
   return { sent: true as const, error: undefined };

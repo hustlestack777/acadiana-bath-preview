@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { CHAT_ANSWERS, replyTo } from "./chat";
 import { checkCity } from "./coverage";
-import { validateDetails, validateZip } from "./estimate";
+import { validateDetails, validateExtras, validateZip } from "./estimate";
 import { leadNotifyRecipients } from "./leads";
+import { projects } from "./copy";
 
 const pledge = ["guar", "antee"].join("");
 const quarriedPhrase = ["real", "stone"].join(" ");
@@ -40,7 +41,11 @@ test("zip is optional and is not a coverage decision", () => {
   assert.match(validateZip("abc"), /5-digit ZIP/);
 });
 
-test("the review requires a project and one contact path; size is optional", () => {
+test("tub-to-shower is listed first among projects", () => {
+  assert.equal(projects[0]?.id, "tub-to-shower");
+});
+
+test("the consult requires project, homeowner, payment, timing, contact, and consent", () => {
   const errors = validateDetails({
     project: "",
     notSure: false,
@@ -53,35 +58,24 @@ test("the review requires a project and one contact path; size is optional", () 
     email: "",
     preferred: "",
     timing: "",
+    homeowner: "",
+    payment: "",
+    consent: false,
   });
   assert.ok(errors.project);
-  assert.equal(errors.dimensions, undefined);
+  assert.ok(errors.homeowner);
+  assert.ok(errors.payment);
+  assert.ok(errors.timing);
   assert.ok(errors.name);
   assert.ok(errors.preferred);
-  assert.ok(errors.timing);
+  assert.ok(errors.consent);
+  assert.equal(errors.dimensions, undefined);
 
   const ok = validateDetails({
-    project: "showers",
+    project: "tub-to-shower,showers",
     notSure: true,
     width: "",
     depth: "",
-    finish: "unsure",
-    features: "A niche, if Justin confirms it is available.",
-    name: "Ada",
-    phone: "337-555-0100",
-    email: "",
-    preferred: "phone",
-    timing: "exploring",
-  });
-  assert.deepEqual(ok, {});
-
-  const sized = validateDetails({
-    project: "showers",
-    notSure: false,
-    width: "60",
-    depth: "32",
-    height: "abc",
-    measurements: "Tub to ceiling is about 8 ft",
     finish: "unsure",
     features: "",
     name: "Ada",
@@ -89,9 +83,20 @@ test("the review requires a project and one contact path; size is optional", () 
     email: "",
     preferred: "phone",
     timing: "exploring",
+    homeowner: "own",
+    payment: "not-sure",
+    consent: true,
+  });
+  assert.deepEqual(ok, {});
+
+  const sized = validateExtras({
+    width: "60",
+    depth: "32",
+    height: "abc",
+    measurements: "Tub to ceiling is about 8 ft",
   });
   assert.ok(sized.dimensions);
-  assert.equal(validateDetails({ ...{ project: "showers", notSure: false, width: "60", depth: "", height: "72", finish: "unsure", features: "", name: "Ada", phone: "337-555-0100", email: "", preferred: "phone", timing: "exploring" } }).dimensions, undefined);
+  assert.equal(validateExtras({ width: "60", depth: "", height: "72" }).dimensions, undefined);
 });
 
 test("assistant answers stay inside the published facts", () => {

@@ -45,6 +45,16 @@ export async function POST(request: Request) {
     photos.push({ filename, contentType, bytes });
   }
 
+  const preferredRaw = text(form, "preferred");
+  const phone = text(form, "phone");
+  const email = text(form, "email");
+  const preferred =
+    preferredRaw === "phone" || preferredRaw === "email"
+      ? preferredRaw
+      : phone.trim()
+        ? "phone"
+        : "email";
+
   const input = {
     sourcePage: text(form, "sourcePage") || "/estimate",
     city: text(form, "city"),
@@ -55,15 +65,19 @@ export async function POST(request: Request) {
     depth: text(form, "depth"),
     height: text(form, "height"),
     measurements: text(form, "measurements"),
-    finish: text(form, "finish"),
+    finish: text(form, "finish") || "unsure",
     features: text(form, "features"),
     name: text(form, "name"),
-    phone: text(form, "phone"),
-    email: text(form, "email"),
-    preferred: text(form, "preferred"),
+    phone,
+    email,
+    preferred,
     marketing: text(form, "marketing") === "true",
     timing: text(form, "timing"),
     budget: text(form, "budget"),
+    homeowner: text(form, "homeowner"),
+    payment: text(form, "payment"),
+    consent: text(form, "consent") === "true",
+    preferredCallTime: text(form, "preferredCallTime"),
     photos,
   };
   const { errors } = validateLead(input);

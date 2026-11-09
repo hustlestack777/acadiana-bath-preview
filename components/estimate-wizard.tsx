@@ -13,22 +13,25 @@ import { Textarea } from "@/components/ui/textarea";
 import { checkCity, SUPPORTED_TOWNS } from "@/lib/coverage";
 import {
   brand,
+  callTimeNote,
+  consentLabel,
   dimensionNote,
   hero,
-  featureNote,
-  finishes,
+  homeowners,
   lead,
+  paymentNote,
+  payments,
   photoNote,
   projectNote,
   projects,
   timings,
 } from "@/lib/copy";
-import { validateDetails, validateZip } from "@/lib/estimate";
+import { validateDetails, validateExtras, validateZip } from "@/lib/estimate";
 import { heroSlides } from "@/lib/images";
 import { cn } from "cn";
 
 type Photo = { id: string; name: string; url: string; file: File };
-type Step = "town" | "details" | "result";
+type Step = "town" | "project" | "qualify" | "contact" | "result";
 
 const fieldClass = "h-12 rounded-xl bg-card px-3 text-base md:text-base";
 const MAX_PHOTOS = 8;
@@ -44,7 +47,7 @@ const empty = {
   depth: "",
   height: "",
   measurements: "",
-  finish: "",
+  finish: "unsure",
   features: "",
   name: "",
   phone: "",
@@ -53,12 +56,20 @@ const empty = {
   marketing: false,
   timing: "",
   budget: "",
+  homeowner: "",
+  payment: "",
+  consent: false,
+  preferredCallTime: "",
 };
 
 export function EstimateWizard() {
   const [step, setStep] = useState<Step>("town");
   const [submitting, setSubmitting] = useState(false);
+  const [savingExtras, setSavingExtras] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [extrasError, setExtrasError] = useState("");
+  const [extrasSaved, setExtrasSaved] = useState(false);
+  const [leadId, setLeadId] = useState("");
   const [form, setForm] = useState(empty);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -75,28 +86,43 @@ export function EstimateWizard() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     window.setTimeout(() => {
-      // Town step: the City field. Details step: the first question.
-      const field = target.querySelector<HTMLElement>("#city") ?? target.querySelector<HTMLElement>("#project");
+      const field =
+        target.querySelector<HTMLElement>("#city") ??
+        target.querySelector<HTMLElement>("#project") ??
+        target.querySelector<HTMLElement>("#homeowner") ??
+        target.querySelector<HTMLElement>("#name");
       field?.focus({ preventScroll: true });
     }, reduce ? 0 : 450);
   }, []);
 
   useEffect(() => {
     if (window.location.hash === "#start") {
-      // Wait a frame so fonts and the banner have their final height.
       requestAnimationFrame(() => requestAnimationFrame(focusForm));
     }
     window.addEventListener(OPEN_FORM_EVENT, focusForm);
     return () => window.removeEventListener(OPEN_FORM_EVENT, focusForm);
   }, [focusForm]);
 
-  const finishLabel = finishes.find((item) => item.id === form.finish)?.label ?? "";
-  const projectLabel = projects.find((item) => item.id === form.project)?.label ?? "";
+  const projectLabel = useMemo(() => {
+    const selected = form.project.split(",").filter(Boolean);
+    return selected
+      .map((id) => projects.find((item) => item.id === id)?.label ?? id)
+      .join(", ");
+  }, [form.project]);
   const timingLabel = timings.find((item) => item.id === form.timing)?.label ?? "";
+  const homeownerLabel = homeowners.find((item) => item.id === form.homeowner)?.label ?? "";
+  const paymentLabel = payments.find((item) => item.id === form.payment)?.label ?? "";
   const errorList = useMemo(() => Object.entries(errors), [errors]);
 
   function patch(partial: Partial<typeof empty>) {
     setForm((current) => ({ ...current, ...partial }));
+  }
+
+  function go(next: Step) {
+    setStep(next);
+    setErrors({});
+    setSubmitError("");
+    requestAnimationFrame(() => requestAnimationFrame(focusForm));
   }
 
   function checkTown(event: FormEvent) {
@@ -112,7 +138,7 @@ export function EstimateWizard() {
     }
     if (coverage.status === "excluded") {
       setCoverageNote(
-        `${coverage.name} is outside the planned coverage. The I-10 corridor on this site stops at Baton Rouge. Prairieville and Gonzales are not included, so photos are not requested.`,
+        `${coverage.name} is outside the planned coverage. The I-10 corridor on this site stops at Baton Rouge. Prairieville and Gonzales are not included.`,
       );
       setErrors(next);
       return;
@@ -123,13 +149,34 @@ export function EstimateWizard() {
       return;
     }
     if (coverage.status !== "supported") return;
-    setErrors({});
     setCoverageNote(
-      `${coverage.name} is on the planned list. Justin still confirms capacity. There is no office listed in each town. Coverage was checked by city, not by ZIP.`,
+      `${coverage.name} is on the planned list. Justin still confirms capacity. Coverage was checked by city, not by ZIP.`,
     );
     patch({ town: coverage.name });
-    setStep("details");
-    requestAnimationFrame(() => requestAnimationFrame(focusForm));
+    go("project");
+  }
+
+  function checkProject(event: FormEvent) {
+    event.preventDefault();
+    const selected = form.project.split(",").filter(Boolean);
+    if (!selected.length) {
+      setErrors({ project: "Choose at least one project option." });
+      return;
+    }
+    go("qualify");
+  }
+
+  function checkQualify(event: FormEvent) {
+    event.preventDefault();
+    const next: Record<string, string> = {};
+    if (!form.homeowner) next.homeowner = "Tell us whether you own or rent.";
+    if (!form.timing) next.timing = "Choose a project timing.";
+    if (!form.payment) next.payment = "Choose a payment preference. Not sure yet is fine.";
+    if (Object.keys(next).length) {
+      setErrors(next);
+      return;
+    }
+    go("contact");
   }
 
   async function addFiles(list: FileList | File[]) {
@@ -176,44 +223,62 @@ export function EstimateWizard() {
     });
   }
 
-  async function submitDetails(event: FormEvent<HTMLFormElement>) {
+  async function submitContact(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const next = validateDetails(form);
-    setErrors(next);
-    if (Object.keys(next).length) {
-      const first = Object.keys(next)[0];
+    const preferred =
+      form.preferred === "phone" || form.preferred === "email"
+        ? form.preferred
+        : form.phone.trim()
+          ? "phone"
+          : "email";
+    const payload = { ...form, preferred, finish: form.finish || "unsure" };
+    const next = validateDetails(payload);
+    // Contact step only needs contact + consent fields; earlier steps already passed.
+    const contactErrors: Record<string, string> = {};
+    for (const key of ["name", "phone", "email", "preferred", "consent"] as const) {
+      if (next[key]) contactErrors[key] = next[key];
+    }
+    setErrors(contactErrors);
+    if (Object.keys(contactErrors).length) {
+      const first = Object.keys(contactErrors)[0];
       document.getElementById(first)?.focus();
       return;
     }
     setSubmitting(true);
     setSubmitError("");
-    const body = new FormData(event.currentTarget);
+    const body = new FormData();
     body.set("sourcePage", "/estimate");
     body.set("city", form.city);
     body.set("zip", form.zip);
     body.set("project", form.project);
     body.set("notSure", String(form.notSure));
-    body.set("width", form.width);
-    body.set("depth", form.depth);
-    body.set("height", form.height);
-    body.set("measurements", form.measurements);
-    body.set("finish", form.finish);
-    body.set("features", form.features);
+    body.set("width", "");
+    body.set("depth", "");
+    body.set("height", "");
+    body.set("measurements", "");
+    body.set("finish", "unsure");
+    body.set("features", "");
     body.set("name", form.name);
     body.set("phone", form.phone);
     body.set("email", form.email);
-    body.set("preferred", form.preferred);
-    body.set("marketing", String(form.marketing));
+    body.set("preferred", preferred);
+    body.set("marketing", "false");
     body.set("timing", form.timing);
-    body.set("budget", form.budget);
-    photos.forEach((photo) => body.append("photos", photo.file, photo.file.name));
+    body.set("budget", "");
+    body.set("homeowner", form.homeowner);
+    body.set("payment", form.payment);
+    body.set("consent", String(form.consent));
+    body.set("preferredCallTime", "");
+    body.set("company_fax", "");
     try {
       const response = await fetch("/api/leads", { method: "POST", body });
-      const data = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
-      if (!response.ok || !data?.ok) {
+      const data = (await response.json().catch(() => null)) as { ok?: boolean; error?: string; id?: string } | null;
+      if (!response.ok || !data?.ok || !data.id) {
         setSubmitError(data?.error || "We couldn't save your request. Nothing was confirmed.");
         return;
       }
+      setLeadId(data.id);
+      patch({ preferred });
       setStep("result");
       requestAnimationFrame(() => {
         document.getElementById("result-title")?.focus();
@@ -225,6 +290,56 @@ export function EstimateWizard() {
     }
   }
 
+  async function submitExtras(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!leadId) {
+      setExtrasError("Your request id is missing. Refresh and start again if needed.");
+      return;
+    }
+    const fieldErrors = validateExtras({
+      width: form.width,
+      depth: form.depth,
+      height: form.height,
+      measurements: form.measurements,
+      preferredCallTime: form.preferredCallTime,
+    });
+    setErrors(fieldErrors);
+    if (Object.keys(fieldErrors).length) return;
+    if (
+      !form.width.trim() &&
+      !form.depth.trim() &&
+      !form.height.trim() &&
+      !form.measurements.trim() &&
+      !form.preferredCallTime.trim() &&
+      !photos.length
+    ) {
+      setExtrasError("Add a preferred call time, measurements, or photos first.");
+      return;
+    }
+    setSavingExtras(true);
+    setExtrasError("");
+    const body = new FormData();
+    body.set("width", form.width);
+    body.set("depth", form.depth);
+    body.set("height", form.height);
+    body.set("measurements", form.measurements);
+    body.set("preferredCallTime", form.preferredCallTime);
+    photos.forEach((photo) => body.append("photos", photo.file, photo.file.name));
+    try {
+      const response = await fetch(`/api/leads/${leadId}`, { method: "PATCH", body });
+      const data = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!response.ok || !data?.ok) {
+        setExtrasError(data?.error || "We couldn't save those extras. Your original request is still saved.");
+        return;
+      }
+      setExtrasSaved(true);
+    } catch {
+      setExtrasError("We couldn't reach the server. Your original request is still saved.");
+    } finally {
+      setSavingExtras(false);
+    }
+  }
+
   function reset() {
     photos.forEach((photo) => URL.revokeObjectURL(photo.url));
     setPhotos([]);
@@ -232,6 +347,10 @@ export function EstimateWizard() {
     setErrors({});
     setPhotoMessage("");
     setCoverageNote("");
+    setLeadId("");
+    setExtrasSaved(false);
+    setExtrasError("");
+    setSubmitError("");
     setStep("town");
   }
 
@@ -254,383 +373,428 @@ export function EstimateWizard() {
         </div>
       </section>
       <div id="start" className="mx-auto w-full max-w-3xl px-5 py-8 md:py-12">
-      <Stepper step={step} />
+        <Stepper step={step} />
 
-      {step === "town" ? (
-        <form className="mt-8 grid gap-5" onSubmit={checkTown} noValidate>
-          <p className="text-sm font-semibold text-muted-foreground">1. City first</p>
-          <Field id="city" label="City" error={errors.city} hint="Enter one city. The planned list is checked before any photos.">
-            <Input
-              id="city"
-              name="city"
-              list="planned-towns"
-              autoComplete="address-level2"
-              value={form.city}
-              onChange={(event) => patch({ city: event.target.value })}
-              className={fieldClass}
-              aria-invalid={Boolean(errors.city)}
-              aria-describedby={errors.city ? "city-error" : "city-hint"}
-            />
-            <datalist id="planned-towns">
-              {SUPPORTED_TOWNS.map((town) => (
-                <option key={town} value={town} />
-              ))}
-            </datalist>
-          </Field>
-          <Field
-            id="zip"
-            label="ZIP code (optional)"
-            error={errors.zip}
-            hint="A ZIP is not used to approve or decline coverage. The city decides."
-          >
-            <Input
+        {step === "town" ? (
+          <form className="mt-8 grid gap-5" onSubmit={checkTown} noValidate>
+            <p className="text-sm font-semibold text-muted-foreground">1. ZIP / town</p>
+            <Field id="city" label="City / town" error={errors.city} hint="Enter one city. The planned list is checked before you continue.">
+              <Input
+                id="city"
+                name="city"
+                list="planned-towns"
+                autoComplete="address-level2"
+                value={form.city}
+                onChange={(event) => patch({ city: event.target.value })}
+                className={fieldClass}
+                aria-invalid={Boolean(errors.city)}
+                aria-describedby={errors.city ? "city-error" : "city-hint"}
+              />
+              <datalist id="planned-towns">
+                {SUPPORTED_TOWNS.map((town) => (
+                  <option key={town} value={town} />
+                ))}
+              </datalist>
+            </Field>
+            <Field
               id="zip"
-              name="zip"
-              inputMode="numeric"
-              autoComplete="postal-code"
-              value={form.zip}
-              onChange={(event) => patch({ zip: event.target.value })}
-              className={fieldClass}
-              aria-invalid={Boolean(errors.zip)}
-            />
-          </Field>
-          {coverageNote ? (
-            <p className="rounded-2xl border border-destructive/40 bg-card px-4 py-3 text-sm leading-6" role="alert" data-testid="coverage-message">
+              label="ZIP code (optional)"
+              error={errors.zip}
+              hint="A ZIP is not used to approve or decline coverage. The city decides."
+            >
+              <Input
+                id="zip"
+                name="zip"
+                inputMode="numeric"
+                autoComplete="postal-code"
+                value={form.zip}
+                onChange={(event) => patch({ zip: event.target.value })}
+                className={fieldClass}
+                aria-invalid={Boolean(errors.zip)}
+              />
+            </Field>
+            {coverageNote ? (
+              <p className="rounded-2xl border border-destructive/40 bg-card px-4 py-3 text-sm leading-6" role="alert" data-testid="coverage-message">
+                {coverageNote}
+              </p>
+            ) : null}
+            <Button type="submit" className="h-12 rounded-xl text-base">
+              Continue
+            </Button>
+          </form>
+        ) : null}
+
+        {step === "project" ? (
+          <form className="mt-8 grid gap-6" onSubmit={checkProject} noValidate>
+            <p className="rounded-2xl bg-tint-lagoon px-4 py-3 text-sm leading-6" data-testid="coverage-message">
               {coverageNote}
             </p>
-          ) : null}
-          <Button type="submit" className="h-12 rounded-xl text-base">
-            Check my town
-          </Button>
-        </form>
-      ) : null}
-
-      {step === "details" ? (
-        <form className="relative mt-8 grid gap-8" onSubmit={submitDetails} noValidate>
-          <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
-            <label htmlFor="company_fax">Fax</label>
-            <input id="company_fax" name="company_fax" tabIndex={-1} autoComplete="off" />
-          </div>
-          <p className="rounded-2xl bg-tint-lagoon px-4 py-3 text-sm leading-6" data-testid="coverage-message">
-            {coverageNote}
-          </p>
-          <button type="button" className="w-fit text-sm underline underline-offset-4" onClick={() => setStep("town")}>
-            Change town
-          </button>
-          {errorList.length ? (
-            <div className="rounded-2xl border border-destructive/40 bg-card px-4 py-3" role="alert">
-              <p className="font-medium">Check the highlighted fields.</p>
-              <ul className="mt-2 list-disc pl-5 text-sm">
-                {errorList.map(([key, message]) => (
-                  <li key={key}>{message}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
-          <fieldset id="project" tabIndex={-1} className="grid gap-3 outline-none">
-            <legend className="text-xl font-heading">2. What would you like to change?</legend>
-            <p className="text-sm leading-6 text-muted-foreground">{projectNote}</p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {projects.map((item) => {
-                const selected = form.project.split(",").filter(Boolean);
-                const checked = selected.includes(item.id);
-                return (
-                  <label
-                    key={item.id}
-                    className={cn(
-                      "flex cursor-pointer gap-3 rounded-2xl border bg-card p-4",
-                      checked ? "border-primary ring-2 ring-primary/30" : "border-border",
-                    )}
-                  >
-                    <Checkbox
-                      id={item.id}
-                      checked={checked}
-                      onCheckedChange={(value) => {
-                        const next = value
-                          ? [...selected, item.id]
-                          : selected.filter((entry) => entry !== item.id);
-                        patch({ project: next.join(",") });
-                      }}
-                      className="mt-1 size-5"
-                    />
-                    <span>
-                      <span className="block font-medium">{item.label}</span>
-                      <span className="block text-sm text-muted-foreground">{item.detail}</span>
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-            {errors.project ? <p className="text-sm text-destructive" role="alert">{errors.project}</p> : null}
-          </fieldset>
-
-          <fieldset className="grid gap-3 outline-none" id="dimensions" tabIndex={-1}>
-            <legend className="text-xl font-heading">3. Size of the shower or tub (optional)</legend>
-            <p id="dimensions-hint" className="text-sm leading-6 text-muted-foreground">{dimensionNote}</p>
-            {/* TODO: AI dimension estimate from the uploaded photos (using known fixture sizes). Not built yet. */}
-            <div className="grid grid-cols-3 gap-3">
-              {(
-                [
-                  ["width", "Width (in)"],
-                  ["depth", "Depth (in)"],
-                  ["height", "Height (in)"],
-                ] as const
-              ).map(([key, label]) => (
-                <Field key={key} id={key} label={label}>
-                  <Input
-                    id={key}
-                    inputMode="decimal"
-                    placeholder={key === "width" ? "60" : key === "depth" ? "32" : "72"}
-                    value={form[key]}
-                    onChange={(event) => patch({ [key]: event.target.value })}
-                    className={fieldClass}
-                    aria-describedby="dimensions-hint"
-                    aria-invalid={Boolean(errors.dimensions)}
-                  />
-                </Field>
-              ))}
-            </div>
-            {errors.dimensions ? (
-              <p id="dimensions-error" className="text-sm text-destructive" role="alert">
-                {errors.dimensions}
-              </p>
-            ) : null}
-            <Field id="measurements" label="Measurements / notes" error={errors.measurements}>
-              <Textarea
-                id="measurements"
-                value={form.measurements}
-                placeholder="Anything you measured or noticed: tub to ceiling, window in the shower, door width…"
-                onChange={(event) => patch({ measurements: event.target.value })}
-                className="min-h-24 text-base md:text-base"
-              />
-            </Field>
-          </fieldset>
-
-          <fieldset id="finish" tabIndex={-1} className="grid gap-3 outline-none">
-            <legend className="text-xl font-heading">4. Finish direction and features</legend>
-            <RadioGroup
-              value={form.finish}
-              onValueChange={(value) => patch({ finish: value })}
-              aria-label="Finish direction"
-              className="grid gap-2"
-            >
-              {finishes.map((item) => (
-                <label key={item.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-border bg-card px-3">
-                  <RadioGroupItem value={item.id} id={`finish-${item.id}`} />
-                  {item.label}
-                </label>
-              ))}
-            </RadioGroup>
-            {errors.finish ? <p className="text-sm text-destructive" role="alert">{errors.finish}</p> : null}
-            <Field id="features" label="Features you want to talk about" hint={featureNote} hintFirst error={errors.features}>
-              <Textarea
-                id="features"
-                value={form.features}
-                onChange={(event) => patch({ features: event.target.value })}
-                className="min-h-28 text-base md:text-base"
-              />
-            </Field>
-          </fieldset>
-
-          <fieldset className="grid gap-3" id="photos-field">
-            <legend className="text-xl font-heading">5. Photos, if you have them</legend>
-            <p className="rounded-2xl bg-tint-clay px-4 py-3 text-sm leading-6">{photoNote}</p>
-            <div
-              className="rounded-2xl border border-dashed border-input bg-card px-4 py-6 text-center"
-              onDragOver={(event) => event.preventDefault()}
-              onDrop={(event) => {
-                event.preventDefault();
-                if (event.dataTransfer.files.length) void addFiles(event.dataTransfer.files);
-              }}
-            >
-              <p className="text-sm text-muted-foreground" aria-live="polite">
-                {processing
-                  ? "Preparing photos…"
-                  : photos.length
-                    ? `${photos.length} of ${MAX_PHOTOS} photos added.`
-                    : "No photos yet. Photos are optional."}
-              </p>
-              <div className="mt-3 flex flex-col justify-center gap-2 sm:flex-row">
-                <Button
-                  type="button"
-                  className="h-12 rounded-xl"
-                  disabled={processing || photos.length >= MAX_PHOTOS}
-                  onClick={() => cameraRef.current?.click()}
-                >
-                  Take a photo
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-12 rounded-xl"
-                  disabled={processing || photos.length >= MAX_PHOTOS}
-                  onClick={() => fileRef.current?.click()}
-                >
-                  Choose from library
-                </Button>
-              </div>
-              <input
-                ref={cameraRef}
-                id="photos-camera"
-                className="sr-only"
-                type="file"
-                accept="image/*"
-                capture="environment"
-                tabIndex={-1}
-                aria-hidden="true"
-                onChange={(event) => {
-                  if (event.target.files) void addFiles(event.target.files);
-                  event.target.value = "";
-                }}
-              />
-              <input
-                ref={fileRef}
-                id="photos"
-                className="sr-only"
-                type="file"
-                accept="image/*"
-                multiple
-                tabIndex={-1}
-                aria-hidden="true"
-                data-testid="photo-input"
-                onChange={(event) => {
-                  if (event.target.files) void addFiles(event.target.files);
-                  event.target.value = "";
-                }}
-              />
-            </div>
-            {photoMessage ? <p className="text-sm text-destructive" role="alert">{photoMessage}</p> : null}
-            {errors.photos ? <p className="text-sm text-destructive" role="alert">{errors.photos}</p> : null}
-            {photos.length ? (
-              <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4" data-testid="photo-previews">
-                {photos.map((photo, index) => (
-                  <li key={photo.id} className="relative overflow-hidden rounded-xl border border-border bg-card">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={photo.url} alt={`Photo ${index + 1} you added`} className="aspect-square w-full object-cover" />
-                    <button
-                      type="button"
-                      className="absolute right-1 top-1 inline-flex size-8 items-center justify-center rounded-full bg-black/65 text-sm text-white"
-                      onClick={() => removePhoto(photo.id)}
-                      aria-label={`Remove photo ${index + 1}`}
+            <button type="button" className="w-fit text-sm underline underline-offset-4" onClick={() => go("town")}>
+              Change town
+            </button>
+            <fieldset id="project" tabIndex={-1} className="grid gap-3 outline-none">
+              <legend className="text-xl font-heading">2. What would you like to change?</legend>
+              <p className="text-sm leading-6 text-muted-foreground">{projectNote}</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {projects.map((item) => {
+                  const selected = form.project.split(",").filter(Boolean);
+                  const checked = selected.includes(item.id);
+                  return (
+                    <label
+                      key={item.id}
+                      className={cn(
+                        "flex cursor-pointer gap-3 rounded-2xl border bg-card p-4",
+                        checked ? "border-primary ring-2 ring-primary/30" : "border-border",
+                        item.id === "tub-to-shower" ? "sm:col-span-2" : "",
+                      )}
                     >
-                      ✕
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </fieldset>
+                      <Checkbox
+                        id={item.id}
+                        checked={checked}
+                        onCheckedChange={(value) => {
+                          const next = value
+                            ? [...selected, item.id]
+                            : selected.filter((entry) => entry !== item.id);
+                          patch({ project: next.join(",") });
+                        }}
+                        className="mt-1 size-5"
+                      />
+                      <span>
+                        <span className="block font-medium">{item.label}</span>
+                        <span className="block text-sm text-muted-foreground">{item.detail}</span>
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+              {errors.project ? <p className="text-sm text-destructive" role="alert">{errors.project}</p> : null}
+            </fieldset>
+            <Button type="submit" className="h-12 rounded-xl text-base">
+              Continue
+            </Button>
+          </form>
+        ) : null}
 
-          <fieldset className="grid gap-4">
-            <legend className="text-xl font-heading">6. How can Justin reach you later?</legend>
-            <Field id="name" label="Name" error={errors.name}>
-              <Input id="name" autoComplete="name" value={form.name} onChange={(event) => patch({ name: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.name)} />
-            </Field>
-            <Field id="phone" label="Phone" error={errors.phone} hint="Phone or email is enough. Add the one you prefer below.">
-              <Input id="phone" type="tel" autoComplete="tel" value={form.phone} onChange={(event) => patch({ phone: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.phone)} />
-            </Field>
-            <Field id="email" label="Email" error={errors.email}>
-              <Input id="email" type="email" autoComplete="email" value={form.email} onChange={(event) => patch({ email: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.email)} />
-            </Field>
-            <div id="preferred" tabIndex={-1} className="grid gap-2 outline-none">
-              <p className="text-sm font-medium">Preferred contact for this project</p>
-              <RadioGroup value={form.preferred} onValueChange={(value) => patch({ preferred: value })} className="grid gap-2 sm:grid-cols-2">
-                {[
-                  ["phone", "Phone"],
-                  ["email", "Email"],
-                ].map(([value, label]) => (
-                  <label key={value} className="flex min-h-11 items-center gap-3 rounded-xl border border-border bg-card px-3">
-                    <RadioGroupItem value={value} id={`preferred-${value}`} />
-                    {label}
+        {step === "qualify" ? (
+          <form className="mt-8 grid gap-8" onSubmit={checkQualify} noValidate>
+            <button type="button" className="w-fit text-sm underline underline-offset-4" onClick={() => go("project")}>
+              Back
+            </button>
+            <fieldset id="homeowner" tabIndex={-1} className="grid gap-3 outline-none">
+              <legend className="text-xl font-heading">3. Home, timing, and payment</legend>
+              <p className="text-sm font-medium">Do you own this home?</p>
+              <RadioGroup
+                value={form.homeowner}
+                onValueChange={(value) => patch({ homeowner: value })}
+                aria-label="Homeowner status"
+                className="grid gap-2 sm:grid-cols-2"
+              >
+                {homeowners.map((item) => (
+                  <label key={item.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-border bg-card px-3">
+                    <RadioGroupItem value={item.id} id={`homeowner-${item.id}`} />
+                    {item.label}
                   </label>
                 ))}
               </RadioGroup>
-              {errors.preferred ? <p className="text-sm text-destructive" role="alert">{errors.preferred}</p> : null}
-            </div>
-            <div className="rounded-2xl border border-dashed border-border p-4">
-              <p className="text-sm font-semibold">Optional marketing</p>
-              <p className="mt-1 text-sm text-muted-foreground">Separate from the project review request. Leave this unchecked if you only want the review.</p>
-              <label htmlFor="marketing" className="mt-3 flex items-start gap-3 text-sm leading-6">
-                <Checkbox
-                  id="marketing"
-                  checked={form.marketing}
-                  onCheckedChange={(checked) => patch({ marketing: checked })}
-                  className="mt-1 size-5"
-                />
-                You may also send me occasional project ideas.
-              </label>
-            </div>
-          </fieldset>
+              {errors.homeowner ? <p className="text-sm text-destructive" role="alert">{errors.homeowner}</p> : null}
+            </fieldset>
 
-          <fieldset id="timing" tabIndex={-1} className="grid gap-3 outline-none">
-            <legend className="text-xl font-heading">7. Timing and budget</legend>
-            <RadioGroup value={form.timing} onValueChange={(value) => patch({ timing: value })} aria-label="Project timing" className="grid gap-2">
-              {timings.map((item) => (
-                <label key={item.id} className="flex min-h-11 items-center gap-3 rounded-xl border border-border bg-card px-3">
-                  <RadioGroupItem value={item.id} id={`timing-${item.id}`} />
-                  {item.label}
+            <fieldset id="timing" tabIndex={-1} className="grid gap-3 outline-none">
+              <p className="text-sm font-medium">When are you hoping to move forward?</p>
+              <RadioGroup value={form.timing} onValueChange={(value) => patch({ timing: value })} aria-label="Project timing" className="grid gap-2">
+                {timings.map((item) => (
+                  <label key={item.id} className="flex min-h-11 items-center gap-3 rounded-xl border border-border bg-card px-3">
+                    <RadioGroupItem value={item.id} id={`timing-${item.id}`} />
+                    {item.label}
+                  </label>
+                ))}
+              </RadioGroup>
+              {errors.timing ? <p className="text-sm text-destructive" role="alert">{errors.timing}</p> : null}
+            </fieldset>
+
+            <fieldset id="payment" tabIndex={-1} className="grid gap-3 outline-none">
+              <p className="text-sm font-medium">Payment preference</p>
+              <p className="text-sm leading-6 text-muted-foreground">{paymentNote}</p>
+              <RadioGroup value={form.payment} onValueChange={(value) => patch({ payment: value })} aria-label="Payment preference" className="grid gap-2">
+                {payments.map((item) => (
+                  <label key={item.id} className="flex min-h-11 items-center gap-3 rounded-xl border border-border bg-card px-3">
+                    <RadioGroupItem value={item.id} id={`payment-${item.id}`} />
+                    {item.label}
+                  </label>
+                ))}
+              </RadioGroup>
+              {errors.payment ? <p className="text-sm text-destructive" role="alert">{errors.payment}</p> : null}
+            </fieldset>
+
+            <Button type="submit" className="h-12 rounded-xl text-base">
+              Continue
+            </Button>
+          </form>
+        ) : null}
+
+        {step === "contact" ? (
+          <form className="relative mt-8 grid gap-6" onSubmit={submitContact} noValidate>
+            <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+              <label htmlFor="company_fax">Fax</label>
+              <input id="company_fax" name="company_fax" tabIndex={-1} autoComplete="off" />
+            </div>
+            <button type="button" className="w-fit text-sm underline underline-offset-4" onClick={() => go("qualify")}>
+              Back
+            </button>
+            {errorList.length ? (
+              <div className="rounded-2xl border border-destructive/40 bg-card px-4 py-3" role="alert">
+                <p className="font-medium">Check the highlighted fields.</p>
+                <ul className="mt-2 list-disc pl-5 text-sm">
+                  {errorList.map(([key, message]) => (
+                    <li key={key}>{message}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            <fieldset className="grid gap-4">
+              <legend className="text-xl font-heading">4. How can Justin reach you?</legend>
+              <Field id="name" label="Name" error={errors.name}>
+                <Input id="name" autoComplete="name" value={form.name} onChange={(event) => patch({ name: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.name)} />
+              </Field>
+              <Field id="phone" label="Phone" error={errors.phone} hint="Phone or email is enough. Add the one you prefer below.">
+                <Input id="phone" type="tel" autoComplete="tel" value={form.phone} onChange={(event) => patch({ phone: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.phone)} />
+              </Field>
+              <Field id="email" label="Email" error={errors.email}>
+                <Input id="email" type="email" autoComplete="email" value={form.email} onChange={(event) => patch({ email: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.email)} />
+              </Field>
+              <div id="preferred" tabIndex={-1} className="grid gap-2 outline-none">
+                <p className="text-sm font-medium">Preferred contact for this project</p>
+                <RadioGroup value={form.preferred} onValueChange={(value) => patch({ preferred: value })} className="grid gap-2 sm:grid-cols-2">
+                  {[
+                    ["phone", "Phone"],
+                    ["email", "Email"],
+                  ].map(([value, label]) => (
+                    <label key={value} className="flex min-h-11 items-center gap-3 rounded-xl border border-border bg-card px-3">
+                      <RadioGroupItem value={value} id={`preferred-${value}`} />
+                      {label}
+                    </label>
+                  ))}
+                </RadioGroup>
+                {errors.preferred ? <p className="text-sm text-destructive" role="alert">{errors.preferred}</p> : null}
+              </div>
+              <div id="consent" tabIndex={-1} className="rounded-2xl border border-border bg-card p-4 outline-none">
+                <label htmlFor="consent-check" className="flex items-start gap-3 text-sm leading-6">
+                  <Checkbox
+                    id="consent-check"
+                    checked={form.consent}
+                    onCheckedChange={(checked) => patch({ consent: Boolean(checked) })}
+                    className="mt-1 size-5"
+                    aria-invalid={Boolean(errors.consent)}
+                  />
+                  <span>{consentLabel}</span>
                 </label>
-              ))}
-            </RadioGroup>
-            {errors.timing ? <p className="text-sm text-destructive" role="alert">{errors.timing}</p> : null}
-            <Field id="budget" label="Budget note (optional)" hint="No payment is collected. A budget note stays in this browser and is not shown back as a price.">
-              <Input id="budget" value={form.budget} onChange={(event) => patch({ budget: event.target.value })} className={fieldClass} />
-            </Field>
-          </fieldset>
-
-          {submitError ? (
-            <p className="rounded-2xl border border-destructive/40 bg-card px-4 py-3 text-sm leading-6" role="alert">
-              {submitError}
-            </p>
-          ) : null}
-          <Button type="submit" className="h-12 rounded-xl text-base" disabled={submitting}>
-            {submitting ? "Saving your request…" : lead.submit}
-          </Button>
-        </form>
-      ) : null}
-
-      {step === "result" ? (
-        <section className="mt-2 grid gap-5" aria-live="polite">
-          <div className="flex size-14 items-center justify-center rounded-full bg-primary text-2xl text-primary-foreground" aria-hidden="true">
-            ✓
-          </div>
-          <h2 id="result-title" tabIndex={-1} className="text-4xl outline-none md:text-5xl">
-            {lead.savedTitle}
-          </h2>
-          <p className="text-lg leading-8">{lead.thanks}</p>
-          <p className="leading-7">No payment was collected. Final pricing follows scope and measurement confirmation.</p>
-          <dl className="grid gap-3 rounded-2xl border border-border bg-card p-5 text-sm leading-6">
-            <Row label="Town" value={form.town} />
-            <Row label="Project" value={projectLabel} />
-            <Row
-              label="Size"
-              value={
-                [form.width && `${form.width} in wide`, form.depth && `${form.depth} in deep`, form.height && `${form.height} in high`]
-                  .filter(Boolean)
-                  .join(", ") || "Not given. Justin measures in person."
-              }
-            />
-            <Row label="Measurements / notes" value={form.measurements.trim() || "None added"} />
-            <Row label="Finish direction" value={finishLabel} />
-            <Row label="Features" value={form.features.trim() || "None added"} />
-            <Row label="Photos" value={`${photos.length} saved with this request`} />
-            <Row label="Name" value={form.name} />
-            <Row label="Preferred contact" value={form.preferred === "phone" ? "Phone" : "Email"} />
-            <Row label="Timing" value={timingLabel} />
-            <Row label="Marketing opt-in" value={form.marketing ? "Yes, separate from this review" : "No"} />
-            <Row label="Budget note" value="Held in this browser and not displayed." />
-          </dl>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Button type="button" variant="outline" className="h-12 rounded-xl" onClick={() => setStep("details")}>
-              Edit details
+                {errors.consent ? <p className="mt-2 text-sm text-destructive" role="alert">{errors.consent}</p> : null}
+              </div>
+            </fieldset>
+            {submitError ? (
+              <p className="rounded-2xl border border-destructive/40 bg-card px-4 py-3 text-sm leading-6" role="alert">
+                {submitError}
+              </p>
+            ) : null}
+            <Button type="submit" className="h-12 rounded-xl text-base" disabled={submitting}>
+              {submitting ? "Saving your request…" : lead.submit}
             </Button>
-            <Button type="button" className="h-12 rounded-xl" onClick={reset}>
-              Start over
-            </Button>
-          </div>
-        </section>
-      ) : null}
+          </form>
+        ) : null}
+
+        {step === "result" ? (
+          <section className="mt-2 grid gap-5" aria-live="polite">
+            <div className="flex size-14 items-center justify-center rounded-full bg-primary text-2xl text-primary-foreground" aria-hidden="true">
+              ✓
+            </div>
+            <h2 id="result-title" tabIndex={-1} className="text-4xl outline-none md:text-5xl">
+              {lead.savedTitle}
+            </h2>
+            <p className="text-lg leading-8">{lead.thanks}</p>
+            <p className="leading-7">No payment was collected. Final pricing follows scope and measurement confirmation.</p>
+            <dl className="grid gap-3 rounded-2xl border border-border bg-card p-5 text-sm leading-6">
+              <Row label="Town" value={form.town} />
+              <Row label="ZIP" value={form.zip.trim() || "Not given"} />
+              <Row label="Project" value={projectLabel} />
+              <Row label="Home" value={homeownerLabel} />
+              <Row label="Timing" value={timingLabel} />
+              <Row label="Payment" value={paymentLabel} />
+              <Row label="Name" value={form.name} />
+              <Row label="Preferred contact" value={form.preferred === "phone" ? "Phone" : "Email"} />
+            </dl>
+
+            <div className="rounded-3xl border border-border bg-card p-5 md:p-6">
+              <h3 className="text-2xl font-heading">{lead.extrasTitle}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{lead.extrasBody}</p>
+              {extrasSaved ? (
+                <p className="mt-4 rounded-2xl bg-tint-lagoon px-4 py-3 text-sm leading-6" role="status">
+                  {lead.extrasSaved}
+                  {form.preferredCallTime.trim() ? ` Preferred call time: ${form.preferredCallTime.trim()}.` : ""}
+                  {photos.length ? ` ${photos.length} photo${photos.length === 1 ? "" : "s"} attached.` : ""}
+                </p>
+              ) : (
+                <form className="mt-5 grid gap-6" onSubmit={submitExtras} noValidate>
+                  <Field id="preferredCallTime" label="Pick a good time to call" hint={callTimeNote} error={errors.preferredCallTime}>
+                    <Input
+                      id="preferredCallTime"
+                      value={form.preferredCallTime}
+                      placeholder="Weekday mornings, after 5 PM, Saturday…"
+                      onChange={(event) => patch({ preferredCallTime: event.target.value })}
+                      className={fieldClass}
+                    />
+                  </Field>
+
+                  <fieldset className="grid gap-3 outline-none" id="dimensions" tabIndex={-1}>
+                    <legend className="text-lg font-heading">Rough size (optional)</legend>
+                    <p id="dimensions-hint" className="text-sm leading-6 text-muted-foreground">{dimensionNote}</p>
+                    <div className="grid grid-cols-3 gap-3">
+                      {(
+                        [
+                          ["width", "Width (in)"],
+                          ["depth", "Depth (in)"],
+                          ["height", "Height (in)"],
+                        ] as const
+                      ).map(([key, label]) => (
+                        <Field key={key} id={key} label={label}>
+                          <Input
+                            id={key}
+                            inputMode="decimal"
+                            placeholder={key === "width" ? "60" : key === "depth" ? "32" : "72"}
+                            value={form[key]}
+                            onChange={(event) => patch({ [key]: event.target.value })}
+                            className={fieldClass}
+                            aria-describedby="dimensions-hint"
+                            aria-invalid={Boolean(errors.dimensions)}
+                          />
+                        </Field>
+                      ))}
+                    </div>
+                    {errors.dimensions ? (
+                      <p id="dimensions-error" className="text-sm text-destructive" role="alert">
+                        {errors.dimensions}
+                      </p>
+                    ) : null}
+                    <Field id="measurements" label="Notes" error={errors.measurements}>
+                      <Textarea
+                        id="measurements"
+                        value={form.measurements}
+                        placeholder="Anything useful: tub to ceiling, window in the shower, door width…"
+                        onChange={(event) => patch({ measurements: event.target.value })}
+                        className="min-h-24 text-base md:text-base"
+                      />
+                    </Field>
+                  </fieldset>
+
+                  <fieldset className="grid gap-3" id="photos-field">
+                    <legend className="text-lg font-heading">Photos (optional)</legend>
+                    <p className="rounded-2xl bg-tint-clay px-4 py-3 text-sm leading-6">{photoNote}</p>
+                    <div
+                      className="rounded-2xl border border-dashed border-input bg-background px-4 py-6 text-center"
+                      onDragOver={(event) => event.preventDefault()}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        if (event.dataTransfer.files.length) void addFiles(event.dataTransfer.files);
+                      }}
+                    >
+                      <p className="text-sm text-muted-foreground" aria-live="polite">
+                        {processing
+                          ? "Preparing photos…"
+                          : photos.length
+                            ? `${photos.length} of ${MAX_PHOTOS} photos added.`
+                            : "No photos yet. Photos are optional."}
+                      </p>
+                      <div className="mt-3 flex flex-col justify-center gap-2 sm:flex-row">
+                        <Button
+                          type="button"
+                          className="h-12 rounded-xl"
+                          disabled={processing || photos.length >= MAX_PHOTOS}
+                          onClick={() => cameraRef.current?.click()}
+                        >
+                          Take a photo
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="h-12 rounded-xl"
+                          disabled={processing || photos.length >= MAX_PHOTOS}
+                          onClick={() => fileRef.current?.click()}
+                        >
+                          Choose from library
+                        </Button>
+                      </div>
+                      <input
+                        ref={cameraRef}
+                        id="photos-camera"
+                        className="sr-only"
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        tabIndex={-1}
+                        aria-hidden="true"
+                        onChange={(event) => {
+                          if (event.target.files) void addFiles(event.target.files);
+                          event.target.value = "";
+                        }}
+                      />
+                      <input
+                        ref={fileRef}
+                        id="photos"
+                        className="sr-only"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        tabIndex={-1}
+                        aria-hidden="true"
+                        data-testid="photo-input"
+                        onChange={(event) => {
+                          if (event.target.files) void addFiles(event.target.files);
+                          event.target.value = "";
+                        }}
+                      />
+                    </div>
+                    {photoMessage ? <p className="text-sm text-destructive" role="alert">{photoMessage}</p> : null}
+                    {photos.length ? (
+                      <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4" data-testid="photo-previews">
+                        {photos.map((photo, index) => (
+                          <li key={photo.id} className="relative overflow-hidden rounded-xl border border-border bg-background">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={photo.url} alt={`Photo ${index + 1} you added`} className="aspect-square w-full object-cover" />
+                            <button
+                              type="button"
+                              className="absolute right-1 top-1 inline-flex size-8 items-center justify-center rounded-full bg-black/65 text-sm text-white"
+                              onClick={() => removePhoto(photo.id)}
+                              aria-label={`Remove photo ${index + 1}`}
+                            >
+                              ✕
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </fieldset>
+
+                  {extrasError ? (
+                    <p className="rounded-2xl border border-destructive/40 bg-background px-4 py-3 text-sm leading-6" role="alert">
+                      {extrasError}
+                    </p>
+                  ) : null}
+                  <Button type="submit" className="h-12 rounded-xl text-base" disabled={savingExtras}>
+                    {savingExtras ? "Saving extras…" : lead.extrasSubmit}
+                  </Button>
+                </form>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button type="button" className="h-12 rounded-xl" onClick={reset}>
+                Start over
+              </Button>
+              <a href={brand.phoneHref} className="inline-flex h-12 items-center justify-center rounded-xl border border-border bg-background px-4 text-sm font-medium hover:bg-muted">
+                Call {brand.phone}
+              </a>
+            </div>
+          </section>
+        ) : null}
       </div>
     </main>
   );
@@ -638,18 +802,19 @@ export function EstimateWizard() {
 
 function Stepper({ step }: { step: Step }) {
   const items = [
-    ["town", "City"],
-    ["details", "Details"],
-    ["result", "Saved"],
+    ["town", "Town"],
+    ["project", "Project"],
+    ["qualify", "Details"],
+    ["contact", "Contact"],
   ] as const;
-  const order = { town: 0, details: 1, result: 2 } as const;
-  const current = order[step];
+  const order = { town: 0, project: 1, qualify: 2, contact: 3, result: 4 } as const;
+  const current = Math.min(order[step], 3);
   return (
-    <ol className="grid grid-cols-3 gap-3" aria-label="Progress">
+    <ol className="grid grid-cols-4 gap-2" aria-label="Progress">
       {items.map(([id, label], index) => (
-        <li key={id} aria-current={index === current ? "step" : undefined}>
-          <div className={cn("h-1 rounded-full", index <= current ? "bg-primary" : "bg-border")} />
-          <p className={cn("mt-2 text-xs font-semibold uppercase tracking-[0.16em]", index === current ? "text-foreground" : "text-muted-foreground")}>
+        <li key={id} aria-current={step !== "result" && index === current ? "step" : undefined}>
+          <div className={cn("h-1 rounded-full", index <= current || step === "result" ? "bg-primary" : "bg-border")} />
+          <p className={cn("mt-2 text-[10px] font-semibold uppercase tracking-[0.14em] sm:text-xs", index === current && step !== "result" ? "text-foreground" : "text-muted-foreground")}>
             0{index + 1} {label}
           </p>
         </li>

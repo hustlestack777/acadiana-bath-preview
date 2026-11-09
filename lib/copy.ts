@@ -187,14 +187,20 @@ export const close = {
 export const lead = {
   title: "Free Consult",
   subhead:
-    "Show us your space and tell us what you have in mind. Start with the details below so Justin can help narrow down the options.",
-  submit: "Request My Project Review",
+    "Four quick steps. Tell us where you are, what you want to change, and how to reach you. Justin follows up — this is not a final quote.",
+  submit: "Request My Free Consult",
   thanks:
-    "Thanks—your project details are saved. Acadiana Bathrooms and Countertops will follow up to discuss options and the next step. This is not a final quote or a confirmed appointment.",
-  savedTitle: "We saved your project review.",
+    "Thanks—your request is saved. Acadiana Bathrooms and Countertops will follow up. This is not a final quote or a confirmed appointment.",
+  savedTitle: "We saved your free consult request.",
+  extrasTitle: "Want to help Justin prepare?",
+  extrasBody:
+    "Optional: pick a good time to call, add rough measurements, and share up to 8 photos. Rough numbers are fine. Justin measures everything in person.",
+  extrasSubmit: "Save extras for Justin",
+  extrasSaved: "Extras saved. Justin will see them with your request.",
 } as const;
 
 export const projects = [
+  { id: "tub-to-shower", label: "Tub-to-shower conversion", detail: "Replace a tub with a walk-in shower." },
   { id: "showers", label: "Showers", detail: "Including Onyx Collection solid-surface showers." },
   { id: "tubs", label: "Tubs", detail: "Tub work in the bathroom." },
   { id: "lavatories", label: "Lavatories", detail: "Sinks and the surrounding area." },
@@ -202,6 +208,26 @@ export const projects = [
   { id: "toilets", label: "Toilets", detail: "Toilet work in the room." },
   { id: "wallpaper", label: "Wallpaper", detail: "Wall covering in the room." },
 ] as const;
+
+export const homeowners = [
+  { id: "own", label: "I own this home" },
+  { id: "rent", label: "I rent" },
+] as const;
+
+export const payments = [
+  { id: "cash", label: "Cash / check / card" },
+  { id: "financing", label: "Interested in financing" },
+  { id: "not-sure", label: "Not sure yet" },
+] as const;
+
+export const paymentNote =
+  "Pick whatever fits today. Financing can be discussed on the consult — nothing here screens credit.";
+
+export const consentLabel =
+  "I agree that Acadiana Bathrooms and Countertops may contact me about this project request by phone, text, or email.";
+
+export const callTimeNote =
+  "Pick a good time to call. This is a preference, not a booked appointment."
 
 export const finishes = [
   { id: "unsure", label: "Not sure yet" },
@@ -218,7 +244,7 @@ export const timings = [
 ] as const;
 
 export const projectNote =
-  "These are the services on the Acadiana Bathrooms and Countertops card. Choose every one that applies. Listing a wish does not mean every option is available until the visit.";
+  "Choose every option that applies. Tub-to-shower is listed first because most homeowners start there. Listing a wish does not mean every option is available until the visit.";
 
 export const featureNote =
   "Describe the layout, finishes, and features you want to talk about. Listing something here does not mean it is available. Justin confirms the options.";
