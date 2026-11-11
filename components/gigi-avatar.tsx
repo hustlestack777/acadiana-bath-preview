@@ -12,7 +12,7 @@ export function GigiAvatar({
 }) {
   const file = size > 48 ? "gigi-256" : "gigi-96";
   return (
-    <picture>
+    <picture className={cn("inline-flex shrink-0 overflow-hidden rounded-full", className)}>
       <source type="image/webp" srcSet={`/images/gigi/${file}.webp`} />
       <img
         src={`/images/gigi/${file}.jpg`}
@@ -20,7 +20,7 @@ export function GigiAvatar({
         width={size}
         height={size}
         decoding="async"
-        className={cn("rounded-full object-cover", className)}
+        className="size-full rounded-full object-cover"
       />
     </picture>
   );

@@ -58,7 +58,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
                 ) : null}
                 <p
                   className={cn(
-                    "rounded-2xl px-3 py-2 text-sm leading-6",
+                    "min-w-0 max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-6",
                     turn.role === "assistant" ? "bg-muted text-foreground" : "bg-primary text-primary-foreground",
                   )}
                 >
