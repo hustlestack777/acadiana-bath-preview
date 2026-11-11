@@ -5,6 +5,7 @@ import { checkCity } from "./coverage";
 import { buildCustomerConfirmation } from "./customer-email";
 import { buildLeadEmail } from "./lead-email";
 import {
+  isTeamTestLead,
   leadNotificationRoute,
   withTestSubject,
 } from "./lead-notify";
@@ -200,12 +201,17 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
     return { ok: false as const, status: 503, error: "Lead storage is not configured. DATABASE_URL is missing." };
   }
   await ensureSchema(db);
-  const recent = await db.query<{ count: string }>(
-    `SELECT count(*)::text AS count FROM leads WHERE ip = $1 AND created_at > now() - interval '1 hour'`,
-    [ip || "unknown"],
-  );
-  if (Number(recent.rows[0]?.count ?? 0) >= RATE_LIMIT) {
-    return { ok: false as const, status: 429, error: "Too many requests from this network. Please wait and try again." };
+  const testLead = isTeamTestLead(input.phone, input.email) || Boolean(options.test);
+  // Real leads stay at 5/hour per IP. Team test leads (555 / Grok Bot inbox) are not
+  // counted in that cap so QA can run without being locked out, and they never email Justin.
+  if (!testLead) {
+    const recent = await db.query<{ count: string }>(
+      `SELECT count(*)::text AS count FROM leads WHERE ip = $1 AND created_at > now() - interval '1 hour'`,
+      [ip || "unknown"],
+    );
+    if (Number(recent.rows[0]?.count ?? 0) >= RATE_LIMIT) {
+      return { ok: false as const, status: 429, error: "Too many requests from this network. Please wait and try again." };
+    }
   }
 
   const id = crypto.randomUUID();

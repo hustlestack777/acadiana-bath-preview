@@ -34,6 +34,7 @@ A lead is treated as a test when the phone uses a 555 exchange (for example `337
 - Justin's copy goes to Shaun at `shaun.brasher@gmail.com` only, never to Justin
 - the customer confirmation still goes to the email they entered
 - nobody is texted
+- the usual 5-leads-per-hour cap does not apply, so the team can keep testing
 
 Use a 555 number (and a Grok Bot inbox if you want to see the confirmation) so fake team leads never reach Justin. A name that starts with `TEST` still gets the `[TEST]` subject prefix, but only the 555 number or Grok Bot inbox reroutes the mail.
 
