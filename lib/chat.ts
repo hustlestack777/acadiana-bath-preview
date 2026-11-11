@@ -8,22 +8,22 @@ function faqAnswer(question: string) {
 }
 
 const answers = {
-  disclosure: `I’m an AI assistant for ${brand.name}. I am not a person on the crew. I only use the facts published on this site. What you type in this chat stays in this browser and is not submitted or saved.`,
+  disclosure: `Hey there! I’m the AI assistant for ${brand.name}. I’m not a person, and I answer from what’s on this site. What you type here stays in your browser and isn’t saved. For your own bathroom, tap Design My Bathroom or Get My Free Quote.`,
   material: faqAnswer("What materials do you use?"),
   care: care.body,
   warranty: solidPath.warranty,
   area: faqAnswer("What areas do you serve?"),
   quote: faqAnswer("How do I get a quote?"),
   cost: faqAnswer("How much does a bathroom remodel cost in South Louisiana?"),
-  fit: `${hero.support} See your new bathroom in about a minute. Justin follows up with your price.`,
+  fit: `${hero.support} Tap Design My Bathroom to see your new bathroom before you spend a dime, and Justin will call you with your exact price.`,
   timing:
-    "Installation times are not listed. Justin confirms measurements and project scope, then you get a clear proposal.",
+    "Every bathroom is different, so Justin covers that with you directly. He confirms measurements and scope, then you get a clear proposal with your exact price.",
   proof:
-    "For your project details, the free consult is the best next step. Want to start with a photo?",
+    "The best way to see what Justin can do for your bathroom is your free consult. Want to start with a photo in Design My Bathroom?",
   compare:
-    "This site does not compare other companies. I can only repeat the facts published here.",
-  human: `I’m an AI assistant, not a person at ${brand.name} and not Justin. For your room, tap Design My Bathroom or Free Consult.`,
-  fallback: `I only answer from the facts on this site. I am an AI assistant, not Justin. For your own room, tap Design My Bathroom or Free Consult. This chat is not submitted or saved.`,
+    "I stick to what Acadiana Bathrooms and Countertops offers. Justin will walk you through your options at your free consult.",
+  human: `I’m an AI assistant, not a person at ${brand.name} and not Justin. Tap Get My Free Quote or Design My Bathroom, and Justin will call you personally.`,
+  fallback: `I answer from what’s on this site, and I’m an AI assistant, not Justin. For your own bathroom, tap Get My Free Quote or Design My Bathroom, and Justin will call you personally. This chat isn’t saved.`,
 } as const;
 
 export const CHAT_ANSWERS = answers;

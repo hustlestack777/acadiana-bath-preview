@@ -36,7 +36,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
           <header className="flex items-start justify-between gap-3 border-b border-border bg-fig px-4 py-3 text-fig-foreground">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.14em]">AI assistant</p>
-              <p className="mt-1 text-sm leading-5 text-fig-muted">Not a person. Not Justin. Not submitted or saved.</p>
+              <p className="mt-1 text-sm leading-5 text-fig-muted">Answers from this site. Not a person, and nothing is saved.</p>
             </div>
             <button type="button" className="inline-flex size-10 items-center justify-center rounded-xl" onClick={() => setOpen(false)}>
               <span className="sr-only">Close AI assistant</span>
@@ -83,7 +83,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
               value={draft}
               maxLength={240}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="Ask from the published facts"
+              placeholder="Ask about showers, tile, cost or area"
               className="h-11 text-base md:text-base"
             />
             <Button type="submit" className="h-11 rounded-xl px-3">
