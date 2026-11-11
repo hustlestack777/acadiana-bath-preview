@@ -147,7 +147,7 @@ export function validateLead(input: LeadInput) {
   if (coverage.status === "excluded") {
     errors.city = `${coverage.name} is outside the planned coverage.`;
   }
-  if (input.sourcePage !== "/" && input.sourcePage !== "/estimate") {
+  if (!["/", "/estimate", "/solid-surface", "/custom-tile"].includes(input.sourcePage)) {
     errors.sourcePage = "Unknown source page.";
   }
   if (input.photos.length > MAX_PHOTOS) {

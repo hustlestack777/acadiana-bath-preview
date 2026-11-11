@@ -58,7 +58,6 @@ export const material = {
   body: "Most customers prefer solid surface for a cleaner look with less grout. Many types of solid surface can be installed, and we'll help you choose the right one for your bathroom.",
   close:
     "Find the look that feels like home. Talk through the details with Justin before deciding what goes into your bathroom.",
-  warranty: "Lifetime material warranty on solid surface. If the material has a defect or fails, we'll handle the replacement.",
 } as const;
 
 export const care = {
@@ -203,3 +202,81 @@ export const photoNote =
 
 export const dimensionNote =
   "Rough numbers are fine. Justin measures everything in person.";
+
+/** Two clear paths. No prices on either path until Justin sends his pricing. */
+export const examplesLabel = "Examples of what your remodel could look like.";
+
+export const pathProjects = [
+  { id: "ss-tub-to-shower", label: "Solid surface: tub-to-shower conversion", short: "Tub-to-shower conversion" },
+  { id: "ss-shower-walls", label: "Solid surface: shower walls", short: "Shower walls" },
+  { id: "ss-tub-walls", label: "Solid surface: tub walls / surround", short: "Tub walls / surround" },
+  { id: "tile-shower", label: "Custom tile: shower", short: "Custom tile shower" },
+  { id: "tile-bathroom", label: "Custom tile: full bathroom", short: "Full bathroom" },
+  { id: "tile-floor", label: "Custom tile: floor", short: "Tile floor" },
+  { id: "tile-accent", label: "Custom tile: accent wall or backsplash", short: "Accent wall or backsplash" },
+] as const;
+
+export const solidPath = {
+  slug: "/solid-surface",
+  eyebrow: "Path one · Solid surface",
+  cardTitle: "Solid surface showers & tub walls",
+  cardBody: "The affordable, faster route. Tub-to-shower conversions and tub or shower walls with less grout to scrub.",
+  title: "Clean lines. Less grout. Less to scrub.",
+  support:
+    "Most customers prefer solid surface for less grout. Many types of solid surface can be installed, with many colors and finishes to choose from.",
+  cta: "Get a solid surface quote",
+  whyTitle: "Why most customers start here",
+  why: [
+    { title: "Less grout", body: "Large panels mean far fewer grout lines than a tiled wall." },
+    { title: "Many options", body: "Many types of solid surface can be installed. Onyx is a preferred material, and there are many others." },
+    { title: "Easy care", body: "A simple weekly cleaning is enough." },
+  ],
+  servicesTitle: "What this path covers",
+  services: [
+    { title: "Tub-to-shower conversions", body: "Swap a tub you step over for a walk-in shower." },
+    { title: "Shower walls", body: "New walls for an existing shower, with niches and a seat if the space allows." },
+    { title: "Tub walls and surrounds", body: "Keep the tub and refresh the walls around it." },
+  ],
+  warranty: "Lifetime material warranty on solid surface. If the material has a defect or fails, we'll handle the replacement.",
+  care: "A simple weekly cleaning is enough.",
+  formTitle: "Solid surface quote",
+  formBody: "One short form. Justin follows up to talk through your space. This is not a final quote.",
+} as const;
+
+export const tilePath = {
+  slug: "/custom-tile",
+  eyebrow: "Path two · Custom tile",
+  cardTitle: "Custom tile showers & bathrooms",
+  cardBody: "Handmade zellige, patterned floors, bold grout. A designer bathroom planned around the look you love.",
+  title: "Tile with a point of view.",
+  support:
+    "Zellige walls, patterned cement-look floors, arched niches and grout colors that make the tile sing. Bring your inspiration and we'll plan it together.",
+  cta: "Request a free tile consult",
+  looksTitle: "Looks people ask for",
+  looks: [
+    { title: "Handmade zellige", body: "Glossy, irregular tile that catches the light. Stacked, offset or herringbone." },
+    { title: "Patterned floors", body: "Encaustic and cement-look patterns that set the mood for the whole room." },
+    { title: "Statement niches", body: "Arched or full-height niches, benches and curbless entries where the space allows." },
+    { title: "Grout as a design choice", body: "Match the tile for a calm wall, or contrast it for a bold grid." },
+  ],
+  groutTitle: "Pick a grout color",
+  groutBody:
+    "Colors from the Mapei grout and caulk palette. Tap a swatch to preview it and add it to your tile request.",
+  groutNote: "Screen colors are approximate. Justin brings real samples to compare in your light.",
+  formTitle: "Custom tile consult",
+  formBody: "One short form. Tell us the look you want and Justin follows up. Every tile project is quoted after a visit.",
+} as const;
+
+export const ideas = {
+  eyebrow: "Finishing touches",
+  title: "Ideas for the rest of the room",
+  body: "Browse these brands for inspiration, then bring what you like to your consult. Justin will tell you what fits your project.",
+  note: "Ideas only. Acadiana Bathrooms and Countertops is not a dealer for or partner of these brands.",
+  items: [
+    { name: "Wallism", topic: "Accent walls & wallpaper", body: "Mural wallpaper for a feature wall behind a tub or vanity.", href: "https://wallism.com/us", image: "/images/ai/finish-wallpaper-tub.webp", alt: "Freestanding white tub in front of a magnolia mural accent wall." },
+    { name: "Pella", topic: "Windows & doors", body: "A bigger, better window can change how a bathroom feels.", href: "https://www.pella.com/", image: "/images/ai/finish-window-floor.webp", alt: "Bathroom with a large black-framed window over a double vanity and a wood-look floor." },
+    { name: "Flooret", topic: "Flooring", body: "Wood-look and waterproof plank options for floors next to the bath.", href: "https://www.flooret.com/", image: "/images/ai/finish-floor.webp", alt: "Warm oak-look plank floor running from a bathroom into a bedroom." },
+    { name: "TileBar", topic: "Tile", body: "Large selection of wall and floor tile looks to save and share.", href: "https://www.tilebar.com/", image: "/images/ai/tile-02.webp", alt: "Patterned encaustic-look floor tile under a freestanding tub." },
+    { name: "Riad Tile", topic: "Handmade tile", body: "Zellige and handmade tile looks for walls that glow.", href: "https://riadtile.com/", image: "/images/ai/tile-01.webp", alt: "Deep-green handmade zellige walk-in shower with brass fixtures." },
+  ],
+} as const;

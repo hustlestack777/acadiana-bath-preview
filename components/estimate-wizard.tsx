@@ -386,6 +386,13 @@ export function EstimateWizard() {
               {brand.phone}
             </a>
           </p>
+          <p className="mt-4 text-sm text-white/85">
+            Prefer a shorter form?{" "}
+            <a href="/solid-surface#solid-quote" className="underline underline-offset-4">Solid surface quote</a>
+            {" · "}
+            <a href="/custom-tile#tile-quote" className="underline underline-offset-4">Custom tile consult</a>
+          </p>
+          <p className="mt-4 text-xs text-white/65">Examples of what your remodel could look like.</p>
         </div>
       </section>
       )}
@@ -640,6 +647,11 @@ export function EstimateWizard() {
             <Button type="submit" className="h-12 rounded-xl text-base" disabled={submitting}>
               {submitting ? "Saving your request…" : lead.submit}
             </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              <a href="/privacy" className="underline underline-offset-4">
+                Privacy Policy
+              </a>
+            </p>
           </form>
         ) : null}
 

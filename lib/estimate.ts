@@ -1,4 +1,4 @@
-import { finishes, homeowners, payments, projects, timings } from "./copy";
+import { finishes, homeowners, pathProjects, payments, projects, timings } from "./copy";
 
 export type DetailInput = {
   project: string;
@@ -20,7 +20,7 @@ export type DetailInput = {
   preferredCallTime?: string;
 };
 
-const PROJECT_IDS = new Set<string>(projects.map((item) => item.id));
+const PROJECT_IDS = new Set<string>([...projects, ...pathProjects].map((item) => item.id));
 const FINISH_IDS = new Set<string>(finishes.map((item) => item.id));
 const TIMING_IDS = new Set<string>(timings.map((item) => item.id));
 const HOMEOWNER_IDS = new Set<string>(homeowners.map((item) => item.id));

@@ -10,10 +10,11 @@ import { cn } from "cn";
 import { ConsultLink } from "@/components/consult-link";
 
 const LINKS = [
+  { href: "/solid-surface", label: "Solid surface" },
+  { href: "/custom-tile", label: "Custom tile" },
+  { href: "/custom-tile#grout", label: "Grout colors" },
+  { href: "#ideas", label: "Ideas" },
   { href: "#gallery", label: "Gallery" },
-  { href: "#surface", label: "The surface" },
-  { href: "#process", label: "How it works" },
-  { href: "#area", label: "Service area" },
   { href: "#questions", label: "Questions" },
 ];
 
@@ -21,7 +22,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const home = pathname === "/";
+  const home = pathname === "/" || pathname === "/solid-surface" || pathname === "/custom-tile";
   const consult = pathname === "/estimate";
   const overHero = home && !scrolled && !open;
 
@@ -46,6 +47,7 @@ export function SiteHeader() {
   }, [open]);
 
   function hrefFor(hash: string) {
+    if (hash.startsWith("/")) return hash;
     return pathname === "/" ? hash : `/${hash}`;
   }
 

@@ -1,10 +1,10 @@
-import { area, brand, care, faqs, hero, material } from "./copy";
+import { area, brand, care, faqs, hero, solidPath } from "./copy";
 
 const answers = {
   disclosure: `I’m an AI assistant for ${brand.name}. I am not a person on the crew. I only use the facts published on this site. What you type in this chat stays in this browser and is not submitted or saved.`,
   material: faqs[0].a,
   care: care.body,
-  warranty: material.warranty,
+  warranty: `${solidPath.warranty} This covers solid surface only, not tile.`,
   area: area.faq,
   quote: faqs[1].a,
   cost: `${faqs[2].a} No dollar amount is published on this site.`,

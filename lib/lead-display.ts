@@ -1,4 +1,4 @@
-import { homeowners, payments, projects, timings } from "./copy";
+import { homeowners, pathProjects, payments, projects, timings } from "./copy";
 
 /** Human labels for stored ids. Unknown ids are title-cased, never shown raw. */
 export function choiceLabel(id: string, list: readonly { id: string; label: string }[]) {
@@ -13,7 +13,7 @@ export function projectLabels(value: string) {
     .map((item) => item.trim())
     .filter(Boolean);
   if (!selected.length) return "";
-  return selected.map((id) => choiceLabel(id, projects)).join(", ");
+  return selected.map((id) => choiceLabel(id, [...projects, ...pathProjects])).join(", ");
 }
 
 export function homeownerLabel(id: string) {

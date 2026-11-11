@@ -10,6 +10,11 @@ export const OPEN_FORM_EVENT = "ab:open-form";
 
 export function ConsultLink({ onClick, ...props }: Omit<ComponentProps<typeof Link>, "href">) {
   const pathname = usePathname();
+  // On a path page, Free Consult goes to that path's own short form.
+  const local = pathname === "/solid-surface" ? "#solid-quote" : pathname === "/custom-tile" ? "#tile-quote" : null;
+  if (local) {
+    return <Link {...props} href={local} onClick={onClick} />;
+  }
   return (
     <Link
       {...props}

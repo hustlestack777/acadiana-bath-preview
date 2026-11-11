@@ -40,6 +40,11 @@ export function SiteFooter() {
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Services</p>
           <p className="mt-3 text-sm leading-6">{services.join(" · ")}</p>
+          <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            <a href="/solid-surface" className="underline underline-offset-4">Solid surface</a>
+            <a href="/custom-tile" className="underline underline-offset-4">Custom tile</a>
+            <a href="/custom-tile#grout" className="underline underline-offset-4">Grout colors</a>
+          </p>
           <p className="mt-4 text-sm leading-6 text-fig-muted">
             {[...CORRIDOR, ...ALSO_PLANNED].join(", ")}. Prairieville and Gonzales are not included. Not an office in
             each town.
@@ -47,7 +52,10 @@ export function SiteFooter() {
         </div>
       </div>
       <p className="border-t border-white/15 px-5 py-4 text-center text-xs leading-5 text-fig-muted">
-        {brand.name}
+        {brand.name} ·{" "}
+        <a href="/privacy" className="underline underline-offset-4">
+          Privacy Policy
+        </a>
       </p>
     </footer>
   );

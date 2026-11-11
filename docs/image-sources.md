@@ -31,3 +31,14 @@ Two before-and-after composites are included, already labeled Before and After.
 | color-charcoal.webp | https://onyxcollection.com/wp-content/uploads/2025/06/Charcoal-1.jpg | https://onyxcollection.com/color-selection/ |
 | before-after-shower.webp | https://onyxcollection.com/wp-content/uploads/2023/09/OW_Before_after01.jpg | https://onyxcollection.com/wp-content/uploads/2023/09/OW_Before_after01.jpg |
 | before-after-tub.webp | https://onyxcollection.com/wp-content/uploads/2024/01/OW_Before_after07.jpg | https://onyxcollection.com/wp-content/uploads/2024/01/OW_Before_after07.jpg |
+
+## AI-generated example images (`public/images/ai`)
+
+All are AI-generated design examples, not photos of completed jobs and not copied from any supplier site. Every place they appear carries the caption "Examples of what your remodel could look like."
+
+- `ss-walkin.webp`, `ss-tub-to-shower.webp`, `ss-tub-walls.webp` — solid surface examples (Grok Bot, 11/10/2026). Used on `/solid-surface` and the home path card.
+- `grout-charcoal.webp` — contrast grout example (Grok Bot). Used in the grout picker on `/custom-tile`.
+- `finish-wallpaper-tub.webp`, `finish-window-floor.webp`, `finish-floor.webp` — finishing-touch ideas (Grok Bot). Used in the Ideas section.
+- `tile-01.webp` … `tile-08.webp` — custom tile inspiration set from Boogie (`/workspace/abc_brand/ai_inspiration`, 11/10/2026). Used on `/custom-tile`, the home path card and the Ideas section.
+
+Grout swatches in `lib/grout.ts` are approximate colors sampled from the Mapei 2023 grout and caulk palette PDF; the site says screen colors are approximate.

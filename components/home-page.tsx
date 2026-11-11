@@ -2,6 +2,8 @@ import Image from "next/image";
 import { PhotoGallery } from "@/components/photo-gallery";
 import { Hero } from "@/components/hero";
 import { ConsultLink } from "@/components/consult-link";
+import Link from "next/link";
+import { IdeasSection, PathChooser } from "@/components/path-sections";
 import {
   area,
   beforeAfter,
@@ -25,6 +27,8 @@ export function HomePage() {
   return (
     <main id="content" tabIndex={-1}>
       <Hero />
+
+      <PathChooser />
 
       <section id="intro" className="rise scroll-mt-28 mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-20 md:grid-cols-12 md:py-28">
         <div className="md:col-span-6">
@@ -78,7 +82,14 @@ export function HomePage() {
           <h2 className="mt-3 text-4xl md:text-5xl">{material.title}</h2>
           <p className="mt-5 text-lg leading-8">{material.body}</p>
           <p className="mt-4 leading-7 text-muted-foreground">{material.close}</p>
-          <p className="mt-5 text-lg leading-8">{material.warranty}</p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/solid-surface" className="inline-flex h-12 items-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground">
+              Solid surface path →
+            </Link>
+            <Link href="/custom-tile" className="inline-flex h-12 items-center rounded-full border border-border bg-card px-6 text-sm font-semibold">
+              Custom tile path →
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -106,6 +117,8 @@ export function HomePage() {
           <PhotoGallery photos={galleryPhotos} />
         </div>
       </section>
+
+      <IdeasSection />
 
       <section id="process" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">How it works</p>
