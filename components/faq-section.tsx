@@ -2,6 +2,22 @@ import { JsonLd } from "@/components/json-ld";
 import { faqPageJsonLd, type FaqItem } from "@/lib/schema";
 import { cn } from "cn";
 
+function renderAnswer(item: FaqItem) {
+  const link = item.link;
+  if (!link) return item.a;
+  const at = item.a.indexOf(link.text);
+  if (at < 0) return item.a;
+  return (
+    <>
+      {item.a.slice(0, at)}
+      <a href={link.href} className="font-medium underline underline-offset-4">
+        {link.text}
+      </a>
+      {item.a.slice(at + link.text.length)}
+    </>
+  );
+}
+
 /**
  * Visible FAQ plus FAQPage JSON-LD. Use this for home, service or town pages.
  * Schema is emitted only when at least one visible question is passed in.
@@ -39,7 +55,7 @@ export function FaqSection({
                   +
                 </span>
               </summary>
-              <p className="max-w-3xl pb-4 leading-7">{item.a}</p>
+              <p className="max-w-3xl pb-4 leading-7">{renderAnswer(item)}</p>
             </details>
           ))}
         </div>

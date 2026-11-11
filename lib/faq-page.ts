@@ -11,7 +11,8 @@ export const geoFaqs = [
   },
   {
     q: "How much does a bathroom remodel cost in South Louisiana?",
-    a: "Plan on $5,000 to $30,000+, depending on the room and the finish. That range covers the work we do: custom showers, tile, quartz and quartzite countertops, and solid surface. The exact price is set at the free consult, not in a form or over a quick message. There is no online calculator that can see your plumbing, your walls, or the look you want.",
+    a: "Plan on $5,000 to $30,000+, depending on the room and the finish. That range covers the work we do: custom showers, tile, quartz and quartzite countertops, and solid surface. The exact price is set at the free consult, not in a form or over a quick message. Snap a couple of photos, pick the look you love, and see your new bathroom in minutes. Justin follows up with your price.",
+    link: { text: "see your new bathroom", href: "/design" },
   },
   {
     q: "What areas do you serve?",

@@ -20,7 +20,7 @@ import {
 } from "./site";
 import { townPath, type TownPageContent } from "./towns";
 
-export type FaqItem = { q: string; a: string };
+export type FaqItem = { q: string; a: string; link?: { text: string; href: string } };
 
 export const BUSINESS_ID = `${SITE_URL}/#business`;
 
