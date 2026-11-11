@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { CALL_DAY_CHIPS, CALL_TIME_CHIPS, CHAT_ANSWERS, GIGI_GREETING_DESIGN, GIGI_GREETING_LEAD, GIGI_GREETING_RARE, GIGI_PROCESS, GIGI_SYSTEM_PROMPT, INTRO_CHIPS, LOOK_CHIPS, LOOK_IDS, PROJECT_CHIPS, estimateHrefForSession, greetingForPath, replyTo, respond, shouldShowGreeting } from "./chat";
+import { CALL_DAY_CHIPS, CALL_TIME_CHIPS, CHAT_ANSWERS, GIGI_CALLS_FIRST, GIGI_GREETING_DESIGN, GIGI_GREETING_LEAD, GIGI_GREETING_RARE, GIGI_PROCESS, GIGI_SYSTEM_PROMPT, INTRO_CHIPS, LOOK_CHIPS, LOOK_IDS, PROJECT_CHIPS, estimateHrefForSession, greetingForPath, replyTo, respond, shouldShowGreeting, speakFromFaq } from "./chat";
 import { checkCity } from "./coverage";
 import { validateDetails, validateExtras, validateStreet, validateZip } from "./estimate";
 import { leadNotifyRecipients, validateLead } from "./leads";
@@ -291,20 +291,20 @@ test("Gigi explains the process the same way for free-typed questions", () => {
   const house = replyTo("do you come to my house?");
   const after = replyTo("what happens after I submit?");
   assert.equal(how, GIGI_PROCESS);
-  assert.match(how, /Justin calls first to discuss your project/);
-  assert.match(how, /sets a time to take measurements and walk you through materials and design options/);
+  assert.match(how, /Justin calls you first to discuss your project, then sets a time to take measurements\./);
+  assert.match(how, /He walks you through materials and design options/);
   assert.match(how, /You choose what you like and get your exact price/);
   assert.match(how, /Justin manages your project from design to the finished bathroom/);
-  assert.match(house, /Justin calls first to discuss your project/);
-  assert.match(house, /sets a time to take measurements and walk you through materials and design options/);
+  assert.match(house, /Justin calls you first to discuss your project, then sets a time to take measurements\./);
+  assert.match(house, /He walks you through materials and design options/);
   assert.match(house, /You choose what you like and get your exact price/);
   assert.equal(/comes to your home for|in-home consult|free consult/i.test(house), false);
   assert.match(after, /After you submit/);
-  assert.match(after, /Justin calls first to discuss your project/);
-  assert.match(after, /sets a time to take measurements and walk you through materials and design options/);
+  assert.match(after, /Justin calls you first to discuss your project, then sets a time to take measurements\./);
+  assert.match(after, /He walks you through materials and design options/);
   assert.match(after, /You choose what you like and get your exact price/);
   assert.match(after, /Justin manages your project from design to the finished bathroom/);
-  assert.match(GIGI_SYSTEM_PROMPT, /Justin calls first to discuss your project/);
+  assert.match(GIGI_SYSTEM_PROMPT, /Justin calls you first to discuss your project, then sets a time to take measurements\./);
   assert.match(GIGI_SYSTEM_PROMPT, /trusted advisor/);
 });
 
@@ -316,4 +316,18 @@ test("Gigi's spoken answers avoid banned consult and claim wording", () => {
   }
   assert.equal(replyTo("What is the product warranty?"), CHAT_ANSWERS.warranty);
   assert.match(CHAT_ANSWERS.warranty, /Justin stands behind his work/);
+});
+
+test("Gigi reads FAQ answers and cleans phrasing she should not use", () => {
+  const word = ["con", "sult"].join("");
+  const dirty = `Starting at $5K. Justin comes to your home for the ${word}. He will talk it through and give you a lifetime guarantee.`;
+  const clean = speakFromFaq(dirty);
+  assert.match(clean, /Starting at \$5K/);
+  assert.match(clean, /Justin calls you first to discuss your project, then sets a time to take measurements\./);
+  assert.equal(new RegExp(word, "i").test(clean), false, clean);
+  assert.equal(/talk through|lifetime/i.test(clean), false, clean);
+  assert.match(CHAT_ANSWERS.cost, /Starting at \$5K/);
+  assert.match(CHAT_ANSWERS.quote, /\(337\) 522-0023|Design My Bathroom/);
+  assert.match(CHAT_ANSWERS.area, /Acadiana|South Louisiana|Outside our area/);
+  assert.equal(/talk through|lifetime/i.test(CHAT_ANSWERS.cost + CHAT_ANSWERS.quote + CHAT_ANSWERS.area), false);
 });
