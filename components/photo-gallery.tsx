@@ -122,7 +122,7 @@ function spanFor(index: number) {
 }
 
 function frameFor(index: number) {
-  if (index === 0 || index === 6) return "relative block aspect-[4/3] w-full";
+  if (index === 0 || index === 6) return "relative block aspect-[4/3] w-full lg:aspect-auto lg:h-full";
   if (index === 9) return "relative block aspect-[16/8] w-full";
   return "relative block aspect-[4/5] w-full sm:aspect-[3/4]";
 }
