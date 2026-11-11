@@ -168,8 +168,9 @@ test("assistant answers stay inside the published facts", () => {
   assert.match(replyTo("how much"), /\$5K–\$30K\+/);
   assert.match(replyTo("are you a person"), /AI assistant/i);
   assert.match(replyTo("are you a person"), /Gigi/);
-  assert.match(CHAT_ANSWERS.disclosure, /Hey! I’m Gigi\. I can give you a ballpark price/);
-  assert.match(CHAT_ANSWERS.disclosure, /from Acadiana Bathrooms/);
+  assert.match(CHAT_ANSWERS.disclosure, /Hey! I’m Gigi, from Acadiana Bathrooms/);
+  assert.match(CHAT_ANSWERS.disclosure, /What can I help you with/);
+  assert.doesNotMatch(CHAT_ANSWERS.disclosure, /ballpark price, show you your bathroom redesigned, or get you a free quote/);
   assert.equal(/AI assistant/i.test(CHAT_ANSWERS.disclosure), false);
   assert.match(replyTo("What's a ballpark price?"), /Starting at \$5K/);
   assert.match(replyTo("What's a ballpark price?"), /What are you thinking about/);
@@ -302,6 +303,8 @@ test("Gigi explains the process the same way for free-typed questions", () => {
   assert.match(after, /we manage your project from design to the finished bathroom/);
   assert.match(GIGI_SYSTEM_PROMPT, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(GIGI_SYSTEM_PROMPT, /trusted advisor/);
+  assert.match(GIGI_SYSTEM_PROMPT, /Take this one beat at a time/);
+  assert.match(GIGI_SYSTEM_PROMPT, /never a list of questions/);
 });
 
 test("Gigi's spoken answers avoid banned consult and claim wording", () => {

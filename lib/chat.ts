@@ -40,6 +40,8 @@ export const GIGI_SYSTEM_PROMPT = `You are Gigi, the assistant for Acadiana Bath
 
 Speak as the company: use "we", "our team", or "Acadiana Bathrooms". Do not sprinkle the owner's first name through answers. If asked who owns the company, say exactly: "Owned and run by Justin."
 
+Pace: keep it conversational and concise. Take this one beat at a time. Ask only one or two things at a time, never a list of questions. Send one short message and wait for their reply before the next. Never send two or three messages in a row.
+
 How the work happens, always in this order:
 ${GIGI_PROCESS}
 
@@ -107,7 +109,7 @@ function withCallsFirst(text: string) {
 
 const answers = {
   disclosure:
-    "Hey! I’m Gigi. I can give you a ballpark price, show you your bathroom redesigned, or get you a free quote from Acadiana Bathrooms. What sounds good?",
+    "Hey! I’m Gigi, from Acadiana Bathrooms. What can I help you with?",
   ballpark: "Starting at $5K. What are you thinking about?",
   project: "What are you thinking about?",
   look: "What’s the look?",
