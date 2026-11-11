@@ -16,6 +16,7 @@ import {
 import { mapsSearchUrl, openInMapsUrl } from "./street-view";
 import { campaignLine, sourceLine } from "./lead-attribution";
 import { finishes } from "./copy";
+import { FLOOD_ZONE_LABEL, type HouseFacts } from "./house-facts";
 import {
   EMAIL,
   esc,
@@ -63,6 +64,8 @@ export type LeadEmailContent = {
   photoLinks?: string[];
   newPhotoCount?: number;
   houseImage?: { bytes: Buffer; contentType: string } | null;
+  /** Parish, FEMA flood zone, and later property records. Skipped when null. */
+  houseFacts?: HouseFacts | null;
   consent?: boolean;
   consentAt?: Date | string | null;
   consentText?: string;
@@ -238,6 +241,11 @@ export function buildLeadEmail(input: LeadEmailContent) {
       lines.push("", "THE HOUSE (FOR YOUR VISIT)", address);
       if (streetViewUrl) lines.push(`Street View: ${streetViewUrl}`);
       if (mapsUrl) lines.push(`Open in Google Maps: ${mapsUrl}`);
+      const about = houseFactRows(input.houseFacts);
+      if (about.length) {
+        lines.push("About the house:");
+        for (const row of about) lines.push(`${row.label}: ${row.value}`);
+      }
     }
     lines.push("", "---");
     if (source) lines.push(`Source: ${source}`);
@@ -319,6 +327,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
     : `<p style="margin:0;font-family:${EMAIL.font};font-size:15px;line-height:1.5;color:${EMAIL.muted};">No text consent. Call or email only.</p>`;
 
   const hasHouseImage = Boolean(input.houseImage?.bytes.length);
+  const aboutRows = houseFactRows(input.houseFacts);
   const houseHtml = street
     ? `${sectionTitle("The house (for your visit)")}
        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 18px;">
@@ -334,7 +343,8 @@ export function buildLeadEmail(input: LeadEmailContent) {
              ${mapsUrl ? `<br /><a href="${esc(mapsUrl)}" style="color:${EMAIL.green};font-weight:600;text-decoration:underline;">Open in Google Maps</a>` : ""}
            </td>
          </tr>
-       </table>`
+       </table>
+       ${aboutHouseHtml(aboutRows)}`
     : "";
 
   const footerBits = [
@@ -368,6 +378,30 @@ export function buildLeadEmail(input: LeadEmailContent) {
   });
 
   return { subject, text, html, attachments };
+}
+
+/** Rows for the small "About the house" block. Add property-record rows via house-facts providers. */
+export function houseFactRows(facts: HouseFacts | null | undefined): Row[] {
+  if (!facts) return [];
+  return [
+    { label: "Parish", value: facts.parish },
+    { label: FLOOD_ZONE_LABEL, value: facts.floodZone },
+    ...facts.records.map((row) => ({ label: row.label, value: row.value })),
+  ].filter((row) => row.value.trim());
+}
+
+function aboutHouseHtml(rows: Row[]) {
+  if (!rows.length) return "";
+  const body = rows
+    .map(
+      (row) => `<tr>
+        <td valign="top" style="padding:3px 10px 3px 0;font-family:${EMAIL.font};font-size:13px;line-height:1.45;color:${EMAIL.muted};">${esc(row.label)}</td>
+        <td valign="top" style="padding:3px 0;font-family:${EMAIL.font};font-size:13px;line-height:1.45;color:${EMAIL.ink};font-weight:600;">${esc(row.value ?? "")}</td>
+      </tr>`,
+    )
+    .join("");
+  return `<p style="margin:0 0 4px;font-family:${EMAIL.font};font-size:13px;line-height:1.4;font-weight:700;color:${EMAIL.ink};">About the house</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 18px;">${body}</table>`;
 }
 
 function callNow(tel: string) {

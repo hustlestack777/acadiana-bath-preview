@@ -12,6 +12,7 @@ import {
 } from "./lead-notify";
 import { fetchStreetViewImage, resolveHouseMapLinks } from "./street-view";
 import { fullAddress } from "./lead-display";
+import { lookupHouseFacts } from "./house-facts";
 import { sanitizeAttribution } from "./lead-attribution";
 
 // Photos are resized in the browser (about 1600 px JPEG, usually 200-600 KB).
@@ -498,6 +499,16 @@ function coordinate(value: unknown, min: number, max: number) {
   return parsed;
 }
 
+/** Use the geocoder's rooftop point for the Street View link when Nominatim had none. */
+function withFactsPoint<T extends { latitude: number | null; longitude: number | null }>(
+  links: T,
+  facts: { latitude: number | null; longitude: number | null } | null,
+): T {
+  if (links.latitude != null && links.longitude != null) return links;
+  if (!facts || facts.latitude == null || facts.longitude == null) return links;
+  return { ...links, latitude: facts.latitude, longitude: facts.longitude };
+}
+
 async function housePreview(input: { street: string; city: string; zip: string; latitude: number | null; longitude: number | null }) {
   const address = fullAddress(input.street, input.city, input.zip);
   if (!input.street.trim() || !address) return null;
@@ -532,7 +543,12 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
 
   const address = fullAddress(input.street, input.city, input.zip);
   // Geocode only for the email/links. A timeout or failure must not block or fail the lead.
-  const mapLinks = await resolveHouseMapLinks(address, input.latitude, input.longitude);
+  // House facts (parish, FEMA flood zone) run in parallel with a 4 s budget and never throw.
+  const [rawMapLinks, houseFacts] = await Promise.all([
+    resolveHouseMapLinks(address, input.latitude, input.longitude),
+    lookupHouseFacts({ address, latitude: input.latitude, longitude: input.longitude }).catch(() => null),
+  ]);
+  const mapLinks = withFactsPoint(rawMapLinks, houseFacts);
   const houseImage = await housePreview({
     ...input,
     latitude: mapLinks.latitude,
@@ -566,6 +582,7 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
     photos: leadPhotos,
     photoLinks: leadPhotos.map((_, index) => leadPhotoUrl(id, index)),
     houseImage,
+    houseFacts,
     consent: input.consent,
     consentAt: input.consentAt ?? (input.consent ? createdAt : null),
     consentText: input.consentText || "",
@@ -682,7 +699,11 @@ async function notifyLeadExtras(
   if (!from) return { sent: false, error: "RESEND_FROM is not set." };
 
   const address = fullAddress(input.street, input.city, input.zip);
-  const mapLinks = await resolveHouseMapLinks(address, input.latitude, input.longitude);
+  const [rawMapLinks, houseFacts] = await Promise.all([
+    resolveHouseMapLinks(address, input.latitude, input.longitude),
+    lookupHouseFacts({ address, latitude: input.latitude, longitude: input.longitude }).catch(() => null),
+  ]);
+  const mapLinks = withFactsPoint(rawMapLinks, houseFacts);
   const houseImage = await housePreview({
     ...input,
     latitude: mapLinks.latitude,
@@ -715,6 +736,7 @@ async function notifyLeadExtras(
     photoLinks: input.photos.map((_, index) => leadPhotoUrl(id, index)),
     newPhotoCount: input.newPhotoCount,
     houseImage,
+    houseFacts,
     test: route.test,
   });
   const resend = new Resend(apiKey);
