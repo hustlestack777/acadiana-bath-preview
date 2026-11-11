@@ -43,6 +43,7 @@ export function SiteFooter() {
             <a href="/solid-surface" className="underline underline-offset-4">Solid surface</a>
             <a href="/custom-tile" className="underline underline-offset-4">Custom tile</a>
             <a href="/custom-tile#grout" className="underline underline-offset-4">Grout colors</a>
+            <a href="/gallery" className="underline underline-offset-4">Gallery</a>
             <a href="/faq" className="underline underline-offset-4">FAQ</a>
             <a href="/serving-lake-charles" className="underline underline-offset-4">Lake Charles</a>
             <a href="/serving-baton-rouge" className="underline underline-offset-4">Baton Rouge</a>

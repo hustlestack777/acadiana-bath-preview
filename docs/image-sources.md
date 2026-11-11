@@ -49,3 +49,5 @@ Grout swatches in `lib/grout.ts` are approximate colors sampled from the Mapei 2
 - `public/images/home/curbless-spa.webp`, `sage-handmade.webp`, `blush-terrazzo.webp` — gallery crops from hero options 29, 28 and 32 (not used in the hero). Replaced the untiled-arch shots on the home gallery, 11/10/2026.
 - `tile-27` — graphic black-and-white tile with octagon-and-dot floor, from hero option 27. Replaced the plain checkerboard (`tile-15`) in the `/custom-tile` gallery, 11/10/2026.
 - `tile-20`, `tile-21`, `tile-23` — Boogie's cobalt, butter yellow and soft geometric examples, 11/10/2026. `/custom-tile` gallery.
+
+- `public/images/looks/tm_01_1600` … `tm_12_1600` (WebP + JPEG, 1280×1600) and `extra_green_zellige_1600` (1600×900) — Boogie's textured look set, 11/11/2026, from `/workspace/abc_posts/looks_nov11`. Design ideas, not photos of completed jobs. Used on the home gallery, `/gallery`, the "Find a starting point" strip, "New & inspiring," `/custom-tile` (tm_01–09 and the green zellige extra) and `/solid-surface` (tm_10–12).

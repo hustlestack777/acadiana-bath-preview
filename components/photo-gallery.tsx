@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { LookImage } from "@/components/look-image";
 import { useEffect, useRef, useState } from "react";
 import type { Photo } from "@/lib/images";
 
@@ -38,7 +38,7 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
     <>
       <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12">
         {photos.map((item, index) => (
-          <li key={item.src} className={spanFor(index)}>
+          <li key={item.src} className={spanFor(index, photos.length)}>
             <figure className="group h-full">
               <button
                 type="button"
@@ -46,10 +46,10 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
                 onClick={() => setActive(index)}
               >
                 <span className={frameFor(index)}>
-                  <Image
+                  <LookImage
                     src={item.src}
+                    jpg={item.jpg}
                     alt={item.alt}
-                    fill
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     loading="lazy"
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
@@ -79,7 +79,7 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
         {photo ? (
           <div className="overflow-hidden rounded-2xl bg-[#1a3028]">
             <div className="relative aspect-[4/5] bg-black sm:aspect-[16/10]">
-              <Image src={photo.src} alt={photo.alt} fill sizes="96vw" className="object-contain" />
+              <LookImage src={photo.src} jpg={photo.jpg} alt={photo.alt} sizes="96vw" className="object-contain" />
             </div>
             <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
               <span />
@@ -106,8 +106,8 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
   );
 }
 
-function spanFor(index: number) {
-  const spans = [
+function spanFor(index: number, count: number) {
+  const lead = [
     "lg:col-span-7",
     "lg:col-span-5",
     "lg:col-span-4",
@@ -119,7 +119,16 @@ function spanFor(index: number) {
     "lg:col-span-6",
     "lg:col-span-12",
   ];
-  return spans[index] ?? "lg:col-span-4";
+  if (index < lead.length) return lead[index];
+
+  const tail = count - lead.length;
+  const i = index - lead.length;
+  if (tail === 1) return "lg:col-span-12";
+  const pairRows = tail % 3 === 1 ? 2 : tail % 3 === 2 ? 1 : 0;
+  const pairItems = pairRows * 2;
+  const tripleItems = tail - pairItems;
+  if (i < tripleItems) return "lg:col-span-4";
+  return "lg:col-span-6";
 }
 
 function frameFor(index: number) {

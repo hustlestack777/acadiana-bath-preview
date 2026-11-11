@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { LookImage } from "@/components/look-image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { brand, hero, heroDesignCta, ideas, priceRange, solidPath, tilePath, trustLine } from "@/lib/copy";
@@ -74,7 +75,7 @@ export function ExampleGrid({ photos, className, title }: { photos: Photo[]; cla
               index > 2 && restSpan(index - 3, photos.length - 3),
             )}
           >
-            <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 768px) 45vw, 50vw" className="object-cover transition-transform duration-700 hover:scale-[1.03]" />
+            <LookImage src={photo.src} jpg={photo.jpg} alt={photo.alt} sizes="(min-width: 768px) 45vw, 50vw" loading="lazy" className="object-cover transition-transform duration-700 hover:scale-[1.03]" />
           </li>
         ))}
       </ul>

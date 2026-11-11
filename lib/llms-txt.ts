@@ -36,6 +36,7 @@ Don't see your town? Ask anyway. Justin confirms every visit.
 ${page("/", "Home")}
 ${page("/solid-surface", "Solid surface showers and tub walls")}
 ${page("/custom-tile", "Custom tile showers and bathrooms")}
+${page("/gallery", "Gallery")}
 ${page("/design", "Design My Bathroom")}
 ${page("/estimate", "Free Consult")}
 ${page("/faq", "FAQ")}

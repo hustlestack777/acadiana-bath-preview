@@ -1,106 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-
-const LOOKS = [
-  {
-    label: "Tub walls",
-    href: "/solid-surface",
-    src: "/images/ai/ss-tub-walls.webp",
-    alt: "Alcove tub with a seamless white solid surface surround with soft veining and two recessed shelves.",
-  },
-  {
-    label: "Green zellige",
-    href: "/custom-tile",
-    src: "/images/ai/tile-01.webp",
-    alt: "Walk-in shower in handmade deep-green zellige tile with brass fixtures and a frameless glass panel.",
-  },
-  {
-    label: "Stone-look",
-    href: "/custom-tile",
-    src: "/images/home/bookmatch-stone.webp",
-    alt: "Curbless shower with book-matched stone-look walls, a lit niche, a floating bench and brass fixtures.",
-  },
-  {
-    label: "Black & brass",
-    href: "/custom-tile",
-    src: "/images/ai/tile-06.webp",
-    alt: "Spa shower in dark stone-look tile with a brass rain head and a warm wood bench.",
-  },
-  {
-    label: "Sage",
-    href: "/custom-tile",
-    src: "/images/home/sage-tile-tub.webp",
-    alt: "Sage handmade tile shower with a frameless glass door beside a freestanding tub.",
-  },
-  {
-    label: "Blush",
-    href: "/custom-tile",
-    src: "/images/home/blush-tile.webp",
-    alt: "Blush handmade tile shower with a cross-handle valve, a niche and a frameless glass door.",
-  },
-  {
-    label: "Tub-to-shower",
-    href: "/solid-surface",
-    src: "/images/ai/ss-tub-to-shower.webp",
-    alt: "Tub alcove converted to a walk-in shower with greige solid surface walls, a bench and a sliding glass door.",
-  },
-  {
-    label: "Warm white",
-    href: "/solid-surface",
-    src: "/images/ai/ss-walkin.webp",
-    alt: "Warm-white solid surface walk-in shower with frameless glass, a niche, a bench and brass fixtures.",
-  },
-  {
-    label: "Penny tile",
-    href: "/custom-tile",
-    src: "/images/home/penny-drain.webp",
-    alt: "Brass square decorative drain set flush in white penny round tile.",
-  },
-  {
-    label: "Marble-look",
-    href: "/custom-tile",
-    src: "/images/home/marble-glass.webp",
-    alt: "Shower with a marble-look back wall, white subway-style side walls, a long niche and a frameless glass door.",
-  },
-] as const;
-
-const INSPIRING = [
-  {
-    src: "/images/hero/hero-34-1600.webp",
-    alt: "White tile walls and a freestanding tub on a blue, rust and cream patterned floor.",
-  },
-  {
-    src: "/images/hero/hero-33-1600.webp",
-    alt: "Floating oak vanity against a glossy butter-yellow tile wall with a round brass mirror.",
-  },
-  {
-    src: "/images/home/sage-tile-tub.webp",
-    alt: "Sage handmade tile shower with a frameless glass door beside a freestanding tub.",
-  },
-  {
-    src: "/images/ai/ss-tub-walls.webp",
-    alt: "Alcove tub with a seamless white solid surface surround with soft veining and two recessed shelves.",
-  },
-  {
-    src: "/images/home/bookmatch-stone.webp",
-    alt: "Curbless shower with book-matched stone-look walls, a lit niche, a floating bench and brass fixtures.",
-  },
-  {
-    src: "/images/home/blush-tile.webp",
-    alt: "Blush handmade tile shower with a cross-handle valve, a niche and a frameless glass door.",
-  },
-  {
-    src: "/images/hero/hero-35-1600.webp",
-    alt: "Walk-in shower in glossy teal tile with a niche, brass fixtures and a white bench outside the glass.",
-  },
-  {
-    src: "/images/home/marble-glass.webp",
-    alt: "Shower with a marble-look back wall, white subway-style side walls, a long niche and a frameless glass door.",
-  },
-] as const;
+import { LookImage } from "@/components/look-image";
+import { inspiringLooks, shopLooks } from "@/lib/images";
 
 export function ShopLooks() {
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -172,7 +75,7 @@ export function ShopLooks() {
     };
   }, []);
 
-  const items = [...LOOKS, ...LOOKS];
+  const items = [...shopLooks, ...shopLooks];
 
   return (
     <section aria-labelledby="shop-looks-heading" className="rise scroll-mt-28 bg-[#fffaf3] py-14 md:py-20">
@@ -194,7 +97,7 @@ export function ShopLooks() {
         aria-label="Looks you can start from"
       >
         {items.map((look, index) => {
-          const duplicate = index >= LOOKS.length;
+          const duplicate = index >= shopLooks.length;
           return (
             <Link
               key={`${look.label}-${index}`}
@@ -204,10 +107,10 @@ export function ShopLooks() {
               aria-hidden={duplicate || undefined}
             >
               <span className="relative block aspect-[4/5] overflow-hidden rounded-[1.2rem] bg-muted">
-                <Image
+                <LookImage
                   src={look.src}
+                  jpg={look.jpg}
                   alt={duplicate ? "" : look.alt}
-                  fill
                   sizes="(min-width: 640px) 216px, 184px"
                   loading="lazy"
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
@@ -234,16 +137,16 @@ export function InspiringRow() {
         </Link>
       </div>
       <div className="looks-scroller mt-8 flex gap-4 overflow-x-auto px-5 pb-3 scroll-px-5 snap-x snap-mandatory">
-        {INSPIRING.map((photo) => (
+        {inspiringLooks.map((photo) => (
           <Link
             key={photo.src}
             href="/design"
             className="relative aspect-[4/5] w-[16.5rem] shrink-0 snap-start overflow-hidden rounded-[1.3rem] bg-muted sm:w-[20rem]"
           >
-            <Image
+            <LookImage
               src={photo.src}
+              jpg={photo.jpg}
               alt={photo.alt}
-              fill
               sizes="(min-width: 640px) 320px, 264px"
               loading="lazy"
               className="object-cover transition-transform duration-700 hover:scale-[1.03]"

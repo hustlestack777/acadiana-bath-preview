@@ -151,6 +151,7 @@ export const INDEXABLE_PATHS = [
   "/",
   "/solid-surface",
   "/custom-tile",
+  "/gallery",
   "/design",
   "/estimate",
   "/faq",

@@ -14,7 +14,7 @@ const LINKS = [
   { href: "/custom-tile", label: "Custom tile" },
   { href: "/custom-tile#grout", label: "Grout colors" },
   { href: "#ideas", label: "Ideas" },
-  { href: "#gallery", label: "Gallery" },
+  { href: "/gallery", label: "Gallery" },
   { href: "/faq", label: "FAQ" },
 ];
 

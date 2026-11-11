@@ -128,7 +128,7 @@ test("sitemap lists public pages, includes lastmod, and omits town pages until g
   const urls = preview.map((entry) => entry.url);
   assert.ok(preview.every((entry) => entry.lastModified));
   assert.ok(urls.some((url) => url.endsWith("onrender.com") || url.endsWith("onrender.com/")));
-  for (const path of ["/solid-surface", "/custom-tile", "/design", "/estimate", "/faq", "/privacy", "/windows"]) {
+  for (const path of ["/solid-surface", "/custom-tile", "/gallery", "/design", "/estimate", "/faq", "/privacy", "/windows"]) {
     assert.ok(urls.some((url) => url.endsWith(path)), path);
   }
   assert.equal(urls.some((url) => url.includes("/api/")), false);
