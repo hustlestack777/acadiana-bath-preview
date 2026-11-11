@@ -9,7 +9,7 @@ function faqAnswer(question: string) {
 
 const answers = {
   disclosure: `I’m an AI assistant for ${brand.name}. I am not a person on the crew. I only use the facts published on this site. What you type in this chat stays in this browser and is not submitted or saved.`,
-  material: `${hero.support} ${faqAnswer("What does Acadiana Bathrooms do?")}`,
+  material: faqAnswer("What materials do you use?"),
   care: care.body,
   warranty: `${solidPath.warranty} This covers solid surface only, not tile.`,
   area: faqAnswer("What areas do you serve?"),
@@ -52,7 +52,7 @@ export function replyTo(message: string) {
   const text = message.toLowerCase().trim();
   if (!text) return answers.disclosure;
   if (asksAboutOtherBrands(text)) return answers.compare;
-  if (asksAboutPhrase(text) || /natural stone|quarried|natural on[yx]{2}/.test(text)) {
+  if (asksAboutPhrase(text) || /natural stone|quarried|natural onyx/.test(text)) {
     return answers.material;
   }
   if (/clean|abrasive|maintenance|soap/.test(text)) return answers.care;
@@ -64,7 +64,7 @@ export function replyTo(message: string) {
   }
   if (/quote|photo|picture|exact/.test(text)) return answers.quote;
   if (/cost|price|how much|budget|range/.test(text)) return answers.cost;
-  if (/custom|fit|resin|alumina|made of|material|what is on[yx]{2}|composition/.test(text)) {
+  if (/custom|fit|resin|alumina|made of|material|what is onyx|composition/.test(text)) {
     return answers.material;
   }
   if (/how long|timeline|schedule|install time/.test(text)) return answers.timing;

@@ -26,6 +26,10 @@ export const geoFaqs = [
     a: "We remodel bathrooms: custom walk-in showers, tile (including handmade zellige), quartz and quartzite countertops, and solid-surface walls and showers. We do not install granite. Justin Sturgis does the in-home quote and walks you through the design.",
   },
   {
+    q: "What materials do you use?",
+    a: "There are many options available. Most customers prefer solid surface, because there's less grout to clean, and many types of solid surface can be installed. Onyx is a preferred material. We'll talk through the options that fit your room.",
+  },
+  {
     q: "What is zellige tile?",
     a: "Zellige is handmade glazed tile with an uneven, glossy surface. Light hits each piece a little differently, which is the point. It is a strong choice for a shower wall or a color-drenched bath when you want the room to have texture, not a flat factory look. We can talk through colors and grout at the consult.",
   },
@@ -57,6 +61,7 @@ export const homeFaqQuestions = [
   "What does Acadiana Bathrooms do?",
   "How do I get a quote?",
   "Can I see a design before we start?",
+  "What materials do you use?",
 ] as const;
 
 export const homeFaqs = homeFaqQuestions.map((question) => {

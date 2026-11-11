@@ -9,13 +9,15 @@ Two versions are rendered with ffmpeg (Pillow frames, slow Ken Burns zoom and cr
 
 Each visitor downloads only one version. Render scripts: `scripts/hero-video/`.
 
-Shots used (local files):
+| Shot | Local file | Original Onyx file | Onyx page |
+| --- | --- | --- | --- |
+| Walk-in shower with window and vanity | public/images/hero-walkin.webp | https://onyxcollection.com/wp-content/uploads/2026/01/OW_G_CustomShower104.jpg | https://onyxcollection.com/shower-gallery/ |
+| Glass-enclosed custom shower with seat | public/images/shower-arch.webp | https://onyxcollection.com/wp-content/uploads/2026/01/OW_G_CustomShower88.png | https://onyxcollection.com/shower-gallery/ |
+| Rain-head walk-in shower with niche | public/images/hero-rain.webp | https://onyxcollection.com/wp-content/uploads/2026/02/OW_G_StandardShower84-scaled.jpg | https://onyxcollection.com/shower-gallery/ |
+| Barn-door shower with corner seat | public/images/shower-barn.webp | https://onyxcollection.com/wp-content/uploads/2026/09/OW_G_StandardShower101.jpg | https://onyxcollection.com/shower-gallery/ |
+| Frameless glass shower, warm tones | public/images/shower-warm.webp | https://onyxcollection.com/wp-content/uploads/2026/01/OW_G_CustomShower73.jpg | https://onyxcollection.com/shower-gallery/ |
+| Tub surround with sliding glass door | public/images/tub-surround.webp | https://onyxcollection.com/wp-content/uploads/2024/01/Tub_gallery-34.jpg | https://onyxcollection.com/tub-surround-tub-deck-gallery/ |
 
-- Walk-in shower with window and vanity — public/images/hero-walkin.webp
-- Glass-enclosed custom shower with seat — public/images/shower-arch.webp
-- Rain-head walk-in shower with niche — public/images/hero-rain.webp
-- Barn-door shower with corner seat — public/images/shower-barn.webp
-- Frameless glass shower, warm tones — public/images/shower-warm.webp
-- Tub surround with sliding glass door — public/images/tub-surround.webp
+Onyx's official YouTube channel (https://www.youtube.com/user/onyxcollection) and https://onyxcollection.com/instructions-install-videos/ only have installation tutorials, so no official clip was usable as a hero.
 
 The earlier Pexels placeholder clip was removed on 9 November 2026.

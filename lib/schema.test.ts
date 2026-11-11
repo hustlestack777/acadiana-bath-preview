@@ -87,7 +87,9 @@ test("FAQPage schema is built only from the visible questions passed in", () => 
   assert.equal(home.mainEntity[0].name, faqs[0].q);
   assert.equal(home.mainEntity[0].acceptedAnswer.text, faqs[0].a);
   assert.deepEqual(assertSafeJsonLd(home), []);
-  assert.equal(homeFaqs.length, 5);
+  assert.equal(homeFaqs.length, 6);
+  assert.equal(homeFaqs[5].q, "What materials do you use?");
+  assert.match(homeFaqs[5].a, /Onyx is a preferred material/);
   for (const item of homeFaqs) {
     assert.ok(geoFaqs.some((faq) => faq.q === item.q && faq.a === item.a), item.q);
   }
@@ -137,7 +139,7 @@ test("sitemap lists public pages, includes lastmod, and omits town pages until g
 test("cleared FAQ and town copy has no windows mentions and town schema is area-only", () => {
   const blob = [geoFaqs, towns].map((value) => JSON.stringify(value)).join("\n");
   assert.equal(/window/i.test(blob), false);
-  assert.equal(geoFaqs.length, 11);
+  assert.equal(geoFaqs.length, 12);
   for (const town of towns) {
     const data = townAreaJsonLd(town);
     assert.equal(data["@type"], "WebPage");
@@ -167,8 +169,8 @@ test("llms.txt summarizes the business without banned claims", () => {
   assert.match(text, /\/serving-baton-rouge/);
   assert.match(text, /\/serving-houma/);
   for (const banned of [
-    ["On", "yx"].join(""),
-    ["Pel", "la"].join(""),
+    "Onyx",
+    "Pella",
     "licensed",
     "insured",
     "deposit",

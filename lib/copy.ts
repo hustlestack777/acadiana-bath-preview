@@ -27,7 +27,7 @@ export const hero = {
   eyebrow: "Lafayette, Louisiana",
   title: "Bring a little beautiful to every day.",
   support:
-    "There are many options for your shower, tub, and bathroom. Most customers prefer solid surface, because there's less grout to clean, and many types of solid surface can be installed. We'll walk through the options for your space.",
+    "There are many options for your shower, tub, and bathroom. Most customers prefer solid surface, because there's less grout to clean, and many types of solid surface can be installed. Onyx is a preferred material — we'll walk through the options for your space.",
   primary: "Free Consult",
   secondary: "(337) 522-0023",
 } as const;
@@ -230,7 +230,7 @@ export const solidPath = {
   whyTitle: "Why most customers start here",
   why: [
     { title: "Less grout", body: "Large panels mean far fewer grout lines than a tiled wall." },
-    { title: "Many options", body: "Many types of solid surface can be installed, and there are many colors and finishes to choose from." },
+    { title: "Many options", body: "Many types of solid surface can be installed. Onyx is a preferred material, and there are many others." },
     { title: "Easy care", body: "A simple weekly cleaning is enough." },
   ],
   servicesTitle: "What this path covers",
@@ -276,6 +276,7 @@ export const ideas = {
   note: "Ideas only. Acadiana Bathrooms and Countertops is not a dealer for or partner of these brands.",
   items: [
     { name: "Wallism", topic: "Accent walls & wallpaper", body: "Mural wallpaper for a feature wall behind a tub or vanity.", href: "https://wallism.com/us", image: "/images/ai/finish-wallpaper-tub.webp", alt: "Freestanding white tub in front of a magnolia mural accent wall." },
+    { name: "Pella", topic: "Windows & doors", body: "A bigger, better window can change how a bathroom feels.", href: "https://www.pella.com/", image: "/images/ai/finish-window-floor.webp", alt: "Bathroom with a large black-framed window over a double vanity and a wood-look floor." },
     { name: "Flooret", topic: "Flooring", body: "Wood-look and waterproof plank options for floors next to the bath.", href: "https://www.flooret.com/", image: "/images/ai/finish-floor.webp", alt: "Warm oak-look plank floor running from a bathroom into a bedroom." },
     { name: "TileBar", topic: "Tile", body: "Large selection of wall and floor tile looks to save and share.", href: "https://www.tilebar.com/", image: "/images/ai/tile-02.webp", alt: "Patterned encaustic-look floor tile under a freestanding tub." },
     { name: "Riad Tile", topic: "Handmade tile", body: "Zellige and handmade tile looks for walls that glow.", href: "https://riadtile.com/", image: "/images/ai/tile-01.webp", alt: "Deep-green handmade zellige walk-in shower with brass fixtures." },
