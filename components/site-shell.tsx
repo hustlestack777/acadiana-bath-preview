@@ -10,10 +10,12 @@ export function SiteShell({
   children,
   sticky = false,
   bleed = false,
+  chat = true,
 }: {
   children: ReactNode;
   sticky?: boolean;
   bleed?: boolean;
+  chat?: boolean;
 }) {
   return (
     <>
@@ -39,7 +41,7 @@ export function SiteShell({
           </div>
         </div>
       ) : null}
-      <ChatWidget raised={sticky} />
+      {chat ? <ChatWidget raised={sticky} /> : null}
     </>
   );
 }
