@@ -30,8 +30,18 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   const [sending, setSending] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => () => shots.forEach((shot) => URL.revokeObjectURL(shot.url)), [shots]);
-  useEffect(() => topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), [step]);
+  const shotsRef = useRef<Shot[]>([]);
+  shotsRef.current = shots;
+  useEffect(() => () => shotsRef.current.forEach((shot) => URL.revokeObjectURL(shot.url)), []);
+  const firstStep = useRef(true);
+  useEffect(() => {
+    if (firstStep.current) {
+      firstStep.current = false;
+      return;
+    }
+    // scrollIntoView can return a Promise in newer browsers; never return it from the effect.
+    void topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [step]);
 
   // Rotating scanner copy; the bar stays under 90% until the server answers.
   useEffect(() => {
@@ -63,7 +73,11 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   }
 
   function removeShot(index: number) {
-    setShots((current) => current.filter((_, i) => i !== index));
+    setShots((current) => {
+      const gone = current[index];
+      if (gone) URL.revokeObjectURL(gone.url);
+      return current.filter((_, i) => i !== index);
+    });
   }
 
   const render = useCallback(async () => {
@@ -177,7 +191,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={shot.url} alt={`Your photo ${index + 1}`} className="aspect-[4/3] w-full object-cover" />
                   <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-xs text-white">{index === 0 ? "We design this one" : "Extra photo"}</span>
-                  <button type="button" onClick={() => removeShot(index)} className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-xs text-white">
+                  <button type="button" onClick={() => removeShot(index)} className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2 py-0.5 text-xs text-white">
                     Remove
                   </button>
                 </li>
