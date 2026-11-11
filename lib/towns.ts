@@ -35,7 +35,7 @@ export const towns: TownPageContent[] = [
     intro: [
       "We serve Lake Charles with custom walk-in showers, tile, quartz and quartzite countertops, and solid surface. Acadiana Bathrooms and Countertops works across Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria to Houma and Thibodaux. Bathroom remodels range from $5,000 to $30,000+. The exact number is set at a free consult, when Justin comes to your home to measure.",
       "Lake Charles homes work hard in the heat and humidity. A bathroom that still has a stepped-in tub, tired grout, or a vanity that cannot take the steam is a room people stop enjoying. A curbless walk-in, handmade tile with a little glaze in the light, or a quiet solid-surface surround can change that without turning the house into a showroom.",
-      "We do not have a storefront in Lake Charles, and we will not list a local street address here. Justin Sturgis serves this part of Southwest Louisiana as part of the full service area, and the consult happens at your house. If you also have a place in Sulphur or elsewhere in the western end of our area, we can talk about that at the same call.",
+      "We do not have a storefront in Lake Charles, and we will not list a local street address here. Justin serves this part of Southwest Louisiana as part of the full service area, and the consult happens at your house. If you also have a place in Sulphur or elsewhere in the western end of our area, we can talk about that at the same call.",
     ],
     servicesTitle: "What we build for Lake Charles homes",
     services: [
