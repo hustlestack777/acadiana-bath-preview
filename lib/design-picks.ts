@@ -1,4 +1,5 @@
 import type { DesignStyle } from "./design-styles";
+import type { StartingLook } from "./starting-looks";
 
 /** Visitor picks for the Design My Bathroom flow. Photo comes last. */
 export type DesignPicksInput = {
@@ -693,14 +694,18 @@ export function parsePicks(raw: unknown): DesignPicksInput | null {
   return { layout: findLayout(layout)!.key, wall, floor, finish, budget };
 }
 
-export function composeSpec(picks: ResolvedPicks) {
+export function composeSpec(picks: ResolvedPicks, startingLook?: StartingLook | null) {
+  const inspiration = startingLook
+    ? `The customer started from this inspiration look: ${startingLook.name}. ${startingLook.promptHint || startingLook.alt}`
+    : "";
   return [
+    inspiration,
     picks.layout.prompt,
     `Walls: ${picks.wall.spec}.`,
     `Floor: ${picks.floor.spec}.`,
     `Fixture finish: ${picks.finish.spec}.`,
     "Do not use granite.",
-  ].join(" ");
+  ].filter(Boolean).join(" ");
 }
 
 export function designLabel(picks: ResolvedPicks) {
@@ -712,7 +717,7 @@ export function designSummary(picks: ResolvedPicks) {
 }
 
 /** A DesignStyle-shaped object so the render path can keep using style.key for the wall reference image. */
-export function styleFromPicks(picks: ResolvedPicks): DesignStyle {
+export function styleFromPicks(picks: ResolvedPicks, startingLook?: StartingLook | null): DesignStyle {
   return {
     key: picks.wall.key,
     boogie: "",
@@ -722,7 +727,7 @@ export function styleFromPicks(picks: ResolvedPicks): DesignStyle {
     alt: picks.wall.alt,
     path: picks.wall.path,
     project: picks.wall.project,
-    spec: composeSpec(picks),
+    spec: composeSpec(picks, startingLook),
   };
 }
 

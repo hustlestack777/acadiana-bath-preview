@@ -1,9 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { DesignLink } from "@/components/design-link";
 import { LookImage } from "@/components/look-image";
+import { LookLink } from "@/components/look-link";
 import { inspiringLooks, shopLooks } from "@/lib/images";
+import { findStartingLookBySrc } from "@/lib/starting-looks";
 
 export function ShopLooks() {
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -86,9 +88,9 @@ export function ShopLooks() {
             Find a starting point.
           </h2>
         </div>
-        <Link href="/design" className="shrink-0 text-sm font-semibold underline underline-offset-4">
+        <DesignLink className="shrink-0 text-sm font-semibold underline underline-offset-4">
           Design my bathroom →
-        </Link>
+        </DesignLink>
       </div>
       <div
         ref={scrollerRef}
@@ -98,14 +100,10 @@ export function ShopLooks() {
       >
         {items.map((look, index) => {
           const duplicate = index >= shopLooks.length;
-          return (
-            <Link
-              key={`${look.label}-${index}`}
-              href={look.href}
-              className="group w-[11.5rem] shrink-0 snap-start sm:w-[13.5rem]"
-              tabIndex={duplicate ? -1 : undefined}
-              aria-hidden={duplicate || undefined}
-            >
+          const starting = findStartingLookBySrc(look.src);
+          const className = "group w-[11.5rem] shrink-0 snap-start sm:w-[13.5rem]";
+          const body = (
+            <>
               <span className="relative block aspect-[4/5] overflow-hidden rounded-[1.2rem] bg-muted">
                 <LookImage
                   src={look.src}
@@ -117,7 +115,33 @@ export function ShopLooks() {
                 />
               </span>
               <span className="mt-2.5 block text-[0.95rem] font-medium">{look.label}</span>
-            </Link>
+            </>
+          );
+          if (starting) {
+            return (
+              <LookLink
+                key={`${look.label}-${index}`}
+                look={starting}
+                dest="path"
+                className={className}
+                tabIndex={duplicate ? -1 : undefined}
+                aria-hidden={duplicate || undefined}
+                data-testid={duplicate ? undefined : `shop-look-${starting.id}`}
+              >
+                {body}
+              </LookLink>
+            );
+          }
+          return (
+            <a
+              key={`${look.label}-${index}`}
+              href={look.href}
+              className={className}
+              tabIndex={duplicate ? -1 : undefined}
+              aria-hidden={duplicate || undefined}
+            >
+              {body}
+            </a>
           );
         })}
       </div>
@@ -132,17 +156,15 @@ export function InspiringRow() {
         <h2 id="inspiring-heading" className="text-3xl leading-[1.1] md:text-5xl">
           New & inspiring
         </h2>
-        <Link href="/design" className="shrink-0 text-sm font-semibold underline underline-offset-4">
+        <DesignLink className="shrink-0 text-sm font-semibold underline underline-offset-4">
           Design my bathroom →
-        </Link>
+        </DesignLink>
       </div>
       <div className="looks-scroller mt-8 flex gap-4 overflow-x-auto px-5 pb-3 scroll-px-5 snap-x snap-mandatory">
-        {inspiringLooks.map((photo) => (
-          <Link
-            key={photo.src}
-            href="/design"
-            className="relative aspect-[4/5] w-[16.5rem] shrink-0 snap-start overflow-hidden rounded-[1.3rem] bg-muted sm:w-[20rem]"
-          >
+        {inspiringLooks.map((photo) => {
+          const starting = findStartingLookBySrc(photo.src);
+          const className = "relative aspect-[4/5] w-[16.5rem] shrink-0 snap-start overflow-hidden rounded-[1.3rem] bg-muted sm:w-[20rem]";
+          const image = (
             <LookImage
               src={photo.src}
               jpg={photo.jpg}
@@ -151,8 +173,26 @@ export function InspiringRow() {
               loading="lazy"
               className="object-cover transition-transform duration-700 hover:scale-[1.03]"
             />
-          </Link>
-        ))}
+          );
+          if (starting) {
+            return (
+              <LookLink
+                key={photo.src}
+                look={starting}
+                dest="design"
+                className={className}
+                data-testid={`inspiring-look-${starting.id}`}
+              >
+                {image}
+              </LookLink>
+            );
+          }
+          return (
+            <DesignLink key={photo.src} className={className}>
+              {image}
+            </DesignLink>
+          );
+        })}
       </div>
     </section>
   );

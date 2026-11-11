@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { DesignLink } from "@/components/design-link";
 import { brand } from "@/lib/copy";
 
 /** Keep the visible wording, but turn phone, Design My Bathroom, and the quote form into links. */
@@ -19,9 +20,9 @@ export function LinkedCopy({ text, className }: { text: string; className?: stri
       );
     } else if (token === "Design My Bathroom") {
       nodes.push(
-        <a key={key} className="font-medium underline underline-offset-4" href="/design">
+        <DesignLink key={key} className="font-medium underline underline-offset-4">
           Design My Bathroom
-        </a>,
+        </DesignLink>,
       );
     } else {
       nodes.push(

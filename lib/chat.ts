@@ -8,7 +8,7 @@ function faqAnswer(question: string) {
 }
 
 const answers = {
-  disclosure: `Hey there! I’m the AI assistant for ${brand.name}. I’m not a person, and I answer from what’s on this site. What you type here stays in your browser and isn’t saved. For your own bathroom, tap Design My Bathroom or Get My Free Quote.`,
+  disclosure: `Hey there! I’m Gigi, the AI assistant for ${brand.name}. I’m not a person, and I answer from what’s on this site. What you type here stays in your browser and isn’t saved. For your own bathroom, tap Design My Bathroom or Get My Free Quote.`,
   material: faqAnswer("What materials do you use?"),
   care: care.body,
   warranty: solidPath.warranty,
@@ -22,8 +22,8 @@ const answers = {
     "The best way to see what Justin can do for your bathroom is your free consult. Want to start with a photo in Design My Bathroom?",
   compare:
     "I stick to what Acadiana Bathrooms and Countertops offers. Justin will walk you through your options at your free consult.",
-  human: `I’m an AI assistant, not a person at ${brand.name} and not Justin. Tap Get My Free Quote or Design My Bathroom, and Justin will call you personally.`,
-  fallback: `I answer from what’s on this site, and I’m an AI assistant, not Justin. For your own bathroom, tap Get My Free Quote or Design My Bathroom, and Justin will call you personally. This chat isn’t saved.`,
+  human: `I’m Gigi, an AI assistant, not a person at ${brand.name} and not Justin. Tap Get My Free Quote or Design My Bathroom, and Justin will call you personally.`,
+  fallback: `I answer from what’s on this site, and I’m Gigi, an AI assistant, not Justin. For your own bathroom, tap Get My Free Quote or Design My Bathroom, and Justin will call you personally. This chat isn’t saved.`,
 } as const;
 
 export const CHAT_ANSWERS = answers;

@@ -167,4 +167,6 @@ test("assistant answers stay inside the published facts", () => {
   assert.match(replyTo("how much"), /Starting at \$5K/);
   assert.match(replyTo("how much"), /\$5K–\$30K\+/);
   assert.match(replyTo("are you a person"), /AI assistant/i);
+  assert.match(replyTo("are you a person"), /Gigi/);
+  assert.match(CHAT_ANSWERS.disclosure, /Gigi, the AI assistant/);
 });

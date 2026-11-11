@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ConsultLink } from "@/components/consult-link";
+import { DesignLink } from "@/components/design-link";
 import {
   HERO_LONGEST_HEADLINE,
   HERO_SLIDES,
@@ -157,12 +157,11 @@ export function Hero() {
           >
             {hero.primary}
           </ConsultLink>
-          <Link
-            href="/design"
+          <DesignLink
             className="inline-flex h-12 items-center justify-center rounded-full border border-white/75 bg-black/15 px-8 text-base font-medium text-white backdrop-blur-sm hover:bg-white/10 sm:h-14"
           >
             {heroDesignCta}
-          </Link>
+          </DesignLink>
         </div>
         <a href={brand.phoneHref} className="hero-copy mt-3 inline-block text-sm font-semibold text-[#f6f1e6] underline underline-offset-4">
           {brand.phone}

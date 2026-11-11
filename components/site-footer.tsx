@@ -1,4 +1,5 @@
 import { MaisonLogo } from "@/components/logo";
+import { DesignLink } from "@/components/design-link";
 import { brand, cardClaims, heroDesignCta, services } from "@/lib/copy";
 import { SERVICE_AREA } from "@/lib/coverage";
 import { ConsultLink } from "@/components/consult-link";
@@ -18,7 +19,7 @@ export function SiteFooter() {
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Call or email</p>
           <p className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm">
             <ConsultLink className="underline underline-offset-4">{cardClaims.consult}</ConsultLink>
-            <a href="/design" className="underline underline-offset-4">{heroDesignCta}</a>
+            <DesignLink className="underline underline-offset-4">{heroDesignCta}</DesignLink>
           </p>
           <p className="mt-3">
             <a href={brand.phoneHref} className="text-base font-medium">

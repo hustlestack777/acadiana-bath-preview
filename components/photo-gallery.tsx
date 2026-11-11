@@ -1,8 +1,10 @@
 "use client";
 
 import { LookImage } from "@/components/look-image";
+import { LookLink } from "@/components/look-link";
 import { useEffect, useRef, useState } from "react";
 import type { Photo } from "@/lib/images";
+import { findStartingLookBySrc, persistStartingLook } from "@/lib/starting-looks";
 
 export function PhotoGallery({ photos }: { photos: Photo[] }) {
   const [active, setActive] = useState<number | null>(null);
@@ -43,7 +45,12 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
               <button
                 type="button"
                 className="relative block h-full w-full overflow-hidden rounded-2xl bg-[#14261f] text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                onClick={() => setActive(index)}
+                data-testid={findStartingLookBySrc(item.src) ? `gallery-look-${findStartingLookBySrc(item.src)!.id}` : undefined}
+                onClick={() => {
+                  const starting = findStartingLookBySrc(item.src);
+                  if (starting) persistStartingLook(starting.id);
+                  setActive(index);
+                }}
               >
                 <span className={frameFor(index)}>
                   <LookImage
@@ -82,7 +89,18 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
               <LookImage src={photo.src} jpg={photo.jpg} alt={photo.alt} sizes="96vw" className="object-contain" />
             </div>
             <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-              <span />
+              {findStartingLookBySrc(photo.src) ? (
+                <LookLink
+                  look={findStartingLookBySrc(photo.src)!}
+                  dest="design"
+                  className="h-10 rounded-full bg-[#f6f1e6] px-4 text-sm font-semibold text-[#1c241c]"
+                  data-testid="gallery-design-cta"
+                >
+                  Design my bathroom
+                </LookLink>
+              ) : (
+                <span />
+              )}
               <div className="flex gap-2">
                 <button type="button" className="h-10 rounded-full border border-white/30 px-4 text-sm" onClick={() => step(-1)}>
                   Previous

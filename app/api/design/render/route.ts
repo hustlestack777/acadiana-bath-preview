@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { findBudget } from "@/lib/budget";
 import { parsePicks, styleFromPicks, resolvePicks } from "@/lib/design-picks";
+import { findStartingLook } from "@/lib/starting-looks";
 import { normalizePhoto, renderDesign, RenderError, teaser, type RenderResult, type RenderStage } from "@/lib/design-render";
 import {
   checkLimits,
@@ -57,13 +58,15 @@ export async function POST(request: Request) {
     }),
   );
   if (!resolved) return fail("Pick your layout, walls, floor and finish first.", 400);
-  const style = styleFromPicks(resolved);
+  const startingLook = findStartingLook(String(form.get("look") || ""));
+  const style = styleFromPicks(resolved, startingLook);
   const picks = {
     layout: resolved.layout.key,
     wall: resolved.wall.key,
     floor: resolved.floor.key,
     finish: resolved.finish.key,
     budget: String(form.get("budget") || ""),
+    startingLook: startingLook?.id || "",
   };
 
   let before: Buffer | null;

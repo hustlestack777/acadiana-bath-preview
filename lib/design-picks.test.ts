@@ -59,8 +59,9 @@ test("related looks return 2-3 existing images for the green zellige walk-in hex
   assert.ok(related.length >= 2 && related.length <= 3);
   assert.ok(related.every((item) => item.src.startsWith("/images/")));
   assert.ok(related.some((item) => /zellige/i.test(item.name) || item.walls.includes("zellige")));
-  const lines = leadFeatureLines(sample()!, related);
+  const lines = leadFeatureLines(sample()!, related, ["Starting look: Fluted 3D tile"]);
   assert.ok(lines.some((line) => line.startsWith("Conversion: Tub-to-shower")));
   assert.ok(lines.some((line) => line.startsWith("Talking point (Good):")));
   assert.ok(lines.some((line) => line.startsWith("Related looks shown:")));
+  assert.ok(lines.some((line) => line === "Starting look: Fluted 3D tile"));
 });

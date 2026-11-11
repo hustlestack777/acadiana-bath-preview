@@ -4,6 +4,7 @@ import { Hero } from "@/components/hero";
 import { ConsultLink } from "@/components/consult-link";
 import Link from "next/link";
 import { IdeasSection, PathChooser } from "@/components/path-sections";
+import { DesignLink } from "@/components/design-link";
 import { InspiringRow, ShopLooks } from "@/components/look-strips";
 import { FaqSection } from "@/components/faq-section";
 import { homeFaqs } from "@/lib/faq-page";
@@ -188,12 +189,11 @@ export function HomePage() {
           >
             {hero.primary}
           </ConsultLink>
-          <Link
-            href="/design"
+          <DesignLink
             className="mt-3 inline-flex h-12 items-center justify-center rounded-full border border-border bg-background px-6 text-base font-semibold"
           >
             {heroDesignCta}
-          </Link>
+          </DesignLink>
           <p className="mt-4">
             <a href={brand.phoneHref} className="text-sm font-semibold underline underline-offset-4">{brand.phone}</a>
           </p>
@@ -231,12 +231,11 @@ export function HomePage() {
             >
               {hero.primary}
             </ConsultLink>
-            <Link
-              href="/design"
+            <DesignLink
               className="inline-flex h-12 items-center justify-center rounded-full border border-white/70 px-6 text-base font-medium"
             >
               {heroDesignCta}
-            </Link>
+            </DesignLink>
           </div>
           <a href={brand.phoneHref} className="mt-3 text-sm font-semibold text-white underline underline-offset-4 sm:mt-0">
             {brand.phone}

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { saveLead, validateLead } from "@/lib/leads";
 import { designCopy, findStyle } from "@/lib/design-styles";
 import { designLabel, leadFeatureLines, relatedLooksFor, resolvePicks, styleFromPicks } from "@/lib/design-picks";
+import { findStartingLook } from "@/lib/starting-looks";
 import {
   clientIp,
   designDb,
@@ -70,12 +71,15 @@ export async function POST(request: Request) {
   if (!session || !session.before || (!qaFailed && !capHit && (session.status !== "done" || !session.after))) {
     return fail("That design was not found. Start a new one.", 404);
   }
-  const picks = resolvePicks(session.picks && typeof session.picks === "object" ? (session.picks as { layout?: string; wall?: string; floor?: string; finish?: string }) : { wall: session.style_key, layout: "", floor: "", finish: "" });
+  const rawPicks = session.picks && typeof session.picks === "object" ? (session.picks as { layout?: string; wall?: string; floor?: string; finish?: string; startingLook?: string }) : { wall: session.style_key, layout: "", floor: "", finish: "" };
+  const picks = resolvePicks(rawPicks);
+  const startingLook = findStartingLook(rawPicks.startingLook);
   const legacy = findStyle(session.style_key);
   if (!picks && !legacy) return fail("That design was not found. Start a new one.", 404);
-  const style = picks ? styleFromPicks(picks) : legacy!;
+  const style = picks ? styleFromPicks(picks, startingLook) : legacy!;
   const styleName = picks ? designLabel(picks) : style.name;
   const related = picks ? relatedLooksFor(picks) : [];
+  const lookLine = startingLook ? [`Starting look: ${startingLook.name}`] : [];
 
   const name = text(form, "name", 120);
   const phone = text(form, "phone", 40);
@@ -109,7 +113,7 @@ export async function POST(request: Request) {
     capHit ? "Design pending (cap hit)" : "Path: Design My Bathroom",
     capHit ? "Path: Design My Bathroom" : "",
     `Style picked: ${styleName} (${style.path === "solid-surface" ? "Solid surface" : "Custom tile"})`,
-    ...(picks ? leadFeatureLines(picks, related) : []),
+    ...(picks ? leadFeatureLines(picks, related, lookLine) : lookLine),
     pendingNote,
     smsConsent
       ? `SMS consent: YES at ${formatChicago(now)} from IP ${ip} (checkbox text v1 on /design: "${designCopy.smsConsent.slice(0, 60)}…")`
@@ -173,6 +177,7 @@ export async function POST(request: Request) {
         customerRecap: {
           style: styleName,
           rows: [
+            ...(startingLook ? [{ label: "Starting look", value: startingLook.name }] : []),
             ...(picks
               ? [
                   { label: "Conversion", value: picks.layout.name },

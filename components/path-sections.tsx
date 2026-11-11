@@ -1,9 +1,12 @@
 import Image from "next/image";
+import { DesignLink } from "@/components/design-link";
 import { LookImage } from "@/components/look-image";
+import { LookLink } from "@/components/look-link";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { brand, hero, heroDesignCta, ideas, priceRange, solidPath, tilePath, trustLine } from "@/lib/copy";
 import type { Photo } from "@/lib/images";
+import { findStartingLookBySrc } from "@/lib/starting-looks";
 import { cn } from "cn";
 import { ConsultLink } from "@/components/consult-link";
 import { IdeaCarousel } from "@/components/idea-carousel";
@@ -42,12 +45,12 @@ export function PathHero({
           <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 text-base font-semibold text-primary-foreground shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 sm:h-14">
             {hero.primary}
           </ConsultLink>
-          <Link
-            href="/design"
+          <DesignLink
             className="inline-flex h-12 items-center justify-center rounded-full border border-white/75 bg-black/15 px-8 text-base font-medium text-white backdrop-blur-sm hover:bg-white/10 sm:h-14"
+            data-testid="path-design-cta"
           >
             {heroDesignCta}
-          </Link>
+          </DesignLink>
         </div>
         <a href={brand.phoneHref} className="hero-copy mt-3 inline-block text-sm font-semibold text-[#f6f1e6] underline underline-offset-4">
           {brand.phone}
@@ -75,7 +78,25 @@ export function ExampleGrid({ photos, className, title }: { photos: Photo[]; cla
               index > 2 && restSpan(index - 3, photos.length - 3),
             )}
           >
-            <LookImage src={photo.src} jpg={photo.jpg} alt={photo.alt} sizes="(min-width: 768px) 45vw, 50vw" loading="lazy" className="object-cover transition-transform duration-700 hover:scale-[1.03]" />
+            {(() => {
+              const starting = findStartingLookBySrc(photo.src);
+              const image = (
+                <LookImage src={photo.src} jpg={photo.jpg} alt={photo.alt} sizes="(min-width: 768px) 45vw, 50vw" loading="lazy" className="object-cover transition-transform duration-700 hover:scale-[1.03]" />
+              );
+              if (starting) {
+                return (
+                  <LookLink
+                    look={starting}
+                    dest="design"
+                    className="absolute inset-0"
+                    data-testid={`grid-look-${starting.id}`}
+                  >
+                    {image}
+                  </LookLink>
+                );
+              }
+              return image;
+            })()}
           </li>
         ))}
       </ul>

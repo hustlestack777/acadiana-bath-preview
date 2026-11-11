@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 export default async function DesignPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
   const style = typeof params.style === "string" ? params.style : "";
+  const look = typeof params.look === "string" ? params.look : "";
   return (
     <SiteShell>
       <main id="content" tabIndex={-1}>
@@ -23,7 +24,7 @@ export default async function DesignPage({ searchParams }: { searchParams: Promi
           <h1 className="mt-3 font-heading text-[clamp(2.4rem,7vw,4.2rem)] leading-[0.98]">{designCopy.headline}</h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{designCopy.sub}</p>
         </section>
-        <DesignTool initialStyle={style} />
+        <DesignTool initialStyle={style} initialLook={look} />
       </main>
     </SiteShell>
   );

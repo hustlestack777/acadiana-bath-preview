@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { ChatWidget } from "@/components/chat-widget";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { brand, hero, heroDesignCta } from "@/lib/copy";
 import { cn } from "cn";
 import { ConsultLink } from "@/components/consult-link";
+import { DesignLink } from "@/components/design-link";
 
 export function SiteShell({
   children,
@@ -31,12 +31,11 @@ export function SiteShell({
             <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-3 text-center text-sm font-semibold text-primary-foreground">
               {hero.primary}
             </ConsultLink>
-            <Link
-              href="/design"
+            <DesignLink
               className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card px-3 text-center text-sm font-semibold"
             >
               {heroDesignCta}
-            </Link>
+            </DesignLink>
           </div>
           <a href={brand.phoneHref} className="mt-1.5 block text-center text-xs font-semibold tracking-wide">
             {brand.phone}

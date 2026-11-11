@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ChangeEvent, type Dispatch, type FormEvent, type SetStateAction } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ChangeEvent, type Dispatch, type FormEvent, type SetStateAction } from "react";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { appendAttribution } from "@/components/lead-attribution";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
@@ -16,6 +16,20 @@ import {
   resolvePicks,
   type RelatedLook,
 } from "@/lib/design-picks";
+import {
+  clearStartingLook,
+  findStartingLook,
+  LOOK_CHANGE_EVENT,
+  persistStartingLook,
+  picksFromLook,
+  readStartingLook,
+  type StartingLook,
+} from "@/lib/starting-looks";
+
+function subscribeStartingLook(onChange: () => void) {
+  window.addEventListener(LOOK_CHANGE_EVENT, onChange);
+  return () => window.removeEventListener(LOOK_CHANGE_EVENT, onChange);
+}
 import { resizePhoto } from "@/lib/photo-resize";
 import { budgetOptions, budgetQuestion } from "@/lib/budget";
 import { cn } from "cn";
@@ -50,13 +64,19 @@ const STEP_TOTAL = 6;
 const field =
   "h-12 w-full rounded-xl border border-border bg-card px-4 text-base outline-none focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive";
 
-export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
+export function DesignTool({ initialStyle = "", initialLook = "" }: { initialStyle?: string; initialLook?: string }) {
+  const storedId = useSyncExternalStore(subscribeStartingLook, readStartingLook, () => "");
+  const [clearedLook, setClearedLook] = useState(false);
+  const startingLook: StartingLook | null = clearedLook
+    ? null
+    : findStartingLook(initialLook) || findStartingLook(storedId);
+  const seeded = startingLook ? picksFromLook(startingLook) : { layout: "", wall: "", floor: "", finish: "" };
   const [step, setStep] = useState<Step>("layout");
   const [shots, setShots] = useState<Shot[]>([]);
-  const [layout, setLayout] = useState("");
-  const [wall, setWall] = useState(findWall(initialStyle)?.key ?? "");
-  const [floor, setFloor] = useState("");
-  const [finish, setFinish] = useState("");
+  const [layout, setLayout] = useState(seeded.layout);
+  const [wall, setWall] = useState(seeded.wall || findWall(initialStyle)?.key || "");
+  const [floor, setFloor] = useState(seeded.floor);
+  const [finish, setFinish] = useState(seeded.finish);
   const [budget, setBudget] = useState("");
   const [error, setError] = useState("");
   const [busyMsg, setBusyMsg] = useState(0);
@@ -81,7 +101,16 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   }, []);
   useScrollToStep(step, topRef);
 
-  const picks = resolvePicks({ layout, wall, floor, finish, budget });
+  useEffect(() => {
+    if (startingLook) persistStartingLook(startingLook.id);
+  }, [startingLook]);
+
+  const layoutValue = layout || seeded.layout;
+  const wallValue = wall || seeded.wall;
+  const floorValue = floor || seeded.floor;
+  const finishValue = finish || seeded.finish;
+
+  const picks = resolvePicks({ layout: layoutValue, wall: wallValue, floor: floorValue, finish: finishValue, budget });
   const related = picks ? relatedLooksFor(picks) : [];
 
   useEffect(() => {
@@ -120,7 +149,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   }
 
   const render = useCallback(async () => {
-    if (!shots[0] || !resolvePicks({ layout, wall, floor, finish })) return;
+    if (!shots[0] || !resolvePicks({ layout: layoutValue, wall: wallValue, floor: floorValue, finish: finishValue })) return;
     setError("");
     setProgress(0);
     setBusyMsg(0);
@@ -129,11 +158,12 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
       const body = new FormData();
       body.set("photo", shots[0].file);
       if (shots[1]) body.set("photo2", shots[1].file);
-      body.set("layout", layout);
-      body.set("wall", wall);
-      body.set("floor", floor);
-      body.set("finish", finish);
+      body.set("layout", layoutValue);
+      body.set("wall", wallValue);
+      body.set("floor", floorValue);
+      body.set("finish", finishValue);
       body.set("budget", budget);
+      if (startingLook) body.set("look", startingLook.id);
       body.set("company_fax", form.company_fax);
       body.set("token", window.localStorage.getItem(TOKEN_KEY) || "");
       try {
@@ -178,7 +208,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         }
       }
     }
-  }, [shots, layout, wall, floor, finish, budget, form.company_fax]);
+  }, [shots, layoutValue, wallValue, floorValue, finishValue, budget, form.company_fax, startingLook]);
 
   async function unlock(event: FormEvent) {
     event.preventDefault();
@@ -228,8 +258,41 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
 
   const lookName = picks ? `${picks.wall.name}` : "";
 
+  function changeStarting() {
+    clearStartingLook();
+    setClearedLook(true);
+    setWall("");
+    setFloor("");
+    setFinish("");
+    setStep(layoutValue ? "walls" : "layout");
+  }
+
+  const showBanner = Boolean(startingLook) && ["layout", "walls", "floor", "finish", "budget", "photos"].includes(step);
+
   return (
     <div ref={topRef} className="scroll-mt-24 mx-auto w-full max-w-3xl px-5 pb-20" data-testid="design-tool">
+      {showBanner && startingLook ? (
+        <div
+          className="mb-5 flex items-center gap-3 rounded-2xl border border-border bg-card p-3"
+          data-testid="starting-look-banner"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={startingLook.jpg || startingLook.src}
+            alt=""
+            className="size-14 shrink-0 rounded-xl object-cover"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Starting from</p>
+            <p className="truncate font-semibold" data-testid="starting-look-name">
+              {startingLook.name}
+            </p>
+          </div>
+          <button type="button" onClick={changeStarting} className="shrink-0 text-sm font-semibold underline underline-offset-4" data-testid="starting-look-change">
+            Change
+          </button>
+        </div>
+      ) : null}
       {error ? (
         <p role="alert" className="mb-5 rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm" data-testid="design-error">
           {error}
@@ -241,7 +304,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           stepKey="layout"
           back={null}
           items={designLayouts}
-          value={layout}
+          value={layoutValue}
           testId="layout"
           onPick={(key) => {
             setLayout(key);
@@ -256,7 +319,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           back="layout"
           onBack={() => setStep("layout")}
           items={designWalls}
-          value={wall}
+          value={wallValue}
           testId="wall"
           onPick={(key) => {
             setWall(key);
@@ -271,7 +334,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           back="walls"
           onBack={() => setStep("walls")}
           items={designFloors}
-          value={floor}
+          value={floorValue}
           testId="floor"
           onPick={(key) => {
             setFloor(key);
@@ -286,7 +349,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           back="floor"
           onBack={() => setStep("floor")}
           items={designFinishes}
-          value={finish}
+          value={finishValue}
           testId="finish"
           aspect="aspect-[4/5]"
           onPick={(key) => {
@@ -529,10 +592,18 @@ function PickStep<T extends { key: string; name: string; blurb: string; image: s
             onClick={() => onPick(item.key)}
             data-testid={`${testId}-${item.key}`}
             className={cn(
-              "overflow-hidden rounded-2xl border bg-card text-left transition",
+              "relative overflow-hidden rounded-2xl border bg-card text-left transition",
               value === item.key ? "border-primary ring-3 ring-primary/40" : "border-border",
             )}
           >
+            {value === item.key ? (
+              <span
+                className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground"
+                data-testid="your-pick"
+              >
+                <span aria-hidden="true">✓</span> Your pick
+              </span>
+            ) : null}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={item.image} alt={item.alt} loading="lazy" className={cn("w-full object-cover", aspect)} />
             <span className="block px-3 pt-3 font-semibold leading-5">{item.name}</span>
@@ -540,11 +611,23 @@ function PickStep<T extends { key: string; name: string; blurb: string; image: s
           </button>
         ))}
       </div>
-      {back && onBack ? (
-        <button type="button" onClick={onBack} className="mt-5 text-sm font-semibold underline underline-offset-4">
-          Back
-        </button>
-      ) : null}
+      <div className="mt-5 flex flex-wrap items-center gap-4">
+        {back && onBack ? (
+          <button type="button" onClick={onBack} className="text-sm font-semibold underline underline-offset-4">
+            Back
+          </button>
+        ) : null}
+        {value ? (
+          <button
+            type="button"
+            onClick={() => onPick(value)}
+            className="inline-flex h-12 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground"
+            data-testid={`${testId}-continue`}
+          >
+            Continue
+          </button>
+        ) : null}
+      </div>
     </section>
   );
 }

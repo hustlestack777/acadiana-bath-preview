@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { DesignLink } from "@/components/design-link";
 import { FaqSection } from "@/components/faq-section";
 import { ConsultLink } from "@/components/consult-link";
 import { JsonLd } from "@/components/json-ld";
@@ -43,12 +43,11 @@ export function TownPage({ town }: { town: TownPageContent }) {
           <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-medium text-primary-foreground">
             {hero.primary}
           </ConsultLink>
-          <Link
-            href="/design"
+          <DesignLink
             className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card px-6 text-sm font-semibold"
           >
             Design My Bathroom
-          </Link>
+          </DesignLink>
           <a
             href={brand.phoneHref}
             className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card px-6 text-sm font-semibold"

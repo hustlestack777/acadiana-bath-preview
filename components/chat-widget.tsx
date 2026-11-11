@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { GigiAvatar } from "@/components/gigi-avatar";
 import { CHAT_ANSWERS, QUICK_PROMPTS, replyTo } from "@/lib/chat";
 import { cn } from "cn";
 
@@ -30,30 +31,40 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       {open ? (
         <section
           className="mb-3 flex max-h-[min(32rem,70vh)] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl"
-          aria-label="AI assistant"
+          aria-label="Gigi, Acadiana Bathrooms' AI assistant"
           data-testid="ai-chat"
         >
           <header className="flex items-start justify-between gap-3 border-b border-border bg-fig px-4 py-3 text-fig-foreground">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em]">AI assistant</p>
-              <p className="mt-1 text-sm leading-5 text-fig-muted">Answers from this site. Not a person, and nothing is saved.</p>
+            <div className="flex items-start gap-3">
+              <GigiAvatar size={48} alt="" className="size-12 shrink-0 border border-white/20" />
+              <div>
+                <p className="text-base font-semibold leading-5">Gigi</p>
+                <p className="mt-1 text-sm leading-5 text-fig-muted">Acadiana Bathrooms&apos; AI assistant</p>
+              </div>
             </div>
             <button type="button" className="inline-flex size-10 items-center justify-center rounded-xl" onClick={() => setOpen(false)}>
-              <span className="sr-only">Close AI assistant</span>
+              <span className="sr-only">Close chat with Gigi</span>
               <X />
             </button>
           </header>
           <div className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
             {turns.map((turn, index) => (
-              <p
+              <div
                 key={`${turn.role}-${index}`}
-                className={cn(
-                  "rounded-2xl px-3 py-2 text-sm leading-6",
-                  turn.role === "assistant" ? "bg-muted text-foreground" : "ml-6 bg-primary text-primary-foreground",
-                )}
+                className={cn("flex items-end gap-2", turn.role === "you" ? "justify-end" : "justify-start")}
               >
-                {turn.text}
-              </p>
+                {turn.role === "assistant" ? (
+                  <GigiAvatar size={28} alt="" className="mb-0.5 size-7 shrink-0" />
+                ) : null}
+                <p
+                  className={cn(
+                    "rounded-2xl px-3 py-2 text-sm leading-6",
+                    turn.role === "assistant" ? "bg-muted text-foreground" : "bg-primary text-primary-foreground",
+                  )}
+                >
+                  {turn.text}
+                </p>
+              </div>
             ))}
             <div className="flex flex-wrap gap-2">
               {QUICK_PROMPTS.map((prompt) => (
@@ -76,7 +87,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
             }}
           >
             <label className="sr-only" htmlFor="ai-question">
-              Ask the AI assistant
+              Ask Gigi
             </label>
             <Input
               id="ai-question"
@@ -95,13 +106,13 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="ml-auto flex items-center gap-2 rounded-full bg-fig px-4 py-3 text-sm font-semibold text-fig-foreground shadow-lg max-md:[[data-sticky-cta]_&]:hidden"
+        className="ml-auto flex items-center gap-2 rounded-full bg-fig px-3 py-2 pr-4 text-sm font-semibold text-fig-foreground shadow-lg max-md:[[data-sticky-cta]_&]:hidden"
         aria-expanded={open}
+        aria-label="Chat with Gigi, Acadiana Bathrooms' AI assistant"
+        data-testid="gigi-launcher"
       >
-        <span className="rounded-full bg-fig-foreground px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-fig">
-          AI
-        </span>
-        Assistant
+        <GigiAvatar size={32} alt="" className="size-8 border border-white/20" />
+        Gigi
       </button>
     </div>
   );
