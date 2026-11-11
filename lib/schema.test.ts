@@ -69,12 +69,11 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   assert.match(names, /Pointe Coupee Parish/);
   assert.equal(data.description.includes(SCHEMA_SERVICE_AREA), true);
   for (const excluded of EXCLUDED_SERVICE_AREAS) {
-    // "Jefferson" is Jefferson Parish, not Jefferson Davis Parish on the map.
-    const hit = excluded === "Jefferson" ? names.includes("Jefferson Parish") : names.includes(excluded);
-    assert.equal(hit, false, excluded);
-    const descHit = excluded === "Jefferson" ? data.description.includes("Jefferson Parish") : data.description.includes(excluded);
-    assert.equal(descHit, false, excluded);
+    assert.equal(names.includes(excluded), false, excluded);
+    assert.equal(data.description.includes(excluded), false, excluded);
   }
+  assert.equal(names.includes("Jefferson Parish"), false);
+  assert.equal(data.description.includes("Jefferson Parish"), false);
 });
 
 test("service JSON-LD is present for both service paths and has no reviews", () => {

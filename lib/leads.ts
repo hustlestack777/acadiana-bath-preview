@@ -694,6 +694,7 @@ async function notifyLeadExtras(
     height: string;
     measurements: string;
     preferredCallTime: string;
+    preferredCallDay?: string;
     photos: LeadPhoto[];
     newPhotoCount: number;
   },
