@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
+import { WindowsQuoteLine } from "@/components/windows-quote-line";
 import { checkCity, MAIN_TOWNS } from "@/lib/coverage";
 import {
   brand,
@@ -652,6 +653,7 @@ export function EstimateWizard() {
             </h1>
             <p className="mt-2.5 text-lg leading-snug">{lead.thanks}</p>
             <p className="mt-2 mb-5 leading-snug text-[#55574c]">{lead.savedNote}</p>
+            <WindowsQuoteLine className="mb-5 text-[#55574c]" />
             <section className="rounded-[24px] border border-[#d8d3c4] bg-[#fffaf3] px-5 py-[22px]">
               <p className="font-heading text-[32px] leading-[1.05]">{form.name.trim()}</p>
               <div className="mt-2.5">

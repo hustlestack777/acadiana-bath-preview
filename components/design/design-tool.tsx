@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
+import { WindowsQuoteLine } from "@/components/windows-quote-line";
 import { designCopy, designStyles, findStyle } from "@/lib/design-styles";
 import { resizePhoto } from "@/lib/photo-resize";
 import { brand } from "@/lib/copy";
@@ -411,6 +412,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             </a>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">Thanks! Justin has your photos and the look you picked, and will reach out about your free quote.</p>
+          <WindowsQuoteLine className="mt-2 text-muted-foreground" />
         </section>
       ) : null}
     </div>

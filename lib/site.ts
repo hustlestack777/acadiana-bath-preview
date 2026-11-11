@@ -65,11 +65,8 @@ export const siteRobots = SITE_INDEXABLE
   ? { index: true, follow: true }
   : { index: false, follow: false };
 
-/** Always hidden, even after go-live. */
-export const ALWAYS_NOINDEX_PATHS = ["/windows"] as const;
-
-/** Paths disallowed in the go-live robots.txt. */
-export const ROBOTS_DISALLOW_WHEN_LIVE = ["/windows", "/api/"] as const;
+/** Paths disallowed in the go-live robots.txt. /windows is allowed so it can be indexed like the rest of the site. */
+export const ROBOTS_DISALLOW_WHEN_LIVE = ["/api/"] as const;
 
 export const AI_SEARCH_USER_AGENTS = [
   "GPTBot",

@@ -2,6 +2,7 @@ import { MaisonLogo } from "@/components/logo";
 import { brand, cardClaims, services } from "@/lib/copy";
 import { SERVICE_AREA } from "@/lib/coverage";
 import { ConsultLink } from "@/components/consult-link";
+import { WindowsQuoteLine } from "@/components/windows-quote-line";
 
 export function SiteFooter() {
   return (
@@ -52,6 +53,7 @@ export function SiteFooter() {
           <p className="mt-4 text-sm leading-6 text-fig-muted">
             {SERVICE_AREA}
           </p>
+          <WindowsQuoteLine className="mt-4 text-fig-muted" />
         </div>
       </div>
       <p className="border-t border-white/15 px-5 py-4 text-center text-xs leading-5 text-fig-muted">

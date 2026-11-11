@@ -72,7 +72,7 @@ To go live, only after Shaun OKs it:
 2. Redeploy so metadata, `robots.txt` and HTML are rebuilt.
 3. Confirm `https://acadiana-bathrooms.onrender.com/robots.txt` allows crawlers, lists `/sitemap.xml`, and that the home page no longer has `noindex`.
 
-`/windows` stays noindex and is disallowed even after go-live. `/api/` is also disallowed.
+`/windows` stays noindex with the rest of the preview, then is allowed and indexable at go-live like the other public pages. It is not listed in the sitemap. `/api/` stays disallowed.
 
 Optional: `SITE_URL` overrides the canonical origin. It defaults to `https://acadiana-bathrooms.onrender.com`.
 

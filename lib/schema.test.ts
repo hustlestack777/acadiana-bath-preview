@@ -111,7 +111,7 @@ test("go-live robots.txt allows AI crawlers and advertises the sitemap", () => {
   assert.ok(agents.includes("*"));
   for (const rule of rules) {
     assert.equal(rule.allow, "/");
-    assert.ok(rule.disallow?.includes("/windows"));
+    assert.equal(rule.disallow?.includes("/windows"), false);
     assert.ok(rule.disallow?.includes("/api/"));
   }
   assert.match(String(live.sitemap), /\/sitemap.xml$/);
@@ -134,6 +134,7 @@ test("sitemap lists public pages, includes lastmod, and omits town pages until g
   for (const town of towns) {
     assert.ok(live.some((url) => url.endsWith(townPath(town.slug))), town.slug);
   }
+  assert.equal(live.some((url) => url.includes("/windows")), false);
 });
 
 test("cleared FAQ and town copy has no windows mentions and town schema is area-only", () => {
