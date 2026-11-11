@@ -48,7 +48,7 @@ export const heroHeadlines = [
 export const heroHeadlineReduced = "Your bathroom shouldn't be boring.";
 
 export const heroSubhead =
-  "Custom showers, tile, quartz, quartzite, granite and marble from people who sweat the details. Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge.";
+  "Custom showers, tile, quartz, quartzite and marble from people who sweat the details. Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge.";
 
 export const heroDesignCta = "Design My Bathroom";
 
