@@ -36,7 +36,7 @@ export const hero = {
 export const editorial = {
   eyebrow: "The room, considered",
   title: "Less stepping over. More stepping into.",
-  body: "A shower, a tub, a lavatory, the floor underfoot. Acadiana Bathrooms and Countertops plans the work with Onyx Collection solid-surface products, then Justin confirms the scope before anything is approved.",
+  body: "A shower, a tub, a lavatory, the floor underfoot. Acadiana Bathrooms and Countertops plans the work with Onyx Collection solid-surface products, and Justin reviews the scope with you.",
 } as const;
 
 export const reasons = [
@@ -85,7 +85,7 @@ export const steps = [
   },
   {
     title: "Get a clear proposal.",
-    body: "Justin confirms measurements and project scope before you approve the work.",
+    body: "Justin confirms measurements and project scope, then you get a clear proposal.",
   },
 ] as const;
 
@@ -101,17 +101,17 @@ export const area = {
 
 export const beforeAfter = {
   title: "Before and after, as Onyx published them",
-  body: "These composites are labeled by the Onyx Collection. They are manufacturer examples, not completed jobs by Acadiana Bathrooms and Countertops.",
+  body: "These composites are labeled by the Onyx Collection. They are manufacturer examples.",
 } as const;
 
 export const gallery = {
   title: "Examples from the Onyx Collection",
-  body: "These photographs are published by the Onyx Collection. They are manufacturer product and installation examples, not completed jobs by Acadiana Bathrooms and Countertops. Onyx notes that a shower-gallery photo may show Onyx wall panels and/or ceramic tile, and that photography does not reliably show color.",
+  body: "These photographs are published by the Onyx Collection. They are manufacturer product and installation examples. Onyx notes that a shower-gallery photo may show Onyx wall panels and/or ceramic tile, and that photography does not reliably show color.",
 } as const;
 
 export const patterns = {
   title: "Wall patterns the manufacturer publishes",
-  body: "Onyx names these solid-surface wall patterns. A photograph is an example. Justin confirms what can be made for a room before you approve the work.",
+  body: "Onyx names these solid-surface wall patterns. A photograph is an example. Justin will confirm what can be made for your room.",
   items: [
     {
       id: "gloss",

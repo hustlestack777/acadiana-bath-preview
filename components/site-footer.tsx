@@ -8,7 +8,7 @@ export function SiteFooter() {
     <footer className="bg-secondary text-secondary-foreground">
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 md:grid-cols-3">
         <div>
-          <MaisonLogo className="text-secondary-foreground" />
+          <MaisonLogo onDark className="text-secondary-foreground" />
           <p className="mt-4 text-sm leading-6 text-fig-muted">
             {brand.name} uses{" "}
             <a href={brand.onyxHref} className="underline underline-offset-4">
@@ -47,8 +47,8 @@ export function SiteFooter() {
         </div>
       </div>
       <p className="border-t border-white/15 px-5 py-4 text-center text-xs leading-5 text-fig-muted">
-        Photographs are Onyx Collection product and gallery examples, not completed jobs by {brand.name}. No labor
-        coverage is added on this site. Manufacturer product terms are separate from installation.
+        Photographs are Onyx Collection product and gallery examples. No labor coverage is added on this site.
+        Manufacturer product terms are separate from installation.
       </p>
     </footer>
   );

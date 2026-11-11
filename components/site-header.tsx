@@ -62,12 +62,8 @@ export function SiteHeader() {
       </a>
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3">
         <Link href="/" aria-label={brand.name} className={cn("min-w-0", overHero ? "text-[#fbf6f2]" : undefined)}>
-          {consult ? <MaisonLogo /> : (
-            <>
-              <MaisonLogo compact className="sm:hidden" />
-              <MaisonLogo className="hidden sm:inline-flex" />
-            </>
-          )}
+          <MaisonLogo compact onDark={overHero} className="sm:hidden" />
+          <MaisonLogo onDark={overHero} className="hidden sm:inline-flex" />
         </Link>
         <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary">
           {LINKS.map((link) => (

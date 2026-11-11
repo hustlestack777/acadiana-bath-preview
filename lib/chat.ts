@@ -8,9 +8,9 @@ const answers = {
   area: area.faq,
   quote: faqs[1].a,
   cost: `${faqs[2].a} No dollar amount is published on this site.`,
-  fit: `${hero.support} Justin confirms measurements and project scope before you approve the work.`,
+  fit: `${hero.support} Justin confirms measurements and project scope, then you get a clear proposal.`,
   timing:
-    "Installation times are not listed. Justin confirms measurements and project scope before you approve the work.",
+    "Installation times are not listed. Justin confirms measurements and project scope, then you get a clear proposal.",
   proof:
     "This site does not publish ratings, job counts, licenses, or testimonials.",
   compare:
