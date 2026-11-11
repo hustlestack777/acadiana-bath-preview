@@ -32,6 +32,28 @@ export const hero = {
   secondary: "337-522-0023",
 } as const;
 
+/** Home hero headline pool. Shuffled per visit with a random start; add lines here later. */
+export const heroHeadlines = [
+  "Your bathroom shouldn't be boring.",
+  "Tile with soul. Style that shows.",
+  "Stone that stops people at the door.",
+  "Warm, handmade, one of a kind.",
+  "Bold floors. Zero regrets.",
+  "Let's get stylish.",
+  "The bathroom your friends will ask about.",
+  "Color that makes mornings better.",
+  "Handmade tile. Zero boring.",
+] as const;
+
+export const heroHeadlineReduced = "Your bathroom shouldn't be boring.";
+
+export const heroSubhead =
+  "Custom showers, tile and quartz from people who sweat the details. Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge.";
+
+export const heroDesignCta = "Design My Bathroom";
+
+export const heroQuoteLine = "Bathroom remodels from $5,000. Free in-home quote.";
+
 export const editorial = {
   eyebrow: "The room, considered",
   title: "Less stepping over. More stepping into.",
@@ -278,6 +300,6 @@ export const ideas = {
   ],
 } as const;
 
-/** Approved by Shaun 11/10/2026. The only price wording on the site. Do not add others. */
+/** Approved by Shaun 11/10/2026. Used in chat and on the path pages. */
 export const priceRange =
   "Complete bathroom remodels typically run $5,000 to $30,000+, depending on size, materials and layout. Your free consult gets you an exact number.";
