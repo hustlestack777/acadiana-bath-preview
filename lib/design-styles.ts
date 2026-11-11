@@ -212,7 +212,7 @@ export function findStyle(key: string) {
 export const designCopy = {
   cta: "Design My Bathroom",
   headline: "Your new bathroom, before you spend a dime.",
-  sub: "Snap your shower, pick a look, and see it come to life in your own space.",
+  sub: "Pick a look, snap your shower, and see it come to life in your own space.",
   /** The only fine print in the tool (Shaun, 11/10/2026). */
   finePrint: "Design preview. Final pricing at your free consult.",
   tips: "Stand in the doorway, phone at chest height, lights on, whole shower in frame.",

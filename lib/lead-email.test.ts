@@ -243,3 +243,30 @@ test("the lead email records the exact consent checkbox, page path, and timestam
   );
   assert.match(email.text, /Checkbox on \/estimate/);
 });
+
+
+test("design picks, talking points, and related looks show clearly in Justin's lead email", () => {
+  const email = sample({
+    features: [
+      "Path: Design My Bathroom",
+      "Style picked: Tub-to-shower (walk-in) · Green zellige (Custom tile)",
+      "Conversion: Tub-to-shower (walk-in)",
+      "Walls: Green zellige (Custom tile)",
+      "Floor: Hex",
+      "Fixture finish: Brass",
+      "Talking point (Good): They picked a tub-to-shower (walk-in) with green zellige walls, a hex floor, and brass fixtures. Starting at $5K.",
+      "Talking point (Better): Upgrade to talk through: a marble-lined niche, frameless clear glass.",
+      "Talking point (Best): If they want the full treatment: going curbless with a linear drain.",
+      "Related looks shown: Green zellige, Green zellige + hex floor, Emerald zellige",
+    ].join("\n"),
+  });
+  assert.match(email.text, /Conversion: Tub-to-shower \(walk-in\)/);
+  assert.match(email.text, /Floor: Hex/);
+  assert.match(email.text, /Fixture finish: Brass/);
+  assert.match(email.text, /Talking point \(Good\):/);
+  assert.match(email.text, /Starting at \$5K/);
+  assert.match(email.text, /Related looks shown: Green zellige/);
+  assert.match(email.html, /Tub-to-shower \(walk-in\)/);
+  assert.match(email.html, /marble-lined niche/);
+  assert.doesNotMatch(email.text, /AI design|granite|licensed|insured|deposit|about a minute/i);
+});

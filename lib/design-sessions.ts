@@ -2,10 +2,10 @@ import { createHash, randomBytes } from "node:crypto";
 import type { Pool } from "pg";
 import { getPool } from "./leads";
 
-/** Caps from the PRD: 2 looks per phone/device, 3 renders per IP per day, about 125 renders (DESIGN_DAILY_USD_CAP) per day overall. QA test runs (is_test) don't count toward the daily caps. */
+/** Caps: one preview plus one free retry per visitor/IP per day, and a global daily render cap (DESIGN_DAILY_RENDER_CAP, default 60). After the cap, the tool falls back to the hand-design path. QA test runs (is_test) don't count toward the daily caps. */
 export const LOOKS_PER_PERSON = Number(process.env.DESIGN_LOOKS_PER_PERSON || 2);
-export const RENDERS_PER_IP_PER_DAY = Number(process.env.DESIGN_IP_DAILY_CAP || 3);
-export const DAILY_RENDER_CAP = Number(process.env.DESIGN_DAILY_RENDER_CAP || 125);
+export const RENDERS_PER_IP_PER_DAY = Number(process.env.DESIGN_IP_DAILY_CAP || 2);
+export const DAILY_RENDER_CAP = Number(process.env.DESIGN_DAILY_RENDER_CAP || 60);
 export const DAILY_USD_CAP = Number(process.env.DESIGN_DAILY_USD_CAP || 10);
 
 let ready: Promise<void> | null = null;
@@ -41,6 +41,7 @@ export async function ensureDesignSchema(db: Pool) {
         ALTER TABLE design_sessions ADD COLUMN IF NOT EXISTS budget text NOT NULL DEFAULT '';
         ALTER TABLE design_sessions ADD COLUMN IF NOT EXISTS attempts integer NOT NULL DEFAULT 0;
         ALTER TABLE design_sessions ADD COLUMN IF NOT EXISTS qa_failed boolean NOT NULL DEFAULT false;
+        ALTER TABLE design_sessions ADD COLUMN IF NOT EXISTS picks jsonb NOT NULL DEFAULT '{}';
         CREATE TABLE IF NOT EXISTS design_qa_log (
           id bigserial PRIMARY KEY,
           created_at timestamptz NOT NULL DEFAULT now(),

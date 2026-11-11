@@ -1,5 +1,6 @@
 import type { RoomScan } from "./design-render";
 import type { DesignStyle } from "./design-styles";
+import { layoutAllowsFixtureChange, layoutQaNotes, type DesignLayout } from "./design-picks";
 
 /**
  * Automatic QA on every render: a second vision model compares the homeowner's photo (A)
@@ -41,10 +42,14 @@ export type QaVerdict = {
   error?: string;
 };
 
-function qaPrompt(inventory: string, style: DesignStyle) {
-  return `You are a strict quality inspector for a bathroom remodel visualizer. IMAGE A is the homeowner's real photo. IMAGE B is the redesigned version, which is supposed to change ONLY finishes and remove clutter, while keeping the same room, camera, walls, windows, doors, tub or shower footprint and every fixture in the same place.
+function qaPrompt(inventory: string, style: DesignStyle, layout?: DesignLayout) {
+  const conversion = layout
+    ? `The homeowner picked this conversion, which IS allowed: ${layout.name}. ${layout.prompt} Allowed conversion changes (these are NOT defects): ${layoutQaNotes(layout).join("; ") || "none beyond finishes"}.`
+    : "Keep the existing tub or shower footprint. A tub should stay a tub and a shower should stay a shower unless the look above clearly says otherwise.";
+  return `You are a strict quality inspector for a bathroom remodel visualizer. IMAGE A is the homeowner's real photo. IMAGE B is the redesigned version, which is supposed to apply the conversion and finishes the homeowner picked, remove clutter, and keep the same room, camera, walls, windows and doors. Fixtures that are not part of the conversion stay in the same place.
 The look the homeowner picked: ${style.spec}.
-Allowed changes (these are NOT defects): new wall, floor and surround materials and colors; a new metal finish or a new style of an existing faucet, handle, shower head, towel bar, light or mirror at the same spot; clear shower glass replacing a curtain or an old framed door; removing clutter, toiletries, towels, mats, curtains and loose items; removing a small wall accessory such as a soap dish, toothbrush holder, hook, vent cover or tissue holder, or showing it in a new style at the same spot; one recessed wall niche if the look above names one; one shower valve and one tub spout on the wet wall directly below an existing shower head when A has the shower head but its valve or spout is hidden or out of view.
+${conversion}
+Allowed changes (these are NOT defects): the conversion above; new wall, floor and surround materials and colors; a new metal finish or a new style of an existing faucet, handle, shower head, towel bar, light or mirror at the same spot; clear shower glass replacing a curtain or an old framed door; removing clutter, toiletries, towels, mats, curtains and loose items; removing a small wall accessory such as a soap dish, toothbrush holder, hook, vent cover or tissue holder, or showing it in a new style at the same spot; one recessed wall niche if the look above names one; one shower valve and one tub spout on the wet wall directly below an existing shower head when A has the shower head but its valve or spout is hidden or out of view.
 Fixtures found in IMAGE A:
 ${inventory || "- (not listed; read them from IMAGE A)"}
 Inspect IMAGE B closely (zoom into every faucet, sink, handle, knob, shower head and valve) and compare it with IMAGE A. Be strict about real defects, but do not fail B for text or logos that were already in A, or for small geometry drift such as a slightly larger TV or a slightly narrower doorway. Return ONLY JSON, filling the keys in this order:
@@ -52,8 +57,8 @@ Inspect IMAGE B closely (zoom into every faucet, sink, handle, knob, shower head
  "differences": [{"what": "then list every difference between A and B, one per item: anything added, missing, duplicated, moved, floating, misaligned or warped, any text or logo, and also each finish change", "allowed": boolean (true only if it is one of the allowed changes above; ADDING a grab bar, shelf, caddy, soap dish, second niche, extra valve, extra spout or extra shower head that A does not have is NOT allowed; a moved, missing or duplicated sink, faucet, toilet, tub, shower head, window, door or mirror is NOT allowed)}],
  "same_camera": boolean (same viewpoint, angle and crop; small zoom or perspective drift under about 5% is fine),
  "layout_kept": boolean (same walls, ceiling line, windows and doors; no wall, window, door or opening added, removed or moved to a different place. Small size or width drift of an existing doorway or opening is allowed),
- "footprint_kept": boolean (a tub is still a tub and a shower is still a shower, same size and position),
- "fixtures_kept": boolean (major fixtures from A are still in B: the tub, toilet, vanity, windows and doors are not missing or clearly relocated. Small geometry drift is allowed and must not fail this check: a TV a bit larger or smaller, a doorway a bit narrower or wider, or a slight perspective shift. Only fail if a tub, toilet, vanity, window or door was clearly removed or moved to a different place),
+ "footprint_kept": boolean (the wet area stays in the same place and size. If the conversion allows it, a tub may become a shower or a shower may become a tub, or a tub may become freestanding or curbless, in that same footprint. Fail only if the wet area moved to a different wall or a conversion that was not picked was done),
+ "fixtures_kept": boolean (major fixtures that are not part of the conversion stay in B: the toilet, vanity, windows and doors are not missing or clearly relocated. The tub may be removed or added only when the conversion above allows it. Small geometry drift is allowed and must not fail this check: a TV a bit larger or smaller, a doorway a bit narrower or wider, or a slight perspective shift. Only fail if a toilet, vanity, window or door was clearly removed or moved, or if a tub changed in a way the conversion does not allow),
  "faucets_ok": boolean (every faucet in B sits over a real sink basin or tub with its spout pointing into it; no faucet over a countertop, wall or floor; no sink without a faucet; true if no faucet is visible in either image),
  "sink_present": boolean (if A has a sink, B has a real sink basin there; true if A has no sink),
  "shower_plumbing_ok": boolean (shower head and valve on a wall at sensible heights, valve below the head, connected, not floating, not duplicated; true if not visible),
@@ -113,8 +118,11 @@ function isFixtureRelated(reason: string) {
  * Soften a raw QA verdict: ignore text/logos already in the original photo,
  * and tolerate small geometry drift on TVs and doorways.
  */
-export function softenQaVerdict(input: { failed: QaCheck[]; reasons: string[]; disallowed?: string[] }) {
-  const disallowed = (input.disallowed ?? []).filter((item) => !isExistingPhotoText(item) && !isMinorFixtureDrift(item));
+export function softenQaVerdict(input: { failed: QaCheck[]; reasons: string[]; disallowed?: string[]; layout?: DesignLayout }) {
+  const allowedByLayout = (reason: string) => (input.layout ? layoutAllowsFixtureChange(input.layout, reason) : false);
+  const disallowed = (input.disallowed ?? []).filter(
+    (item) => !isExistingPhotoText(item) && !isMinorFixtureDrift(item) && !allowedByLayout(item),
+  );
   const drop = new Set<QaCheck>();
   if (input.failed.includes("no_text")) {
     const textReasons = input.reasons.filter(isTextRelated);
@@ -122,8 +130,17 @@ export function softenQaVerdict(input: { failed: QaCheck[]; reasons: string[]; d
   }
   if (input.failed.includes("fixtures_kept")) {
     const fixtureReasons = input.reasons.filter(isFixtureRelated);
-    if (!fixtureReasons.length || fixtureReasons.every((reason) => isMinorFixtureDrift(reason) || isExistingPhotoText(reason))) {
+    if (
+      !fixtureReasons.length ||
+      fixtureReasons.every((reason) => isMinorFixtureDrift(reason) || isExistingPhotoText(reason) || allowedByLayout(reason))
+    ) {
       drop.add("fixtures_kept");
+    }
+  }
+  if (input.failed.includes("footprint_kept")) {
+    const footprintReasons = input.reasons.filter((reason) => /\b(tub|shower|footprint|alcove|curb|curbless)\b/.test(reason.toLowerCase()));
+    if (!footprintReasons.length || footprintReasons.every((reason) => isMinorFixtureDrift(reason) || allowedByLayout(reason))) {
+      drop.add("footprint_kept");
     }
   }
   if (input.failed.includes("layout_kept")) {
@@ -133,7 +150,7 @@ export function softenQaVerdict(input: { failed: QaCheck[]; reasons: string[]; d
   const failed = input.failed.filter((check) => !drop.has(check));
   const reasons = input.reasons.filter((reason) => {
     if (drop.has("no_text") && isTextRelated(reason) && isExistingPhotoText(reason)) return false;
-    if (drop.has("fixtures_kept") && isMinorFixtureDrift(reason)) return false;
+    if ((drop.has("fixtures_kept") || drop.has("footprint_kept")) && (isMinorFixtureDrift(reason) || allowedByLayout(reason))) return false;
     if (drop.has("layout_kept") && isMinorFixtureDrift(reason)) return false;
     return true;
   });
@@ -163,7 +180,7 @@ export function rankUsableAttempts<T extends { attempt: number; after?: unknown;
 
 const dataUri = (bytes: Buffer) => `data:image/jpeg;base64,${bytes.toString("base64")}`;
 
-export async function qaCheck(before: Buffer, after: Buffer, scan: RoomScan, style: DesignStyle): Promise<QaVerdict> {
+export async function qaCheck(before: Buffer, after: Buffer, scan: RoomScan, style: DesignStyle, layout?: DesignLayout): Promise<QaVerdict> {
   const started = Date.now();
   const base = { model: QA_MODEL, costUsd: 0 };
   const key = process.env.XAI_API_KEY;
@@ -182,7 +199,7 @@ export async function qaCheck(before: Buffer, after: Buffer, scan: RoomScan, sty
               { type: "image_url", image_url: { url: dataUri(before), detail: "high" } },
               { type: "text", text: "IMAGE B (redesign to inspect):" },
               { type: "image_url", image_url: { url: dataUri(after), detail: "high" } },
-              { type: "text", text: qaPrompt(inventoryText(scan), style) },
+              { type: "text", text: qaPrompt(inventoryText(scan), style, layout) },
             ],
           },
         ],
@@ -213,7 +230,7 @@ export async function qaCheck(before: Buffer, after: Buffer, scan: RoomScan, sty
           .map((item) => (typeof item.what === "string" ? item.what.slice(0, 200) : "a change that isn't allowed"))
       : [];
     for (const item of disallowed.slice(0, 6)) if (!reasons.includes(item)) reasons.push(item);
-    const softened = softenQaVerdict({ failed, reasons, disallowed });
+    const softened = softenQaVerdict({ failed, reasons, disallowed, layout });
     const pass = softened.failed.length === 0 && softened.disallowed.length === 0;
     if (!pass && !softened.failed.length) softened.failed.push("fixtures_kept");
     return { ...base, pass, failed: softened.failed, reasons: softened.reasons, latencyMs: Date.now() - started };

@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import type { DesignStyle } from "./design-styles";
+import type { DesignLayout } from "./design-picks";
 import { isUsableRedesign, qaCheck, rankUsableAttempts, type QaCheck, type QaVerdict } from "./design-qa";
 
 /**
@@ -153,17 +154,27 @@ export async function scanRoom(photo: Buffer): Promise<{ scan: RoomScan; costUsd
  * fixtures one for one (from the scan) and the room geometry. The image service has no mask or
  * inpaint mode, so the fixture inventory plus the QA pass below is what keeps the layout.
  */
-export function buildEditPrompt(style: DesignStyle, scan: RoomScan) {
+export function buildEditPrompt(style: DesignStyle, scan: RoomScan, layout?: DesignLayout) {
   const inventory = scan.fixtures.length
     ? scan.fixtures.map((line) => `- ${line}`).join("\n")
     : `- every fixture, window and door exactly as in <IMAGE_0>${scan.layout ? ` (${scan.layout})` : ""}`;
   const clutter = scan.clutter.length ? `${scan.clutter.join(", ")}, plus any` : "any";
-  return `<IMAGE_0> is a homeowner's bathroom photo. Show this same bathroom remodeled with new finishes: ${style.spec}. Only surface materials and fixture finishes change: the wall tile or wall panels, the floor tile, the tub or shower surround, clear shower glass in place of any old curtain or framed door, the vanity top, and the finish of the existing faucets, handles and lights. Match the colors, texture and finish of <IMAGE_1>, which is a material sample only; take nothing else from it.
-Every fixture and opening stays where it is, one for one, at the same size and in the same spot in the frame:
+  const conversion = layout
+    ? `Apply this exact conversion: ${layout.name}. ${layout.prompt}`
+    : "Keep the existing tub or shower footprint. Only surface materials and fixture finishes change.";
+  const keep = layout
+    ? "Keep every fixture and opening that is not part of that conversion where it is, one for one, at the same size and in the same spot in the frame. The toilet, vanity, sinks, windows, doors, lights, TV and mirrors stay put."
+    : "Every fixture and opening stays where it is, one for one, at the same size and in the same spot in the frame.";
+  const footprint = layout
+    ? "the wet area stays in the same place in the room, following the conversion above"
+    : "same tub or shower footprint";
+  return `<IMAGE_0> is a homeowner's bathroom photo. Show this same bathroom remodeled with the conversion and finishes they picked: ${style.spec} ${conversion} Match the colors, texture and finish of <IMAGE_1>, which is a material sample only; take nothing else from it. Use clear shower glass in place of any old curtain or framed door. Update the vanity top only if a vanity is visible, and update the finish of the faucets, handles and lights.
+${keep}
+Fixtures found in the photo:
 ${inventory}
-The plumbing reads correctly: each faucet sits centered over its own sink basin with the spout pointing into the bowl. The shower valve and its handle sit on the wet wall at waist height, under the shower head, which sits on the same wall at head height. Handles and knobs are level, symmetrical and attached to the fixture they control. Nothing floats, appears twice or goes missing. The fixture count stays exactly as listed above: no added grab bar, shelf, caddy, soap dish, towel bar, bench, extra niche, extra valve, extra spout or extra shower head, and no new window, door or wall.
+The plumbing reads correctly: each faucet sits centered over its own sink basin with the spout pointing into the bowl. The shower valve and its handle sit on the wet wall at waist height, under the shower head, which sits on the same wall at head height. Handles and knobs are level, symmetrical and attached to the fixture they control. Nothing floats, appears twice or goes missing. Do not add a grab bar, shelf, caddy, soap dish, towel bar, extra niche, extra valve, extra spout or extra shower head unless the conversion above calls for it, and do not add a new window, door or wall.
 Remove the clutter: ${clutter} bottles, soap, razors, towels, loofahs, mats and loose items, so every ledge, shelf, tub edge and floor is clean and empty.
-Same camera position, lens, angle and crop as <IMAGE_0> (${scan.camera || "as shown"}), same walls and ceiling line, same window and door openings at the same positions and sizes, same tub or shower footprint, same light direction (${scan.lighting || "as shown"}). A bright, sharp, realistic real-estate photograph with no people and no text, letters, logos or watermark.`;
+Same camera position, lens, angle and crop as <IMAGE_0> (${scan.camera || "as shown"}), same walls and ceiling line, same window and door openings at the same positions and sizes, ${footprint}, same light direction (${scan.lighting || "as shown"}). A bright, sharp, realistic real-estate photograph with no people and no text, letters, logos or watermark.`;
 }
 
 async function styleReference(style: DesignStyle) {
@@ -171,13 +182,13 @@ async function styleReference(style: DesignStyle) {
   return readFile(file);
 }
 
-export async function editRoom(photo: Buffer, style: DesignStyle, scan: RoomScan) {
+export async function editRoom(photo: Buffer, style: DesignStyle, scan: RoomScan, layout?: DesignLayout) {
   const reference = await styleReference(style);
   const json = await xai(
     "/images/edits",
     {
       model: IMAGE_MODEL,
-      prompt: buildEditPrompt(style, scan),
+      prompt: buildEditPrompt(style, scan, layout),
       images: [
         { type: "image_url", url: dataUri(photo, "image/jpeg") },
         { type: "image_url", url: dataUri(reference, "image/jpeg") },
@@ -242,6 +253,7 @@ export async function renderDesign(
   photo: Buffer,
   style: DesignStyle,
   onProgress?: (stage: RenderStage) => void,
+  layout?: DesignLayout,
 ): Promise<RenderResult> {
   const started = Date.now();
   onProgress?.("preparing");
@@ -255,7 +267,7 @@ export async function renderDesign(
   const firstEditPromise = (async () => {
     const editStarted = Date.now();
     try {
-      const edit = await editRoom(source, style, DRAFT_SCAN);
+      const edit = await editRoom(source, style, DRAFT_SCAN, layout);
       const after = await sharp(edit.bytes).rotate().jpeg({ quality: 88 }).toBuffer();
       return { editStarted, after, costUsd: edit.costUsd, error: undefined as string | undefined };
     } catch (error) {
@@ -302,7 +314,7 @@ export async function renderDesign(
       return;
     }
     onProgress?.("checking");
-    const verdict = await qaCheck(source, after, scan, style);
+    const verdict = await qaCheck(source, after, scan, style, layout);
     costUsd += editCost + verdict.costUsd;
     attempts.push({ attempt, after, verdict, editMs, costUsd: editCost + verdict.costUsd });
     if (verdict.pass || (await showable(after, verdict.failed))) passed = after;
@@ -315,7 +327,7 @@ export async function renderDesign(
     onProgress?.("retrying");
     const editStarted = Date.now();
     try {
-      const edit = await editRoom(source, style, scan);
+      const edit = await editRoom(source, style, scan, layout);
       const after = await sharp(edit.bytes).rotate().jpeg({ quality: 88 }).toBuffer();
       await finishAttempt(attempt, Date.now() - editStarted, after, edit.costUsd);
     } catch (error) {

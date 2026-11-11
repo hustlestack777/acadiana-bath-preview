@@ -7,6 +7,7 @@ import {
   rankUsableAttempts,
   softenQaVerdict,
 } from "./design-qa";
+import { findLayout } from "./design-picks";
 
 test("no_text ignores logos that were already in the original photo", () => {
   assert.equal(isExistingPhotoText("TV brand logo 'PHILIPS' is visible on the TV bezel"), true);
@@ -70,4 +71,23 @@ test("a usable redesign can be shown when QA still fails on minor checks", () =>
     { attempt: 3, after: null, verdict: { failed: [] } },
   ]);
   assert.equal(ranked[0]?.attempt, 2);
+});
+
+test("fixtures_kept and footprint_kept allow a tub to be removed when the layout is tub-to-shower", () => {
+  const layout = findLayout("tub-to-shower")!;
+  const allowed = softenQaVerdict({
+    failed: ["fixtures_kept", "footprint_kept"],
+    reasons: ["the tub was removed from the alcove", "the shower was added in the same footprint"],
+    disallowed: ["the tub was removed from the alcove"],
+    layout,
+  });
+  assert.deepEqual(allowed.failed, []);
+  assert.deepEqual(allowed.disallowed, []);
+
+  const blocked = softenQaVerdict({
+    failed: ["fixtures_kept"],
+    reasons: ["the tub was removed from the alcove"],
+    layout: findLayout("keep-tub")!,
+  });
+  assert.deepEqual(blocked.failed, ["fixtures_kept"]);
 });

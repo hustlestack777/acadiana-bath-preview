@@ -1,30 +1,62 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent, type Dispatch, type FormEvent, type SetStateAction } from "react";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { appendAttribution } from "@/components/lead-attribution";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
 import { SaveJustinContact } from "@/components/save-justin-contact";
-import { designCopy, designStyles, findStyle } from "@/lib/design-styles";
+import { designCopy } from "@/lib/design-styles";
+import {
+  designFinishes,
+  designFloors,
+  designLayouts,
+  designWalls,
+  findWall,
+  relatedLooksFor,
+  resolvePicks,
+  type RelatedLook,
+} from "@/lib/design-picks";
 import { resizePhoto } from "@/lib/photo-resize";
-import { budgetOptions, budgetQuestion, orderByBudget } from "@/lib/budget";
+import { budgetOptions, budgetQuestion } from "@/lib/budget";
 import { cn } from "cn";
 import { useScrollToStep } from "@/lib/scroll-to-step";
 
-type Step = "photos" | "budget" | "style" | "rendering" | "teaser" | "cap-pending" | "reveal" | "custom-done";
+type Step =
+  | "layout"
+  | "walls"
+  | "floor"
+  | "finish"
+  | "budget"
+  | "photos"
+  | "rendering"
+  | "teaser"
+  | "cap-pending"
+  | "reveal"
+  | "custom-done";
 type Shot = { file: File; url: string };
 
-// The server returns the first usable preview and only retries if that image is unusable; the browser retries a dropped connection once.
 const MAX_TRIES = 2;
 const TOKEN_KEY = "abc-design-token";
+const STEP_LABELS: Record<Exclude<Step, "rendering" | "teaser" | "cap-pending" | "reveal" | "custom-done">, { n: number; title: string }> = {
+  layout: { n: 1, title: "What's the plan?" },
+  walls: { n: 2, title: "Pick a wall style" },
+  floor: { n: 3, title: "Pick a floor" },
+  finish: { n: 4, title: "Pick a fixture finish" },
+  budget: { n: 5, title: budgetQuestion },
+  photos: { n: 6, title: "Snap your shower" },
+};
+const STEP_TOTAL = 6;
 
 const field =
   "h-12 w-full rounded-xl border border-border bg-card px-4 text-base outline-none focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive";
 
 export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
-  const [step, setStep] = useState<Step>("photos");
+  const [step, setStep] = useState<Step>("layout");
   const [shots, setShots] = useState<Shot[]>([]);
-  const [style, setStyle] = useState(findStyle(initialStyle)?.key ?? "");
+  const [layout, setLayout] = useState("");
+  const [wall, setWall] = useState(findWall(initialStyle)?.key ?? "");
+  const [floor, setFloor] = useState("");
+  const [finish, setFinish] = useState("");
   const [budget, setBudget] = useState("");
   const [error, setError] = useState("");
   const [busyMsg, setBusyMsg] = useState(0);
@@ -49,7 +81,9 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   }, []);
   useScrollToStep(step, topRef);
 
-  // Fallback creep while we wait; real stage events from the server jump the bar ahead.
+  const picks = resolvePicks({ layout, wall, floor, finish, budget });
+  const related = picks ? relatedLooksFor(picks) : [];
+
   useEffect(() => {
     if (step !== "rendering") return;
     const started = Date.now();
@@ -86,7 +120,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   }
 
   const render = useCallback(async () => {
-    if (!shots[0] || !style) return;
+    if (!shots[0] || !resolvePicks({ layout, wall, floor, finish })) return;
     setError("");
     setProgress(0);
     setBusyMsg(0);
@@ -95,7 +129,10 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
       const body = new FormData();
       body.set("photo", shots[0].file);
       if (shots[1]) body.set("photo2", shots[1].file);
-      body.set("style", style);
+      body.set("layout", layout);
+      body.set("wall", wall);
+      body.set("floor", floor);
+      body.set("finish", finish);
       body.set("budget", budget);
       body.set("company_fax", form.company_fax);
       body.set("token", window.localStorage.getItem(TOKEN_KEY) || "");
@@ -124,25 +161,24 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             window.setTimeout(() => setStep("cap-pending"), 200);
             return;
           }
-          // qaFailed: no image passed the quality check. Show the custom-design message, still take the lead.
           setDesign({ id: json.id, teaser: json.qaFailed ? null : json.teaser });
           window.setTimeout(() => setStep("teaser"), 350);
           return;
         }
         if (json.retryable === false || attempt === MAX_TRIES) {
           setError(json.error || "The designer hit a snag. Try another photo.");
-          setStep("style");
+          setStep("photos");
           return;
         }
       } catch {
         if (attempt === MAX_TRIES) {
           setError("We lost the connection. Check your signal and try again.");
-          setStep("style");
+          setStep("photos");
           return;
         }
       }
     }
-  }, [shots, style, budget, form.company_fax]);
+  }, [shots, layout, wall, floor, finish, budget, form.company_fax]);
 
   async function unlock(event: FormEvent) {
     event.preventDefault();
@@ -186,12 +222,11 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   function tryAnother() {
     setDesign(null);
     setReveal(null);
-    setStyle("");
     setError("");
-    setStep("style");
+    setStep("layout");
   }
 
-  const chosen = findStyle(style);
+  const lookName = picks ? `${picks.wall.name}` : "";
 
   return (
     <div ref={topRef} className="scroll-mt-24 mx-auto w-full max-w-3xl px-5 pb-20" data-testid="design-tool">
@@ -201,11 +236,115 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         </p>
       ) : null}
 
+      {step === "layout" ? (
+        <PickStep
+          stepKey="layout"
+          back={null}
+          items={designLayouts}
+          value={layout}
+          testId="layout"
+          onPick={(key) => {
+            setLayout(key);
+            setStep("walls");
+          }}
+        />
+      ) : null}
+
+      {step === "walls" ? (
+        <PickStep
+          stepKey="walls"
+          back="layout"
+          onBack={() => setStep("layout")}
+          items={designWalls}
+          value={wall}
+          testId="wall"
+          onPick={(key) => {
+            setWall(key);
+            setStep("floor");
+          }}
+        />
+      ) : null}
+
+      {step === "floor" ? (
+        <PickStep
+          stepKey="floor"
+          back="walls"
+          onBack={() => setStep("walls")}
+          items={designFloors}
+          value={floor}
+          testId="floor"
+          onPick={(key) => {
+            setFloor(key);
+            setStep("finish");
+          }}
+        />
+      ) : null}
+
+      {step === "finish" ? (
+        <PickStep
+          stepKey="finish"
+          back="floor"
+          onBack={() => setStep("floor")}
+          items={designFinishes}
+          value={finish}
+          testId="finish"
+          aspect="aspect-[4/5]"
+          onPick={(key) => {
+            setFinish(key);
+            setStep("budget");
+          }}
+        />
+      ) : null}
+
+      {step === "budget" ? (
+        <section aria-labelledby="design-budget">
+          <StepKicker n={STEP_LABELS.budget.n} optional />
+          <h2 id="design-budget" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">{budgetQuestion}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">This helps Justin recommend the right path. You can skip this.</p>
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            {budgetOptions.map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                data-testid={`budget-${option.id}`}
+                onClick={() => {
+                  setBudget(option.id);
+                  setStep("photos");
+                }}
+                className={cn(
+                  "h-14 rounded-2xl border bg-card px-3 text-base font-semibold",
+                  budget === option.id ? "border-primary ring-3 ring-primary/40" : "border-border",
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-4 flex items-center gap-4">
+            <button type="button" onClick={() => setStep("finish")} className="text-sm font-semibold underline underline-offset-4">
+              Back
+            </button>
+            <button
+              type="button"
+              data-testid="budget-skip"
+              onClick={() => {
+                setBudget("");
+                setStep("photos");
+              }}
+              className="text-sm font-semibold underline underline-offset-4"
+            >
+              Skip
+            </button>
+          </div>
+        </section>
+      ) : null}
+
       {step === "photos" ? (
-        <section aria-labelledby="design-step-1">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 1 of 3</p>
-          <h2 id="design-step-1" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">Snap your shower</h2>
+        <section aria-labelledby="design-step-photos">
+          <StepKicker n={STEP_LABELS.photos.n} />
+          <h2 id="design-step-photos" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">{STEP_LABELS.photos.title}</h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">{designCopy.tips} Add 1 or 2 photos. We design from the first one.</p>
+          {picks ? <p className="mt-3 text-sm font-semibold" data-testid="design-picks-summary">{picks.layout.name} · {picks.wall.name} · {picks.floor.name} · {picks.finish.name}</p> : null}
           <div className="mt-5 grid grid-cols-2 gap-3">
             <label className="flex h-14 cursor-pointer items-center justify-center rounded-full bg-primary px-5 text-base font-semibold text-primary-foreground">
               Take photo
@@ -230,86 +369,6 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
               ))}
             </ul>
           ) : null}
-          <div className="sticky bottom-0 z-30 -mx-5 mt-6 border-t border-border bg-background/95 px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:static md:mx-0 md:mt-6 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
-            <button
-              type="button"
-              disabled={!shots.length}
-              onClick={() => setStep("budget")}
-              className="h-14 w-full rounded-full bg-[#103830] text-base font-semibold text-white disabled:opacity-40"
-              data-testid="design-next"
-            >
-              Next: pick a look
-            </button>
-          </div>
-        </section>
-      ) : null}
-
-      {step === "budget" ? (
-        <section aria-labelledby="design-budget">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Optional</p>
-          <h2 id="design-budget" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">{budgetQuestion}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">We&apos;ll show the looks that fit best first. You&apos;ll still see every look.</p>
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            {budgetOptions.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                data-testid={`budget-${option.id}`}
-                onClick={() => {
-                  setBudget(option.id);
-                  setStep("style");
-                }}
-                className={cn(
-                  "h-14 rounded-2xl border bg-card px-3 text-base font-semibold",
-                  budget === option.id ? "border-primary ring-3 ring-primary/40" : "border-border",
-                )}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-          <button
-            type="button"
-            data-testid="budget-skip"
-            onClick={() => {
-              setBudget("");
-              setStep("style");
-            }}
-            className="mt-4 text-sm font-semibold underline underline-offset-4"
-          >
-            Skip
-          </button>
-        </section>
-      ) : null}
-
-      {step === "style" ? (
-        <section aria-labelledby="design-step-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 2 of 3</p>
-          <h2 id="design-step-2" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">Pick a look</h2>
-          <div className="mt-4 -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-3 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0" role="radiogroup" aria-label="Looks">
-            {orderByBudget(designStyles, budget).map((item) => (
-              <button
-                key={item.key}
-                type="button"
-                role="radio"
-                aria-checked={style === item.key}
-                onClick={() => setStyle(item.key)}
-                data-testid={`style-${item.key}`}
-                className={cn(
-                  "w-[72%] shrink-0 snap-start overflow-hidden rounded-2xl border bg-card text-left transition md:w-auto",
-                  style === item.key ? "border-primary ring-3 ring-primary/40" : "border-border",
-                )}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={item.image} alt={item.alt} loading="lazy" className="aspect-[4/3] w-full object-cover" />
-                <span className="block px-4 pt-3 font-semibold">{item.name}</span>
-                <span className="block px-4 pb-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                  {item.path === "solid-surface" ? "Solid surface" : "Custom tile"}
-                </span>
-                <span className="block px-4 pb-4 text-sm text-muted-foreground">{item.blurb}</span>
-              </button>
-            ))}
-          </div>
           <input
             type="text"
             name="company_fax"
@@ -326,7 +385,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             </button>
             <button
               type="button"
-              disabled={!style || !shots.length}
+              disabled={!shots.length || !picks}
               onClick={render}
               className="h-14 min-w-0 flex-1 rounded-full bg-primary px-4 text-base font-semibold text-primary-foreground disabled:opacity-40"
               data-testid="design-render"
@@ -348,12 +407,12 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-border">
             <div className="h-full rounded-full bg-primary transition-[width] duration-500" style={{ width: `${progress}%` }} />
           </div>
-          <p className="mt-2 text-sm text-muted-foreground">Usually under a minute. Keep this page open.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Keep this page open.</p>
         </section>
       ) : null}
 
       {(step === "teaser" || step === "cap-pending") && design ? (
-        <section aria-labelledby={step === "cap-pending" ? "design-cap-pending" : "design-step-3"}>
+        <section aria-labelledby={step === "cap-pending" ? "design-cap-pending" : "design-step-unlock"}>
           {step === "cap-pending" ? (
             <div className="rounded-3xl border border-border bg-card p-6" data-testid="design-cap-pending">
               <h2 id="design-cap-pending" tabIndex={-1} data-step-heading className="font-heading text-2xl">Your photos are in! We&apos;ll create your custom design by hand. Tell us where to send it.</h2>
@@ -369,75 +428,31 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           ) : (
             <div className="rounded-3xl border border-border bg-card p-6" data-testid="design-custom">
               <h2 tabIndex={-1} data-step-heading className="font-heading text-2xl">{designCopy.customTitle}</h2>
-              <p className="mt-2 text-base leading-7 text-muted-foreground">{designCopy.customBody(chosen?.name ?? "")}</p>
+              <p className="mt-2 text-base leading-7 text-muted-foreground">{designCopy.customBody(lookName)}</p>
             </div>
           )}
-          {step === "cap-pending" ? null : <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 3 of 3</p>}
-          {step === "cap-pending" ? null : <h2 id="design-step-3" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">Where should we send it?</h2>}
-          <form onSubmit={unlock} noValidate className="mt-4 grid gap-4" data-testid="design-unlock-form">
-            <Field id="d-name" label="First and last name" error={errors.name}>
-              <input id="d-name" name="name" className={field} autoComplete="name" value={form.name} aria-invalid={Boolean(errors.name)} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-            </Field>
-            <Field id="d-phone" label="Mobile phone" error={errors.phone}>
-              <input id="d-phone" name="phone" className={field} type="tel" inputMode="tel" autoComplete="tel" value={form.phone} aria-invalid={Boolean(errors.phone)} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-            </Field>
-            <Field id="d-street" label="Street address" error={errors.street}>
-              <AddressAutocomplete
-                id="d-street"
-                value={form.street}
-                invalid={Boolean(errors.street)}
-                onChange={(street) => setForm((f) => ({ ...f, street, latitude: "", longitude: "" }))}
-                onSelect={(address) =>
-                  setForm((f) => ({
-                    ...f,
-                    street: address.street,
-                    city: address.city || f.city,
-                    state: address.region || f.state || "LA",
-                    zip: address.zip || f.zip,
-                    latitude: address.lat != null ? String(address.lat) : "",
-                    longitude: address.lon != null ? String(address.lon) : "",
-                  }))
-                }
-              />
-            </Field>
-            <div className="grid grid-cols-[2fr_0.7fr_1fr] gap-3">
-              <Field id="d-city" label="Town" error={errors.city}>
-                <input id="d-city" name="city" className={field} autoComplete="address-level2" value={form.city} aria-invalid={Boolean(errors.city)} onChange={(e) => setForm({ ...form, city: e.target.value })} />
-              </Field>
-              <Field id="d-state" label="State">
-                <input id="d-state" name="state" className={field} autoComplete="address-level1" value={form.state} maxLength={2} onChange={(e) => setForm({ ...form, state: e.target.value.toUpperCase() })} />
-              </Field>
-              <Field id="d-zip" label="ZIP (optional)" error={errors.zip}>
-                <input id="d-zip" name="postal-code" className={field} inputMode="numeric" autoComplete="postal-code" value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} />
-              </Field>
-            </div>
-            <Field id="d-email" label="Email" error={errors.email}>
-              <input id="d-email" name="email" className={field} type="email" autoComplete="email" value={form.email} aria-invalid={Boolean(errors.email)} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-            </Field>
-            <label className="flex items-start gap-3 text-sm leading-6" htmlFor="d-sms">
-              <input id="d-sms" type="checkbox" className="mt-1 size-5 shrink-0" checked={form.smsConsent} onChange={(e) => setForm({ ...form, smsConsent: e.target.checked })} />
-              <span>{designCopy.smsConsent} (Optional)</span>
-            </label>
-            <button type="submit" disabled={sending} className="h-14 rounded-full bg-primary text-base font-semibold text-primary-foreground disabled:opacity-50" data-testid="design-unlock">
-              {sending ? "Sending…" : step === "cap-pending" ? "Send Me My Design" : design.teaser ? "Unlock my design" : "Get my custom design"}
-            </button>
-            {step === "cap-pending" ? null : (
-              <p className="-mt-2 text-center text-[0.7rem] text-muted-foreground/80" data-testid="design-fine-print">{designCopy.finePrint}</p>
-            )}
-            <p className="text-xs leading-5 text-muted-foreground">
-              {designCopy.privacy}{" "}
-              <a href="/privacy" className="underline underline-offset-4">Privacy policy</a>
-            </p>
-          </form>
+          {step === "cap-pending" ? null : <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Last step</p>}
+          {step === "cap-pending" ? null : <h2 id="design-step-unlock" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">Where should we send it?</h2>}
+          <UnlockForm
+            form={form}
+            setForm={setForm}
+            errors={errors}
+            sending={sending}
+            onSubmit={unlock}
+            finePrint={step === "cap-pending" ? null : designCopy.finePrint}
+            submitLabel={sending ? "Sending…" : step === "cap-pending" ? "Send Me My Design" : design.teaser ? "Unlock my design" : "Get my custom design"}
+          />
+          {related.length ? <RelatedLooks items={related} /> : null}
         </section>
       ) : null}
 
       {step === "custom-done" ? (
         <section aria-labelledby="design-custom-done" data-testid="design-custom-done">
           <h2 id="design-custom-done" tabIndex={-1} data-step-heading className="font-heading text-3xl">Justin will call you</h2>
-          <p className="mt-3 text-base leading-7 text-muted-foreground">{designCopy.customThanks(chosen?.name ?? "")}</p>
+          <p className="mt-3 text-base leading-7 text-muted-foreground">{designCopy.customThanks(lookName)}</p>
           <SaveJustinContact className="mt-6" buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground" />
           <WindowsQuoteLine className="mt-4 text-muted-foreground" />
+          {related.length ? <RelatedLooks items={related} /> : null}
         </section>
       ) : null}
 
@@ -464,6 +479,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             </div>
             <SaveJustinContact className="mt-5" />
           </div>
+          {related.length ? <RelatedLooks items={related} /> : null}
           <WindowsQuoteLine className="mt-4 text-muted-foreground" />
         </section>
       ) : null}
@@ -471,6 +487,162 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   );
 }
 
+function StepKicker({ n, optional = false }: { n: number; optional?: boolean }) {
+  return (
+    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+      {optional ? "Optional" : `Step ${n} of ${STEP_TOTAL}`}
+    </p>
+  );
+}
+
+function PickStep<T extends { key: string; name: string; blurb: string; image: string; alt: string }>({
+  stepKey,
+  items,
+  value,
+  testId,
+  onPick,
+  back,
+  onBack,
+  aspect = "aspect-[4/5]",
+}: {
+  stepKey: keyof typeof STEP_LABELS;
+  items: T[];
+  value: string;
+  testId: string;
+  onPick: (key: string) => void;
+  back: Step | null;
+  onBack?: () => void;
+  aspect?: string;
+}) {
+  const meta = STEP_LABELS[stepKey];
+  return (
+    <section aria-labelledby={`design-step-${stepKey}`}>
+      <StepKicker n={meta.n} />
+      <h2 id={`design-step-${stepKey}`} tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">{meta.title}</h2>
+      <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3" role="radiogroup" aria-label={meta.title}>
+        {items.map((item) => (
+          <button
+            key={item.key}
+            type="button"
+            role="radio"
+            aria-checked={value === item.key}
+            onClick={() => onPick(item.key)}
+            data-testid={`${testId}-${item.key}`}
+            className={cn(
+              "overflow-hidden rounded-2xl border bg-card text-left transition",
+              value === item.key ? "border-primary ring-3 ring-primary/40" : "border-border",
+            )}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={item.image} alt={item.alt} loading="lazy" className={cn("w-full object-cover", aspect)} />
+            <span className="block px-3 pt-3 font-semibold leading-5">{item.name}</span>
+            <span className="block px-3 pb-3 pt-1 text-sm text-muted-foreground">{item.blurb}</span>
+          </button>
+        ))}
+      </div>
+      {back && onBack ? (
+        <button type="button" onClick={onBack} className="mt-5 text-sm font-semibold underline underline-offset-4">
+          Back
+        </button>
+      ) : null}
+    </section>
+  );
+}
+
+function RelatedLooks({ items }: { items: RelatedLook[] }) {
+  return (
+    <section className="mt-10" data-testid="design-related" aria-labelledby="design-related">
+      <h3 id="design-related" className="font-heading text-2xl">You might also like</h3>
+      <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {items.map((item) => (
+          <li key={item.key}>
+            <a href={item.href} className="block overflow-hidden rounded-2xl border border-border bg-card">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={item.src} alt={item.alt} className="aspect-[4/5] w-full object-cover" />
+              <span className="block px-3 py-3 text-sm font-semibold">{item.name}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function UnlockForm({
+  form,
+  setForm,
+  errors,
+  sending,
+  onSubmit,
+  finePrint,
+  submitLabel,
+}: {
+  form: { name: string; phone: string; email: string; street: string; city: string; state: string; zip: string; latitude: string; longitude: string; smsConsent: boolean; company_fax: string };
+  setForm: Dispatch<SetStateAction<{
+    name: string; phone: string; email: string; street: string; city: string; state: string; zip: string; latitude: string; longitude: string; smsConsent: boolean; company_fax: string;
+  }>>;
+  errors: Record<string, string>;
+  sending: boolean;
+  onSubmit: (event: FormEvent) => void;
+  finePrint: string | null;
+  submitLabel: string;
+}) {
+  return (
+    <form onSubmit={onSubmit} noValidate className="mt-4 grid gap-4" data-testid="design-unlock-form">
+      <Field id="d-name" label="First and last name" error={errors.name}>
+        <input id="d-name" name="name" className={field} autoComplete="name" value={form.name} aria-invalid={Boolean(errors.name)} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+      </Field>
+      <Field id="d-phone" label="Mobile phone" error={errors.phone}>
+        <input id="d-phone" name="phone" className={field} type="tel" inputMode="tel" autoComplete="tel" value={form.phone} aria-invalid={Boolean(errors.phone)} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+      </Field>
+      <Field id="d-street" label="Street address" error={errors.street}>
+        <AddressAutocomplete
+          id="d-street"
+          value={form.street}
+          invalid={Boolean(errors.street)}
+          onChange={(street) => setForm((f) => ({ ...f, street, latitude: "", longitude: "" }))}
+          onSelect={(address) =>
+            setForm((f) => ({
+              ...f,
+              street: address.street,
+              city: address.city || f.city,
+              state: address.region || f.state || "LA",
+              zip: address.zip || f.zip,
+              latitude: address.lat != null ? String(address.lat) : "",
+              longitude: address.lon != null ? String(address.lon) : "",
+            }))
+          }
+        />
+      </Field>
+      <div className="grid grid-cols-[2fr_0.7fr_1fr] gap-3">
+        <Field id="d-city" label="Town" error={errors.city}>
+          <input id="d-city" name="city" className={field} autoComplete="address-level2" value={form.city} aria-invalid={Boolean(errors.city)} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+        </Field>
+        <Field id="d-state" label="State">
+          <input id="d-state" name="state" className={field} autoComplete="address-level1" value={form.state} maxLength={2} onChange={(e) => setForm({ ...form, state: e.target.value.toUpperCase() })} />
+        </Field>
+        <Field id="d-zip" label="ZIP (optional)" error={errors.zip}>
+          <input id="d-zip" name="postal-code" className={field} inputMode="numeric" autoComplete="postal-code" value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} />
+        </Field>
+      </div>
+      <Field id="d-email" label="Email" error={errors.email}>
+        <input id="d-email" name="email" className={field} type="email" autoComplete="email" value={form.email} aria-invalid={Boolean(errors.email)} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+      </Field>
+      <label className="flex items-start gap-3 text-sm leading-6" htmlFor="d-sms">
+        <input id="d-sms" type="checkbox" className="mt-1 size-5 shrink-0" checked={form.smsConsent} onChange={(e) => setForm({ ...form, smsConsent: e.target.checked })} />
+        <span>{designCopy.smsConsent} (Optional)</span>
+      </label>
+      <button type="submit" disabled={sending} className="h-14 rounded-full bg-primary text-base font-semibold text-primary-foreground disabled:opacity-50" data-testid="design-unlock">
+        {submitLabel}
+      </button>
+      {finePrint ? <p className="-mt-2 text-center text-[0.7rem] text-muted-foreground/80" data-testid="design-fine-print">{finePrint}</p> : null}
+      <p className="text-xs leading-5 text-muted-foreground">
+        {designCopy.privacy}{" "}
+        <a href="/privacy" className="underline underline-offset-4">Privacy policy</a>
+      </p>
+    </form>
+  );
+}
 
 async function readRenderResponse(response: Response, onStage: (stage: string) => void) {
   const type = response.headers.get("content-type") || "";

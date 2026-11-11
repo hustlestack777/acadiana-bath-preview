@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { findStyle } from "@/lib/design-styles";
 import { findBudget } from "@/lib/budget";
+import { parsePicks, styleFromPicks, resolvePicks } from "@/lib/design-picks";
 import { normalizePhoto, renderDesign, RenderError, teaser, type RenderResult, type RenderStage } from "@/lib/design-render";
 import {
   checkLimits,
@@ -47,8 +47,24 @@ export async function POST(request: Request) {
   const trap = form.get("company_fax");
   if (typeof trap === "string" && trap.trim()) return fail("We couldn't start that design.", 400);
 
-  const style = findStyle(String(form.get("style") || ""));
-  if (!style) return fail("Pick a look first.", 400);
+  const resolved = resolvePicks(
+    parsePicks({
+      layout: String(form.get("layout") || ""),
+      wall: String(form.get("wall") || form.get("style") || ""),
+      floor: String(form.get("floor") || ""),
+      finish: String(form.get("finish") || ""),
+      budget: String(form.get("budget") || ""),
+    }),
+  );
+  if (!resolved) return fail("Pick your layout, walls, floor and finish first.", 400);
+  const style = styleFromPicks(resolved);
+  const picks = {
+    layout: resolved.layout.key,
+    wall: resolved.wall.key,
+    floor: resolved.floor.key,
+    finish: resolved.finish.key,
+    budget: String(form.get("budget") || ""),
+  };
 
   let before: Buffer | null;
   let extra: Buffer | null = null;
@@ -84,9 +100,9 @@ export async function POST(request: Request) {
     // Keep the existing cap values. Save their photos so Justin can design by hand; this status does not count toward render caps.
     const id = crypto.randomUUID();
     await db.query(
-      `INSERT INTO design_sessions (id, ip_hash, device_id, style_key, status, is_test, before, extra, phone_digits, budget)
-       VALUES ($1,$2,$3,$4,'capped',$5,$6,$7,$8,$9)`,
-      [id, ipHash, deviceId, style.key, test, before, extra, phone, budget],
+      `INSERT INTO design_sessions (id, ip_hash, device_id, style_key, status, is_test, before, extra, phone_digits, budget, picks)
+       VALUES ($1,$2,$3,$4,'capped',$5,$6,$7,$8,$9,$10)`,
+      [id, ipHash, deviceId, style.key, test, before, extra, phone, budget, JSON.stringify(picks)],
     );
     const response = NextResponse.json({ ok: true, id, capped: true, code: limits.code });
     response.cookies.set(DEVICE_COOKIE, deviceId, {
@@ -101,9 +117,9 @@ export async function POST(request: Request) {
 
   const id = crypto.randomUUID();
   await db.query(
-    `INSERT INTO design_sessions (id, ip_hash, device_id, style_key, status, is_test, before, extra, phone_digits, budget)
-     VALUES ($1,$2,$3,$4,'rendering',$5,$6,$7,$8,$9)`,
-    [id, ipHash, deviceId, style.key, test, before, extra, phone, budget],
+    `INSERT INTO design_sessions (id, ip_hash, device_id, style_key, status, is_test, before, extra, phone_digits, budget, picks)
+     VALUES ($1,$2,$3,$4,'rendering',$5,$6,$7,$8,$9,$10)`,
+    [id, ipHash, deviceId, style.key, test, before, extra, phone, budget, JSON.stringify(picks)],
   );
 
 
@@ -208,7 +224,7 @@ export async function POST(request: Request) {
         };
         try {
           send({ stage: "preparing" as RenderStage });
-          const result = await renderDesign(before, style, (stage) => send({ stage }));
+          const result = await renderDesign(before, style, (stage) => send({ stage }), resolved.layout);
           const payload = await finish(result);
           send({ stage: "done", ...payload });
         } catch (error) {
@@ -230,7 +246,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await renderDesign(before, style);
+    const result = await renderDesign(before, style, undefined, resolved.layout);
     const payload = await finish(result);
     const response = NextResponse.json(payload);
     response.cookies.set(DEVICE_COOKIE, deviceId, cookie);
