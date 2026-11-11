@@ -15,8 +15,8 @@ export const budgetQuestion = "What budget are you working with?";
 export const budgetOptions: { id: BudgetId; label: string; order: string[] }[] = [
   { id: "under-7500", label: "Under $7,500", order: ["13", "16"] },
   { id: "7500-15k", label: "$7,500–$15K", order: ["17", "21", "15", "22"] },
-  { id: "15k-30k", label: "$15K–$30K", order: ["18", "20", "19", "09"] },
-  { id: "30k-plus", label: "$30K+", order: ["10", "24", "14"] },
+  { id: "15k-30k", label: "$15K–$30K", order: ["18", "20", "19", "09", "10"] },
+  { id: "30k-plus", label: "$30K+", order: ["04", "24", "14"] },
 ];
 
 export function findBudget(id: string) {
