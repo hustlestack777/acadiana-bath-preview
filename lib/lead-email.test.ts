@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { buildLeadEmail } from "./lead-email";
 import { formatChicago, formatEmailSize, formatThankYouSize, leadSubject } from "./lead-display";
-import { fetchStreetViewImage, openInMapsUrl, readGoogleMapsKey } from "./street-view";
+import { fetchStreetViewImage, openInMapsUrl, readGoogleMapsKey, resolveHouseMapLinks, NOMINATIM_USER_AGENT } from "./street-view";
 
 const when = new Date("2026-11-09T23:14:00Z");
 
@@ -72,6 +72,10 @@ test("the lead email is a card with real labels, inline photos, and no empty non
   assert.match(email.html, /Lafayette, LA 70508/);
   assert.match(email.html, /map_action=pano/);
   assert.match(email.html, /Open Street View/);
+  assert.match(email.html, /Open in Google Maps/);
+  assert.match(email.html, /google\.com\/maps\/search\/\?api=1&amp;query=/);
+  assert.match(email.text, /Street View: https:\/\/www\.google\.com\/maps\/@\?api=1&map_action=pano/);
+  assert.match(email.text, /Open in Google Maps: https:\/\/www\.google\.com\/maps\/search\/\?api=1&query=/);
   assert.match(email.html, /Tub-to-shower conversion/);
   assert.match(email.html, /60″ wide × 30″ deep × 14″ high/);
   assert.match(email.html, /I own this home/);
@@ -107,8 +111,9 @@ test("empty notes, payment, and photos are left out, and a street view image is 
   assert.equal(email.html.includes("Payment"), false);
   assert.equal(email.html.includes("Their photos"), false);
   assert.match(email.html, /cid:house-street-view/);
-  assert.match(email.html, /Open in Maps/);
-  assert.equal(email.html.includes("Open Street View"), false);
+  assert.match(email.html, /Open Street View/);
+  assert.match(email.html, /Open in Google Maps/);
+  assert.equal(email.html.includes(">Open in Maps<"), false);
   assert.equal(email.attachments.some((item) => item.contentId === "house-street-view"), true);
 });
 
@@ -145,4 +150,52 @@ test("street view image is skipped without a key and when imagery is missing", a
   );
   assert.equal(noKey, null);
   assert.equal(calls.length, 1);
+});
+
+test("geocoding fills a street view pin, and a missing result falls back to a maps search link", async () => {
+  const calls: Array<{ url: string; init?: RequestInit }> = [];
+  const fetchImpl = async (url: string, init?: RequestInit) => {
+    calls.push({ url, init });
+    return new Response(JSON.stringify([{ lat: "30.224", lon: "-92.019" }]), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  };
+  const pinned = await resolveHouseMapLinks("705 W University Ave, Lafayette, LA 70506", 30.22, -92.02, { fetchImpl });
+  assert.equal(calls.length, 0);
+  assert.match(pinned.streetViewUrl, /map_action=pano&viewpoint=30\.22,-92\.02/);
+  assert.match(pinned.mapsUrl, /google\.com\/maps\/search\/\?api=1&query=/);
+  assert.equal(pinned.geocoded, false);
+
+  const geocoded = await resolveHouseMapLinks("705 W University Ave, Lafayette, LA 70506", null, null, { fetchImpl });
+  assert.equal(calls.length, 1);
+  assert.match(calls[0]?.url ?? "", /nominatim\.openstreetmap\.org\/search/);
+  assert.equal((calls[0]?.init?.headers as Record<string, string>)["User-Agent"], NOMINATIM_USER_AGENT);
+  assert.match(geocoded.streetViewUrl, /map_action=pano&viewpoint=30\.224,-92\.019/);
+  assert.equal(geocoded.geocoded, true);
+  assert.equal(geocoded.latitude, 30.224);
+  assert.equal(geocoded.longitude, -92.019);
+
+  const failed = await resolveHouseMapLinks("705 W University Ave, Lafayette, LA 70506", null, null, {
+    fetchImpl: async () => new Response("nope", { status: 500 }),
+  });
+  assert.match(failed.streetViewUrl, /google\.com\/maps\/search\/\?api=1&query=/);
+  assert.equal(failed.streetViewUrl, failed.mapsUrl);
+  assert.equal(failed.geocoded, false);
+
+  const crashed = await resolveHouseMapLinks("705 W University Ave, Lafayette, LA 70506", null, null, {
+    fetchImpl: async () => {
+      throw new Error("network down");
+    },
+  });
+  assert.equal(crashed.streetViewUrl, crashed.mapsUrl);
+  assert.match(crashed.mapsUrl, /query=/);
+});
+
+test("an email without a pin still includes a street view fallback and a google maps link", () => {
+  const email = sample({ latitude: null, longitude: null, photos: [] });
+  assert.match(email.html, /Open Street View/);
+  assert.match(email.html, /Open in Google Maps/);
+  assert.match(email.html, /google\.com\/maps\/search\/\?api=1&amp;query=/);
+  assert.equal(email.html.includes("map_action=pano"), false);
 });

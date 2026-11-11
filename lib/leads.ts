@@ -3,7 +3,7 @@ import { Resend } from "resend";
 import { validateDetails, validateExtras, validateStreet, validateZip } from "./estimate";
 import { checkCity } from "./coverage";
 import { buildLeadEmail } from "./lead-email";
-import { fetchStreetViewImage } from "./street-view";
+import { fetchStreetViewImage, resolveHouseMapLinks } from "./street-view";
 import { fullAddress } from "./lead-display";
 
 // Photos are resized in the browser (about 1600 px JPEG, usually 200-600 KB).
@@ -456,7 +456,14 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
   if (!apiKey) return { sent: false, error: "RESEND_API_KEY is not set." };
   if (!from) return { sent: false, error: "RESEND_FROM is not set." };
 
-  const houseImage = await housePreview(input);
+  const address = fullAddress(input.street, input.city, input.zip);
+  // Geocode only for the email/links. A timeout or failure must not block or fail the lead.
+  const mapLinks = await resolveHouseMapLinks(address, input.latitude, input.longitude);
+  const houseImage = await housePreview({
+    ...input,
+    latitude: mapLinks.latitude,
+    longitude: mapLinks.longitude,
+  });
   const message = buildLeadEmail({
     kind: "new",
     id,
@@ -467,8 +474,8 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
     street: input.street,
     city: input.city,
     zip: input.zip,
-    latitude: input.latitude,
-    longitude: input.longitude,
+    latitude: mapLinks.latitude,
+    longitude: mapLinks.longitude,
     project: input.project,
     width: input.width,
     depth: input.depth,
@@ -534,7 +541,13 @@ async function notifyLeadExtras(
   if (!apiKey) return { sent: false, error: "RESEND_API_KEY is not set." };
   if (!from) return { sent: false, error: "RESEND_FROM is not set." };
 
-  const houseImage = await housePreview(input);
+  const address = fullAddress(input.street, input.city, input.zip);
+  const mapLinks = await resolveHouseMapLinks(address, input.latitude, input.longitude);
+  const houseImage = await housePreview({
+    ...input,
+    latitude: mapLinks.latitude,
+    longitude: mapLinks.longitude,
+  });
   const message = buildLeadEmail({
     kind: "update",
     id,
@@ -545,8 +558,8 @@ async function notifyLeadExtras(
     street: input.street,
     city: input.city,
     zip: input.zip,
-    latitude: input.latitude,
-    longitude: input.longitude,
+    latitude: mapLinks.latitude,
+    longitude: mapLinks.longitude,
     project: input.project,
     width: input.width,
     depth: input.depth,

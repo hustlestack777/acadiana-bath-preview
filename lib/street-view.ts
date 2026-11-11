@@ -21,6 +21,9 @@ export function readGoogleMapsKey(env: NodeJS.ProcessEnv = process.env) {
   return "";
 }
 
+export const NOMINATIM_USER_AGENT = "AcadianaBathroomsConsult/1.0 (lead street-view links)";
+const GEOCODE_TIMEOUT_MS = 4000;
+
 export function mapsSearchUrl(query: string) {
   const trimmed = query.trim();
   if (!trimmed) return "";
@@ -37,6 +40,78 @@ export function openInMapsUrl(address: string, lat: number | null, lon: number |
     return streetViewPanoUrl(lat, lon);
   }
   return mapsSearchUrl(address);
+}
+
+export function hasMapPin(lat: number | null, lon: number | null) {
+  return lat != null && lon != null && Number.isFinite(lat) && Number.isFinite(lon);
+}
+
+export type HouseMapLinks = {
+  streetViewUrl: string;
+  mapsUrl: string;
+  latitude: number | null;
+  longitude: number | null;
+  geocoded: boolean;
+};
+
+type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
+
+/** One keyless Nominatim lookup. Never throws. Times out so a lead is never blocked. */
+export async function geocodeAddressWithNominatim(
+  address: string,
+  options?: { fetchImpl?: FetchLike },
+): Promise<{ lat: number; lon: number } | null> {
+  const trimmed = address.trim();
+  if (!trimmed) return null;
+  const fetchImpl = options?.fetchImpl ?? fetch;
+  const params = new URLSearchParams({
+    format: "jsonv2",
+    limit: "1",
+    countrycodes: "us",
+    q: trimmed,
+  });
+  try {
+    const response = await fetchImpl(`https://nominatim.openstreetmap.org/search?${params}`, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": NOMINATIM_USER_AGENT,
+      },
+      signal: AbortSignal.timeout(GEOCODE_TIMEOUT_MS),
+    });
+    if (!response.ok) return null;
+    const rows = (await response.json()) as Array<{ lat?: string; lon?: string }>;
+    const lat = Number(rows[0]?.lat);
+    const lon = Number(rows[0]?.lon);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+    return { lat, lon };
+  } catch {
+    return null;
+  }
+}
+
+/** Street View pano when we have a pin (saved or geocoded). Maps search otherwise, plus a plain Maps link. */
+export async function resolveHouseMapLinks(
+  address: string,
+  lat: number | null,
+  lon: number | null,
+  options?: { fetchImpl?: FetchLike },
+): Promise<HouseMapLinks> {
+  const mapsUrl = mapsSearchUrl(address);
+  let latitude = hasMapPin(lat, lon) ? lat : null;
+  let longitude = hasMapPin(lat, lon) ? lon : null;
+  let geocoded = false;
+  if (!hasMapPin(latitude, longitude)) {
+    const pin = await geocodeAddressWithNominatim(address, options);
+    if (pin) {
+      latitude = pin.lat;
+      longitude = pin.lon;
+      geocoded = true;
+    }
+  }
+  const streetViewUrl = hasMapPin(latitude, longitude)
+    ? streetViewPanoUrl(latitude as number, longitude as number)
+    : mapsUrl;
+  return { streetViewUrl, mapsUrl, latitude, longitude, geocoded };
 }
 
 export function streetViewLocation(address: string, lat: number | null, lon: number | null) {
@@ -68,8 +143,6 @@ export function streetViewStaticUrls(location: string, key: string) {
 }
 
 export type StreetViewImage = { bytes: Buffer; contentType: string };
-
-type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
 /** Download a Street View JPEG when a key exists and Google has outdoor imagery. */
 export async function fetchStreetViewImage(

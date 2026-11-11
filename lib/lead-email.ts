@@ -13,7 +13,7 @@ import {
   projectLabels,
   timingLabel,
 } from "./lead-display";
-import { openInMapsUrl } from "./street-view";
+import { mapsSearchUrl, openInMapsUrl } from "./street-view";
 
 export type LeadEmailPhoto = {
   filename: string;
@@ -109,8 +109,8 @@ export function buildLeadEmail(input: LeadEmailContent) {
   const street = input.street.trim();
   const locality = localityLine(town, input.zip);
   const address = fullAddress(street, town, input.zip);
-  const mapsUrl = street ? openInMapsUrl(address, input.latitude, input.longitude) : "";
-  const hasPin = input.latitude != null && input.longitude != null;
+  const mapsUrl = street ? mapsSearchUrl(address) : "";
+  const streetViewUrl = street ? openInMapsUrl(address, input.latitude, input.longitude) : "";
   const kicker = input.kind === "update" ? "Consult update" : "New consult";
   const given = firstName(name);
 
@@ -163,6 +163,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
     street,
     locality,
     mapsUrl,
+    streetViewUrl,
     project,
     size,
     rows,
@@ -184,8 +185,8 @@ export function buildLeadEmail(input: LeadEmailContent) {
     street,
     locality,
     mapsUrl,
+    streetViewUrl,
     hasHouseImage: Boolean(input.houseImage?.bytes.length),
-    hasPin,
     project,
     size,
     rows,
@@ -208,6 +209,7 @@ function textBody(input: {
   street: string;
   locality: string;
   mapsUrl: string;
+  streetViewUrl: string;
   project: string;
   size: string;
   rows: Array<[string, string]>;
@@ -231,7 +233,8 @@ function textBody(input: {
   if (input.street) {
     lines.push(input.street);
     if (input.locality) lines.push(input.locality);
-    if (input.mapsUrl) lines.push(`Open in Maps: ${input.mapsUrl}`);
+    if (input.streetViewUrl) lines.push(`Street View: ${input.streetViewUrl}`);
+    if (input.mapsUrl) lines.push(`Open in Google Maps: ${input.mapsUrl}`);
     lines.push("");
   }
   if (input.project) lines.push(input.project);
@@ -273,8 +276,8 @@ function htmlBody(input: {
   street: string;
   locality: string;
   mapsUrl: string;
+  streetViewUrl: string;
   hasHouseImage: boolean;
-  hasPin: boolean;
   project: string;
   size: string;
   rows: Array<[string, string]>;
@@ -294,13 +297,7 @@ function htmlBody(input: {
               <img src="cid:house-street-view" alt="Street View of the house" width="520" style="display:block;width:100%;max-width:520px;height:auto;border-radius:16px;border:1px solid ${LINE};margin:0 0 8px;" />`
            : ""
        }
-       ${
-         input.mapsUrl
-           ? input.hasHouseImage
-             ? `<p style="margin:0 0 18px;font-family:${SANS};"><a href="${esc(input.mapsUrl)}" style="color:#8c4030;font-weight:700;text-decoration:underline;text-underline-offset:3px;">Open in Maps</a></p>`
-             : `<p style="margin:8px 0 18px;font-family:${SANS};"><a href="${esc(input.mapsUrl)}" style="display:block;background:${CLAY};color:#ffffff;text-decoration:none;border-radius:999px;padding:12px 16px;font-weight:700;font-size:16px;text-align:center;">${input.hasPin ? "Open Street View" : "Open in Maps"}</a></p>`
-           : ""
-       }`
+       ${mapLinks(input.streetViewUrl, input.mapsUrl, input.hasHouseImage)}`
     : "";
 
   const job =
@@ -355,6 +352,25 @@ function htmlBody(input: {
   </table>
 </body>
 </html>`;
+}
+
+
+function mapLinks(streetViewUrl: string, mapsUrl: string, hasHouseImage: boolean) {
+  if (!streetViewUrl && !mapsUrl) return "";
+  const primaryUrl = streetViewUrl || mapsUrl;
+  const maps = mapsUrl
+    ? `<a href="${esc(mapsUrl)}" style="color:#8c4030;font-weight:700;text-decoration:underline;text-underline-offset:3px;">Open in Google Maps</a>`
+    : "";
+  if (hasHouseImage) {
+    const street = `<a href="${esc(primaryUrl)}" style="color:#8c4030;font-weight:700;text-decoration:underline;text-underline-offset:3px;">Open Street View</a>`;
+    const items = [street, maps].filter(Boolean).join(" &nbsp;·&nbsp; ");
+    return `<p style="margin:0 0 18px;font-family:${SANS};">${items}</p>`;
+  }
+  const button = `<a href="${esc(primaryUrl)}" style="display:block;background:${CLAY};color:#ffffff;text-decoration:none;border-radius:999px;padding:12px 16px;font-weight:700;font-size:16px;text-align:center;">Open Street View</a>`;
+  const under = maps
+    ? `<p style="margin:10px 0 18px;font-family:${SANS};font-size:14px;text-align:center;">${maps}</p>`
+    : "";
+  return `<p style="margin:8px 0 0;font-family:${SANS};">${button}</p>${under}`;
 }
 
 function buttonRow(phone: string, tel: string, email: string, given: string) {
