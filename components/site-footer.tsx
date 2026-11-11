@@ -61,7 +61,7 @@ export function SiteFooter() {
         <a href="/privacy" className="underline underline-offset-4">
           Privacy Policy
         </a>{" "}
-        · Website by Lagniappe Realm Labs
+        · Designed &amp; marketed by Lagniappe Realm Labs
       </p>
     </footer>
   );
