@@ -1,6 +1,8 @@
 /** Style cards for the Design My Bathroom tool. Images are AI examples, never Justin's jobs. */
 export type DesignStyle = {
   key: string;
+  /** Boogie's image number (boogie_NN in /workspace/abc_build/ai_photos), or "ss" for ss_walkin_stylecard. Used by lib/budget.ts. */
+  boogie: string;
   name: string;
   blurb: string;
   image: string;
@@ -16,6 +18,7 @@ export type DesignStyle = {
 export const designStyles: DesignStyle[] = [
   {
     key: "ss-walkin",
+    boogie: "ss",
     name: "Solid surface walk-in",
     blurb: "Smooth warm-white walls, almost no grout.",
     image: "/images/design/ss-walkin.webp",
@@ -26,6 +29,7 @@ export const designStyles: DesignStyle[] = [
   },
   {
     key: "ss-arch",
+    boogie: "13",
     name: "Solid surface arch",
     blurb: "Soft arch, clean cream walls, built-in bench.",
     image: "/images/design/ss-arch.webp",
@@ -36,6 +40,7 @@ export const designStyles: DesignStyle[] = [
   },
   {
     key: "zellige",
+    boogie: "01",
     name: "Green zellige",
     blurb: "Glossy handmade-look green tile and brass.",
     image: "/images/design/zellige.webp",
@@ -46,6 +51,7 @@ export const designStyles: DesignStyle[] = [
   },
   {
     key: "curbless",
+    boogie: "04",
     name: "Curbless walk-in",
     blurb: "Step-free entry, grab bar and handheld. Accessible design.",
     image: "/images/design/curbless.webp",
@@ -56,6 +62,7 @@ export const designStyles: DesignStyle[] = [
   },
   {
     key: "dark-spa",
+    boogie: "06",
     name: "Dark stone spa",
     blurb: "Moody charcoal tile, rain head, wood bench.",
     image: "/images/design/dark-spa.webp",
@@ -66,6 +73,7 @@ export const designStyles: DesignStyle[] = [
   },
   {
     key: "warm-arch",
+    boogie: "09",
     name: "Warm arch",
     blurb: "Travertine-look tile and a curved opening.",
     image: "/images/design/warm-arch.webp",
@@ -76,6 +84,7 @@ export const designStyles: DesignStyle[] = [
   },
   {
     key: "sand-niche",
+    boogie: "10",
     name: "Sand tile + arched niches",
     blurb: "Glossy sand tile with soft arched niches.",
     image: "/images/design/sand-niche.webp",
@@ -86,6 +95,7 @@ export const designStyles: DesignStyle[] = [
   },
   {
     key: "neo-deco",
+    boogie: "14",
     name: "Neo Deco marble look",
     blurb: "Bold burgundy marble-look slabs and brass.",
     image: "/images/design/neo-deco.webp",
@@ -95,14 +105,103 @@ export const designStyles: DesignStyle[] = [
     spec: "bold burgundy marble-look large porcelain slab walls with cream veining, a lit arched niche, brushed brass fixtures, cream stone-look floor tile, frameless clear glass",
   },
   {
-    key: "slab-vanity",
-    name: "Quartzite-look slab vanity",
-    blurb: "Bright slab-look walls and a wide stone-look vanity top.",
-    image: "/images/design/slab-vanity.webp",
-    alt: "Bright bathroom with white quartzite-look slab walls and a double vanity.",
+    key: "limewash",
+    boogie: "16",
+    name: "Limewash walls",
+    blurb: "Soft plaster-look walls, calm and simple.",
+    image: "/images/design/limewash.webp",
+    alt: "Calm bathroom with limewash-look walls, a stone-look ledge and a vessel basin.",
     path: "custom-tile",
     project: "tile-bathroom",
-    spec: "white quartzite-look large slab walls with soft grey veining in the shower, a matching quartzite-look vanity top if a vanity is visible in the photo, frameless clear glass, brushed nickel fixtures",
+    spec: "soft warm-white limewash-look walls, simple large light stone-look shower wall tile, a recessed niche, light stone-look floor, frameless clear glass, brushed brass fixtures",
+  },
+  {
+    key: "pink-zellige",
+    boogie: "17",
+    name: "Pink zellige accent",
+    blurb: "Blush handmade-look tile and warm wood.",
+    image: "/images/design/pink-zellige.webp",
+    alt: "Blush pink zellige-look tile walls with a light wood vanity and brass fixtures.",
+    path: "custom-tile",
+    project: "tile-shower",
+    spec: "blush pink glossy handmade zellige-look square wall tile in the shower, light warm floor tile, frameless clear glass, brushed brass fixtures",
+  },
+  {
+    key: "butter",
+    boogie: "21",
+    name: "Butter yellow zellige",
+    blurb: "A cheerful pop of soft yellow tile.",
+    image: "/images/design/butter.webp",
+    alt: "Butter-yellow zellige-look shower tile with brass fixtures and a light vanity.",
+    path: "custom-tile",
+    project: "tile-shower",
+    spec: "soft butter-yellow glossy handmade zellige-look square wall tile in the shower, light cream floor tile, frameless clear glass, brushed brass fixtures",
+  },
+  {
+    key: "checker",
+    boogie: "15",
+    name: "Soft checkerboard floor",
+    blurb: "Muted sage-and-cream checkerboard floor.",
+    image: "/images/design/checker.webp",
+    alt: "Muted sage and cream checkerboard floor with a freestanding tub.",
+    path: "custom-tile",
+    project: "tile-floor",
+    spec: "a muted sage-green and cream diagonal checkerboard floor tile, clean warm-white shower walls in large light tile, frameless clear glass, brushed brass fixtures",
+  },
+  {
+    key: "bold-checker",
+    boogie: "22",
+    name: "Bold checkerboard floor",
+    blurb: "Terracotta-and-cream checkerboard underfoot.",
+    image: "/images/design/bold-checker.webp",
+    alt: "Terracotta and cream checkerboard floor with a freestanding tub.",
+    path: "custom-tile",
+    project: "tile-floor",
+    spec: "a terracotta and cream diagonal checkerboard floor tile, clean warm-white shower walls in large light tile, frameless clear glass, brushed brass fixtures",
+  },
+  {
+    key: "emerald",
+    boogie: "18",
+    name: "Emerald zellige",
+    blurb: "Rich glossy emerald tile, floor to ceiling.",
+    image: "/images/design/emerald.webp",
+    alt: "Emerald-green zellige-look tile shower with a linear drain and brass fixtures.",
+    path: "custom-tile",
+    project: "tile-shower",
+    spec: "rich emerald-green glossy handmade zellige-look wall tile floor to ceiling in the shower, a recessed niche, a linear drain, light floor tile, frameless clear glass panel, brushed brass fixtures",
+  },
+  {
+    key: "cobalt",
+    boogie: "20",
+    name: "Cobalt color drench",
+    blurb: "Deep blue tile wrapped all around.",
+    image: "/images/design/cobalt.webp",
+    alt: "Cobalt-blue tile shower and walls with brass fixtures.",
+    path: "custom-tile",
+    project: "tile-bathroom",
+    spec: "deep cobalt-blue glossy square tile on the shower walls and floor, frameless clear glass, brushed brass fixtures",
+  },
+  {
+    key: "terracotta",
+    boogie: "19",
+    name: "Terracotta handmade tile",
+    blurb: "Warm clay-tone tile and natural wood.",
+    image: "/images/design/terracotta.webp",
+    alt: "Terracotta handmade-look tile shower with a herringbone terracotta floor.",
+    path: "custom-tile",
+    project: "tile-shower",
+    spec: "warm terracotta handmade-look square wall tile in the shower, a terracotta herringbone floor, frameless clear glass, brushed brass fixtures",
+  },
+  {
+    key: "quartzite",
+    boogie: "24",
+    name: "Quartzite-look vanity + green tile",
+    blurb: "Stone-look vanity top with deep green tile.",
+    image: "/images/design/quartzite.webp",
+    alt: "Quartzite-look vanity top under deep green glossy tile and a brass mirror.",
+    path: "custom-tile",
+    project: "tile-bathroom",
+    spec: "deep green glossy handmade zellige-look wall tile, a warm quartzite-look stone vanity top if a vanity is visible in the photo, matching green tile in the shower, frameless clear glass, brushed brass fixtures",
   },
 ];
 
