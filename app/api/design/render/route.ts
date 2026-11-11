@@ -80,7 +80,24 @@ export async function POST(request: Request) {
   }
 
   const limits = await checkLimits(db, { ipHash, deviceId, phoneDigits: phone, skipIp: test });
-  if (!limits.ok) return fail(limits.message, 429, { code: limits.code, retryable: false });
+  if (!limits.ok) {
+    // Keep the existing cap values. Save their photos so Justin can design by hand; this status does not count toward render caps.
+    const id = crypto.randomUUID();
+    await db.query(
+      `INSERT INTO design_sessions (id, ip_hash, device_id, style_key, status, is_test, before, extra, phone_digits, budget)
+       VALUES ($1,$2,$3,$4,'capped',$5,$6,$7,$8,$9)`,
+      [id, ipHash, deviceId, style.key, test, before, extra, phone, budget],
+    );
+    const response = NextResponse.json({ ok: true, id, capped: true, code: limits.code });
+    response.cookies.set(DEVICE_COOKIE, deviceId, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: true,
+      maxAge: 60 * 60 * 24 * 365,
+      path: "/",
+    });
+    return response;
+  }
 
   const id = crypto.randomUUID();
   await db.query(

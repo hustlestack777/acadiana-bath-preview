@@ -20,7 +20,7 @@ export const services = [
 ] as const;
 
 export const cardClaims = {
-  consult: "Free Consult",
+  consult: "Get My Free Quote",
 } as const;
 
 export const hero = {
@@ -28,7 +28,7 @@ export const hero = {
   title: "Bring a little beautiful to every day.",
   support:
     "There are many options for your shower, tub, and bathroom. Many types of solid surface can be installed, and Onyx is a preferred material — we'll walk through the options for your space.",
-  primary: "Free Consult",
+  primary: "Get My Free Quote",
   secondary: "(337) 522-0023",
 } as const;
 
@@ -52,7 +52,12 @@ export const heroSubhead =
 
 export const heroDesignCta = "Design My Bathroom";
 
-export const heroQuoteLine = "Bathroom remodels from $5,000. Free in-home quote.";
+export const quoteCta = "Get My Free Quote";
+
+export const trustLine =
+  "Free consult. No obligation. Justin follows up with your price.";
+
+export const heroQuoteLine = "Starting at $5K · Free quote.";
 
 export const editorial = {
   eyebrow: "The room, considered",
@@ -139,9 +144,9 @@ export const lead = {
   subhead:
     "Four quick steps. Tell us where you are, what you want to change, and how to reach you. Justin follows up — this is not a final quote.",
   submit: "Request My Free Consult",
-  thanks: "Thanks — Justin has this consult and will follow up.",
+  thanks: "Got it! Justin will reach out to talk through your bathroom and set up a time to come see it.",
   savedNote: "No payment was collected. Final pricing follows what he sees on site.",
-  savedTitle: "Request saved",
+  savedTitle: "Got it!",
   photosTitle: "Their photos",
   addressLabel: "Street address",
   addressHint: "So we can find the house for the visit. Start typing and pick your address.",
@@ -321,7 +326,7 @@ export const ideas = {
       images: [
         { src: "/images/ai/ideas/tilebar-01-encaustic-floor.webp", alt: "Patterned sage and terracotta cement-look floor tile under a freestanding tub." },
         { src: "/images/ai/ideas/tilebar-02-bookmatched-marble.webp", alt: "Bookmatched cream marble-look shower walls with brass fixtures." },
-        { src: "/images/ai/ideas/tilebar-03-muted-checkerboard.webp", alt: "Muted sage and cream checkerboard floor in a bathroom with a tub and oak vanity." },
+        { src: "/images/hero/hero-34-1600.webp", alt: "White tile walls and a freestanding tub on a blue, rust and cream patterned floor." },
         { src: "/images/ai/ideas/tilebar-04-fluted-accent.webp", alt: "Fluted cream tile accent wall behind a floating oak vanity." },
       ],
     },
@@ -340,6 +345,6 @@ export const ideas = {
   ],
 } as const;
 
-/** Approved by Shaun 11/10/2026. Used in chat and on the path pages. */
+/** Approved price wording (Shaun, 11/11/2026). Used in chat and on the path pages. */
 export const priceRange =
-  "Complete bathroom remodels typically run $5,000 to $30,000+, depending on size, materials and layout. Your free consult gets you an exact number.";
+  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Your free consult gets you an exact number.";

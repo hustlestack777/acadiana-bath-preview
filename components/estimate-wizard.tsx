@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { appendAttribution } from "@/components/lead-attribution";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
+import { SaveJustinContact } from "@/components/save-justin-contact";
 import { checkCity, MAIN_TOWNS } from "@/lib/coverage";
 import {
   brand,
@@ -23,6 +24,7 @@ import {
   homeowners,
   lead,
   paymentNote,
+  trustLine,
   payments,
   photoNote,
   projectNote,
@@ -372,11 +374,6 @@ export function EstimateWizard() {
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#e4d8b4]">{hero.eyebrow}</p>
           <h1 className="mt-3 max-w-xl text-5xl leading-[0.95] md:text-7xl">{lead.title}</h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-white/85">{lead.subhead}</p>
-          <p className="mt-5 text-lg">
-            <a href={brand.phoneHref} className="underline underline-offset-4">
-              {brand.phone}
-            </a>
-          </p>
           <p className="mt-4 text-sm text-white/85">
             Prefer a shorter form?{" "}
             <a href="/solid-surface#solid-quote" className="underline underline-offset-4">Solid surface quote</a>
@@ -471,6 +468,10 @@ export function EstimateWizard() {
             <Button type="submit" className="h-12 rounded-xl text-base">
               Continue
             </Button>
+            <p className="text-center text-sm leading-6 text-muted-foreground">{trustLine}</p>
+            <p className="text-center text-sm">
+              <a href={brand.phoneHref} className="font-semibold underline underline-offset-4">{brand.phone}</a>
+            </p>
           </form>
         ) : null}
 
@@ -522,6 +523,10 @@ export function EstimateWizard() {
             <Button type="submit" className="h-12 rounded-xl text-base">
               Continue
             </Button>
+            <p className="text-center text-sm leading-6 text-muted-foreground">{trustLine}</p>
+            <p className="text-center text-sm">
+              <a href={brand.phoneHref} className="font-semibold underline underline-offset-4">{brand.phone}</a>
+            </p>
           </form>
         ) : null}
 
@@ -579,6 +584,10 @@ export function EstimateWizard() {
             <Button type="submit" className="h-12 rounded-xl text-base">
               Continue
             </Button>
+            <p className="text-center text-sm leading-6 text-muted-foreground">{trustLine}</p>
+            <p className="text-center text-sm">
+              <a href={brand.phoneHref} className="font-semibold underline underline-offset-4">{brand.phone}</a>
+            </p>
           </form>
         ) : null}
 
@@ -667,6 +676,7 @@ export function EstimateWizard() {
             </h1>
             <p className="mt-2.5 text-lg leading-snug">{lead.thanks}</p>
             <p className="mt-2 mb-5 leading-snug text-[#55574c]">{lead.savedNote}</p>
+            <SaveJustinContact className="mb-5" buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-[#103830] px-6 text-base font-semibold text-white" />
             <WindowsQuoteLine className="mb-5 text-[#55574c]" />
             <section className="rounded-[24px] border border-[#d8d3c4] bg-[#fffaf3] px-5 py-[22px]">
               <p className="font-heading text-[32px] leading-[1.05]">{form.name.trim()}</p>

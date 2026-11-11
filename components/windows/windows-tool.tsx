@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AddressAutocomplete, type AddressSelection } from "@/components/address-autocomplete";
+import { SaveJustinContact } from "@/components/save-justin-contact";
 import { appendAttribution } from "@/components/lead-attribution";
 import { Checkbox } from "@/components/ui/checkbox";
 import { brand } from "@/lib/copy";
@@ -710,9 +711,7 @@ export function WindowsTool() {
           <p className="mt-4 text-base leading-7 text-foreground">
             This is a ballpark range, not a quote. Justin gives you the final price after he measures.
           </p>
-          <a href={brand.phoneHref} className={`${primaryBtn} mt-8`}>
-            Call {brand.phone}
-          </a>
+          <SaveJustinContact className="mt-8" buttonClassName={`${primaryBtn}`} />
         </section>
       ) : null}
     </div>

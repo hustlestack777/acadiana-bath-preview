@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { buildLeadEmail } from "./lead-email";
 import { formatChicago, formatEmailSize, formatThankYouSize, leadSubject } from "./lead-display";
-import { fetchStreetViewImage, openInMapsUrl, readGoogleMapsKey, resolveHouseMapLinks, NOMINATIM_USER_AGENT } from "./street-view";
+import { fetchStreetViewImage, mapsDirectionsUrl, openInMapsUrl, readGoogleMapsKey, resolveHouseMapLinks, NOMINATIM_USER_AGENT } from "./street-view";
 
 const when = new Date("2026-11-09T23:14:00Z");
 
@@ -75,7 +75,10 @@ test("the lead email is a card with real labels, inline photos, and no empty non
   assert.match(email.html, /Open Street View/);
   assert.match(email.html, /Open in Google Maps/);
   assert.match(email.html, /google\.com\/maps\/search\/\?api=1&amp;query=/);
+  assert.match(email.html, /Get directions/);
+  assert.match(email.html, /google\.com\/maps\/dir\/\?api=1&amp;destination=/);
   assert.match(email.text, /Street View: https:\/\/www\.google\.com\/maps\/@\?api=1&map_action=pano/);
+  assert.match(email.text, /Directions from your location: https:\/\/www\.google\.com\/maps\/dir\/\?api=1&destination=/);
   assert.match(email.text, /Open in Google Maps: https:\/\/www\.google\.com\/maps\/search\/\?api=1&query=/);
   assert.match(email.html, /Tub-to-shower conversion/);
   assert.match(email.html, /60″ wide × 30″ deep × 14″ high/);
@@ -124,6 +127,11 @@ test("an update email uses the same card and a consult-update subject", () => {
   assert.equal(email.subject, "[TEST] Consult update · TEST Jane · Lafayette");
   assert.match(email.html, /Consult update/);
   assert.match(email.html, /Added 2 photos/);
+});
+
+test("directions link uses the address and driving mode", () => {
+  assert.match(mapsDirectionsUrl("412 Sample Street, Lafayette, LA 70508"), /google\.com\/maps\/dir\/\?api=1&destination=412%20Sample%20Street%2C%20Lafayette%2C%20LA%2070508&travelmode=driving/);
+  assert.equal(mapsDirectionsUrl("  "), "");
 });
 
 test("maps link opens street view when a pin exists", () => {

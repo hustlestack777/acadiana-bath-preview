@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function FaqPage() {
   return (
-    <SiteShell>
+    <SiteShell sticky>
       <main id="content" tabIndex={-1}>
         <section className="mx-auto w-full max-w-6xl px-5 pb-4 pt-6 md:pt-12">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">FAQ</p>

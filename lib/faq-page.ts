@@ -7,11 +7,11 @@ export const faqPageIntro =
 export const geoFaqs = [
   {
     q: "How much does a walk-in shower cost in Louisiana?",
-    a: "Bathroom remodels from Acadiana Bathrooms and Countertops range from $5,000 to $30,000+. The exact number is given at a free consult, after Justin looks at the space, the materials, and the work involved. A simple refresh and a fully custom walk-in with handmade tile or a quartzite vanity will not land in the same place. Call (337) 522-0023 or use Design My Bathroom and Justin will call to talk it through and set up a time to measure.",
+    a: "Bathroom remodels starting at $5K, with most projects $5K–$30K+. The exact number is given at a free consult, after Justin looks at the space, the materials, and the work involved. A simple refresh and a fully custom walk-in with handmade tile or a quartzite vanity will not land in the same place. Use Design My Bathroom or the quote form, and Justin will call to talk it through and set up a time to measure.",
   },
   {
     q: "How much does a bathroom remodel cost in South Louisiana?",
-    a: "Bathroom remodels range from $5,000 to $30,000+, depending on the size of the room and the finishes you love. See your new bathroom in about a minute. Justin follows up with your price.",
+    a: "Starting at $5K, with most projects $5K–$30K+, depending on the size of the room and the finishes you love. See your new bathroom in about a minute. Justin follows up with your exact price at a free consult.",
     link: { text: "See your new bathroom", href: "/design" },
   },
   {
@@ -20,7 +20,7 @@ export const geoFaqs = [
   },
   {
     q: "Do you have an office in my town?",
-    a: "We serve homes across that full South Louisiana area. We do not have a showroom or office in every town we serve, and this site will not list a local street address for each city. The consult happens at your house. Call (337) 522-0023 or send the quote form and Justin will call you back.",
+    a: "We serve homes across that full South Louisiana area. We do not have a showroom or office in every town we serve, and this site will not list a local street address for each city. The consult happens at your house. Send the quote form or use Design My Bathroom, and Justin will call you back.",
   },
   {
     q: "What does Acadiana Bathrooms do?",
@@ -48,7 +48,7 @@ export const geoFaqs = [
   },
   {
     q: "How do I get a quote?",
-    a: "Use Design My Bathroom on the site, fill out the quote form, or call (337) 522-0023. You can also send a photo of your shower. Justin will call to talk through the project and set up a time to measure. The exact price is given at that consult. Bathroom remodels range from $5,000 to $30,000+.",
+    a: "Use Design My Bathroom on the site, fill out the quote form, or call (337) 522-0023. You can also send a photo of your shower. Justin will call to talk through the project and set up a time to measure. The exact price is given at that consult. Starting at $5K, with most projects $5K–$30K+.",
   },
   {
     q: "Can I see a design before we start?",

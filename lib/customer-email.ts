@@ -161,9 +161,9 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
          before && after
            ? `${caption("Your bathroom")}${image("design-before", "Your bathroom", 504)}
               <div style="height:14px;line-height:14px;font-size:1px;">&nbsp;</div>
-              ${caption("Design preview")}${image("design-after", "Your design preview", 504)}`
+              ${image("design-after", "Your design preview", 504)}`
            : after
-             ? `${caption("Design preview")}${image("design-after", "Your design preview", 504)}`
+             ? `${image("design-after", "Your design preview", 504)}`
              : ""
        }
        ${after ? `<p style="margin:8px 0 18px;font-family:${EMAIL.font};font-size:13px;line-height:1.5;color:${EMAIL.faint};">${esc(DESIGN_FINE_PRINT)}</p>` : ""}`

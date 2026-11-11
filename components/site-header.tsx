@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { MaisonLogo } from "@/components/logo";
-import { brand, hero } from "@/lib/copy";
+import { brand, hero, heroDesignCta } from "@/lib/copy";
 import { cn } from "cn";
 import { ConsultLink } from "@/components/consult-link";
 
@@ -87,6 +87,15 @@ export function SiteHeader() {
           >
             {brand.phone}
           </a>
+          <Link
+            href="/design"
+            className={cn(
+              "hidden h-11 items-center justify-center rounded-full border px-4 text-sm font-medium md:inline-flex",
+              overHero ? "border-white/70 text-white hover:bg-white/10" : "border-border bg-card",
+            )}
+          >
+            {heroDesignCta}
+          </Link>
           <ConsultLink
             className="hidden h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground md:inline-flex"
           >
@@ -136,18 +145,22 @@ export function SiteHeader() {
             ))}
           </nav>
           <div className="mt-6 grid gap-3 border-t border-border pt-6 text-base">
-            <a href={brand.phoneHref} className="font-medium">
-              {brand.phone}
-            </a>
-            <a href={brand.websiteHref} className="underline underline-offset-4">
-              {brand.website}
-            </a>
             <ConsultLink
               onClick={() => setOpen(false)}
               className="inline-flex h-12 items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground"
             >
               {hero.primary}
             </ConsultLink>
+            <Link
+              href="/design"
+              onClick={() => setOpen(false)}
+              className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card text-base font-medium"
+            >
+              {heroDesignCta}
+            </Link>
+            <a href={brand.phoneHref} className="text-center text-sm font-semibold">
+              {brand.phone}
+            </a>
           </div>
         </div>
       ) : null}

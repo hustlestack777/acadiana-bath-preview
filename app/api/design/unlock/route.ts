@@ -62,8 +62,10 @@ export async function POST(request: Request) {
   const session = found.rows[0];
   // qa_failed = every render failed the automatic QA, so no image was shown. We still take the lead
   // (their photos + the look they picked) and Justin puts a custom design together.
+  // capped = the daily/IP/person render cap was hit; photos are saved for a hand design.
   const qaFailed = session?.status === "qa_failed";
-  if (!session || !session.before || (!qaFailed && (session.status !== "done" || !session.after))) {
+  const capHit = session?.status === "capped";
+  if (!session || !session.before || (!qaFailed && !capHit && (session.status !== "done" || !session.after))) {
     return fail("That design was not found. Start a new one.", 404);
   }
   const style = findStyle(session.style_key);
@@ -93,15 +95,18 @@ export async function POST(request: Request) {
   const ip = clientIp(request);
   const now = new Date();
   const features = [
-    "Path: Design My Bathroom",
+    capHit ? "Design pending (cap hit)" : "Path: Design My Bathroom",
+    capHit ? "Path: Design My Bathroom" : "",
     `Style picked: ${style.name} (${style.path === "solid-surface" ? "Solid surface" : "Custom tile"})`,
-    qaFailed
+    capHit
+      ? "Design pending (cap hit). The free design cap was reached, so no preview was generated. Their photo(s) are attached and Justin will design by hand."
+      : qaFailed
       ? "qa_failed: CUSTOM DESIGN NEEDED. Our preview didn't pass the automatic quality check, so they saw no image and were told Justin will put together a custom design. Their photo(s) are attached."
       : "Photo 1 is their bathroom. Photo 2 is the design preview we made from it.",
     smsConsent
       ? `SMS consent: YES at ${formatChicago(now)} from IP ${ip} (checkbox text v1 on /design: "${designCopy.smsConsent.slice(0, 60)}…")`
       : "SMS consent: no (call or email only).",
-  ].join("\n");
+  ].filter(Boolean).join("\n");
 
   const input = {
     sourcePage: text(form, "sourcePage", 80) || "/design",
@@ -146,7 +151,7 @@ export async function POST(request: Request) {
 
   const test = isTestRequest(request) || isTeamTestLead(phone, email);
   const subject = withTestSubject(
-    `${qaFailed ? "[qa_failed: custom design needed] " : ""}New Design My Bathroom lead: ${name.trim()}, ${city.trim()}: ${style.name}`,
+    `${capHit ? "[Design pending (cap hit)] " : qaFailed ? "[qa_failed: custom design needed] " : ""}New Design My Bathroom lead: ${name.trim()}, ${city.trim()}: ${style.name}`,
     test || /^test/i.test(name.trim()),
   );
 
@@ -180,7 +185,7 @@ export async function POST(request: Request) {
     [id, leadId, phoneDigits(phone), token],
   );
 
-  if (qaFailed || !full) {
+  if (qaFailed || capHit || !full) {
     return NextResponse.json({ ok: true, token, emailSent, style: style.name, custom: true });
   }
   return NextResponse.json({

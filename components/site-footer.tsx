@@ -1,5 +1,5 @@
 import { MaisonLogo } from "@/components/logo";
-import { brand, cardClaims, services } from "@/lib/copy";
+import { brand, cardClaims, heroDesignCta, services } from "@/lib/copy";
 import { SERVICE_AREA } from "@/lib/coverage";
 import { ConsultLink } from "@/components/consult-link";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
@@ -11,13 +11,17 @@ export function SiteFooter() {
         <div>
           <MaisonLogo onDark className="text-secondary-foreground" />
           <p className="mt-4 text-sm leading-6 text-fig-muted">
-            Bathroom remodels. {SERVICE_AREA} Call or email to talk about your project.
+            Bathroom remodels. {SERVICE_AREA} Start with Design My Bathroom or a free consult.
           </p>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Visit, call, or email</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Call or email</p>
+          <p className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+            <ConsultLink className="underline underline-offset-4">{cardClaims.consult}</ConsultLink>
+            <a href="/design" className="underline underline-offset-4">{heroDesignCta}</a>
+          </p>
           <p className="mt-3">
-            <a href={brand.phoneHref} className="text-lg font-medium">
+            <a href={brand.phoneHref} className="text-base font-medium">
               {brand.phone}
             </a>
           </p>
@@ -31,12 +35,6 @@ export function SiteFooter() {
               {brand.website}
             </a>
           </p>
-          <p className="mt-3 text-sm">
-            {cardClaims.consult}
-          </p>
-          <ConsultLink className="mt-4 inline-block text-sm underline underline-offset-4">
-            Free Consult
-          </ConsultLink>
         </div>
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Services</p>

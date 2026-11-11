@@ -36,7 +36,7 @@ export function businessJsonLd() {
     email: SITE_EMAIL,
     logo: SITE_LOGO_URL,
     image: SITE_LOGO_URL,
-    description: `Bathroom remodels from ${SITE_NAME}. ${SCHEMA_SERVICE_AREA} Free Consult. Call ${SITE_PHONE}.`,
+    description: `Bathroom remodels from ${SITE_NAME}. ${SCHEMA_SERVICE_AREA} See your new bathroom free: Design My Bathroom.`,
     areaServed: SCHEMA_AREA_SERVED,
     priceRange: SCHEMA_PRICE_RANGE,
     // No address: Justin has no public storefront yet (a Broussard warehouse is pending).

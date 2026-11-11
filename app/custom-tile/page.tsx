@@ -11,7 +11,7 @@ import { customTileServiceJsonLd } from "@/lib/schema";
 export const metadata: Metadata = {
   title: "Custom tile showers and bathrooms",
   description:
-    "Custom tile showers and bathrooms across Acadiana and South Louisiana: zellige, patterned floors and grout colors you choose. Free consult. Call (337) 522-0023.",
+    "Custom tile showers and bathrooms across Acadiana and South Louisiana: zellige, patterned floors and grout colors you choose. Free consult. See your new bathroom with Design My Bathroom.",
 };
 
 export default function CustomTilePage() {

@@ -6,10 +6,10 @@ import { useEffect, useRef } from "react";
 
 const LOOKS = [
   {
-    label: "White",
-    href: "/custom-tile",
-    src: "/images/home/zellige-arch-niche.webp",
-    alt: "Arched entry into a white zellige shower with an arched niche, a rain head and a marble-look bench.",
+    label: "Tub walls",
+    href: "/solid-surface",
+    src: "/images/ai/ss-tub-walls.webp",
+    alt: "Alcove tub with a seamless white solid surface surround with soft veining and two recessed shelves.",
   },
   {
     label: "Green zellige",
@@ -42,10 +42,10 @@ const LOOKS = [
     alt: "Blush handmade tile shower with a cross-handle valve, a niche and a frameless glass door.",
   },
   {
-    label: "Travertine",
-    href: "/custom-tile",
-    src: "/images/home/travertine-arch.webp",
-    alt: "Walk-in shower behind a plastered arched opening, travertine-look tile, a bench, an arched niche and a frameless glass door.",
+    label: "Tub-to-shower",
+    href: "/solid-surface",
+    src: "/images/ai/ss-tub-to-shower.webp",
+    alt: "Tub alcove converted to a walk-in shower with greige solid surface walls, a bench and a sliding glass door.",
   },
   {
     label: "Warm white",
@@ -69,20 +69,20 @@ const LOOKS = [
 
 const INSPIRING = [
   {
-    src: "/images/home/travertine-arch.webp",
-    alt: "Walk-in shower behind a plastered arched opening, travertine-look tile, a bench, an arched niche and a frameless glass door.",
+    src: "/images/hero/hero-34-1600.webp",
+    alt: "White tile walls and a freestanding tub on a blue, rust and cream patterned floor.",
   },
   {
-    src: "/images/home/zellige-arch-niche.webp",
-    alt: "Arched entry into a white zellige shower with an arched niche, a rain head and a marble-look bench.",
+    src: "/images/hero/hero-33-1600.webp",
+    alt: "Floating oak vanity against a glossy butter-yellow tile wall with a round brass mirror.",
   },
   {
     src: "/images/home/sage-tile-tub.webp",
     alt: "Sage handmade tile shower with a frameless glass door beside a freestanding tub.",
   },
   {
-    src: "/images/ai/ss-arch.webp",
-    alt: "Arched walk-in shower with seamless warm-white solid surface walls, a bench, a linear drain and brass fixtures.",
+    src: "/images/ai/ss-tub-walls.webp",
+    alt: "Alcove tub with a seamless white solid surface surround with soft veining and two recessed shelves.",
   },
   {
     src: "/images/home/bookmatch-stone.webp",
@@ -93,8 +93,8 @@ const INSPIRING = [
     alt: "Blush handmade tile shower with a cross-handle valve, a niche and a frameless glass door.",
   },
   {
-    src: "/images/home/arch-shower-vanity.webp",
-    alt: "Arched zellige shower with a bench and niche beside a white-oak double vanity with arched mirrors.",
+    src: "/images/hero/hero-35-1600.webp",
+    alt: "Walk-in shower in glossy teal tile with a niche, brass fixtures and a white bench outside the glass.",
   },
   {
     src: "/images/home/marble-glass.webp",

@@ -4,13 +4,13 @@ import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEv
 import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { appendAttribution } from "@/components/lead-attribution";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
+import { SaveJustinContact } from "@/components/save-justin-contact";
 import { designCopy, designStyles, findStyle } from "@/lib/design-styles";
 import { resizePhoto } from "@/lib/photo-resize";
-import { brand } from "@/lib/copy";
 import { budgetOptions, budgetQuestion, orderByBudget } from "@/lib/budget";
 import { cn } from "cn";
 
-type Step = "photos" | "budget" | "style" | "rendering" | "teaser" | "reveal" | "custom-done";
+type Step = "photos" | "budget" | "style" | "rendering" | "teaser" | "cap-pending" | "reveal" | "custom-done";
 type Shot = { file: File; url: string };
 
 // The server already regenerates up to 2 times behind its QA check; the browser only retries a dropped connection once.
@@ -28,7 +28,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   const [error, setError] = useState("");
   const [busyMsg, setBusyMsg] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [design, setDesign] = useState<{ id: string; teaser: string | null } | null>(null);
+  const [design, setDesign] = useState<{ id: string; teaser: string | null; capped?: boolean } | null>(null);
   const [reveal, setReveal] = useState<{ before: string; after: string; style: string } | null>(null);
   const [form, setForm] = useState({ name: "", phone: "", email: "", street: "", city: "", state: "LA", zip: "", latitude: "", longitude: "", smsConsent: false, company_fax: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -106,6 +106,11 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         const json = await response.json().catch(() => ({}));
         if (response.ok && json.ok) {
           setProgress(100);
+          if (json.capped) {
+            setDesign({ id: json.id, teaser: null, capped: true });
+            window.setTimeout(() => setStep("cap-pending"), 200);
+            return;
+          }
           // qaFailed: no image passed the quality check. Show the custom-design message, still take the lead.
           setDesign({ id: json.id, teaser: json.qaFailed ? null : json.teaser });
           window.setTimeout(() => setStep("teaser"), 350);
@@ -332,9 +337,13 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         </section>
       ) : null}
 
-      {step === "teaser" && design ? (
-        <section aria-labelledby="design-step-3">
-          {design.teaser ? (
+      {(step === "teaser" || step === "cap-pending") && design ? (
+        <section aria-labelledby={step === "cap-pending" ? "design-cap-pending" : "design-step-3"}>
+          {step === "cap-pending" ? (
+            <div className="rounded-3xl border border-border bg-card p-6" data-testid="design-cap-pending">
+              <h2 id="design-cap-pending" className="font-heading text-2xl">Your photos are in! We&apos;ll create your custom design by hand. Tell us where to send it.</h2>
+            </div>
+          ) : design.teaser ? (
             <div className="relative overflow-hidden rounded-3xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={design.teaser} alt="Blurred preview of your new bathroom design" className="w-full" data-testid="design-teaser" />
@@ -348,8 +357,8 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
               <p className="mt-2 text-base leading-7 text-muted-foreground">{designCopy.customBody(chosen?.name ?? "")}</p>
             </div>
           )}
-          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 3 of 3</p>
-          <h2 id="design-step-3" className="mt-2 font-heading text-3xl">Where should we send it?</h2>
+          {step === "cap-pending" ? null : <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 3 of 3</p>}
+          {step === "cap-pending" ? null : <h2 id="design-step-3" className="mt-2 font-heading text-3xl">Where should we send it?</h2>}
           <form onSubmit={unlock} noValidate className="mt-4 grid gap-4" data-testid="design-unlock-form">
             <Field id="d-name" label="First and last name" error={errors.name}>
               <input id="d-name" name="name" className={field} autoComplete="name" value={form.name} aria-invalid={Boolean(errors.name)} onChange={(e) => setForm({ ...form, name: e.target.value })} />
@@ -395,9 +404,11 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
               <span>{designCopy.smsConsent} (Optional)</span>
             </label>
             <button type="submit" disabled={sending} className="h-14 rounded-full bg-primary text-base font-semibold text-primary-foreground disabled:opacity-50" data-testid="design-unlock">
-              {sending ? "Sending…" : design.teaser ? "Unlock my design" : "Get my custom design"}
+              {sending ? "Sending…" : step === "cap-pending" ? "Send Me My Design" : design.teaser ? "Unlock my design" : "Get my custom design"}
             </button>
-            <p className="-mt-2 text-center text-[0.7rem] text-muted-foreground/80" data-testid="design-fine-print">{designCopy.finePrint}</p>
+            {step === "cap-pending" ? null : (
+              <p className="-mt-2 text-center text-[0.7rem] text-muted-foreground/80" data-testid="design-fine-print">{designCopy.finePrint}</p>
+            )}
             <p className="text-xs leading-5 text-muted-foreground">
               {designCopy.privacy}{" "}
               <a href="/privacy" className="underline underline-offset-4">Privacy policy</a>
@@ -410,11 +421,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         <section aria-labelledby="design-custom-done" data-testid="design-custom-done">
           <h2 id="design-custom-done" className="font-heading text-3xl">Justin will call you</h2>
           <p className="mt-3 text-base leading-7 text-muted-foreground">{designCopy.customThanks(chosen?.name ?? "")}</p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <a href={brand.phoneHref} className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground">
-              Call {brand.phone}
-            </a>
-          </div>
+          <SaveJustinContact className="mt-6" buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground" />
           <WindowsQuoteLine className="mt-4 text-muted-foreground" />
         </section>
       ) : null}
@@ -433,16 +440,14 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             <h3 className="font-heading text-2xl">Justin will call you</h3>
             <p className="mt-2 text-base leading-7 text-muted-foreground">Thanks! Justin has your photos and the look you picked, and will reach out about your free quote.</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <a href={brand.phoneHref} className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground">
-                Call {brand.phone}
-              </a>
-              <a href={reveal.after} download="acadiana-bathroom-design.jpg" className="inline-flex h-14 items-center justify-center rounded-full border border-border bg-background px-6 text-base font-semibold">
+              <a href={reveal.after} download="acadiana-bathroom-design.jpg" className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground">
                 Download
               </a>
-              <button type="button" onClick={tryAnother} className="h-14 rounded-full border border-border px-6 text-base font-semibold sm:col-span-2">
+              <button type="button" onClick={tryAnother} className="h-14 rounded-full border border-border px-6 text-base font-semibold">
                 Try your other free look
               </button>
             </div>
+            <SaveJustinContact className="mt-5" />
           </div>
           <WindowsQuoteLine className="mt-4 text-muted-foreground" />
         </section>

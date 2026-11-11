@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { brand, ideas, priceRange, solidPath, tilePath } from "@/lib/copy";
+import { brand, hero, heroDesignCta, ideas, priceRange, solidPath, tilePath, trustLine } from "@/lib/copy";
 import type { Photo } from "@/lib/images";
 import { cn } from "cn";
-import { DesignCta } from "@/components/design/design-cta";
+import { ConsultLink } from "@/components/consult-link";
 import { IdeaCarousel } from "@/components/idea-carousel";
 
 /** Full-bleed photo hero used by both paths. */
@@ -14,8 +14,8 @@ export function PathHero({
   eyebrow,
   title,
   support,
-  cta,
-  ctaHref,
+  cta: _cta,
+  ctaHref: _ctaHref,
   position = "center",
   children,
 }: {
@@ -33,26 +33,26 @@ export function PathHero({
     <section className="relative min-h-[92svh] overflow-hidden bg-[#14261f] text-[#f6f1e6]" aria-label="Introduction">
       <Image src={image} alt={alt} fill priority sizes="100vw" className="hero-ken object-cover" style={{ objectPosition: position }} />
       <div className="hero-scrim absolute inset-0" aria-hidden="true" />
-      <div className="relative z-10 mx-auto flex min-h-[92svh] w-full max-w-6xl flex-col justify-end px-5 pb-32 pt-28 md:pb-16">
+      <div className="relative z-10 mx-auto flex min-h-[92svh] w-full max-w-6xl flex-col justify-end px-5 pb-28 pt-24 md:pb-16">
         <p className="hero-copy text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[#e4d8b4]">{eyebrow}</p>
-        <h1 className="hero-copy mt-4 max-w-4xl font-heading text-[clamp(2.9rem,7.6vw,6.6rem)] leading-[0.95] font-medium">{title}</h1>
-        <p className="hero-copy mt-5 max-w-xl text-lg leading-8">{support}</p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a
-            href={ctaHref}
-            className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-8 text-base font-semibold text-primary-foreground shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5"
+        <h1 className="hero-copy mt-3 max-w-4xl font-heading text-[clamp(2.15rem,7vw,6.6rem)] leading-[0.95] font-medium">{title}</h1>
+        <p className="hero-copy mt-3 max-w-xl text-base leading-7 sm:mt-5 sm:text-lg sm:leading-8">{support}</p>
+        <div className="mt-5 flex flex-col gap-3 sm:mt-8 sm:flex-row">
+          <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 text-base font-semibold text-primary-foreground shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 sm:h-14">
+            {hero.primary}
+          </ConsultLink>
+          <Link
+            href="/design"
+            className="inline-flex h-12 items-center justify-center rounded-full border border-white/75 bg-black/15 px-8 text-base font-medium text-white backdrop-blur-sm hover:bg-white/10 sm:h-14"
           >
-            {cta}
-          </a>
-          <a
-            href={brand.phoneHref}
-            className="inline-flex h-14 items-center justify-center rounded-full border border-white/75 bg-black/15 px-8 text-base font-medium text-white backdrop-blur-sm hover:bg-white/10"
-          >
-            {brand.phone}
-          </a>
+            {heroDesignCta}
+          </Link>
         </div>
-        <DesignCta testId="path-design-cta" />
-        <p className="hero-copy mt-5 max-w-xl text-sm leading-6 text-white/90" data-testid="price-range">{priceRange}</p>
+        <a href={brand.phoneHref} className="hero-copy mt-3 inline-block text-sm font-semibold text-[#f6f1e6] underline underline-offset-4">
+          {brand.phone}
+        </a>
+        <p className="hero-copy mt-3 max-w-xl text-sm text-[#e4d8b4]">{trustLine}</p>
+        <p className="hero-copy mt-2 max-w-xl text-sm leading-6 text-white/90" data-testid="price-range">{priceRange}</p>
         {children}
       </div>
     </section>

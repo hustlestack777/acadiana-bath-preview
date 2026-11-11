@@ -30,6 +30,12 @@ export function mapsSearchUrl(query: string) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trimmed)}`;
 }
 
+export function mapsDirectionsUrl(address: string) {
+  const trimmed = address.trim();
+  if (!trimmed) return "";
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(trimmed)}&travelmode=driving`;
+}
+
 export function streetViewPanoUrl(lat: number, lon: number) {
   return `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lon}`;
 }

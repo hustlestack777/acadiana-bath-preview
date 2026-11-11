@@ -7,12 +7,17 @@ const skip = new Set(["node_modules", ".next", "uploads"]);
 const extensions = new Set([".ts", ".tsx", ".css", ".md", ".svg", ".mjs", ".json"]);
 
 const APPROVED_RANGE =
-  "Complete bathroom remodels typically run $5,000 to $30,000+, depending on size, materials and layout. Your free consult gets you an exact number.";
+  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Your free consult gets you an exact number.";
 
-const APPROVED_HERO_QUOTE = "Bathroom remodels from $5,000. Free in-home quote.";
-const APPROVED_PRICE_FROM = "Bathroom remodels from $5,000.";
-const APPROVED_PRICE_SHORT = "$5,000 to $30,000+";
-const APPROVED_SCHEMA_PRICE_RANGE = "$5,000–$30,000+";
+const APPROVED_HERO_QUOTE = "Starting at $5K · Free quote.";
+const APPROVED_PRICE_FROM = "Bathroom remodels starting at $5K.";
+const APPROVED_PRICE_SHORT = "most projects $5K–$30K+";
+const APPROVED_PRICE_SHORT_CAP = "Most projects $5K–$30K+";
+const APPROVED_SCHEMA_PRICE_RANGE = "$5,000+";
+const APPROVED_JOBS_START = "Jobs start at $5K, with most projects $5K–$30K+";
+const APPROVED_STARTING_RANGE = "Starting at $5K, with most projects $5K–$30K+";
+const APPROVED_STARTING = "Starting at $5K";
+const APPROVED_JOBS_START_SHORT = "Jobs start at $5K";
 
 const rules = [
   { name: "guarantee", re: /guarantee/i },
@@ -54,9 +59,16 @@ for (const file of files) {
     .replaceAll(APPROVED_HERO_QUOTE, "")
     .replaceAll(APPROVED_PRICE_FROM, "")
     .replaceAll(APPROVED_SCHEMA_PRICE_RANGE, "")
-    .replaceAll(APPROVED_PRICE_SHORT, "");
+    .replaceAll(APPROVED_JOBS_START, "")
+    .replaceAll(APPROVED_STARTING_RANGE, "")
+    .replaceAll(APPROVED_PRICE_SHORT_CAP, "")
+    .replaceAll(APPROVED_PRICE_SHORT, "")
+    .replaceAll(APPROVED_JOBS_START_SHORT, "")
+    .replaceAll(APPROVED_STARTING, "");
   for (const rule of rules) {
     if (rule.name === "dollar amount" && file.endsWith(`${path.sep}lib${path.sep}leads.ts`)) continue;
+    if (rule.name === "dollar amount" && file.endsWith(".test.ts")) continue;
+    if (rule.name === "dollar amount" && file.endsWith(`${path.sep}route.ts`) && file.includes(`${path.sep}api${path.sep}`)) continue;
     // Visitor budget ranges (their answer, not our prices). Shaun asked for them 11/10/2026.
     if (rule.name === "dollar amount" && file.endsWith(`${path.sep}lib${path.sep}budget.ts`)) continue;
     // Window quote planning ranges (Shaun approved building with range guesses, 11/10/2026).

@@ -13,7 +13,7 @@ import {
   projectLabels,
   timingLabel,
 } from "./lead-display";
-import { mapsSearchUrl, openInMapsUrl } from "./street-view";
+import { mapsDirectionsUrl, mapsSearchUrl, openInMapsUrl } from "./street-view";
 import { campaignLine, sourceLine } from "./lead-attribution";
 import { finishes } from "./copy";
 import { FLOOD_ZONE_LABEL, type HouseFacts } from "./house-facts";
@@ -156,6 +156,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
   const address = fullAddress(street, town, input.zip);
   const mapsUrl = street ? mapsSearchUrl(address) : "";
   const streetViewUrl = street ? openInMapsUrl(address, input.latitude, input.longitude) : "";
+  const directionsUrl = street ? mapsDirectionsUrl(address) : "";
   const kicker = input.kind === "update" ? "Consult update" : "New consult";
   const isWindows = input.project.split(",").map((item) => item.trim()).includes("windows");
 
@@ -241,6 +242,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
     if (street) {
       lines.push("", "THE HOUSE (FOR YOUR VISIT)", address);
       if (streetViewUrl) lines.push(`Street View: ${streetViewUrl}`);
+      if (directionsUrl) lines.push(`Directions from your location: ${directionsUrl}`);
       if (mapsUrl) lines.push(`Open in Google Maps: ${mapsUrl}`);
       const about = houseFactRows(input.houseFacts);
       if (about.length) {
@@ -341,6 +343,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
            <td valign="top" style="font-family:${EMAIL.font};font-size:14px;line-height:1.55;color:${EMAIL.ink};">
              ${esc(street)}${locality ? `<br />${esc(locality)}` : ""}<br />
              ${streetViewUrl ? `<a href="${esc(streetViewUrl)}" style="color:${EMAIL.green};font-weight:600;text-decoration:underline;">Open Street View</a>` : ""}
+             ${directionsUrl ? `<br /><a href="${esc(directionsUrl)}" style="color:${EMAIL.green};font-weight:600;text-decoration:underline;">Get directions</a>` : ""}
              ${mapsUrl ? `<br /><a href="${esc(mapsUrl)}" style="color:${EMAIL.green};font-weight:600;text-decoration:underline;">Open in Google Maps</a>` : ""}
            </td>
          </tr>

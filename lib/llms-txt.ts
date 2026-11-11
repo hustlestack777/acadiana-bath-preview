@@ -1,4 +1,4 @@
-import { heroQuoteLine, priceRange, services, solidPath } from "./copy";
+import { heroQuoteLine, services, solidPath } from "./copy";
 import { MAIN_TOWNS } from "./coverage";
 import { townPath, towns } from "./towns";
 import { SCHEMA_SERVICE_AREA, SITE_EMAIL, SITE_NAME, SITE_PHONE, SITE_URL } from "./site";
@@ -25,7 +25,7 @@ ${SITE_NAME} is a bathroom remodeling company based in Lafayette, Louisiana. ${S
 - Bathroom design previews from your own photos (${SITE_URL}/design)
 - Free Consult (${SITE_URL}/estimate)
 
-${heroQuoteLine} ${priceRange}
+${heroQuoteLine} Most projects $5K–$30K+. Your free consult gets you an exact number.
 
 ## Service area
 ${SCHEMA_SERVICE_AREA}

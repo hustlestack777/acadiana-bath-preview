@@ -10,12 +10,12 @@ import { homeFaqs } from "@/lib/faq-page";
 import {
   area,
   brand,
-  cardClaims,
   care,
   close,
   editorial,
   gallery,
   hero,
+  heroDesignCta,
   material,
   reasons,
   steps,
@@ -182,28 +182,31 @@ export function HomePage() {
           <p className="mt-4 max-w-md leading-7 text-muted-foreground">{talk.body}</p>
         </div>
         <div className="rounded-[1.6rem] border border-border bg-card p-7">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brass">Call or email</p>
-          <p className="mt-3 font-heading text-4xl">
-            <a href={brand.phoneHref}>{brand.phone}</a>
-          </p>
-          <p className="mt-3">
-            <a href={brand.emailHref} className="underline underline-offset-4">
-              {brand.email}
-            </a>
-          </p>
-          <p className="mt-3">
-            <a href={brand.websiteHref} className="underline underline-offset-4">
-              {brand.website}
-            </a>
-          </p>
-          <p className="mt-4 text-sm font-semibold">
-            {cardClaims.consult}
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brass">Prefer to write or call?</p>
           <ConsultLink
             className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-medium text-primary-foreground"
           >
             {hero.primary}
           </ConsultLink>
+          <Link
+            href="/design"
+            className="mt-3 inline-flex h-12 items-center justify-center rounded-full border border-border bg-background px-6 text-base font-semibold"
+          >
+            {heroDesignCta}
+          </Link>
+          <p className="mt-4">
+            <a href={brand.phoneHref} className="text-sm font-semibold underline underline-offset-4">{brand.phone}</a>
+          </p>
+          <p className="mt-2">
+            <a href={brand.emailHref} className="underline underline-offset-4">
+              {brand.email}
+            </a>
+          </p>
+          <p className="mt-2">
+            <a href={brand.websiteHref} className="underline underline-offset-4">
+              {brand.website}
+            </a>
+          </p>
         </div>
       </section>
 
@@ -222,19 +225,22 @@ export function HomePage() {
             <h2 className="max-w-xl text-4xl md:text-6xl">{close.title}</h2>
             <p className="mt-4 max-w-xl text-lg leading-8 text-white/85">{close.body}</p>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <ConsultLink
               className="inline-flex h-12 items-center justify-center rounded-full bg-[#f6f1e6] px-6 text-base font-medium text-[#1c241c]"
             >
               {hero.primary}
             </ConsultLink>
-            <a
-              href={brand.phoneHref}
-              className="inline-flex h-12 items-center justify-center rounded-full border border-white/70 px-6 text-base"
+            <Link
+              href="/design"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-white/70 px-6 text-base font-medium"
             >
-              {brand.phone}
-            </a>
+              {heroDesignCta}
+            </Link>
           </div>
+          <a href={brand.phoneHref} className="mt-3 text-sm font-semibold text-white underline underline-offset-4 sm:mt-0">
+            {brand.phone}
+          </a>
         </div>
       </section>
     </main>

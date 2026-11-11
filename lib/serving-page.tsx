@@ -17,7 +17,7 @@ export function ServingTownPage({ slug }: { slug: string }) {
   const town = getTown(slug);
   if (!town) notFound();
   return (
-    <SiteShell>
+    <SiteShell sticky>
       <TownPage town={town} />
     </SiteShell>
   );

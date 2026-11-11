@@ -157,13 +157,14 @@ test("assistant answers stay inside the published facts", () => {
     assert.equal(output.toLowerCase().includes(quarriedPhrase), false, output);
     assert.equal(/bath fitter|re-bath|rebath/i.test(output), false, output);
     // Only the approved range may carry a dollar amount.
-    const withoutRange = output.replaceAll(priceRange, "").replaceAll("$5,000 to $30,000+", "");
+    const withoutRange = output.replaceAll(priceRange, "").replaceAll("Starting at $5K, with most projects $5K–$30K+", "").replaceAll("Starting at $5K", "").replaceAll("$5K–$30K+", "");
     assert.equal(/\$\s?\d/.test(withoutRange), false, output);
     assert.equal(withoutRange.includes("5,000") || withoutRange.includes("5000"), false);
   }
   assert.match(replyTo("What is the product warranty?"), /Lifetime Guarantee/);
   assert.match(replyTo(`what is your ${pledge}?`), /Ask Justin for the details at your free consult/);
   assert.match(replyTo("Is it natural stone?"), /solid surface/i);
-  assert.match(replyTo("how much"), /\$5,000 to \$30,000\+/);
+  assert.match(replyTo("how much"), /Starting at \$5K/);
+  assert.match(replyTo("how much"), /\$5K–\$30K\+/);
   assert.match(replyTo("are you a person"), /AI assistant/i);
 });
