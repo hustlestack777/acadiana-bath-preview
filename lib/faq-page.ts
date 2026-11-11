@@ -2,16 +2,16 @@
 export const faqPageTitle = "Acadiana Bathrooms FAQ";
 
 export const faqPageIntro =
-  "Common questions about cost, area, materials, and how to get a quote.";
+  "Straight answers on cost, service area, materials and how to get your free quote.";
 
 export const geoFaqs = [
   {
     q: "How much does a walk-in shower cost in Louisiana?",
-    a: "Bathroom remodels starting at $5K, with most projects $5K–$30K+. The exact number is given at a free consult, after Justin looks at the space, the materials, and the work involved. A simple refresh and a fully custom walk-in with handmade tile or a quartzite vanity will not land in the same place. Use Design My Bathroom or the quote form, and Justin will call to talk it through and set up a time to measure.",
+    a: "Bathroom remodels starting at $5K, with most projects $5K–$30K+. The exact number is given at a free consult, after Justin looks at the space, the materials, and the work involved. A simple refresh and a fully custom walk-in with handmade tile or a quartzite vanity are priced differently, so Justin prices your project to your room and your finishes. Use Design My Bathroom or the quote form, and Justin will call to talk it through and set up a time to measure.",
   },
   {
     q: "How much does a bathroom remodel cost in South Louisiana?",
-    a: "Starting at $5K, with most projects $5K–$30K+, depending on the size of the room and the finishes you love. See your new bathroom in about a minute. Justin follows up with your exact price at a free consult.",
+    a: "Starting at $5K, with most projects $5K–$30K+, depending on the size of the room and the finishes you love. See your new bathroom before you spend a dime. Justin calls you personally and gives your exact price at a free consult.",
     link: { text: "See your new bathroom", href: "/design" },
   },
   {
@@ -20,23 +20,23 @@ export const geoFaqs = [
   },
   {
     q: "Do you have an office in my town?",
-    a: "We serve homes across that full South Louisiana area. We do not have a showroom or office in every town we serve, and this site will not list a local street address for each city. The consult happens at your house. Send the quote form or use Design My Bathroom, and Justin will call you back.",
+    a: "We come to you. Justin serves homes across Acadiana and South Louisiana and meets you at your house, where he can see the room, measure and talk through the design. Send the quote form or use Design My Bathroom, and Justin will call you back.",
   },
   {
     q: "What does Acadiana Bathrooms do?",
-    a: "We remodel bathrooms: custom walk-in showers, tile (including handmade zellige), quartz and quartzite countertops, and solid-surface walls and showers. We do not install granite. Justin follows up with a free quote and walks you through the design.",
+    a: "We remodel bathrooms: custom walk-in showers, tile (including handmade zellige), quartz, quartzite and marble, and solid-surface walls and showers. We do not install granite. Justin calls you personally, walks you through the design and gives you a free quote.",
   },
   {
     q: "What materials do you use?",
-    a: "There are many options. Many types of solid surface can be installed, and Onyx is a preferred material. For tile, think handmade zellige, patterned floors and stone-look slabs. Justin will walk you through what fits your room.",
+    a: "For seamless walls, we install solid surface, and Onyx is a preferred material. For tile, think handmade zellige, patterned floors and stone-look slabs, plus quartz, quartzite and marble. Justin matches the right materials to your room and your budget.",
   },
   {
     q: "What is zellige tile?",
-    a: "Zellige is handmade glazed tile with an uneven, glossy surface. Light hits each piece a little differently, which is the point. It is a strong choice for a shower wall or a color-drenched bath when you want the room to have texture, not a flat factory look. We can talk through colors and grout at the consult.",
+    a: "Zellige is handmade glazed tile with an uneven, glossy surface. Light hits each piece a little differently, which is the point. It is a strong choice for a shower wall or a color-drenched bath when you want the room to have texture, not a flat factory look. Justin will help you pick colors and grout at your consult, and you can preview grout colors on our custom tile page.",
   },
   {
     q: "What is the difference between quartz and quartzite?",
-    a: "Quartzite is a natural stone, often with dramatic veining. Quartz is an engineered slab with a more consistent pattern. We work in both for bathroom vanities and surrounding surfaces. We do not use granite. Which one belongs in your house depends on the look you want and how the room is used. Justin will help you choose at the consult.",
+    a: "Quartzite is a natural stone, often with dramatic veining. Quartz is an engineered slab with a more consistent pattern. We work in both for bathroom vanities and surrounding surfaces. Justin will help you choose the right one for the look you want and how you use the room.",
   },
   {
     q: "What is a curbless shower?",
@@ -44,7 +44,7 @@ export const geoFaqs = [
   },
   {
     q: "What is a solid-surface shower?",
-    a: "Solid surface is a seamless, non-porous material for shower walls and surrounds. It can take clean lines and even a soft arch, without a full grid of grout. People choose it when they want a calm, easy-to-wipe look. It can also be combined with tile or stone at the vanity. We will show options at the free consult.",
+    a: "Solid surface is a seamless, non-porous material for shower walls and surrounds. It can take clean lines and even a soft arch, without a full grid of grout. People choose it when they want a calm, easy-to-wipe look. It can also be combined with tile or stone at the vanity. Justin brings options to your free consult.",
   },
   {
     q: "How do I get a quote?",
@@ -52,7 +52,7 @@ export const geoFaqs = [
   },
   {
     q: "Can I see a design before we start?",
-    a: "Yes. Design My Bathroom lets you upload a photo of your shower and see a redesign idea. The photos on this site are design ideas, not finished jobs. Justin can walk you through real options at your consult.",
+    a: "Yes. Design My Bathroom lets you upload a photo of your shower and see a redesign in your own space, free. The photos on this site are design inspiration, not past jobs, and Justin will walk you through real materials and options at your consult.",
   },
 ] as const;
 
