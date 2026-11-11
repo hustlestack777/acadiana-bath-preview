@@ -175,4 +175,7 @@ export const tilePhotos: Photo[] = [
   tile("10", "Glossy sand-colored handmade tile with two arched niches and an aged-brass valve.", "Arched niches"),
   tile("14", "Walk-in shower with dramatic burgundy marble-look walls, a lit arched niche and brass fixtures.", "Neo Deco marble look"),
   tile("15", "Muted sage and cream checkerboard floor tile under a freestanding tub with an arched doorway.", "Checkerboard floor"),
+  tile("20", "Cobalt blue handmade tile covering the walls and floor around a freestanding tub and glass shower.", "Cobalt color-drenched bath"),
+  tile("21", "Butter yellow zellige shower and backsplash beside a light wood vanity.", "Butter yellow zellige"),
+  tile("23", "Soft pink and cream star-and-cross pattern tile on a shower wall and floor.", "Geometric pattern"),
 ];

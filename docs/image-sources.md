@@ -44,3 +44,5 @@ All are AI-generated design examples, not photos of completed jobs and not copie
 Grout swatches in `lib/grout.ts` are approximate colors sampled from the Mapei 2023 grout and caulk palette PDF; the site says screen colors are approximate.
 - `tile-09`, `tile-10`, `tile-14`, `tile-15` — Boogie's trend set (arched travertine opening, arched niches, Neo Deco burgundy marble look, sage checkerboard floor), 11/10/2026. Used in the `/custom-tile` gallery.
 - `ss-arch.webp` — Boogie's solid surface arched walk-in shower (boogie_13), 11/10/2026. Used in the `/solid-surface` gallery.
+- `public/images/hero/hero-17|18|24|19|22.webp` — Boogie's color-tile set (pink zellige, emerald zellige, dark green tile with stone-look vanity, terracotta, checkerboard), 11/10/2026. Rotating home hero, captioned.
+- `tile-20`, `tile-21`, `tile-23` — Boogie's cobalt, butter yellow and soft geometric examples, 11/10/2026. `/custom-tile` gallery.
