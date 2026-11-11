@@ -7,6 +7,8 @@ import { budgetOptions, budgetQuestion, budgetTag } from "@/lib/budget";
 import { validateDetails, validateStreet } from "@/lib/estimate";
 import { GROUT_COLORS, GROUT_PICK_EVENT, groutLabel } from "@/lib/grout";
 import { cn } from "cn";
+import { AddressAutocomplete } from "@/components/address-autocomplete";
+import { appendAttribution } from "@/components/lead-attribution";
 
 type Path = "solid" | "tile";
 
@@ -25,6 +27,7 @@ export function QuickQuote({ path }: { path: Path }) {
     email: "",
     street: "",
     city: "",
+    state: "LA",
     zip: "",
     project: [] as string[],
     timing: "",
@@ -130,6 +133,7 @@ export function QuickQuote({ path }: { path: Path }) {
       company_fax: form.company_fax,
     };
     for (const [key, value] of Object.entries(values)) body.set(key, value);
+    appendAttribution(body, sourcePage);
     try {
       const response = await fetch("/api/leads", { method: "POST", body });
       const data = (await response.json().catch(() => null)) as {
@@ -230,30 +234,47 @@ export function QuickQuote({ path }: { path: Path }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className={label} htmlFor={`${path}-name`}>Name</label>
-          <input id={`${path}-name`} className={cn(field, "mt-1")} autoComplete="name" value={form.name} onChange={(e) => set("name", e.target.value)} aria-invalid={Boolean(errors.name)} />
+          <input id={`${path}-name`} name="name" className={cn(field, "mt-1")} autoComplete="name" value={form.name} onChange={(e) => set("name", e.target.value)} aria-invalid={Boolean(errors.name)} />
           {err("name")}
         </div>
         <div>
           <label className={label} htmlFor={`${path}-phone`}>Phone</label>
-          <input id={`${path}-phone`} className={cn(field, "mt-1")} type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={(e) => set("phone", e.target.value)} aria-invalid={Boolean(errors.phone)} />
+          <input id={`${path}-phone`} name="phone" className={cn(field, "mt-1")} type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={(e) => set("phone", e.target.value)} aria-invalid={Boolean(errors.phone)} />
           {err("phone")}
         </div>
         <div className="sm:col-span-2">
           <label className={label} htmlFor={`${path}-email`}>
             Email <span className="font-normal text-muted-foreground">(optional if you gave a phone)</span>
           </label>
-          <input id={`${path}-email`} className={cn(field, "mt-1")} type="email" autoComplete="email" value={form.email} onChange={(e) => set("email", e.target.value)} aria-invalid={Boolean(errors.email)} />
+          <input id={`${path}-email`} name="email" className={cn(field, "mt-1")} type="email" autoComplete="email" value={form.email} onChange={(e) => set("email", e.target.value)} aria-invalid={Boolean(errors.email)} />
           {err("email")}
         </div>
         <div className="sm:col-span-2">
           <label className={label} htmlFor={`${path}-street`}>Street address</label>
-          <input id={`${path}-street`} className={cn(field, "mt-1")} autoComplete="street-address" placeholder="123 Main St" value={form.street} onChange={(e) => set("street", e.target.value)} aria-invalid={Boolean(errors.street)} />
+          <div className="mt-1">
+            <AddressAutocomplete
+              id={`${path}-street`}
+              value={form.street}
+              invalid={Boolean(errors.street)}
+              onChange={(street) => setForm((current) => ({ ...current, street }))}
+              onSelect={(address) =>
+                setForm((current) => ({
+                  ...current,
+                  street: address.street,
+                  city: address.city || current.city,
+                  state: address.region || current.state || "LA",
+                  zip: address.zip || current.zip,
+                }))
+              }
+            />
+          </div>
           {err("street")}
         </div>
         <div>
           <label className={label} htmlFor={`${path}-city`}>Town</label>
           <input
             id={`${path}-city`}
+            name="city"
             list={`${path}-towns`}
             className={cn(field, "mt-1")}
             autoComplete="address-level2"
@@ -270,10 +291,22 @@ export function QuickQuote({ path }: { path: Path }) {
           {err("city")}
         </div>
         <div>
+          <label className={label} htmlFor={`${path}-state`}>State</label>
+          <input
+            id={`${path}-state`}
+            name="state"
+            className={cn(field, "mt-1")}
+            autoComplete="address-level1"
+            value={form.state}
+            maxLength={2}
+            onChange={(e) => set("state", e.target.value.toUpperCase())}
+          />
+        </div>
+        <div>
           <label className={label} htmlFor={`${path}-zip`}>
             ZIP <span className="font-normal text-muted-foreground">(optional)</span>
           </label>
-          <input id={`${path}-zip`} className={cn(field, "mt-1")} inputMode="numeric" autoComplete="postal-code" value={form.zip} onChange={(e) => set("zip", e.target.value)} aria-invalid={Boolean(errors.zip)} />
+          <input id={`${path}-zip`} name="postal-code" className={cn(field, "mt-1")} inputMode="numeric" autoComplete="postal-code" value={form.zip} onChange={(e) => set("zip", e.target.value)} aria-invalid={Boolean(errors.zip)} />
           {err("zip")}
         </div>
         <div>
@@ -335,7 +368,7 @@ export function QuickQuote({ path }: { path: Path }) {
 
       <div className="hidden" aria-hidden="true">
         <label htmlFor={`${path}-fax`}>Company fax</label>
-        <input id={`${path}-fax`} tabIndex={-1} autoComplete="off" value={form.company_fax} onChange={(e) => set("company_fax", e.target.value)} />
+        <input id={`${path}-fax`} tabIndex={-1} autoComplete="fax" value={form.company_fax} onChange={(e) => set("company_fax", e.target.value)} />
       </div>
 
       <label className="flex items-start gap-3 text-sm leading-6" htmlFor={`${path}-consent`}>

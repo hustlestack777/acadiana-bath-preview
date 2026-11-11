@@ -14,6 +14,7 @@ import {
   timingLabel,
 } from "./lead-display";
 import { mapsSearchUrl, openInMapsUrl } from "./street-view";
+import { campaignLine, sourceLine } from "./lead-attribution";
 
 export type LeadEmailPhoto = {
   filename: string;
@@ -51,6 +52,12 @@ export type LeadEmailContent = {
   consentAt?: Date | string | null;
   consentText?: string;
   test?: boolean;
+  sourcePage?: string;
+  formPage?: string;
+  referrer?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
 };
 
 export type LeadEmailAttachment = {
@@ -116,7 +123,13 @@ export function buildLeadEmail(input: LeadEmailContent) {
   const given = firstName(name);
   const test = Boolean(input.test);
 
+  const source = sourceLine(input.sourcePage || "", input.formPage || "");
+  const campaign = campaignLine(input.utmSource || "", input.utmMedium || "", input.utmCampaign || "");
+  const referrer = (input.referrer || "").trim();
   const rows = [
+    source ? ["Source", source] : null,
+    referrer ? ["Referrer", referrer] : null,
+    campaign ? ["Campaign", campaign] : null,
     home ? ["Home", home] : null,
     timing ? ["Timing", timing] : null,
     payment ? ["Payment", payment] : null,

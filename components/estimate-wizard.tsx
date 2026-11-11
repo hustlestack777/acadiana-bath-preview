@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
+import { appendAttribution } from "@/components/lead-attribution";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
 import { checkCity, MAIN_TOWNS } from "@/lib/coverage";
 import {
@@ -46,6 +47,7 @@ const empty = {
   longitude: "",
   city: "",
   zip: "",
+  state: "LA",
   town: "",
   project: "",
   notSure: false,
@@ -243,7 +245,7 @@ export function EstimateWizard() {
     setSubmitting(true);
     setSubmitError("");
     const body = new FormData();
-    body.set("sourcePage", "/estimate");
+    appendAttribution(body, "/estimate");
     body.set("street", form.street);
     body.set("latitude", form.latitude);
     body.set("longitude", form.longitude);
@@ -407,6 +409,7 @@ export function EstimateWizard() {
                   patch({
                     street: address.street,
                     city: address.city || form.city,
+                    state: address.region || form.state || "LA",
                     zip: address.zip || form.zip,
                     latitude: address.lat != null ? String(address.lat) : "",
                     longitude: address.lon != null ? String(address.lon) : "",
@@ -431,6 +434,17 @@ export function EstimateWizard() {
                   <option key={town} value={town} />
                 ))}
               </datalist>
+            </Field>
+            <Field id="state" label="State">
+              <Input
+                id="state"
+                name="state"
+                autoComplete="address-level1"
+                value={form.state}
+                onChange={(event) => patch({ state: event.target.value.toUpperCase() })}
+                className={fieldClass}
+                maxLength={2}
+              />
             </Field>
             <Field
               id="zip"
@@ -572,7 +586,7 @@ export function EstimateWizard() {
           <form className="relative mt-8 grid gap-6" onSubmit={submitContact} noValidate>
             <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
               <label htmlFor="company_fax">Fax</label>
-              <input id="company_fax" name="company_fax" tabIndex={-1} autoComplete="off" />
+              <input id="company_fax" name="company_fax" tabIndex={-1} autoComplete="fax" />
             </div>
             <button type="button" className="w-fit text-sm underline underline-offset-4" onClick={() => go("qualify")}>
               Back
@@ -593,7 +607,7 @@ export function EstimateWizard() {
                 <Input id="name" name="name" autoComplete="name" value={form.name} onChange={(event) => patch({ name: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.name)} />
               </Field>
               <Field id="phone" label="Phone" error={errors.phone} hint="Phone or email is enough. Add the one you prefer below.">
-                <Input id="phone" name="phone" type="tel" autoComplete="tel" value={form.phone} onChange={(event) => patch({ phone: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.phone)} />
+                <Input id="phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={(event) => patch({ phone: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.phone)} />
               </Field>
               <Field id="email" label="Email" error={errors.email}>
                 <Input id="email" name="email" type="email" autoComplete="email" value={form.email} onChange={(event) => patch({ email: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.email)} />

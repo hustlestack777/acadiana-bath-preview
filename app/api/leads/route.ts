@@ -65,6 +65,12 @@ export async function POST(request: Request) {
 
   const input = {
     sourcePage: text(form, "sourcePage") || "/estimate",
+    formPage: text(form, "formPage") || text(form, "sourcePage") || "/estimate",
+    landingPage: text(form, "landingPage"),
+    referrer: text(form, "referrer"),
+    utmSource: text(form, "utmSource"),
+    utmMedium: text(form, "utmMedium"),
+    utmCampaign: text(form, "utmCampaign"),
     street: text(form, "street"),
     latitude: coordinate(text(form, "latitude"), -90, 90),
     longitude: coordinate(text(form, "longitude"), -180, 180),

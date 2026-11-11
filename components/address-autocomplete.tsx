@@ -40,9 +40,12 @@ export function AddressAutocomplete({
   const [status, setStatus] = useState("Suggestions appear as you type.");
   const requestId = useRef(0);
   const selectedStreet = useRef("");
+  const typed = useRef(false);
 
   useEffect(() => {
     const query = value.trim();
+    // Browser autofill fires a burst of changes without keystrokes; only search while the user is typing.
+    if (!typed.current) return;
     if (query && query === selectedStreet.current) return;
     if (query.length < MIN_CHARS) return;
     const seq = ++requestId.current;
@@ -114,6 +117,7 @@ export function AddressAutocomplete({
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    typed.current = true;
     if (event.key === "ArrowDown" && suggestions.length) {
       event.preventDefault();
       setOpen(true);
@@ -143,7 +147,7 @@ export function AddressAutocomplete({
     <div className="relative">
       <input
         id={id}
-        name="street"
+        name="address-line1"
         type="text"
         role="combobox"
         aria-autocomplete="list"
@@ -152,11 +156,14 @@ export function AddressAutocomplete({
         aria-activedescendant={activeId}
         aria-invalid={invalid || undefined}
         aria-describedby={describedBy}
-        autoComplete="street-address"
+        autoComplete="address-line1"
         autoCapitalize="words"
         spellCheck={false}
         value={value}
         placeholder="123 Main St"
+        onInput={(event) => {
+          if ((event.nativeEvent as InputEvent).inputType?.startsWith("insert")) typed.current = true;
+        }}
         onChange={(event) => {
           const next = event.target.value;
           if (next.trim() !== selectedStreet.current) selectedStreet.current = "";

@@ -103,7 +103,13 @@ export async function POST(request: Request) {
   ].join("\n");
 
   const input = {
-    sourcePage: "/design",
+    sourcePage: text(form, "sourcePage", 80) || "/design",
+    formPage: text(form, "formPage", 80) || "/design",
+    landingPage: text(form, "landingPage", 80),
+    referrer: text(form, "referrer", 500),
+    utmSource: text(form, "utmSource", 200),
+    utmMedium: text(form, "utmMedium", 200),
+    utmCampaign: text(form, "utmCampaign", 200),
     street,
     latitude: coordinate(text(form, "latitude"), -90, 90),
     longitude: coordinate(text(form, "longitude"), -180, 180),

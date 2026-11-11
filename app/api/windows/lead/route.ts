@@ -91,7 +91,13 @@ export async function POST(request: Request) {
   });
 
   const input: LeadInput = {
-    sourcePage: WINDOWS_SOURCE_PAGE,
+    sourcePage: text(form, "sourcePage", 80) || WINDOWS_SOURCE_PAGE,
+    formPage: text(form, "formPage", 80) || WINDOWS_SOURCE_PAGE,
+    landingPage: text(form, "landingPage", 80),
+    referrer: text(form, "referrer", 500),
+    utmSource: text(form, "utmSource", 200),
+    utmMedium: text(form, "utmMedium", 200),
+    utmCampaign: text(form, "utmCampaign", 200),
     street,
     latitude: coordinate(text(form, "latitude"), -90, 90),
     longitude: coordinate(text(form, "longitude"), -180, 180),
@@ -102,7 +108,7 @@ export async function POST(request: Request) {
     width: "",
     depth: "",
     height: "",
-    measurements: notes,
+    measurements: "",
     finish: material,
     features: notes,
     name,
@@ -111,7 +117,7 @@ export async function POST(request: Request) {
     preferred: "phone",
     marketing: false,
     timing: "",
-    budget: estimate ? `${estimate.low}-${estimate.high}` : "",
+    budget: "",
     homeowner: "",
     payment: "",
     consent: true,

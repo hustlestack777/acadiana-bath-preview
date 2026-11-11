@@ -199,3 +199,21 @@ test("an email without a pin still includes a street view fallback and a google 
   assert.match(email.html, /google\.com\/maps\/search\/\?api=1&amp;query=/);
   assert.equal(email.html.includes("map_action=pano"), false);
 });
+
+test("the lead email includes the source page, referrer, and campaign when present", () => {
+  const email = sample({
+    sourcePage: "/serving-houma",
+    formPage: "/estimate",
+    referrer: "https://www.google.com/",
+    utmSource: "google",
+    utmMedium: "cpc",
+    utmCampaign: "spring",
+  });
+  assert.match(email.html, /Source/);
+  assert.match(email.html, /\/serving-houma \(form \/estimate\)/);
+  assert.match(email.html, /Referrer/);
+  assert.match(email.html, /google\.com/);
+  assert.match(email.html, /Campaign/);
+  assert.match(email.html, /google \/ cpc \/ spring/);
+  assert.match(email.text, /Source: \/serving-houma \(form \/estimate\)/);
+});

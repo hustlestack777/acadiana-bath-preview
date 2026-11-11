@@ -1,5 +1,6 @@
 /** As-you-type US address lookup, same path as the Blake preview lead form.
- * ArcGIS World Geocoding suggest (no key) is primary, then Photon, then Nominatim.
+ * ArcGIS World Geocoding suggest (no key) is primary, then Photon.
+ * Nominatim is not used — its usage policy bans autocomplete.
  * Results stay in the United States and prefer Louisiana / Acadiana.
  */
 
@@ -287,20 +288,6 @@ async function photonSuggest(query: string, fetchImpl: FetchLike) {
   return preferLouisiana(hitsFromPhoton(data.features ?? []));
 }
 
-async function nominatimSuggest(query: string, fetchImpl: FetchLike) {
-  const params = new URLSearchParams({
-    format: "json",
-    addressdetails: "1",
-    limit: String(ADDRESS_LIMIT),
-    countrycodes: "us",
-    q: query,
-    viewbox: [SERVICE_BBOX.xmin, SERVICE_BBOX.ymax, SERVICE_BBOX.xmax, SERVICE_BBOX.ymin].join(","),
-    bounded: "0",
-  });
-  const data = (await fetchJson(fetchImpl, `https://nominatim.openstreetmap.org/search?${params}`)) as NominatimHit[];
-  return preferLouisiana(hitsFromNominatim(data));
-}
-
 export async function suggestAddresses(query: string, options?: { fetchImpl?: FetchLike }) {
   const trimmed = query.trim();
   if (trimmed.length < ADDRESS_MIN_CHARS) return [];
@@ -312,13 +299,7 @@ export async function suggestAddresses(query: string, options?: { fetchImpl?: Fe
     // Try the next geocoder.
   }
   try {
-    const photon = await photonSuggest(trimmed, fetchImpl);
-    if (photon.length) return photon;
-  } catch {
-    // Try the next geocoder.
-  }
-  try {
-    return await nominatimSuggest(trimmed, fetchImpl);
+    return await photonSuggest(trimmed, fetchImpl);
   } catch {
     return [];
   }

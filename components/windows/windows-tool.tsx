@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AddressAutocomplete, type AddressSelection } from "@/components/address-autocomplete";
+import { appendAttribution } from "@/components/lead-attribution";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "cn";
 import {
@@ -40,6 +41,7 @@ export function WindowsTool() {
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
+  const [state, setState] = useState("LA");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [streetView, setStreetView] = useState<{ image: string; attribution: string } | null>(null);
@@ -90,6 +92,7 @@ export function WindowsTool() {
   function selectAddress(address: AddressSelection) {
     setStreet(address.street || address.label);
     setCity(address.city);
+    if (address.region) setState(address.region);
     setZip(address.zip);
     setLatitude(address.lat);
     setLongitude(address.lon);
@@ -179,6 +182,7 @@ export function WindowsTool() {
       body.set("replaceAll", replaceAll);
       body.set("consent", "true");
       body.set("company_fax", fax);
+      appendAttribution(body, "/windows");
       const response = await fetch("/api/windows/lead", { method: "POST", body });
       const data = (await response.json()) as { ok?: boolean; error?: string; errors?: Record<string, string> };
       if (!response.ok || !data.ok) {
@@ -236,7 +240,13 @@ export function WindowsTool() {
             We&apos;ll use this address to find your house on Street View. You&apos;ll confirm the window count before we go
             further — one window is fine, and so is a whole house.
           </p>
-          <div className="mt-8 space-y-4">
+          <form
+            className="mt-8 space-y-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void lookupHome();
+            }}
+          >
             <div>
               <label htmlFor="windows-street" className="text-sm font-medium">
                 Home address
@@ -254,29 +264,35 @@ export function WindowsTool() {
               </p>
               {errors.street ? <p className="mt-1.5 text-sm text-destructive">{errors.street}</p> : null}
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-[2fr_0.7fr_1fr]">
               <div>
                 <label htmlFor="windows-city" className="text-sm font-medium">
                   Town
                 </label>
-                <input id="windows-city" className={field} value={city} onChange={(event) => setCity(event.target.value)} autoComplete="address-level2" />
+                <input id="windows-city" name="city" className={field} value={city} onChange={(event) => setCity(event.target.value)} autoComplete="address-level2" />
+              </div>
+              <div>
+                <label htmlFor="windows-state" className="text-sm font-medium">
+                  State
+                </label>
+                <input id="windows-state" name="state" className={field} value={state} maxLength={2} onChange={(event) => setState(event.target.value.toUpperCase())} autoComplete="address-level1" />
               </div>
               <div>
                 <label htmlFor="windows-zip" className="text-sm font-medium">
                   ZIP
                 </label>
-                <input id="windows-zip" className={field} value={zip} onChange={(event) => setZip(event.target.value)} autoComplete="postal-code" inputMode="numeric" />
+                <input id="windows-zip" name="postal-code" className={field} value={zip} onChange={(event) => setZip(event.target.value)} autoComplete="postal-code" inputMode="numeric" />
               </div>
             </div>
-          </div>
-          <div className="mt-8 flex flex-col gap-3">
-            <button type="button" className={primaryBtn} onClick={() => void lookupHome()}>
-              Look up my home
-            </button>
-            <button type="button" className="text-sm underline underline-offset-4" onClick={() => goCount(true)}>
-              Skip the photo and enter a count myself
-            </button>
-          </div>
+            <div className="flex flex-col gap-3">
+              <button type="submit" className={primaryBtn}>
+                Look up my home
+              </button>
+              <button type="button" className="text-sm underline underline-offset-4" onClick={() => goCount(true)}>
+                Skip the photo and enter a count myself
+              </button>
+            </div>
+          </form>
         </section>
       ) : null}
 
@@ -570,19 +586,19 @@ export function WindowsTool() {
             Leave your name and a good number. We&apos;ll show a ballpark estimate for planning — not a quote.
           </p>
           <form className="mt-8 space-y-4" onSubmit={(event) => void submitLead(event)}>
-            <input className="hidden" tabIndex={-1} autoComplete="off" value={fax} onChange={(event) => setFax(event.target.value)} name="company_fax" />
+            <input className="hidden" tabIndex={-1} autoComplete="fax" value={fax} onChange={(event) => setFax(event.target.value)} name="company_fax" />
             <div>
               <label htmlFor="windows-name" className="text-sm font-medium">
                 First and last name
               </label>
-              <input id="windows-name" className={field} autoComplete="name" value={name} aria-invalid={Boolean(errors.name)} onChange={(event) => setName(event.target.value)} />
+              <input id="windows-name" name="name" className={field} autoComplete="name" value={name} aria-invalid={Boolean(errors.name)} onChange={(event) => setName(event.target.value)} />
               {errors.name ? <p className="mt-1.5 text-sm text-destructive">{errors.name}</p> : null}
             </div>
             <div>
               <label htmlFor="windows-phone" className="text-sm font-medium">
                 Mobile phone
               </label>
-              <input id="windows-phone" className={field} type="tel" inputMode="tel" autoComplete="tel" value={phone} aria-invalid={Boolean(errors.phone)} onChange={(event) => setPhone(event.target.value)} />
+              <input id="windows-phone" name="phone" className={field} type="tel" inputMode="tel" autoComplete="tel" value={phone} aria-invalid={Boolean(errors.phone)} onChange={(event) => setPhone(event.target.value)} />
               {errors.phone ? <p className="mt-1.5 text-sm text-destructive">{errors.phone}</p> : null}
             </div>
             <div>
@@ -598,21 +614,33 @@ export function WindowsTool() {
               />
               {errors.street ? <p className="mt-1.5 text-sm text-destructive">{errors.street}</p> : null}
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-[2fr_0.7fr_1fr]">
               <div>
                 <label htmlFor="windows-town" className="text-sm font-medium">
                   Town
                 </label>
-                <input id="windows-town" className={field} autoComplete="address-level2" value={city} aria-invalid={Boolean(errors.city)} onChange={(event) => setCity(event.target.value)} />
+                <input id="windows-town" name="city" className={field} autoComplete="address-level2" value={city} aria-invalid={Boolean(errors.city)} onChange={(event) => setCity(event.target.value)} />
                 {errors.city ? <p className="mt-1.5 text-sm text-destructive">{errors.city}</p> : null}
               </div>
               <div>
-                <label htmlFor="windows-email" className="text-sm font-medium">
-                  Email
+                <label htmlFor="windows-contact-state" className="text-sm font-medium">
+                  State
                 </label>
-                <input id="windows-email" className={field} type="email" autoComplete="email" value={email} aria-invalid={Boolean(errors.email)} onChange={(event) => setEmail(event.target.value)} />
-                {errors.email ? <p className="mt-1.5 text-sm text-destructive">{errors.email}</p> : null}
+                <input id="windows-contact-state" name="state" className={field} autoComplete="address-level1" value={state} maxLength={2} onChange={(event) => setState(event.target.value.toUpperCase())} />
               </div>
+              <div>
+                <label htmlFor="windows-contact-zip" className="text-sm font-medium">
+                  ZIP
+                </label>
+                <input id="windows-contact-zip" name="postal-code" className={field} autoComplete="postal-code" inputMode="numeric" value={zip} onChange={(event) => setZip(event.target.value)} />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="windows-email" className="text-sm font-medium">
+                Email
+              </label>
+              <input id="windows-email" name="email" className={field} type="email" autoComplete="email" value={email} aria-invalid={Boolean(errors.email)} onChange={(event) => setEmail(event.target.value)} />
+              {errors.email ? <p className="mt-1.5 text-sm text-destructive">{errors.email}</p> : null}
             </div>
             <label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground">
               <Checkbox

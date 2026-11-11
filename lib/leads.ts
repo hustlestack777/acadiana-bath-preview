@@ -11,6 +11,7 @@ import {
 } from "./lead-notify";
 import { fetchStreetViewImage, resolveHouseMapLinks } from "./street-view";
 import { fullAddress } from "./lead-display";
+import { sanitizeAttribution } from "./lead-attribution";
 
 // Photos are resized in the browser (about 1600 px JPEG, usually 200-600 KB).
 // 8 x 2 MB worst case stays well under Resend's 40 MB email limit after base64,
@@ -54,6 +55,12 @@ export type LeadInput = {
   consentAt?: Date | null;
   consentText?: string;
   preferredCallTime: string;
+  formPage?: string;
+  landingPage?: string;
+  referrer?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
   photos: LeadPhoto[];
 };
 
@@ -132,6 +139,12 @@ async function ensureSchema(db: Pool) {
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS longitude double precision;
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS consent_at timestamptz;
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS consent_text text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS form_page text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS landing_page text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS referrer text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_source text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_medium text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_campaign text NOT NULL DEFAULT '';
         ALTER TABLE lead_photos ADD COLUMN IF NOT EXISTS size_bytes integer NOT NULL DEFAULT 0;
       `)
       .then(() => undefined)
@@ -152,7 +165,16 @@ export function validateLead(input: LeadInput) {
   const coverage = checkCity(input.city);
   if (coverage.status === "empty") errors.city = "Enter your town or ZIP.";
   if (coverage.status === "invalid") errors.city = "Keep the town under 80 characters.";
-  if (!["/", "/estimate", "/solid-surface", "/custom-tile", "/design", "/windows"].includes(input.sourcePage)) {
+  const attr = sanitizeAttribution({
+    sourcePage: input.sourcePage,
+    formPage: input.formPage,
+    landingPage: input.landingPage,
+    referrer: input.referrer,
+    utmSource: input.utmSource,
+    utmMedium: input.utmMedium,
+    utmCampaign: input.utmCampaign,
+  }, input.sourcePage || "/estimate");
+  if (!attr.sourcePage) {
     errors.sourcePage = "Unknown source page.";
   }
   // Design My Bathroom asks only name, phone, address and email; own/rent is optional there.
@@ -216,6 +238,16 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
 
   const id = crypto.randomUUID();
   const createdAt = new Date();
+  const attr = sanitizeAttribution({
+    sourcePage: input.sourcePage,
+    formPage: input.formPage,
+    landingPage: input.landingPage,
+    referrer: input.referrer,
+    utmSource: input.utmSource,
+    utmMedium: input.utmMedium,
+    utmCampaign: input.utmCampaign,
+  }, input.sourcePage || "/estimate");
+  const stored = { ...input, ...attr };
   const client = await db.connect();
   try {
     await client.query("BEGIN");
@@ -224,14 +256,15 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
         id, created_at, source_page, name, phone, email, preferred, city, zip, project,
         not_sure, width, depth, finish, features, timing, budget, marketing, ip, email_status,
         height, measurements, homeowner, payment, consent, preferred_call_time,
-        street, latitude, longitude, consent_at, consent_text
+        street, latitude, longitude, consent_at, consent_text,
+        form_page, landing_page, referrer, utm_source, utm_medium, utm_campaign
       ) VALUES (
-        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36
       )`,
       [
         id,
         createdAt.toISOString(),
-        input.sourcePage,
+        stored.sourcePage,
         input.name.trim(),
         input.phone.trim(),
         input.email.trim(),
@@ -259,6 +292,12 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
         input.longitude,
         input.consentAt ? new Date(input.consentAt).toISOString() : input.consent ? new Date().toISOString() : null,
         (input.consentText || "").trim(),
+        stored.formPage,
+        stored.landingPage,
+        stored.referrer,
+        stored.utmSource,
+        stored.utmMedium,
+        stored.utmCampaign,
       ],
     );
     for (const photo of input.photos) {
@@ -275,7 +314,7 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
     client.release();
   }
 
-  const notification = await notifyLead(id, createdAt, input, options);
+  const notification = await notifyLead(id, createdAt, stored, options);
   await db.query(`UPDATE leads SET email_status = $2, email_error = $3 WHERE id = $1`, [
     id,
     notification.sent ? "sent" : "failed",
@@ -462,6 +501,18 @@ async function housePreview(input: { street: string; city: string; zip: string; 
   return fetchStreetViewImage({ address, lat: input.latitude, lon: input.longitude });
 }
 
+async function sendWithRetry<T extends { error?: unknown }>(
+  label: string,
+  send: () => Promise<T>,
+): Promise<T> {
+  const first = await send();
+  if (!first.error) return first;
+  console.error(`${label} failed, retrying once`, first.error);
+  const second = await send();
+  if (second.error) console.error(`${label} retry failed`, second.error);
+  return second;
+}
+
 async function notifyLead(id: string, createdAt: Date, input: LeadInput, options: LeadNotifyOptions = {}) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
@@ -513,20 +564,28 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
     consentAt: input.consentAt ?? (input.consent ? createdAt : null),
     consentText: input.consentText || "",
     test: route.test,
+    sourcePage: input.sourcePage,
+    formPage: input.formPage || "",
+    referrer: input.referrer || "",
+    utmSource: input.utmSource || "",
+    utmMedium: input.utmMedium || "",
+    utmCampaign: input.utmCampaign || "",
   });
   const resend = new Resend(apiKey);
   const subject = withTestSubject(options.subject || message.subject, route.test);
-  const { error } = await resend.emails.send(
-    {
-      from,
-      to,
-      cc: cc.length ? cc : undefined,
-      subject,
-      text: message.text,
-      html: message.html,
-      attachments: message.attachments,
-    },
-    { idempotencyKey: `lead/${id}` },
+  const { error } = await sendWithRetry("lead email", () =>
+    resend.emails.send(
+      {
+        from,
+        to,
+        cc: cc.length ? cc : undefined,
+        subject,
+        text: message.text,
+        html: message.html,
+        attachments: message.attachments,
+      },
+      { idempotencyKey: `lead/${id}` },
+    ),
   );
   if (error) return { sent: false, error: error.message };
 
@@ -538,16 +597,18 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
       photos: input.photos,
       test: route.test,
     });
-    const confirmResult = await resend.emails.send(
-      {
-        from,
-        to: [customer],
-        subject: confirmation.subject,
-        text: confirmation.text,
-        html: confirmation.html,
-        attachments: confirmation.attachments,
-      },
-      { idempotencyKey: `lead-confirm/${id}` },
+    const confirmResult = await sendWithRetry("customer confirmation", () =>
+      resend.emails.send(
+        {
+          from,
+          to: [customer],
+          subject: confirmation.subject,
+          text: confirmation.text,
+          html: confirmation.html,
+          attachments: confirmation.attachments,
+        },
+        { idempotencyKey: `lead-confirm/${id}` },
+      ),
     );
     if (confirmResult.error) {
       console.error("customer confirmation failed", confirmResult.error.message);
@@ -631,17 +692,19 @@ async function notifyLeadExtras(
     test: route.test,
   });
   const resend = new Resend(apiKey);
-  const { error } = await resend.emails.send(
-    {
-      from,
-      to,
-      cc: cc.length ? cc : undefined,
-      subject: withTestSubject(message.subject, route.test),
-      text: message.text,
-      html: message.html,
-      attachments: message.attachments,
-    },
-    { idempotencyKey: `lead-extras/${id}/${Date.now()}` },
+  const { error } = await sendWithRetry("lead update email", () =>
+    resend.emails.send(
+      {
+        from,
+        to,
+        cc: cc.length ? cc : undefined,
+        subject: withTestSubject(message.subject, route.test),
+        text: message.text,
+        html: message.html,
+        attachments: message.attachments,
+      },
+      { idempotencyKey: `lead-extras/${id}/${Date.now()}` },
+    ),
   );
   if (error) return { sent: false, error: error.message };
   return { sent: true as const, error: undefined };

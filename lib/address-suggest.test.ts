@@ -121,3 +121,17 @@ test("resolve fills street, city, and ZIP from the ArcGIS candidate", async () =
   assert.equal(resolved.lat, 30.254);
   assert.equal(resolved.lon, -92.047);
 });
+
+test("suggest does not call Nominatim when ArcGIS and Photon fail", async () => {
+  const calls: string[] = [];
+  const fetchImpl = async (url: string) => {
+    calls.push(url);
+    if (url.includes("nominatim")) throw new Error("nominatim should not be called");
+    throw new Error("down");
+  };
+  const hits = await suggestAddresses("412 Sample", { fetchImpl });
+  assert.deepEqual(hits, []);
+  assert.equal(calls.some((url) => url.includes("nominatim")), false);
+  assert.equal(calls.some((url) => url.includes("arcgis.com")), true);
+  assert.equal(calls.some((url) => url.includes("photon")), true);
+});

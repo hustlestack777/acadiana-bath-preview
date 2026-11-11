@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 import "./globals.css";
 import { JsonLd } from "@/components/json-ld";
+import { LeadAttributionTracker } from "@/components/lead-attribution";
 import { businessJsonLd } from "@/lib/schema";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
 
@@ -76,6 +77,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     >
       <body className="min-h-full flex flex-col">
         <JsonLd data={businessJsonLd()} />
+        <LeadAttributionTracker />
         {children}
       </body>
     </html>

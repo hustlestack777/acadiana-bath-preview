@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
+import { appendAttribution } from "@/components/lead-attribution";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
 import { designCopy, designStyles, findStyle } from "@/lib/design-styles";
 import { resizePhoto } from "@/lib/photo-resize";
@@ -29,7 +30,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   const [progress, setProgress] = useState(0);
   const [design, setDesign] = useState<{ id: string; teaser: string | null } | null>(null);
   const [reveal, setReveal] = useState<{ before: string; after: string; style: string } | null>(null);
-  const [form, setForm] = useState({ name: "", phone: "", email: "", street: "", city: "", zip: "", latitude: "", longitude: "", smsConsent: false, company_fax: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", street: "", city: "", state: "LA", zip: "", latitude: "", longitude: "", smsConsent: false, company_fax: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sending, setSending] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
@@ -140,6 +141,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
     const body = new FormData();
     body.set("id", design.id);
     for (const [key, value] of Object.entries(form)) body.set(key, String(value));
+    appendAttribution(body, "/design");
     try {
       const response = await fetch("/api/design/unlock", { method: "POST", body });
       const json = await response.json().catch(() => ({}));
@@ -294,7 +296,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             value={form.company_fax}
             onChange={(e) => setForm({ ...form, company_fax: e.target.value })}
             tabIndex={-1}
-            autoComplete="off"
+            autoComplete="fax"
             aria-hidden="true"
             className="absolute -left-[9999px] h-0 w-0 opacity-0"
           />
@@ -350,10 +352,10 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           <h2 id="design-step-3" className="mt-2 font-heading text-3xl">Where should we send it?</h2>
           <form onSubmit={unlock} noValidate className="mt-4 grid gap-4" data-testid="design-unlock-form">
             <Field id="d-name" label="First and last name" error={errors.name}>
-              <input id="d-name" className={field} autoComplete="name" value={form.name} aria-invalid={Boolean(errors.name)} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+              <input id="d-name" name="name" className={field} autoComplete="name" value={form.name} aria-invalid={Boolean(errors.name)} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </Field>
             <Field id="d-phone" label="Mobile phone" error={errors.phone}>
-              <input id="d-phone" className={field} type="tel" inputMode="tel" autoComplete="tel" value={form.phone} aria-invalid={Boolean(errors.phone)} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+              <input id="d-phone" name="phone" className={field} type="tel" inputMode="tel" autoComplete="tel" value={form.phone} aria-invalid={Boolean(errors.phone)} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
             </Field>
             <Field id="d-street" label="Street address" error={errors.street}>
               <AddressAutocomplete
@@ -366,6 +368,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
                     ...f,
                     street: address.street,
                     city: address.city || f.city,
+                    state: address.region || f.state || "LA",
                     zip: address.zip || f.zip,
                     latitude: address.lat != null ? String(address.lat) : "",
                     longitude: address.lon != null ? String(address.lon) : "",
@@ -373,16 +376,19 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
                 }
               />
             </Field>
-            <div className="grid grid-cols-[2fr_1fr] gap-3">
+            <div className="grid grid-cols-[2fr_0.7fr_1fr] gap-3">
               <Field id="d-city" label="Town" error={errors.city}>
-                <input id="d-city" className={field} autoComplete="address-level2" value={form.city} aria-invalid={Boolean(errors.city)} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+                <input id="d-city" name="city" className={field} autoComplete="address-level2" value={form.city} aria-invalid={Boolean(errors.city)} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+              </Field>
+              <Field id="d-state" label="State">
+                <input id="d-state" name="state" className={field} autoComplete="address-level1" value={form.state} maxLength={2} onChange={(e) => setForm({ ...form, state: e.target.value.toUpperCase() })} />
               </Field>
               <Field id="d-zip" label="ZIP (optional)" error={errors.zip}>
-                <input id="d-zip" className={field} inputMode="numeric" autoComplete="postal-code" value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} />
+                <input id="d-zip" name="postal-code" className={field} inputMode="numeric" autoComplete="postal-code" value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} />
               </Field>
             </div>
             <Field id="d-email" label="Email" error={errors.email}>
-              <input id="d-email" className={field} type="email" autoComplete="email" value={form.email} aria-invalid={Boolean(errors.email)} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              <input id="d-email" name="email" className={field} type="email" autoComplete="email" value={form.email} aria-invalid={Boolean(errors.email)} onChange={(e) => setForm({ ...form, email: e.target.value })} />
             </Field>
             <label className="flex items-start gap-3 text-sm leading-6" htmlFor="d-sms">
               <input id="d-sms" type="checkbox" className="mt-1 size-5 shrink-0" checked={form.smsConsent} onChange={(e) => setForm({ ...form, smsConsent: e.target.checked })} />
