@@ -102,8 +102,6 @@ export function Hero() {
         <p className="hero-copy mt-6 hidden max-w-xl text-lg leading-8 text-[#fbf6f2] sm:block">{hero.support}</p>
         <p className="hero-copy mt-4 text-sm font-semibold tracking-wide text-[#f3d7cb]">
           {cardClaims.consult}
-          <span className="mx-2 opacity-60">·</span>
-          {cardClaims.lifetime}
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <ConsultLink

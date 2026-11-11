@@ -21,7 +21,6 @@ export const services = [
 
 export const cardClaims = {
   consult: "Free Consult",
-  lifetime: "Lifetime material warranty. If the material has a defect or fails, we'll handle the replacement.",
 } as const;
 
 export const hero = {
@@ -59,16 +58,12 @@ export const material = {
   body: "Most customers prefer solid surface for a cleaner look with less grout. Many types of solid surface can be installed, and we'll help you choose the right one for your bathroom.",
   close:
     "Find the look that feels like home. Talk through the details with Justin before deciding what goes into your bathroom.",
+  warranty: "Lifetime material warranty on solid surface. If the material has a defect or fails, we'll handle the replacement.",
 } as const;
 
 export const care = {
   title: "Less fuss on cleaning day.",
   body: "A simple weekly cleaning is enough.",
-} as const;
-
-export const warranty = {
-  title: "Lifetime material warranty",
-  body: "Lifetime material warranty. If the material has a defect or fails, we'll handle the replacement.",
 } as const;
 
 export const steps = [
@@ -122,10 +117,6 @@ export const faqs = [
   {
     q: "What areas do you cover?",
     a: area.faq,
-  },
-  {
-    q: "What is the lifetime material warranty?",
-    a: warranty.body,
   },
 ] as const;
 

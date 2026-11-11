@@ -1,10 +1,10 @@
-import { area, brand, care, faqs, hero, warranty } from "./copy";
+import { area, brand, care, faqs, hero, material } from "./copy";
 
 const answers = {
   disclosure: `I’m an AI assistant for ${brand.name}. I am not a person on the crew. I only use the facts published on this site. What you type in this chat stays in this browser and is not submitted or saved.`,
   material: faqs[0].a,
   care: care.body,
-  warranty: warranty.body,
+  warranty: material.warranty,
   area: area.faq,
   quote: faqs[1].a,
   cost: `${faqs[2].a} No dollar amount is published on this site.`,
@@ -25,7 +25,6 @@ export const QUICK_PROMPTS = [
   { label: "What is it made of?", message: "What is the surface made of?" },
   { label: "What materials do you use?", message: "What materials do you use?" },
   { label: "How do I clean it?", message: "How do I clean it?" },
-  { label: "What is the product warranty?", message: "What is the product warranty?" },
   { label: "Which towns are planned?", message: "Which towns are planned?" },
   { label: "Can photos give an exact quote?", message: "Can photos give an exact quote?" },
 ] as const;

@@ -31,7 +31,7 @@ export function SiteFooter() {
             </a>
           </p>
           <p className="mt-3 text-sm">
-            {cardClaims.consult}. {cardClaims.lifetime}
+            {cardClaims.consult}
           </p>
           <ConsultLink className="mt-4 inline-block text-sm underline underline-offset-4">
             Free Consult
@@ -47,7 +47,7 @@ export function SiteFooter() {
         </div>
       </div>
       <p className="border-t border-white/15 px-5 py-4 text-center text-xs leading-5 text-fig-muted">
-        {brand.name}. {cardClaims.lifetime}
+        {brand.name}
       </p>
     </footer>
   );

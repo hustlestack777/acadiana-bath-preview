@@ -17,7 +17,6 @@ import {
   reasons,
   steps,
   talk,
-  warranty,
 } from "@/lib/copy";
 import { ALSO_PLANNED, CORRIDOR, EXCLUDED } from "@/lib/coverage";
 import { beforeAfterPhotos, galleryPhotos } from "@/lib/images";
@@ -79,6 +78,7 @@ export function HomePage() {
           <h2 className="mt-3 text-4xl md:text-5xl">{material.title}</h2>
           <p className="mt-5 text-lg leading-8">{material.body}</p>
           <p className="mt-4 leading-7 text-muted-foreground">{material.close}</p>
+          <p className="mt-5 text-lg leading-8">{material.warranty}</p>
         </div>
       </section>
 
@@ -139,20 +139,6 @@ export function HomePage() {
               className="object-cover"
             />
           </div>
-        </div>
-      </section>
-
-      <section id="warranty" className="rise scroll-mt-28 bg-fig text-fig-foreground">
-        <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 md:grid-cols-12 md:py-24">
-          <div className="md:col-span-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-fig-muted">Warranty</p>
-            <h2 className="mt-3 text-4xl md:text-5xl">{warranty.title}</h2>
-            <p className="mt-5 text-lg leading-8">{warranty.body}</p>
-          </div>
-          <aside className="rounded-[1.4rem] bg-fig-foreground p-6 text-foreground md:col-span-5">
-            <p className="text-sm font-semibold">{cardClaims.consult}</p>
-            <p className="mt-3 leading-7">{cardClaims.lifetime}</p>
-          </aside>
         </div>
       </section>
 
@@ -223,7 +209,7 @@ export function HomePage() {
             </a>
           </p>
           <p className="mt-4 text-sm font-semibold">
-            {cardClaims.consult}. {cardClaims.lifetime}
+            {cardClaims.consult}
           </p>
           <ConsultLink
             className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-medium text-primary-foreground"
