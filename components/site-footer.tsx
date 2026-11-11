@@ -60,7 +60,8 @@ export function SiteFooter() {
         {brand.name} ·{" "}
         <a href="/privacy" className="underline underline-offset-4">
           Privacy Policy
-        </a>
+        </a>{" "}
+        · Website by Lagniappe Realm Labs
       </p>
     </footer>
   );
