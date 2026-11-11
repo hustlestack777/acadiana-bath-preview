@@ -279,3 +279,7 @@ export const ideas = {
     { name: "Riad Tile", topic: "Handmade tile", body: "Zellige and handmade tile looks for walls that glow.", href: "https://riadtile.com/", image: "/images/ai/tile-01.webp", alt: "Deep-green handmade zellige walk-in shower with brass fixtures." },
   ],
 } as const;
+
+/** Approved by Shaun 11/10/2026. The only price wording on the site. Do not add others. */
+export const priceRange =
+  "Complete bathroom remodels typically run $5,000 to $30,000+, depending on size, materials and layout. Your free consult gets you an exact number.";

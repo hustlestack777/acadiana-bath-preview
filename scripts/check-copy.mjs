@@ -6,6 +6,9 @@ const roots = ["app", "components", "lib", "public", "README.md"];
 const skip = new Set(["node_modules", ".next", "uploads"]);
 const extensions = new Set([".ts", ".tsx", ".css", ".md", ".svg", ".mjs", ".json"]);
 
+const APPROVED_RANGE =
+  "Complete bathroom remodels typically run $5,000 to $30,000+, depending on size, materials and layout. Your free consult gets you an exact number.";
+
 const rules = [
   { name: "guarantee", re: /guarantee/i },
   { name: "real stone", re: /real stone/i },
@@ -39,7 +42,10 @@ let failed = 0;
 for (const file of files) {
   if (file.endsWith(`${path.sep}scripts${path.sep}check-copy.mjs`)) continue;
   if (file.endsWith(`${path.sep}lib${path.sep}logic.test.ts`)) continue;
-  const text = (await readFile(file, "utf8")).replaceAll("Lifetime Guarantee", "");
+  // The one approved price range (Shaun, 11/10/2026) is allowed; any other dollar amount still fails.
+  const text = (await readFile(file, "utf8"))
+    .replaceAll("Lifetime Guarantee", "")
+    .replaceAll(APPROVED_RANGE, "");
   for (const rule of rules) {
     if (rule.name === "dollar amount" && file.endsWith(`${path.sep}lib${path.sep}leads.ts`)) continue;
     if (rule.re.test(text)) {

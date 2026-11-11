@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { brand, examplesLabel, ideas, solidPath, tilePath } from "@/lib/copy";
+import { brand, examplesLabel, ideas, priceRange, solidPath, tilePath } from "@/lib/copy";
 import type { Photo } from "@/lib/images";
 import { cn } from "cn";
 
@@ -49,8 +49,9 @@ export function PathHero({
             {brand.phone}
           </a>
         </div>
+        <p className="hero-copy mt-5 max-w-xl text-sm leading-6 text-white/90" data-testid="price-range">{priceRange}</p>
         {children}
-        <p className="mt-8 text-xs text-white/70">{examplesLabel}</p>
+        <p className="mt-6 text-xs text-white/70">{examplesLabel}</p>
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import { area, brand, care, faqs, hero, solidPath } from "./copy";
+import { area, brand, care, faqs, hero, priceRange, solidPath } from "./copy";
 
 const answers = {
   disclosure: `I’m an AI assistant for ${brand.name}. I am not a person on the crew. I only use the facts published on this site. What you type in this chat stays in this browser and is not submitted or saved.`,
@@ -7,7 +7,7 @@ const answers = {
   warranty: `${solidPath.warranty} This covers solid surface only, not tile.`,
   area: area.faq,
   quote: faqs[1].a,
-  cost: `${faqs[2].a} No dollar amount is published on this site.`,
+  cost: `${faqs[2].a} ${priceRange}`,
   fit: `${hero.support} Justin confirms measurements and project scope, then you get a clear proposal.`,
   timing:
     "Installation times are not listed. Justin confirms measurements and project scope, then you get a clear proposal.",
