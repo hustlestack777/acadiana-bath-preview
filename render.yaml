@@ -21,7 +21,9 @@ services:
       - key: GOOGLE_MAPS_API_KEY
         sync: false
       - key: SITE_INDEXABLE
-        value: "false"
+        value: "true"
+      - key: SITE_URL
+        value: "https://abclafayette.com"
 
 databases:
   - name: acadiana-leads
