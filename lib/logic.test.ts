@@ -5,6 +5,7 @@ import { checkCity } from "./coverage";
 import { validateDetails, validateExtras, validateStreet, validateZip } from "./estimate";
 import { leadNotifyRecipients, validateLead } from "./leads";
 import { priceRange, projects } from "./copy";
+import { warrantyPlainText } from "./warranty";
 
 const pledge = ["guar", "antee"].join("");
 const quarriedPhrase = ["real", "stone"].join(" ");
@@ -152,7 +153,7 @@ test("assistant answers stay inside the published facts", () => {
   ];
   const outputs = [...probes.map((probe) => replyTo(probe)), ...Object.values(CHAT_ANSWERS)];
   for (const output of outputs) {
-    const withoutCardPhrase = output.replaceAll("We stand behind our work", "").replaceAll("Lifetime Guarantee", "");
+    const withoutCardPhrase = output.replaceAll(warrantyPlainText, "").replaceAll("We stand behind our work", "").replaceAll("Lifetime Guarantee", "");
     assert.equal(withoutCardPhrase.toLowerCase().includes(pledge), false, output);
     assert.equal(output.toLowerCase().includes(quarriedPhrase), false, output);
     assert.equal(/bath fitter|re-bath|rebath/i.test(output), false, output);

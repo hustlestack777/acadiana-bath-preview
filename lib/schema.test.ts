@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { brand, faqs, heroQuoteLine, solidPath } from "./copy";
+import { warrantyPlainText } from "./warranty";
 import { llmsTxt } from "./llms-txt";
 import { buildRobots } from "./robots-config";
 import {
@@ -193,6 +194,7 @@ test("llms.txt summarizes the business without banned claims", () => {
   }
   assert.match(text, new RegExp(heroQuoteLine.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(text, new RegExp(solidPath.warranty.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(text, new RegExp(warrantyPlainText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(text, /\/faq/);
   assert.match(text, /\/areas/);
   assert.match(text, /Owned and run by Justin\./);
@@ -207,6 +209,7 @@ test("llms.txt summarizes the business without banned claims", () => {
   const publicBlob = [geoFaqs, towns, text, businessJsonLd().description].map((value) => JSON.stringify(value)).join("\n");
   assert.equal(/travel built into|Reach out anyway|outside the area/i.test(publicBlob), false);
   assert.equal(/\btravel/i.test(publicBlob), false);
+  const withoutWarranty = text.replaceAll(warrantyPlainText, "");
   for (const banned of [
     "Onyx",
     "Pella",
@@ -218,7 +221,7 @@ test("llms.txt summarizes the business without banned claims", () => {
     "days to complete",
     "aggregateRating",
   ]) {
-    assert.equal(text.toLowerCase().includes(banned.toLowerCase()), false, banned);
+    assert.equal(withoutWarranty.toLowerCase().includes(banned.toLowerCase()), false, banned);
   }
 });
 

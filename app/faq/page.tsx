@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CoverageMap } from "@/components/coverage-map";
 import { FaqSection } from "@/components/faq-section";
 import { SiteShell } from "@/components/site-shell";
+import { WarrantySection } from "@/components/warranty-section";
 import { faqMore, faqPageIntro, faqPageTitle, faqVisible } from "@/lib/faq-page";
 import { pageCanonical } from "@/lib/site";
 
@@ -23,6 +24,7 @@ export default function FaqPage() {
           <CoverageMap size="compact" />
         </section>
         <FaqSection faqs={faqVisible} moreFaqs={faqMore} heading="Questions" className="bg-transparent pt-4 md:pt-6" />
+        <WarrantySection />
       </main>
     </SiteShell>
   );

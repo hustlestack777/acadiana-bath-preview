@@ -3,6 +3,7 @@ import { brand, care, hero } from "./copy";
 import { OUTSIDE_AREA, checkCity } from "./coverage";
 import { geoFaqs } from "./faq-page";
 import { designHref } from "./starting-looks";
+import { warrantyPlainText } from "./warranty";
 
 function faqAnswer(question: string) {
   const item = geoFaqs.find((faq) => faq.q === question);
@@ -51,7 +52,7 @@ Price framing: Starting at $5K only. Do not give other prices, timelines, or dur
 
 Do not promise a first-step home visit or name how long work is covered. Do not make license or insurance claims, say one person does every trade himself, or ask for a deposit. Do not mention payment plans.
 
-If asked about standing behind the work, say: "We stand behind our work. If anything comes up, we'll make it right. Ask us for the details when we call."
+If asked about standing behind the work, say exactly: "${warrantyPlainText}"
 
 Out of area, say exactly: "Outside our area? Ask for a quote." For granite, only: "We do not install granite." Phone: (337) 522-0023. No street address.`;
 
@@ -126,7 +127,7 @@ const answers = {
   afterSubmit: `After you submit, ${GIGI_PROCESS}`,
   material: gigiFaq("What materials do you use?"),
   care: care.body,
-  warranty: "We stand behind our work. If anything comes up, we’ll make it right. Ask us for the details when we call.",
+  warranty: warrantyPlainText,
   area: gigiFaq("What areas do you serve?"),
   quote: gigiFaq("How do I get a quote?"),
   cost: gigiFaq("How much does a bathroom remodel cost in South Louisiana?"),

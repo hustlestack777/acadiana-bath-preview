@@ -4,6 +4,7 @@
  */
 
 import { faqs as homeFaqs, solidPath, tilePath } from "./copy";
+import { warrantyPlainText } from "./warranty";
 import { OUTSIDE_AREA } from "./coverage";
 import {
   SCHEMA_AREA_SERVED,
@@ -105,7 +106,7 @@ export const solidSurfaceServiceJsonLd = () =>
   serviceJsonLd({
     name: "Solid surface showers and tub walls",
     serviceType: "Solid surface bathroom remodeling",
-    description: `${solidPath.support} ${solidPath.warranty}`,
+    description: `${solidPath.support} ${warrantyPlainText}`,
     url: `${SITE_URL}/solid-surface`,
   });
 

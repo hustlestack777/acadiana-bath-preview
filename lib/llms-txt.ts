@@ -1,4 +1,5 @@
-import { heroQuoteLine, services, solidPath } from "./copy";
+import { heroQuoteLine, services } from "./copy";
+import { warrantyPlainText } from "./warranty";
 import { MAIN_TOWNS, OUTSIDE_AREA } from "./coverage";
 import { townPath, towns } from "./towns";
 import { SCHEMA_SERVICE_AREA, SITE_EMAIL, SITE_NAME, SITE_PHONE, SITE_URL } from "./site";
@@ -20,7 +21,7 @@ ${SITE_NAME} is a bathroom remodeling company based in Lafayette, Louisiana. Own
 
 ## Services
 - ${services.join(", ")}
-- Solid surface showers and tub walls, including tub-to-shower conversions (${SITE_URL}/solid-surface). ${solidPath.warranty}
+- Solid surface showers and tub walls, including tub-to-shower conversions (${SITE_URL}/solid-surface). ${warrantyPlainText}
 - Custom tile showers and bathrooms, including zellige, patterned floors and grout colors you choose (${SITE_URL}/custom-tile)
 - Bathroom design previews from your own photos (${SITE_URL}/design)
 - Free Quote (${SITE_URL}/estimate)

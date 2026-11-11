@@ -1,6 +1,7 @@
 /** Customer-facing copy. No invented prices or coverage terms. */
 
 import { OUTSIDE_AREA, SERVICE_AREA } from "./coverage";
+import { warrantyStandBehind } from "./warranty";
 
 export const brand = {
   name: "Acadiana Bathrooms and Countertops",
@@ -242,7 +243,7 @@ export const solidPath = {
     { title: "Shower walls", body: "New walls for an existing shower, with niches and a seat if the space allows." },
     { title: "Tub walls and surrounds", body: "Keep the tub and refresh the walls around it." },
   ],
-  warranty: "We stand behind our work. If anything comes up, we'll make it right. Ask us for the details when we call.",
+  warranty: warrantyStandBehind,
   care: "A simple weekly cleaning is enough.",
   formTitle: "Solid surface quote",
   formBody: "A few quick questions, and we'll call to discuss your project and set a time to take measurements.",

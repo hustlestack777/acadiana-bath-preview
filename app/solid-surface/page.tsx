@@ -3,6 +3,7 @@ import Image from "next/image";
 import { SiteShell } from "@/components/site-shell";
 import { ExampleGrid, PathHero } from "@/components/path-sections";
 import { QuickQuote } from "@/components/quick-quote";
+import { WarrantyCard } from "@/components/warranty-section";
 import { brand, solidPath, trustLineFollow } from "@/lib/copy";
 import { solidPhotos } from "@/lib/images";
 import { JsonLd } from "@/components/json-ld";
@@ -47,12 +48,9 @@ export default function SolidSurfacePage() {
             ))}
           </div>
 
-          <div className="mt-8 grid items-stretch gap-4 md:grid-cols-12">
-            <div className="rounded-[1.6rem] bg-secondary p-7 text-secondary-foreground md:col-span-7 md:p-10" data-section="solid-surface-promise">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass-soft">We stand behind the work</p>
-              <p className="mt-4 font-heading text-3xl leading-tight md:text-4xl">{solidPath.warranty}</p>
-            </div>
-            <div className="rounded-[1.6rem] border border-border bg-sage-wash p-7 md:col-span-5 md:p-10">
+          <div className="mt-8 grid gap-4">
+            <WarrantyCard id="warranty" />
+            <div className="rounded-[1.6rem] border border-border bg-sage-wash p-7 md:max-w-xl md:p-10">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Care</p>
               <p className="mt-4 font-heading text-3xl leading-tight md:text-4xl">{solidPath.care}</p>
             </div>
