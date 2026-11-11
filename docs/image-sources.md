@@ -38,7 +38,8 @@ All are AI-generated design examples, not photos of completed jobs and not copie
 
 - `ss-walkin.webp`, `ss-tub-to-shower.webp`, `ss-tub-walls.webp` — solid surface examples (Grok Bot, 11/10/2026). Used on `/solid-surface` and the home path card.
 - `grout-charcoal.webp` — contrast grout example (Grok Bot). Used in the grout picker on `/custom-tile`.
-- `finish-wallpaper-tub.webp`, `finish-window-floor.webp`, `finish-floor.webp` — finishing-touch ideas (Grok Bot). Used in the Ideas section.
+- `finish-wallpaper-tub.webp`, `finish-window-floor.webp`, `finish-floor.webp` — earlier finishing-touch stills (Grok Bot, 11/10/2026). Replaced in the Ideas section on 11/10/2026.
+- `public/images/ai/ideas/*.webp` — Ideas section carousels (Grok Bot, 11/10/2026). Twenty original editorial bathroom photographs, four per card (Wallism, Pella, Flooret, TileBar, Riad Tile), upscaled to 1600px on the long edge. Styles were referenced from Wallism popular and new-arrival motifs; no Wallism artwork was used.
 - `tile-01.webp` … `tile-08.webp` — custom tile inspiration set from Boogie (`/workspace/abc_brand/ai_inspiration`, 11/10/2026). Used on `/custom-tile`, the home path card and the Ideas section.
 
 Grout swatches in `lib/grout.ts` are approximate colors sampled from the Mapei 2023 grout and caulk palette PDF; the site says screen colors are approximate.

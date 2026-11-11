@@ -275,11 +275,66 @@ export const ideas = {
   body: "Browse these brands for inspiration, then bring what you like to your consult. Justin will tell you what fits your project.",
   note: "Ideas only. Acadiana Bathrooms and Countertops is not a dealer for or partner of these brands.",
   items: [
-    { name: "Wallism", topic: "Accent walls & wallpaper", body: "Mural wallpaper for a feature wall behind a tub or vanity.", href: "https://wallism.com/us", image: "/images/ai/finish-wallpaper-tub.webp", alt: "Freestanding white tub in front of a magnolia mural accent wall." },
-    { name: "Pella", topic: "Windows & doors", body: "A bigger, better window can change how a bathroom feels.", href: "https://www.pella.com/", image: "/images/ai/finish-window-floor.webp", alt: "Bathroom with a large black-framed window over a double vanity and a wood-look floor." },
-    { name: "Flooret", topic: "Flooring", body: "Wood-look and waterproof plank options for floors next to the bath.", href: "https://www.flooret.com/", image: "/images/ai/finish-floor.webp", alt: "Warm oak-look plank floor running from a bathroom into a bedroom." },
-    { name: "TileBar", topic: "Tile", body: "Large selection of wall and floor tile looks to save and share.", href: "https://www.tilebar.com/", image: "/images/ai/tile-02.webp", alt: "Patterned encaustic-look floor tile under a freestanding tub." },
-    { name: "Riad Tile", topic: "Handmade tile", body: "Zellige and handmade tile looks for walls that glow.", href: "https://riadtile.com/", image: "/images/ai/tile-01.webp", alt: "Deep-green handmade zellige walk-in shower with brass fixtures." },
+    {
+      name: "Wallism",
+      topic: "Accent walls & wallpaper",
+      body: "Mural wallpaper for a feature wall behind a tub or vanity.",
+      href: "https://wallism.com/us",
+      images: [
+        { src: "/images/ai/ideas/wallism-01-forest-landscape.webp", alt: "Freestanding white tub in front of a forest-green vintage landscape mural." },
+        { src: "/images/ai/ideas/wallism-02-soft-abstract.webp", alt: "Light-oak vanity against a soft beige flowing abstract wallpaper." },
+        { src: "/images/ai/ideas/wallism-03-linen-blossoms.webp", alt: "Freestanding tub in front of a cream linen wallpaper with delicate white blossoms." },
+        { src: "/images/ai/ideas/wallism-04-sage-ginkgo.webp", alt: "Powder room with a stone basin and sage ginkgo-leaf wallpaper." },
+      ],
+    },
+    {
+      name: "Pella",
+      topic: "Windows & doors",
+      body: "A bigger, better window can change how a bathroom feels.",
+      href: "https://www.pella.com/",
+      images: [
+        { src: "/images/ai/ideas/pella-01-black-grid-window.webp", alt: "White-oak double vanity beside a tall black-framed window looking onto a live oak." },
+        { src: "/images/ai/ideas/pella-02-tub-garden-window.webp", alt: "Freestanding tub in front of a floor-to-ceiling black-framed window onto a garden." },
+        { src: "/images/ai/ideas/pella-03-shower-casement.webp", alt: "Walk-in shower next to a black-framed casement window with a transom." },
+        { src: "/images/ai/ideas/pella-04-powder-corner-windows.webp", alt: "Powder room with black-framed casement windows meeting in a sunlit corner." },
+      ],
+    },
+    {
+      name: "Flooret",
+      topic: "Flooring",
+      body: "Wood-look and waterproof plank options for floors next to the bath.",
+      href: "https://www.flooret.com/",
+      images: [
+        { src: "/images/ai/ideas/flooret-01-plank-into-bedroom.webp", alt: "Warm oak-look plank floor running from a bathroom into a bedroom." },
+        { src: "/images/ai/ideas/flooret-02-pale-oak-herringbone.webp", alt: "Pale oak-look herringbone floor under a freestanding tub." },
+        { src: "/images/ai/ideas/flooret-03-walnut-vanity-planks.webp", alt: "Walnut-tone wood-look planks under a walnut vanity beside a glass shower." },
+        { src: "/images/ai/ideas/flooret-04-white-oak-tub.webp", alt: "Soft white-oak plank floor in a sunlit bathroom with a freestanding tub." },
+      ],
+    },
+    {
+      name: "TileBar",
+      topic: "Tile",
+      body: "Large selection of wall and floor tile looks to save and share.",
+      href: "https://www.tilebar.com/",
+      images: [
+        { src: "/images/ai/ideas/tilebar-01-encaustic-floor.webp", alt: "Patterned sage and terracotta cement-look floor tile under a freestanding tub." },
+        { src: "/images/ai/ideas/tilebar-02-bookmatched-marble.webp", alt: "Bookmatched cream marble-look shower walls with brass fixtures." },
+        { src: "/images/ai/ideas/tilebar-03-muted-checkerboard.webp", alt: "Muted sage and cream checkerboard floor in a bathroom with a tub and oak vanity." },
+        { src: "/images/ai/ideas/tilebar-04-fluted-accent.webp", alt: "Fluted cream tile accent wall behind a floating oak vanity." },
+      ],
+    },
+    {
+      name: "Riad Tile",
+      topic: "Handmade tile",
+      body: "Zellige and handmade tile looks for walls that glow.",
+      href: "https://riadtile.com/",
+      images: [
+        { src: "/images/ai/ideas/riad-01-emerald-zellige.webp", alt: "Emerald handmade zellige walk-in shower with brass fixtures and a stone bench." },
+        { src: "/images/ai/ideas/riad-02-cream-zellige-niche.webp", alt: "Cream handmade zellige shower with an arched niche and brass fixtures." },
+        { src: "/images/ai/ideas/riad-03-terracotta-zellige.webp", alt: "Terracotta handmade zellige shower wall in warm afternoon light." },
+        { src: "/images/ai/ideas/riad-04-sage-zellige-drench.webp", alt: "Sage handmade zellige shower wrapping to a backsplash beside an oak vanity." },
+      ],
+    },
   ],
 } as const;
 

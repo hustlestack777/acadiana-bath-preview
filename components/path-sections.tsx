@@ -5,6 +5,7 @@ import { brand, ideas, priceRange, solidPath, tilePath } from "@/lib/copy";
 import type { Photo } from "@/lib/images";
 import { cn } from "cn";
 import { DesignCta } from "@/components/design/design-cta";
+import { IdeaCarousel } from "@/components/idea-carousel";
 
 /** Full-bleed photo hero used by both paths. */
 export function PathHero({
@@ -129,9 +130,7 @@ export function IdeasSection({ only }: { only?: string[] }) {
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {items.map((item) => (
             <li key={item.name} className="overflow-hidden rounded-[1.4rem] border border-border bg-card">
-              <div className="relative aspect-[4/3] lg:aspect-[3/4]">
-                <Image src={item.image} alt={item.alt} fill sizes="(min-width: 1024px) 20vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
-              </div>
+              <IdeaCarousel slides={item.images} label={`${item.topic} from ${item.name}`} />
               <div className="p-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brass">{item.topic}</p>
                 <p className="mt-2 text-sm leading-6">{item.body}</p>
