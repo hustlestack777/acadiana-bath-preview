@@ -16,6 +16,13 @@ export const SITE_INDEXABLE = process.env.SITE_INDEXABLE === "true";
 
 export const SITE_URL = (process.env.SITE_URL ?? "https://acadiana-bathrooms.onrender.com").replace(/\/$/, "");
 
+/** Relative canonical path. Next resolves it against metadataBase (SITE_URL). */
+export function pageCanonical(path: string) {
+  if (!path || path === "/") return "/";
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return normalized.replace(/\/+$/, "");
+}
+
 /** Visible name — same string as the header, footer and schema `name`. */
 export const SITE_NAME = brand.name;
 

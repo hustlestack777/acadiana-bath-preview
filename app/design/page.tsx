@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { SiteShell } from "@/components/site-shell";
 import { DesignTool } from "@/components/design/design-tool";
 import { designCopy } from "@/lib/design-styles";
-import { siteRobots } from "@/lib/site";
+import { pageCanonical, siteRobots } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Design My Bathroom",
   description: "Snap your shower, pick a look, and see your new bathroom in your own space. Free consult across Acadiana and South Louisiana.",
   robots: siteRobots,
+
+  alternates: { canonical: pageCanonical("/design") },
 };
 
 export default async function DesignPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {

@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { FaqSection } from "@/components/faq-section";
 import { SiteShell } from "@/components/site-shell";
 import { faqPageIntro, faqPageTitle, geoFaqs } from "@/lib/faq-page";
+import { pageCanonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: faqPageTitle,
   description: faqPageIntro,
+
+  alternates: { canonical: pageCanonical("/faq") },
 };
 
 export default function FaqPage() {

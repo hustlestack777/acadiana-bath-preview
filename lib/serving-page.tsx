@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/site-shell";
 import { TownPage } from "@/components/town-page";
+import { pageCanonical } from "@/lib/site";
 import { getTown } from "@/lib/towns";
 
 export function townMetadata(slug: string): Metadata {
@@ -10,6 +11,7 @@ export function townMetadata(slug: string): Metadata {
   return {
     title: { absolute: town.description },
     description: town.intro[0],
+    alternates: { canonical: pageCanonical(`/serving-${slug}`) },
   };
 }
 

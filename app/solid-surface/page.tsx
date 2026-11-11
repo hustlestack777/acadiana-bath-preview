@@ -7,11 +7,14 @@ import { brand, solidPath } from "@/lib/copy";
 import { solidPhotos } from "@/lib/images";
 import { JsonLd } from "@/components/json-ld";
 import { solidSurfaceServiceJsonLd } from "@/lib/schema";
+import { pageCanonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Solid surface showers and tub walls",
   description:
     "Tub-to-shower conversions and solid surface shower and tub walls across Acadiana and South Louisiana. Less grout. Free consult. See your new bathroom with Design My Bathroom.",
+
+  alternates: { canonical: pageCanonical("/solid-surface") },
 };
 
 export default function SolidSurfacePage() {
