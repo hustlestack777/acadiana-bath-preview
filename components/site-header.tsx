@@ -15,7 +15,7 @@ const LINKS = [
   { href: "/custom-tile#grout", label: "Grout colors" },
   { href: "#ideas", label: "Ideas" },
   { href: "#gallery", label: "Gallery" },
-  { href: "#questions", label: "Questions" },
+  { href: "/faq", label: "FAQ" },
 ];
 
 export function SiteHeader() {

@@ -9,10 +9,12 @@ import {
   customTileServiceJsonLd,
   faqPageJsonLd,
   solidSurfaceServiceJsonLd,
+  townAreaJsonLd,
 } from "./schema";
-import { AI_SEARCH_USER_AGENTS, EXCLUDED_SERVICE_AREAS, SCHEMA_SERVICE_AREA, SITE_NAME, SITE_PHONE, SITE_SHORT_NAME, SITE_TELEPHONE } from "./site";
-import { towns } from "./towns";
-import sitemap from "../app/sitemap";
+import { AI_SEARCH_USER_AGENTS, EXCLUDED_SERVICE_AREAS, SCHEMA_PRICE_RANGE, SCHEMA_SERVICE_AREA, SITE_NAME, SITE_PHONE, SITE_SHORT_NAME, SITE_TELEPHONE, VISIBLE_SERVICES } from "./site";
+import { geoFaqs } from "./faq-page";
+import { buildSitemap } from "./sitemap-config";
+import { townPath, towns } from "./towns";
 
 const requiredCities = [
   "Lafayette",
@@ -36,11 +38,15 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   assert.equal(SITE_PHONE, "337-522-0023");
   assert.ok(data.url);
   assert.ok(data.logo);
-  assert.equal(data.address["@type"], "PostalAddress");
-  assert.equal(data.address.addressLocality, "Lafayette");
-  assert.equal(data.address.addressRegion, "LA");
-  assert.equal("streetAddress" in data.address, false);
+  assert.equal("address" in data, false);
   assert.equal("aggregateRating" in data, false);
+  assert.equal(data.priceRange, SCHEMA_PRICE_RANGE);
+  assert.equal(data.hasOfferCatalog["@type"], "OfferCatalog");
+  const serviceNames = data.hasOfferCatalog.itemListElement.map((item: { name: string }) => item.name);
+  for (const service of VISIBLE_SERVICES) {
+    assert.ok(serviceNames.includes(service.name), service.name);
+  }
+  assert.equal(serviceNames.some((name: string) => /window/i.test(name)), false);
   assert.deepEqual(assertSafeJsonLd(data), []);
   const names = JSON.stringify(data.areaServed);
   for (const city of requiredCities) {
@@ -105,16 +111,37 @@ test("go-live robots.txt allows AI crawlers and advertises the sitemap", () => {
   assert.match(String(live.sitemap), /\/sitemap.xml$/);
 });
 
-test("sitemap lists public pages and omits windows, api, and empty town routes", () => {
-  const urls = sitemap().map((entry) => entry.url);
+test("sitemap lists public pages, includes lastmod, and omits town pages until go-live", () => {
+  const preview = buildSitemap(false);
+  const urls = preview.map((entry) => entry.url);
+  assert.ok(preview.every((entry) => entry.lastModified));
   assert.ok(urls.some((url) => url.endsWith("onrender.com") || url.endsWith("onrender.com/")));
-  for (const path of ["/solid-surface", "/custom-tile", "/design", "/estimate", "/privacy"]) {
+  for (const path of ["/solid-surface", "/custom-tile", "/design", "/estimate", "/faq", "/privacy"]) {
     assert.ok(urls.some((url) => url.endsWith(path)), path);
   }
   assert.equal(urls.some((url) => url.includes("/windows")), false);
   assert.equal(urls.some((url) => url.includes("/api/")), false);
-  assert.equal(towns.length, 0);
-  assert.equal(urls.some((url) => url.includes("/areas/")), false);
+  assert.equal(urls.some((url) => url.includes("/serving-")), false);
+
+  const live = buildSitemap(true).map((entry) => entry.url);
+  assert.equal(towns.length, 3);
+  for (const town of towns) {
+    assert.ok(live.some((url) => url.endsWith(townPath(town.slug))), town.slug);
+  }
+});
+
+test("cleared FAQ and town copy has no windows mentions and town schema is area-only", () => {
+  const blob = [geoFaqs, towns].map((value) => JSON.stringify(value)).join("\n");
+  assert.equal(/window/i.test(blob), false);
+  assert.equal(geoFaqs.length, 11);
+  for (const town of towns) {
+    const data = townAreaJsonLd(town);
+    assert.equal(data["@type"], "WebPage");
+    assert.equal("address" in data, false);
+    assert.equal(JSON.stringify(data).includes("streetAddress"), false);
+    assert.match(data.url, new RegExp(`/serving-${town.slug}$`));
+    assert.deepEqual(assertSafeJsonLd(data), []);
+  }
 });
 
 test("llms.txt summarizes the business without banned claims", () => {
@@ -131,6 +158,10 @@ test("llms.txt summarizes the business without banned claims", () => {
   }
   assert.match(text, new RegExp(heroQuoteLine.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(text, new RegExp(solidPath.warranty.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(text, /\/faq/);
+  assert.match(text, /\/serving-lake-charles/);
+  assert.match(text, /\/serving-baton-rouge/);
+  assert.match(text, /\/serving-houma/);
   for (const banned of [
     "Onyx",
     "Pella",
@@ -141,6 +172,7 @@ test("llms.txt summarizes the business without banned claims", () => {
     "weeks",
     "days to complete",
     "aggregateRating",
+    "window",
   ]) {
     assert.equal(text.toLowerCase().includes(banned.toLowerCase()), false, banned);
   }

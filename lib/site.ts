@@ -2,7 +2,8 @@
  * Canonical business facts for header, footer, schema, robots and llms.txt.
  * Keep name and phone identical everywhere they appear.
  *
- * TODO(Justin): add the confirmed street address when Justin provides it.
+ * TODO(Justin): add a public business address only after Justin confirms a storefront.
+ * Until then, schema stays area-only (no address). A Broussard warehouse is pending.
  * TODO(Justin): add the Google Business Profile URL (schema sameAs) after verification.
  * TODO(Justin): add opening hours when Justin confirms them.
  */
@@ -30,6 +31,16 @@ export const SITE_TELEPHONE = "+1-337-522-0023";
 export const SITE_EMAIL = brand.email;
 export const SITE_LOGO_PATH = "/brand/logo.png";
 export const SITE_LOGO_URL = `${SITE_URL}${SITE_LOGO_PATH}`;
+
+/** schema.org priceRange. Matches the approved $5,000 to $30,000+ public range. */
+export const SCHEMA_PRICE_RANGE = "$5,000–$30,000+";
+
+export const VISIBLE_SERVICES = [
+  { name: "Custom showers", serviceType: "Custom walk-in showers", url: SITE_URL },
+  { name: "Custom tile", serviceType: "Custom tile bathroom remodeling", url: `${SITE_URL}/custom-tile` },
+  { name: "Quartz and quartzite countertops", serviceType: "Quartz and quartzite bathroom countertops", url: SITE_URL },
+  { name: "Solid surface showers and tub walls", serviceType: "Solid surface bathroom remodeling", url: `${SITE_URL}/solid-surface` },
+] as const;
 
 /** Exact service-area sentence for schema descriptions and llms.txt. Do not use in visible marketing copy. */
 export const SCHEMA_SERVICE_AREA =
@@ -68,8 +79,11 @@ export const AI_SEARCH_USER_AGENTS = [
   "Googlebot",
   "Bingbot",
   "PerplexityBot",
+  "Perplexity-User",
   "ClaudeBot",
   "Claude-SearchBot",
+  "Claude-User",
+  "Applebot",
 ] as const;
 
 export type SchemaPlace = {
@@ -87,6 +101,14 @@ const calcasieu: SchemaPlace = {
 
 function city(name: string, containedInPlace: SchemaPlace = louisiana): SchemaPlace {
   return { "@type": "City", name, containedInPlace };
+}
+
+/** City node for schema areaServed. Lake Charles-area towns stay in Calcasieu Parish. */
+export function cityPlace(name: string): SchemaPlace {
+  if (name === "Lake Charles" || name === "Sulphur" || name === "Moss Bluff") {
+    return city(name, calcasieu);
+  }
+  return city(name);
 }
 
 /**
@@ -127,5 +149,6 @@ export const INDEXABLE_PATHS = [
   "/custom-tile",
   "/design",
   "/estimate",
+  "/faq",
   "/privacy",
 ] as const;

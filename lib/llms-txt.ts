@@ -1,13 +1,13 @@
-import { heroQuoteLine, services, solidPath } from "./copy";
+import { heroQuoteLine, priceRange, services, solidPath } from "./copy";
 import { MAIN_TOWNS } from "./coverage";
-import { towns } from "./towns";
+import { townPath, towns } from "./towns";
 import { SCHEMA_SERVICE_AREA, SITE_EMAIL, SITE_NAME, SITE_PHONE, SITE_URL } from "./site";
 
 export function llmsTxt(): string {
   const page = (path: string, label: string) => `- ${label}: ${SITE_URL}${path}`;
   const townLines = towns.length
-    ? towns.map((town) => `- ${town.name}: ${SITE_URL}/areas/${town.slug}`).join("\n")
-    : "- Town pages will be published under /areas/ when they are written.";
+    ? towns.map((town) => `- ${town.title}: ${SITE_URL}${townPath(town.slug)}`).join("\n")
+    : "- Town pages will be published when they are written.";
 
   return `# ${SITE_NAME}
 
@@ -25,7 +25,7 @@ ${SITE_NAME} is a bathroom remodeling company based in Lafayette, Louisiana. ${S
 - Bathroom design previews from your own photos (${SITE_URL}/design)
 - Free Consult (${SITE_URL}/estimate)
 
-${heroQuoteLine} Final pricing is set after Justin reviews the space in person.
+${heroQuoteLine} ${priceRange}
 
 ## Service area
 ${SCHEMA_SERVICE_AREA}
@@ -38,6 +38,7 @@ ${page("/solid-surface", "Solid surface showers and tub walls")}
 ${page("/custom-tile", "Custom tile showers and bathrooms")}
 ${page("/design", "Design My Bathroom")}
 ${page("/estimate", "Free Consult")}
+${page("/faq", "FAQ")}
 ${page("/privacy", "Privacy Policy")}
 
 ## Town pages

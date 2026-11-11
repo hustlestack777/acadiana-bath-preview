@@ -1,52 +1,64 @@
 import Link from "next/link";
 import { FaqSection } from "@/components/faq-section";
 import { ConsultLink } from "@/components/consult-link";
-import { brand, cardClaims, hero } from "@/lib/copy";
+import { JsonLd } from "@/components/json-ld";
+import { LinkedCopy } from "@/components/linked-copy";
+import { brand, hero } from "@/lib/copy";
+import { townAreaJsonLd } from "@/lib/schema";
 import type { TownPageContent } from "@/lib/towns";
 
-/**
- * Template for town / service-area pages. Boogie supplies the intro and optional
- * FAQs through lib/towns.ts; this file does not invent local copy.
- */
 export function TownPage({ town }: { town: TownPageContent }) {
   return (
     <main id="content" tabIndex={-1}>
-      <section className="mx-auto w-full max-w-6xl px-5 pb-12 pt-6 md:pb-16 md:pt-12">
+      <JsonLd data={townAreaJsonLd(town)} />
+      <section className="mx-auto w-full max-w-6xl px-5 pb-8 pt-6 md:pb-12 md:pt-12">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Service area</p>
-        <h1 className="mt-3 max-w-4xl font-heading text-4xl leading-[1.05] md:text-6xl">
-          Bathroom remodels in {town.name}
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">{town.intro}</p>
-        <p className="mt-6 text-sm">
-          Rather talk?{" "}
-          <a className="font-medium underline underline-offset-4" href={brand.phoneHref}>
-            {brand.phone}
-          </a>
-          {" · "}
-          <a className="underline underline-offset-4" href={brand.emailHref}>
-            {brand.email}
-          </a>
-        </p>
+        <h1 className="mt-3 max-w-4xl font-heading text-4xl leading-[1.05] md:text-6xl">{town.title}</h1>
+        <div className="mt-6 grid max-w-3xl gap-5 text-lg leading-8 text-muted-foreground">
+          {town.intro.map((paragraph) => (
+            <LinkedCopy key={paragraph.slice(0, 48)} text={paragraph} />
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-5 py-10 md:py-14">
+        <h2 className="text-3xl md:text-4xl">{town.servicesTitle}</h2>
+        <ul className="mt-6 max-w-3xl list-disc space-y-2 ps-6 text-lg leading-8">
+          {town.services.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
+
+      {town.sections.map((section) => (
+        <section key={section.title} className="mx-auto w-full max-w-6xl px-5 py-8 md:py-10">
+          <h2 className="text-3xl md:text-4xl">{section.title}</h2>
+          <LinkedCopy className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground" text={section.body} />
+        </section>
+      ))}
+
+      <section className="mx-auto w-full max-w-6xl px-5 pb-12 pt-4 md:pb-16">
+        <LinkedCopy className="max-w-3xl text-lg leading-8" text={town.close} />
         <div className="mt-8 flex flex-wrap gap-3">
           <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-medium text-primary-foreground">
             {hero.primary}
           </ConsultLink>
           <Link
-            href="/solid-surface"
+            href="/design"
             className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card px-6 text-sm font-semibold"
           >
-            Solid surface path →
+            Design My Bathroom
           </Link>
-          <Link
-            href="/custom-tile"
+          <a
+            href={brand.phoneHref}
             className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card px-6 text-sm font-semibold"
           >
-            Custom tile path →
-          </Link>
+            {brand.phone}
+          </a>
         </div>
-        <p className="mt-4 text-sm font-semibold">{cardClaims.consult}</p>
       </section>
-      {town.faqs?.length ? <FaqSection faqs={town.faqs} /> : null}
+
+      {town.faqs.length ? <FaqSection faqs={town.faqs} /> : null}
     </main>
   );
 }

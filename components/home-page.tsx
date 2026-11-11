@@ -22,6 +22,7 @@ import {
   talk,
 } from "@/lib/copy";
 import { MAIN_TOWNS } from "@/lib/coverage";
+import { townPath, towns } from "@/lib/towns";
 import { beforeAfterPhotos, galleryPhotos } from "@/lib/images";
 
 export function HomePage() {
@@ -160,11 +161,21 @@ export function HomePage() {
           <p className="mt-4 max-w-2xl text-lg leading-8 text-fig-muted">{area.intro}</p>
           <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-brass-soft">{area.townsLabel}</p>
           <ul className="mt-4 flex flex-wrap gap-2">
-            {MAIN_TOWNS.map((town) => (
-              <li key={town} className="rounded-full border border-white/20 px-3 py-1.5 text-sm">
-                {town}
-              </li>
-            ))}
+            {MAIN_TOWNS.map((town) => {
+              const page = towns.find((item) => item.name === town);
+              const className = "rounded-full border border-white/20 px-3 py-1.5 text-sm";
+              return (
+                <li key={town}>
+                  {page ? (
+                    <a href={townPath(page.slug)} className={`${className} underline-offset-4 hover:underline`}>
+                      {town}
+                    </a>
+                  ) : (
+                    <span className={className}>{town}</span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
           <p className="mt-4 max-w-2xl text-sm leading-6 text-fig-muted">{area.outside}</p>
         </div>

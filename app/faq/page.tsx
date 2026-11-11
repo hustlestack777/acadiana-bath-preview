@@ -1,0 +1,24 @@
+import type { Metadata } from "next";
+import { FaqSection } from "@/components/faq-section";
+import { SiteShell } from "@/components/site-shell";
+import { faqPageIntro, faqPageTitle, geoFaqs } from "@/lib/faq-page";
+
+export const metadata: Metadata = {
+  title: faqPageTitle,
+  description: faqPageIntro,
+};
+
+export default function FaqPage() {
+  return (
+    <SiteShell>
+      <main id="content" tabIndex={-1}>
+        <section className="mx-auto w-full max-w-6xl px-5 pb-4 pt-6 md:pt-12">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">FAQ</p>
+          <h1 className="mt-3 max-w-4xl font-heading text-4xl leading-[1.05] md:text-6xl">{faqPageTitle}</h1>
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">{faqPageIntro}</p>
+        </section>
+        <FaqSection faqs={geoFaqs} heading="Questions" className="bg-transparent pt-4 md:pt-6" />
+      </main>
+    </SiteShell>
+  );
+}

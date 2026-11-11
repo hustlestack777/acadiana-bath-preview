@@ -6,6 +6,7 @@
 import { faqs as homeFaqs, solidPath, tilePath } from "./copy";
 import {
   SCHEMA_AREA_SERVED,
+  SCHEMA_PRICE_RANGE,
   SCHEMA_SERVICE_AREA,
   SITE_EMAIL,
   SITE_LOGO_URL,
@@ -13,7 +14,10 @@ import {
   SITE_SHORT_NAME,
   SITE_TELEPHONE,
   SITE_URL,
+  VISIBLE_SERVICES,
+  cityPlace,
 } from "./site";
+import { townPath, type TownPageContent } from "./towns";
 
 export type FaqItem = { q: string; a: string };
 
@@ -33,13 +37,34 @@ export function businessJsonLd() {
     image: SITE_LOGO_URL,
     description: `Bathroom remodels from ${SITE_NAME}. ${SCHEMA_SERVICE_AREA} Free Consult. Call 337-522-0023.`,
     areaServed: SCHEMA_AREA_SERVED,
-    // Service-area business: locality only. Street address, GBP URL and hours are TODO(Justin).
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Lafayette",
-      addressRegion: "LA",
-      addressCountry: "US",
+    priceRange: SCHEMA_PRICE_RANGE,
+    // No address: Justin has no public storefront yet (a Broussard warehouse is pending).
+    // TODO(Justin): add the confirmed public address, GBP URL (sameAs), and hours when ready.
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Bathroom remodeling services",
+      itemListElement: VISIBLE_SERVICES.map((service) => ({
+        "@type": "Service",
+        name: service.name,
+        serviceType: service.serviceType,
+        url: service.url,
+        areaServed: SCHEMA_AREA_SERVED,
+      })),
     },
+  };
+}
+
+export function townAreaJsonLd(town: TownPageContent) {
+  const places = [cityPlace(town.name), ...(town.alsoServes ?? []).map((name) => cityPlace(name))];
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: town.title,
+    url: `${SITE_URL}${townPath(town.slug)}`,
+    description: town.intro[0],
+    about: { "@id": BUSINESS_ID },
+    areaServed: places,
+    // Area served only. Do not add a local street address or branch office.
   };
 }
 
