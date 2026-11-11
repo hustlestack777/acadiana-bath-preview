@@ -4,6 +4,7 @@ import { Hero } from "@/components/hero";
 import { ConsultLink } from "@/components/consult-link";
 import Link from "next/link";
 import { IdeasSection, PathChooser } from "@/components/path-sections";
+import { InspiringRow, ShopLooks } from "@/components/look-strips";
 import { FaqSection } from "@/components/faq-section";
 import { homeFaqs } from "@/lib/faq-page";
 import {
@@ -30,6 +31,10 @@ export function HomePage() {
       <Hero />
 
       <PathChooser />
+
+      <ShopLooks />
+
+      <InspiringRow />
 
       <section id="intro" className="rise scroll-mt-28 mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-20 md:grid-cols-12 md:py-28">
         <div className="md:col-span-6">
@@ -61,7 +66,7 @@ export function HomePage() {
             <article key={reason.title} className="rounded-[1.4rem] border border-border bg-card p-6">
               <p className="font-heading text-3xl text-primary">0{index + 1}</p>
               <h2 className="mt-3 text-2xl">{reason.title}</h2>
-              <p className="mt-3 text-sm leading-7 text-muted-foreground">{reason.body}</p>
+              <p className="mt-3 leading-7 text-muted-foreground">{reason.body}</p>
             </article>
           ))}
         </div>
