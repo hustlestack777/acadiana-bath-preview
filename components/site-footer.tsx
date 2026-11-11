@@ -6,8 +6,8 @@ import { WindowsQuoteLine } from "@/components/windows-quote-line";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-secondary text-secondary-foreground">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 py-12 pl-5 pr-36 md:grid-cols-3 md:px-5">
+    <footer className="bg-secondary pb-36 text-secondary-foreground md:pb-0">
+      <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 pe-36 md:grid-cols-3 md:pe-5">
         <div>
           <MaisonLogo onDark className="text-secondary-foreground" />
           <p className="mt-4 text-sm leading-6 text-fig-muted">
@@ -54,7 +54,7 @@ export function SiteFooter() {
           <WindowsQuoteLine className="mt-4 text-fig-muted" />
         </div>
       </div>
-      <p className="border-t border-white/15 py-4 pl-5 pr-36 text-center text-xs leading-5 text-fig-muted md:px-5">
+      <p className="border-t border-white/15 px-5 py-4 pe-36 text-center text-xs leading-5 text-fig-muted md:pe-5">
         {brand.name} ·{" "}
         <a href="/privacy" className="underline underline-offset-4">
           Privacy Policy
