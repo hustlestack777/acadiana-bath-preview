@@ -53,7 +53,6 @@ export function HomePage() {
               className="object-cover"
             />
           </div>
-          <div className="checkerboard absolute -bottom-4 -left-4 hidden h-24 w-24 rounded-xl md:block" aria-hidden="true" />
         </div>
       </section>
 
