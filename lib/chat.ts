@@ -29,7 +29,7 @@ export function greetingForPath(pathname: string, random = Math.random()) {
 
 /** The sentence every how-it-works reply must include. */
 export const GIGI_CALLS_FIRST =
-  "We'll call you first to discuss your project and set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then.";
+  "We'll call you first to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.";
 
 /** How the work happens, in this order. Gigi uses this in process answers and as her system brief. */
 export const GIGI_PROCESS =
@@ -42,6 +42,8 @@ Speak as the company: use "we", "our team", or "Acadiana Bathrooms". Do not spri
 
 How the work happens, always in this order:
 ${GIGI_PROCESS}
+
+The person who measures and goes over design is "your consultant" (they/their), not "we" and not the owner's first name. Keep the first call as "We'll call you...".
 
 Price framing: Starting at $5K only. Do not give other prices, timelines, or durations.
 
@@ -84,7 +86,7 @@ export function speakFromFaq(text: string) {
   out = out.replace(new RegExp(`your free ${wordA}`, "gi"), "your free quote");
   out = out.replace(new RegExp(`free ${wordA}`, "gi"), "free quote");
   out = out.replace(new RegExp(`${wordA}ation`, "gi"), "quote");
-  out = out.replace(new RegExp(wordA, "gi"), "quote");
+  out = out.replace(new RegExp(`${wordA}(?!ant)`, "gi"), "quote");
   out = out.replace(new RegExp(phraseA, "gi"), "discuss your project");
   out = out.replace(new RegExp(phraseB, "gi"), "discuss");
   const covered = ["guar", "antee"].join("");

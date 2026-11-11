@@ -320,7 +320,7 @@ test("Gigi reads FAQ answers and cleans phrasing she should not use", () => {
   const clean = speakFromFaq(dirty);
   assert.match(clean, /Starting at \$5K/);
   assert.match(clean, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.equal(new RegExp(word, "i").test(clean), false, clean);
+  assert.equal(new RegExp(`${word}(?!ant)`, "i").test(clean), false, clean);
   assert.equal(/talk through|lifetime/i.test(clean), false, clean);
   assert.match(CHAT_ANSWERS.cost, /Starting at \$5K/);
   assert.match(CHAT_ANSWERS.quote, /\(337\) 522-0023|Design My Bathroom/);

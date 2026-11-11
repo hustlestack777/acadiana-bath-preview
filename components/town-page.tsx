@@ -20,7 +20,7 @@ export function TownPage({ town }: { town: TownPageContent }) {
           {town.intro.map((paragraph) => (
             <LinkedCopy key={paragraph.slice(0, 48)} text={paragraph} />
           ))}
-          <p>We&apos;ll call you to discuss your project and set a time to take measurements. When we measure, we&apos;ll go over design options with you, and you&apos;ll get your exact price right then.</p>
+          <p>We&apos;ll call you to discuss your project and set a time to take measurements. When your consultant measures, they&apos;ll go over design options with you, and you&apos;ll get your exact price right then.</p>
           <p>
             Part of our South Louisiana service area.{" "}
             <a href="/areas" className="underline underline-offset-4">

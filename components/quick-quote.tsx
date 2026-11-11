@@ -415,7 +415,7 @@ export function QuickQuote({ path }: { path: Path }) {
         {status === "sending" ? "Sending…" : isTile ? "Get My Free Tile Quote" : "Get my solid surface quote"}
       </button>
       <p className="text-center text-xs text-muted-foreground">
-        Free quote. Nothing to pay today. When we measure, you&apos;ll get your exact price right then.{" "}
+        Free quote. Nothing to pay today. When your consultant measures, you&apos;ll get your exact price right then.{" "}
         <a href="/privacy" className="underline underline-offset-4">Privacy Policy</a>
       </p>
     </form>

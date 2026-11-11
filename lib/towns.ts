@@ -40,7 +40,7 @@ const servicesCore = [
 ] as const;
 
 const QUOTE_LINE =
-  "Tell us about your project and the best day and time to reach you. We'll call you first to discuss your project and set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";
+  "Tell us about your project and the best day and time to reach you. We'll call you first to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";
 
 function quoteSection(): TownSection {
   return {

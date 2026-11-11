@@ -57,11 +57,11 @@ export const heroDesignCta = "Design My Bathroom";
 export const quoteCta = "Get My Free Quote";
 
 export const trustLine =
-  "Free quote. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then.";
+  "Free quote. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.";
 
 /** Later mentions on pages that already used trustLine or another first mention. */
 export const trustLineFollow =
-  "Free quote. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then.";
+  "Free quote. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.";
 
 export const heroQuoteLine = "Starting at $5K · Free quote.";
 
@@ -90,7 +90,7 @@ export const material = {
   title: "Tile or solid surface? We'll help you choose.",
   body: "Solid surface gives you clean lines and almost no grout. Custom tile gives you color, texture and pattern. We lay out the look, the budget and the upkeep of each, so you choose with confidence.",
   close:
-    "Find the look that feels like home. When we measure, we'll go over materials and design options with you.",
+    "Find the look that feels like home. When your consultant measures, they'll go over materials and design options with you.",
 } as const;
 
 export const care = {
@@ -103,7 +103,7 @@ export const stepsTitle = "How a quote works.";
 export const steps = [
   { title: "Tell us about your project and the best day and time to reach you.", body: "" },
   { title: "We'll call to discuss your project, your style and what you have in mind, and set a time to take measurements.", body: "" },
-  { title: "When we measure, we'll go over design options with you, and you'll get your exact price right then.", body: "" },
+  { title: "When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.", body: "" },
   { title: "When you're ready to move forward, we manage your project from design to the finished bathroom.", body: "" },
 ] as const;
 
@@ -133,13 +133,13 @@ export const talk = {
 
 export const close = {
   title: "Start with the bathroom you have.",
-  body: "Tell us what you want to change, the best day and time to reach you, and share a few photos if you have them. We'll call you to discuss your project and set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then.",
+  body: "Tell us what you want to change, the best day and time to reach you, and share a few photos if you have them. We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.",
 } as const;
 
 export const lead = {
   title: "Free Quote",
   subhead:
-    "Tell us about your project and the best day and time to reach you. We'll call you to discuss your project and set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then.",
+    "Tell us about your project and the best day and time to reach you. We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.",
   submit: "Get My Free Quote",
   thanks: "You're all set. We'll call you in the one-hour window you picked to discuss your project. Save Justin's number so you know it's him calling: (337) 522-0023.",
   savedNote: "Nothing to pay today.",
@@ -198,10 +198,10 @@ export const timings = [
 ] as const;
 
 export const projectNote =
-  "Pick everything you'd like. When we measure, we'll go over design options with you, and you'll get your exact price right then.";
+  "Pick everything you'd like. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.";
 
 export const featureNote =
-  "Pick everything you'd like. When we measure, we'll go over design options with you, and you'll get your exact price right then.";
+  "Pick everything you'd like. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.";
 
 export const photoNote =
   "Optional photos: one wide bathroom view, the shower or tub, and any problem areas. Leave out people and personal documents. Up to 8 photos. They are resized in your browser before sending.";
@@ -269,14 +269,14 @@ export const tilePath = {
     "Colors from the Mapei grout and caulk palette. Tap a swatch to preview it and add it to your tile request.",
   groutNote: "Screen colors are approximate.",
   formTitle: "Custom tile quote",
-  formBody: "Tell us the look you love. We'll call to discuss your project, then bring real samples when we take measurements.",
+  formBody: "Tell us the look you love. We'll call to discuss your project, then your consultant will bring real samples when they take measurements.",
 } as const;
 
 export const ideas = {
   eyebrow: "Finishing touches",
   title: "Ideas for the rest of the room",
-  body: "Save what you love and bring it when we take measurements. We'll show you how to pull it together in your space.",
-  note: "Ideas to spark your style. Bring your favorites when we take measurements, and we'll match the right materials to your space and budget.",
+  body: "Save what you love and bring it when your consultant takes measurements. They'll show you how to pull it together in your space.",
+  note: "Ideas to spark your style. Bring your favorites when your consultant takes measurements, and they'll match the right materials to your space and budget.",
   items: [
     {
       name: "Wallism",
@@ -343,4 +343,4 @@ export const ideas = {
 
 /** Approved price wording (Shaun, 11/11/2026). Used in chat and on the path pages. */
 export const priceRange =
-  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";
+  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";

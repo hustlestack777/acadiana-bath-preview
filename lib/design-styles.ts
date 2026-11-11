@@ -214,7 +214,7 @@ export const designCopy = {
   headline: "Your new bathroom, before you spend a dime.",
   sub: "Pick a look, snap your shower, and see it come to life in your own space.",
   /** The only fine print in the tool (Shaun, 11/10/2026). */
-  finePrint: "Design preview. When we measure, you'll get your exact price right then.",
+  finePrint: "Design preview. When your consultant measures, you'll get your exact price right then.",
   tips: "Stand in the doorway, phone at chest height, lights on, whole shower in frame.",
   steps: ["Scanning your bathroom…", "Clearing the clutter…", "Designing…", "Polishing…", "Checking every detail…"],
   /** Shown instead of an image when no render passes the automatic QA check. */

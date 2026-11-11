@@ -227,13 +227,13 @@ test("JSON-LD has no consult or in-home wording, and town meta descriptions are 
   const faqsSchema = JSON.stringify(faqPageJsonLd(geoFaqs));
   const townSchema = towns.map((town) => JSON.stringify(townAreaJsonLd(town))).join("\n");
   const blob = [business, faqsSchema, townSchema, JSON.stringify(geoFaqs)].join("\n");
-  assert.equal(/consult/i.test(blob), false);
+  assert.equal(/consult(?!ant)/i.test(blob), false);
   assert.equal(/in your home|in-home|comes to your home/i.test(blob), false);
   const descriptions = towns.map((town) => town.description);
   assert.equal(new Set(descriptions).size, towns.length);
   for (const town of towns) {
     assert.ok(town.description.length <= 180, town.slug);
     assert.match(town.description, new RegExp(town.name));
-    assert.equal(/consult|in your home|older home/i.test(town.description), false, town.slug);
+    assert.equal(/consult(?!ant)|in your home|older home/i.test(town.description), false, town.slug);
   }
 });

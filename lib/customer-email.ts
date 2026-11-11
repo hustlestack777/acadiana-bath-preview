@@ -37,7 +37,7 @@ export type CustomerConfirmationInput = {
   test?: boolean;
 };
 
-const DESIGN_FINE_PRINT = "Design preview. When we measure, you'll get your exact price right then.";
+const DESIGN_FINE_PRINT = "Design preview. When your consultant measures, you'll get your exact price right then.";
 
 /** Default recap for /estimate and the quick-quote path forms, built from the saved lead. */
 export function recapFromLead(input: {
@@ -98,7 +98,7 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
     ? `Thanks for reaching out to Acadiana Bathrooms. We'll call you ${dayBit} to discuss your project. Save Justin's number so you'll know it's him: (337) 522-0023. You can call or text him there anytime.`
     : "Thanks for reaching out to Acadiana Bathrooms. We'll call you to discuss your project. Save Justin's number so you'll know it's him: (337) 522-0023. You can call or text him there anytime.";
   const nextSteps =
-    "What happens next: We'll call you to discuss your project and set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then.";
+    "What happens next: We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.";
   const signoff = "Talk soon,\nAcadiana Bathrooms · abclafayette.com";
 
   const before = isDesign ? input.photos?.[0] : undefined;

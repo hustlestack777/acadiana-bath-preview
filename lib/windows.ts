@@ -51,7 +51,7 @@ export const STYLES: { id: StyleId; name: string; blurb: string }[] = [
   { id: "bay-bow", name: "Bay or bow", blurb: "Projects from the wall and adds light and space. Priced as its own opening." },
   { id: "slider", name: "Slider", blurb: "Opens side to side. A good fit for wider, shorter openings." },
   { id: "casement", name: "Casement", blurb: "Cranks open from the side and seals tightly when closed." },
-  { id: "unsure", name: "Not sure — I'll decide with your team", blurb: "We'll confirm what fits each opening when we measure." },
+  { id: "unsure", name: "Not sure — I'll decide with your team", blurb: "Your consultant will confirm what fits each opening when they measure." },
 ];
 
 export const MATERIALS: { id: MaterialId; name: string; blurb: string }[] = [
@@ -65,7 +65,7 @@ export const MATERIALS: { id: MaterialId; name: string; blurb: string }[] = [
     id: "impact",
     name: "Impact-resistant glass",
     blurb:
-      "Aimed at coastal and high-wind homes, including places from Lake Charles to Houma and Thibodaux. We'll confirm whether this package is the right fit when we measure.",
+      "Aimed at coastal and high-wind homes, including places from Lake Charles to Houma and Thibodaux. Your consultant will confirm whether this package is the right fit when they measure.",
   },
   {
     id: "premium",
@@ -75,7 +75,7 @@ export const MATERIALS: { id: MaterialId; name: string; blurb: string }[] = [
   {
     id: "unsure",
     name: "Not sure yet",
-    blurb: "We'll show a wider estimate. We'll go over the differences when we measure.",
+    blurb: "We'll show a wider estimate. Your consultant will go over the differences when they measure.",
   },
 ];
 
@@ -252,7 +252,7 @@ export function windowCustomerRecap(input: {
     .join(", ");
   const material = MATERIALS.find((item) => item.id === input.material)?.name ?? "";
   const rows = [
-    { label: "Windows", value: input.standardCount == null ? "Not sure yet. We'll count when we measure." : String(input.standardCount) },
+    { label: "Windows", value: input.standardCount == null ? "Not sure yet. Your consultant will count them when they measure." : String(input.standardCount) },
     { label: "Bay or bow", value: input.bayBowCount > 0 ? String(input.bayBowCount) : "" },
     { label: "Material", value: material },
     { label: "Styles", value: styleNames },
@@ -263,8 +263,8 @@ export function windowCustomerRecap(input: {
   return {
     headline: input.estimate ? windowRecapHeadline(input.estimate) : undefined,
     note: input.estimate
-      ? "This is a ballpark range, not a quote. When we measure, you'll get your exact price right then."
-      : "We'll count your windows when we measure, and you'll get your exact price right then.",
+      ? "This is a ballpark range, not a quote. When your consultant measures, you'll get your exact price right then."
+      : "Your consultant will count your windows when they measure, and you'll get your exact price right then.",
     rows,
   };
 }
