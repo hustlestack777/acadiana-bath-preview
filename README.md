@@ -20,11 +20,22 @@ npm start
 
 ## Leads
 
-The review form validates the fields, rejects a filled honeypot, and rate-limits by IP. It stores the lead, including the street address and photos, when `DATABASE_URL` is set. It emails Justin at `acadianabathandcounter@gmail.com`, plus Shaun at the addresses listed in `LEAD_NOTIFY_EMAIL`, when both `RESEND_API_KEY` and `RESEND_FROM` are set. The customer is not emailed.
+The review form validates the fields, rejects a filled honeypot, and rate-limits by IP. It stores the lead, including the street address and photos, when `DATABASE_URL` is set. When both `RESEND_API_KEY` and `RESEND_FROM` are set, it emails Justin at `acadianabathandcounter@gmail.com` and CCs Shaun at `shaun.brasher@gmail.com` (plus any other non-Justin addresses in `LEAD_NOTIFY_EMAIL`). If the customer left an email, they also get a short confirmation that Justin will call soon, signed Acadiana Bathrooms and Countertops, (337) 522-0023. Design confirmations can include the before-and-after. Confirmations never promise a timeline or deposit, and they don't claim licensed or insured or name a product brand.
 
-`LEAD_NOTIFY_EMAIL` defaults to `acadianabathandcounter@gmail.com,shaun.brasher@gmail.com,shaun@lagniapperealmlabs.com`. A comma-separated list is split, trimmed, and every address receives the lead email. `RESEND_FROM` must be an address on a domain verified in Resend. If email is not configured, the lead can still be stored and the response says the notification was not sent. The page does not claim success when storage fails.
+`LEAD_NOTIFY_EMAIL` defaults to `acadianabathandcounter@gmail.com,shaun.brasher@gmail.com,shaun@lagniapperealmlabs.com`. Justin is always the To address on a real lead; the other listed addresses are CC'd. `RESEND_FROM` must be an address on a domain verified in Resend. If email is not configured, the lead can still be stored and the response says the notification was not sent. The page does not claim success when storage fails.
 
-The notification is a phone-readable card: name, call and email buttons, street address, project, size, home, timing, payment, and notes that were actually filled in. A name that starts with `TEST` keeps the `[TEST]` subject prefix. Times are America/Chicago. Photos are shown in the email and also attached as files. The public thank-you page does not show the street address or a house photo.
+The notification is a phone-readable card: name, call and email buttons, street address, project, size, home, timing, payment, and notes that were actually filled in. Times are America/Chicago. Photos are shown in the email and also attached as files. The public thank-you page does not show the street address or a house photo.
+
+### Team test mode
+
+A lead is treated as a test when the phone uses a 555 exchange (for example `337-555-xxxx`) or the email is at a Grok Bot inbox domain (`mail.grokbot.com` or `grokbot.com`). For those leads:
+
+- every email subject is prefixed with `[TEST]`
+- Justin's copy goes to Shaun at `shaun.brasher@gmail.com` only, never to Justin
+- the customer confirmation still goes to the email they entered
+- nobody is texted
+
+Use a 555 number (and a Grok Bot inbox if you want to see the confirmation) so fake team leads never reach Justin. A name that starts with `TEST` still gets the `[TEST]` subject prefix, but only the 555 number or Grok Bot inbox reroutes the mail.
 
 Street suggestions use ArcGIS World Geocoding, then Photon, then Nominatim. No Google Places key. If `GOOGLE_MAPS_API_KEY` is set (Street View Static API; also read from `GOOGLE_MAPS_KEY`, `GOOGLE_STREET_VIEW_API_KEY`, `GOOGLE_STREETVIEW_API_KEY`, or `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` when one of those is already present), the lead email embeds a Street View snapshot. Without a key, the email still includes a one-tap Street View link: the server geocodes the address once with OpenStreetMap Nominatim (no Google key, 4s timeout) and links to `map_action=pano`. If geocoding fails, that link falls back to a Google Maps search of the address. A plain Open in Google Maps link is always included. Geocoding never blocks or fails the lead. The image is never scraped.
 

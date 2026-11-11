@@ -2,7 +2,12 @@ import { Pool } from "pg";
 import { Resend } from "resend";
 import { validateDetails, validateExtras, validateStreet, validateZip } from "./estimate";
 import { checkCity } from "./coverage";
+import { buildCustomerConfirmation } from "./customer-email";
 import { buildLeadEmail } from "./lead-email";
+import {
+  leadNotificationRoute,
+  withTestSubject,
+} from "./lead-notify";
 import { fetchStreetViewImage, resolveHouseMapLinks } from "./street-view";
 import { fullAddress } from "./lead-display";
 
@@ -182,9 +187,11 @@ export function validateLead(input: LeadInput) {
 }
 
 export type LeadNotifyOptions = {
-  /** Override LEAD_NOTIFY_EMAIL (used for design-tool test leads). */
+  /** @deprecated Routing is handled by leadNotificationRoute. Ignored for test leads. */
   recipients?: string[];
   subject?: string;
+  /** Header-based QA flag. Team test mode also trips on a 555 phone or Grok Bot inbox. */
+  test?: boolean;
 };
 
 export async function saveLead(input: LeadInput, ip: string, options: LeadNotifyOptions = {}) {
@@ -452,7 +459,14 @@ async function housePreview(input: { street: string; city: string; zip: string; 
 async function notifyLead(id: string, createdAt: Date, input: LeadInput, options: LeadNotifyOptions = {}) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
-  const to = options.recipients?.length ? options.recipients : leadNotifyRecipients();
+  const route = leadNotificationRoute({
+    phone: input.phone,
+    email: input.email,
+    notifyList: leadNotifyRecipients(),
+    forceTest: options.test,
+  });
+  const to = route.to;
+  const cc = route.cc;
   if (!apiKey) return { sent: false, error: "RESEND_API_KEY is not set." };
   if (!from) return { sent: false, error: "RESEND_FROM is not set." };
 
@@ -492,13 +506,16 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
     consent: input.consent,
     consentAt: input.consentAt ?? (input.consent ? createdAt : null),
     consentText: input.consentText || "",
+    test: route.test,
   });
   const resend = new Resend(apiKey);
+  const subject = withTestSubject(options.subject || message.subject, route.test);
   const { error } = await resend.emails.send(
     {
       from,
       to,
-      subject: options.subject || message.subject,
+      cc: cc.length ? cc : undefined,
+      subject,
       text: message.text,
       html: message.html,
       attachments: message.attachments,
@@ -506,7 +523,32 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
     { idempotencyKey: `lead/${id}` },
   );
   if (error) return { sent: false, error: error.message };
-  return { sent: true as const, error: undefined };
+
+  const customer = input.email.trim();
+  if (customer) {
+    const confirmation = buildCustomerConfirmation({
+      name: input.name,
+      sourcePage: input.sourcePage,
+      photos: input.photos,
+      test: route.test,
+    });
+    const confirmResult = await resend.emails.send(
+      {
+        from,
+        to: [customer],
+        subject: confirmation.subject,
+        text: confirmation.text,
+        html: confirmation.html,
+        attachments: confirmation.attachments,
+      },
+      { idempotencyKey: `lead-confirm/${id}` },
+    );
+    if (confirmResult.error) {
+      console.error("customer confirmation failed", confirmResult.error.message);
+      return { sent: true as const, error: undefined, customerEmailSent: false, customerEmailError: confirmResult.error.message };
+    }
+  }
+  return { sent: true as const, error: undefined, customerEmailSent: Boolean(customer) };
 }
 
 async function notifyLeadExtras(
@@ -537,7 +579,13 @@ async function notifyLeadExtras(
 ) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
-  const to = leadNotifyRecipients();
+  const route = leadNotificationRoute({
+    phone: input.phone,
+    email: input.email,
+    notifyList: leadNotifyRecipients(),
+  });
+  const to = route.to;
+  const cc = route.cc;
   if (!apiKey) return { sent: false, error: "RESEND_API_KEY is not set." };
   if (!from) return { sent: false, error: "RESEND_FROM is not set." };
 
@@ -574,13 +622,15 @@ async function notifyLeadExtras(
     photos: input.photos,
     newPhotoCount: input.newPhotoCount,
     houseImage,
+    test: route.test,
   });
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send(
     {
       from,
       to,
-      subject: message.subject,
+      cc: cc.length ? cc : undefined,
+      subject: withTestSubject(message.subject, route.test),
       text: message.text,
       html: message.html,
       attachments: message.attachments,

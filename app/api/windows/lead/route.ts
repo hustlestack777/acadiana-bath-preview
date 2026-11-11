@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { isTestRequest, testRecipients, clientIp } from "@/lib/design-sessions";
+import { isTestRequest, clientIp } from "@/lib/design-sessions";
+import { isTeamTestLead } from "@/lib/lead-notify";
 import { saveLead, validateLead, type LeadInput } from "@/lib/leads";
 import {
   computeWindowEstimate,
@@ -47,13 +48,10 @@ export async function POST(request: Request) {
   }
   if (text(form, "company_fax").trim()) return fail("We couldn't submit that.", 400);
 
-  const test = isTestRequest(request);
-  const recipients = test ? testRecipients() : undefined;
-  if (test && !recipients?.length) return fail("Test inbox is not set.", 503);
-
   const name = text(form, "name", 120);
   const phone = text(form, "phone", 40);
   const email = text(form, "email", 200);
+  const test = isTestRequest(request) || isTeamTestLead(phone, email);
   const street = text(form, "street", 200);
   const city = text(form, "city", 80);
   const zip = text(form, "zip", 10);
@@ -128,11 +126,10 @@ export async function POST(request: Request) {
     return fail("Please check the highlighted fields.", 400, errors);
   }
 
-  const notifyName = test && !/^\s*test/i.test(name) ? `TEST ${name}` : name;
   const result = await saveLead(
-    { ...input, name: notifyName },
+    input,
     clientIp(request),
-    { recipients, subject: windowLeadSubject(notifyName, city, standardCount, material) },
+    { test, subject: windowLeadSubject(name, city, standardCount, material) },
   );
   if (!result.ok) return fail(result.error, result.status);
   return NextResponse.json({

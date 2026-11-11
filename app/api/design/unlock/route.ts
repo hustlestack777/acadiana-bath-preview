@@ -8,8 +8,8 @@ import {
   isTestRequest,
   newToken,
   phoneDigits,
-  testRecipients,
 } from "@/lib/design-sessions";
+import { isTeamTestLead, withTestSubject } from "@/lib/lead-notify";
 import { formatChicago } from "@/lib/lead-display";
 import { budgetTag } from "@/lib/budget";
 
@@ -130,16 +130,17 @@ export async function POST(request: Request) {
   delete errors.features;
   if (Object.keys(errors).length) return fail("Check the highlighted fields.", 400, errors);
 
-  const test = isTestRequest(request) && session.is_test;
-  const recipients = test ? testRecipients() : undefined;
-  if (test && !recipients?.length) return fail("Test inbox is not set.", 503);
-  const subject = `${test || /^test/i.test(name.trim()) ? "[TEST] " : ""}New Design My Bathroom lead: ${name.trim()}, ${city.trim()}: ${style.name}`;
+  const test = isTestRequest(request) || isTeamTestLead(phone, email);
+  const subject = withTestSubject(
+    `New Design My Bathroom lead: ${name.trim()}, ${city.trim()}: ${style.name}`,
+    test || /^test/i.test(name.trim()),
+  );
 
   let leadId = session.lead_id;
   let emailSent = true;
   if (!leadId) {
     try {
-      const result = await saveLead(input, ip, { recipients, subject });
+      const result = await saveLead(input, ip, { subject, test });
       if (!result.ok) return fail(result.error, result.status);
       leadId = result.id;
       emailSent = result.emailSent;

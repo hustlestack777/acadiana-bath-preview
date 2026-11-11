@@ -50,6 +50,7 @@ export type LeadEmailContent = {
   consent?: boolean;
   consentAt?: Date | string | null;
   consentText?: string;
+  test?: boolean;
 };
 
 export type LeadEmailAttachment = {
@@ -113,6 +114,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
   const streetViewUrl = street ? openInMapsUrl(address, input.latitude, input.longitude) : "";
   const kicker = input.kind === "update" ? "Consult update" : "New consult";
   const given = firstName(name);
+  const test = Boolean(input.test);
 
   const rows = [
     home ? ["Home", home] : null,
@@ -155,6 +157,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
 
   const text = textBody({
     kicker,
+    test,
     name,
     town,
     when,
@@ -175,6 +178,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
 
   const html = htmlBody({
     kicker,
+    test,
     name,
     town,
     when,
@@ -206,6 +210,7 @@ function textBody(input: {
   when: string;
   phone: string;
   email: string;
+  test: boolean;
   street: string;
   locality: string;
   mapsUrl: string;
@@ -219,6 +224,7 @@ function textBody(input: {
   id: string;
 }) {
   const lines = [
+    input.test ? "TEST LEAD — sent to Shaun only, not to Justin." : "",
     input.kicker.toUpperCase(),
     input.name,
     [input.town, input.when].filter(Boolean).join(" · "),
@@ -272,6 +278,7 @@ function htmlBody(input: {
   phone: string;
   tel: string;
   email: string;
+  test: boolean;
   given: string;
   street: string;
   locality: string;
@@ -337,6 +344,11 @@ function htmlBody(input: {
           <p style="margin:0;font-family:${SERIF};font-size:16px;line-height:1.3;color:#e4d8b4;">${esc(subline)}</p>
         </td></tr>
         <tr><td style="padding:22px;">
+          ${
+            input.test
+              ? `<p style="margin:0 0 14px;font-family:${SANS};font-size:13px;line-height:1.4;color:#8c4030;font-weight:700;">TEST LEAD — sent to Shaun only, not to Justin.</p>`
+              : ""
+          }
           ${update}
           ${buttons}
           ${address}
