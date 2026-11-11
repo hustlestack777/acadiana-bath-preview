@@ -1,5 +1,5 @@
-import { brand, care, hero, solidPath } from "./copy";
-import { OUTSIDE_AREA, checkCity } from "./coverage";
+import { brand, care, hero } from "./copy";
+import { OUTSIDE_AREA, SERVICE_AREA, checkCity } from "./coverage";
 import { geoFaqs } from "./faq-page";
 import { designHref } from "./starting-looks";
 
@@ -26,6 +26,24 @@ export function greetingForPath(pathname: string, random = Math.random()) {
   return random < 0.15 ? GIGI_GREETING_RARE : GIGI_GREETING_LEAD;
 }
 
+/** How the work happens, in this order. Gigi uses this in process answers and as her system brief. */
+export const GIGI_PROCESS =
+  "Justin calls first to discuss your project. He then sets a time to take measurements and walk you through materials and design options. You choose what you like and get your exact price. Justin manages your project from design to the finished bathroom.";
+
+/** Rules Gigi follows for every reply, including free-typed questions. There is no live model prompt beyond this. */
+export const GIGI_SYSTEM_PROMPT = `You are Gigi, the assistant for Acadiana Bathrooms. Be professional, warm, and local — a trusted advisor, never corny.
+
+How the work happens, always in this order:
+${GIGI_PROCESS}
+
+Price framing: Starting at $5K only. Do not give other prices, timelines, or durations.
+
+Never say: free consult, in-home consult, consultation, comes to your home for, talk it through, handles everything, licensed, insured, deposits, or lifetime guarantee.
+
+If asked about a guarantee, say: "Justin stands behind his work. If anything comes up, he'll make it right."
+
+Justin is first name only. Out of area, say exactly: "Outside our area? Ask for a quote." For granite, only: "We do not install granite." Phone: (337) 522-0023. No street address.`;
+
 const answers = {
   disclosure:
     "Hey! I’m Gigi. I can give you a ballpark price, show you your bathroom redesigned, or get you a free quote from Justin, the owner. What sounds good?",
@@ -40,15 +58,19 @@ const answers = {
   windows: "I can help with windows on our windows page.",
   outside: OUTSIDE_AREA,
   locationRetry: "Tell me the town or ZIP, and I’ll take it from there.",
+  process: GIGI_PROCESS,
+  visit:
+    "Justin calls first to discuss your project. He then sets a time to take measurements and walk you through materials and design options. You choose what you like and get your exact price.",
+  afterSubmit:
+    "After you submit, Justin calls first to discuss your project. He then sets a time to take measurements and walk you through materials and design options. You choose what you like and get your exact price. Justin manages your project from design to the finished bathroom.",
   material: faqAnswer("What materials do you use?"),
   care: care.body,
-  warranty: solidPath.warranty,
-  area: faqAnswer("What areas do you serve?"),
-  quote: faqAnswer("How do I get a quote?"),
-  cost: faqAnswer("How much does a bathroom remodel cost in South Louisiana?"),
-  fit: `${hero.support} Tap Design My Bathroom to see your new bathroom before you spend a dime, and Justin will call you with your exact price.`,
-  timing:
-    "Every bathroom is different, so Justin covers that with you directly. He confirms measurements and scope, then you get a clear proposal with your exact price.",
+  warranty: "Justin stands behind his work. If anything comes up, he’ll make it right.",
+  area: `${SERVICE_AREA} ${OUTSIDE_AREA} ${GIGI_PROCESS}`,
+  quote: `Use Design My Bathroom, fill out the quote form, or call (337) 522-0023. You can also send a photo of your shower. ${GIGI_PROCESS}`,
+  cost: `Starting at $5K, with most projects $5K–$30K+. ${GIGI_PROCESS}`,
+  fit: `${hero.support} Tap Design My Bathroom to see your new bathroom before you spend a dime. ${GIGI_PROCESS}`,
+  timing: `Every bathroom is different. ${GIGI_PROCESS}`,
   proof:
     "The best way to see what Justin can do for your bathroom is a free quote. Want to start with a photo in Design My Bathroom?",
   compare:
@@ -236,6 +258,15 @@ function looksLikePlace(text: string) {
 function factReply(text: string) {
   if (asksAboutOtherBrands(text)) return answers.compare;
   if (asksAboutPhrase(text) || /natural stone|quarried|natural onyx/.test(text)) return answers.material;
+  if (/how (does|do) (it|this|the process|things) work|what(?:'s| is) the process|how does (?:a |the )?project (?:work|go)/.test(text)) {
+    return answers.process;
+  }
+  if (/come to (my |our )?(house|home)|come out|do you visit|do you come (out|by|over|to)/.test(text)) {
+    return answers.visit;
+  }
+  if (/after (i|you) (submit|send|fill)|what happens (next|after)|once i (submit|send|fill)|after the (quote )?form/.test(text)) {
+    return answers.afterSubmit;
+  }
   if (/clean|abrasive|maintenance|soap/.test(text)) return answers.care;
   if (asksAboutPledge(text) || /warrant|refund|labor|workmanship|product fail/.test(text)) {
     return answers.warranty;

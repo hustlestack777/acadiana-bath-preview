@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { CALL_DAY_CHIPS, CALL_TIME_CHIPS, CHAT_ANSWERS, GIGI_GREETING_DESIGN, GIGI_GREETING_LEAD, GIGI_GREETING_RARE, INTRO_CHIPS, LOOK_CHIPS, LOOK_IDS, PROJECT_CHIPS, estimateHrefForSession, greetingForPath, replyTo, respond, shouldShowGreeting } from "./chat";
+import { CALL_DAY_CHIPS, CALL_TIME_CHIPS, CHAT_ANSWERS, GIGI_GREETING_DESIGN, GIGI_GREETING_LEAD, GIGI_GREETING_RARE, GIGI_PROCESS, GIGI_SYSTEM_PROMPT, INTRO_CHIPS, LOOK_CHIPS, LOOK_IDS, PROJECT_CHIPS, estimateHrefForSession, greetingForPath, replyTo, respond, shouldShowGreeting } from "./chat";
 import { checkCity } from "./coverage";
 import { validateDetails, validateExtras, validateStreet, validateZip } from "./estimate";
 import { leadNotifyRecipients, validateLead } from "./leads";
@@ -152,7 +152,7 @@ test("assistant answers stay inside the published facts", () => {
   ];
   const outputs = [...probes.map((probe) => replyTo(probe)), ...Object.values(CHAT_ANSWERS)];
   for (const output of outputs) {
-    const withoutCardPhrase = output.replaceAll("Lifetime Guarantee", "");
+    const withoutCardPhrase = output.replaceAll("Justin stands behind his work", "").replaceAll("Lifetime Guarantee", "");
     assert.equal(withoutCardPhrase.toLowerCase().includes(pledge), false, output);
     assert.equal(output.toLowerCase().includes(quarriedPhrase), false, output);
     assert.equal(/bath fitter|re-bath|rebath/i.test(output), false, output);
@@ -284,4 +284,36 @@ test("Gigi answers do not promise an in-home consult", () => {
   for (const text of samples) {
     assert.equal(/comes to your home|in-home consult|in home consult/i.test(text), false, text);
   }
+});
+
+test("Gigi explains the process the same way for free-typed questions", () => {
+  const how = replyTo("how does it work?");
+  const house = replyTo("do you come to my house?");
+  const after = replyTo("what happens after I submit?");
+  assert.equal(how, GIGI_PROCESS);
+  assert.match(how, /Justin calls first to discuss your project/);
+  assert.match(how, /sets a time to take measurements and walk you through materials and design options/);
+  assert.match(how, /You choose what you like and get your exact price/);
+  assert.match(how, /Justin manages your project from design to the finished bathroom/);
+  assert.match(house, /Justin calls first to discuss your project/);
+  assert.match(house, /sets a time to take measurements and walk you through materials and design options/);
+  assert.match(house, /You choose what you like and get your exact price/);
+  assert.equal(/comes to your home for|in-home consult|free consult/i.test(house), false);
+  assert.match(after, /After you submit/);
+  assert.match(after, /Justin calls first to discuss your project/);
+  assert.match(after, /sets a time to take measurements and walk you through materials and design options/);
+  assert.match(after, /You choose what you like and get your exact price/);
+  assert.match(after, /Justin manages your project from design to the finished bathroom/);
+  assert.match(GIGI_SYSTEM_PROMPT, /Justin calls first to discuss your project/);
+  assert.match(GIGI_SYSTEM_PROMPT, /trusted advisor/);
+});
+
+test("Gigi's spoken answers avoid banned consult and claim wording", () => {
+  const banned = /free consult|in-home consult|consultation|comes to your home for|talk it through|talk through|handles everything|lifetime guarantee|licensed|insured|\bdeposits?\b/i;
+  const spoken = [...Object.values(CHAT_ANSWERS), ...["how does it work?", "do you come to my house?", "what happens after I submit?", "How do I get a quote?", "Where do you work?", "how much", "what is your guarantee"].map((q) => replyTo(q))];
+  for (const text of spoken) {
+    assert.equal(banned.test(text), false, text);
+  }
+  assert.equal(replyTo("What is the product warranty?"), CHAT_ANSWERS.warranty);
+  assert.match(CHAT_ANSWERS.warranty, /Justin stands behind his work/);
 });
