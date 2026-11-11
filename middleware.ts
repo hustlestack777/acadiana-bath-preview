@@ -19,6 +19,10 @@ export function middleware(request: NextRequest) {
     });
   }
   const response = NextResponse.next();
+  if (request.nextUrl.pathname === "/justin.vcf") {
+    response.headers.set("Content-Type", "text/vcard; charset=utf-8");
+    response.headers.set("Content-Disposition", 'inline; filename="justin-acadiana-bathrooms.vcf"');
+  }
   if (!indexable) {
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
   }

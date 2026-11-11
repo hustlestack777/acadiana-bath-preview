@@ -15,7 +15,7 @@ import {
 } from "./lead-display";
 import { mapsDirectionsUrl, mapsSearchUrl, openInMapsUrl } from "./street-view";
 import { campaignLine, leadSourceLabel, sourceLine } from "./lead-attribution";
-import { buildCallInvite, callWindowLabel } from "./call-window";
+import { buildCallInvite, callbackWindow, callWindowLabel } from "./call-window";
 import { finishes } from "./copy";
 import { FLOOD_ZONE_LABEL, type HouseFacts } from "./house-facts";
 import {
@@ -40,6 +40,7 @@ export type LeadEmailContent = {
   kind: "new" | "update";
   id: string;
   createdAt: Date;
+  now?: Date;
   name: string;
   phone: string;
   email: string;
@@ -148,7 +149,9 @@ export function buildLeadEmail(input: LeadEmailContent) {
   const name = input.name.trim();
   const town = input.city.trim();
   const when = formatChicago(input.createdAt);
-  const subject = leadSubject(name, town, input.kind);
+  const now = input.now ?? input.createdAt;
+  const callback = callbackWindow(input.preferredCallDay || "", input.preferredCallTime.trim(), now);
+  const subject = leadSubject(name, town, input.kind, callback?.compact);
   const phone = formatPhone(input.phone);
   const tel = phoneTel(input.phone);
   const email = input.email.trim();
@@ -216,6 +219,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
     email: input.email,
     day: input.preferredCallDay || "",
     time: input.preferredCallTime,
+    now,
   });
   if (invite) {
     attachments.push({
@@ -233,6 +237,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
     const lines: string[] = [];
     if (test) lines.push(TEST_LINE, "");
     lines.push(`${kicker.toUpperCase()} · ${when}`, name || "New lead");
+    if (callback) lines.push(`Justin will call ${callback.phrase}.`);
     if (input.kind === "update") lines.push(updateSentence(input.newPhotoCount ?? 0));
     lines.push("");
     if (phone) lines.push(`Call now: ${phone}`);
@@ -380,7 +385,12 @@ export function buildLeadEmail(input: LeadEmailContent) {
     `Internal lead email only — not sent to the homeowner. Lead ${esc(input.id.slice(0, 8))}.`,
   ].filter(Boolean);
 
+  const callbackLine = callback
+    ? `<p style="margin:0 0 16px;font-family:${EMAIL.font};font-size:18px;line-height:1.45;color:${EMAIL.ink};"><strong>Justin will call ${esc(callback.phrase)}.</strong></p>`
+    : "";
+
   const body = `${update}
+    ${callbackLine}
     ${sectionTitle(photoTitle).replace("margin:26px 0 10px", "margin:4px 0 10px")}
     ${styleLine}
     ${customLine}

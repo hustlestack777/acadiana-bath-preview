@@ -141,7 +141,7 @@ export const lead = {
   subhead:
     "Tell us about your project and the best day and time to reach you. Justin, the owner, will call to discuss your project, then set a time to take measurements, walk you through your design options and give you your exact price on the spot.",
   submit: "Get My Free Quote",
-  thanks: "You're on Justin's list. He'll call around the time you picked to discuss your project.",
+  thanks: "You're all set. Justin, the owner, will call you in the one-hour window you picked to discuss your project. Save his number so you know it's him calling: (337) 522-0023.",
   savedNote: "Nothing to pay today.",
   savedTitle: "Got it!",
   photosTitle: "Their photos",

@@ -270,3 +270,15 @@ test("design picks, talking points, and related looks show clearly in Justin's l
   assert.match(email.html, /marble-lined niche/);
   assert.doesNotMatch(email.text, /AI design|granite|licensed|insured|deposit|about a minute/i);
 });
+
+test("the lead email puts the one-hour callback window in the subject and the top line", () => {
+  const email = sample({
+    preferredCallDay: "weekday",
+    preferredCallTime: "morning",
+  });
+  // sample createdAt is Mon Nov 9, 2026 5:14 PM CT, so weekday morning is Tue Nov 10, 9–10 AM CT
+  assert.match(email.subject, /New quote · Jane Comeaux · Lafayette · Tuesday, Nov 10, 9–10 AM CT/);
+  assert.match(email.text, /Justin will call Tuesday, Nov 10 between 9 AM and 10 AM CT\./);
+  assert.match(email.html, /Justin will call Tuesday, Nov 10 between 9 AM and 10 AM CT\./);
+  assert.equal(email.attachments.some((item) => item.filename === "justin-callback.ics"), true);
+});

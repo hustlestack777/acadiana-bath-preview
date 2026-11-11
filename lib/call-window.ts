@@ -129,6 +129,106 @@ function icsEscape(value: string) {
   return value.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
 }
 
+
+export type CallbackWindow = {
+  start: Date;
+  end: Date;
+  /** e.g. "Thursday, Nov 12" */
+  dayLabel: string;
+  /** e.g. "9 AM" */
+  startLabel: string;
+  /** e.g. "10 AM" */
+  endLabel: string;
+  /** e.g. "9–10 AM CT" */
+  compactRange: string;
+  /** e.g. "Thursday, Nov 12, 9–10 AM CT" */
+  compact: string;
+  /** e.g. "Thursday, Nov 12 between 9 AM and 10 AM CT" */
+  phrase: string;
+};
+
+function chicagoFormatParts(date: Date, options: Intl.DateTimeFormatOptions) {
+  return new Intl.DateTimeFormat("en-US", { timeZone: CHICAGO_TZ, ...options }).formatToParts(date);
+}
+
+export function formatCallbackDay(date: Date) {
+  const parts = chicagoFormatParts(date, { weekday: "long", month: "short", day: "numeric" });
+  const weekday = parts.find((part) => part.type === "weekday")?.value ?? "";
+  const month = parts.find((part) => part.type === "month")?.value ?? "";
+  const day = parts.find((part) => part.type === "day")?.value ?? "";
+  return `${weekday}, ${month} ${day}`;
+}
+
+export function formatCallbackHour(date: Date) {
+  const parts = chicagoFormatParts(date, { hour: "numeric", minute: "2-digit", hour12: true });
+  const hour = parts.find((part) => part.type === "hour")?.value ?? "";
+  const minute = parts.find((part) => part.type === "minute")?.value ?? "00";
+  const period = (parts.find((part) => part.type === "dayPeriod")?.value ?? "")
+    .replace(/\./g, "")
+    .replace(/\u202f/g, " ")
+    .trim()
+    .toUpperCase();
+  if (minute === "00") return `${hour} ${period}`;
+  return `${hour}:${minute} ${period}`;
+}
+
+export function callbackWindow(day: string, time: string, now = new Date()): CallbackWindow | null {
+  if (!isCallDayId(day) || !isCallTimeId(time)) return null;
+  const start = nextCallSlot(day, time, now);
+  const end = new Date(start.getTime() + 60 * 60 * 1000);
+  const dayLabel = formatCallbackDay(start);
+  const startLabel = formatCallbackHour(start);
+  const endLabel = formatCallbackHour(end);
+  const startHour = startLabel.replace(/\s+(AM|PM)$/i, "");
+  const startPeriod = (startLabel.match(/\s+(AM|PM)$/i) || [""])[0].trim();
+  const endHour = endLabel.replace(/\s+(AM|PM)$/i, "");
+  const endPeriod = (endLabel.match(/\s+(AM|PM)$/i) || [""])[0].trim();
+  const compactRange =
+    startPeriod && startPeriod === endPeriod ? `${startHour}–${endHour} ${endPeriod} CT` : `${startLabel}–${endLabel} CT`;
+  return {
+    start,
+    end,
+    dayLabel,
+    startLabel,
+    endLabel,
+    compactRange,
+    compact: `${dayLabel}, ${compactRange}`,
+    phrase: `${dayLabel} between ${startLabel} and ${endLabel} CT`,
+  };
+}
+
+export function callbackThanksText(name: string, day: string, time: string, now = new Date()) {
+  const first = name.trim().split(/\s+/)[0] || "there";
+  const window = callbackWindow(day, time, now);
+  if (!window) {
+    return {
+      first,
+      window: null,
+      heading: `You're all set, ${first}.`,
+      body: "Justin, the owner, will call you to discuss your project. Save his number so you know it's him calling: (337) 522-0023.",
+      after: "Need to change the time? Call or text Justin at that number.",
+    };
+  }
+  return {
+    first,
+    window,
+    heading: `You're all set, ${first}.`,
+    body: `Justin, the owner, will call you ${window.dayLabel} between ${window.startLabel} and ${window.endLabel} CT to discuss your project. Save his number so you know it's him calling: (337) 522-0023.`,
+    after: "Need to change the time? Call or text Justin at that number.",
+  };
+}
+
+export function callbackThanksPlain(name: string, day: string, time: string, now = new Date()) {
+  const parts = callbackThanksText(name, day, time, now);
+  return `${parts.heading} ${parts.body} ${parts.after}`;
+}
+
+export function customerCallbackSubject(day: string, time: string, now = new Date()) {
+  const window = callbackWindow(day, time, now);
+  if (!window) return "Justin will call you to discuss your project";
+  return `Justin will call you ${window.dayLabel} between ${window.startLabel} and ${window.endLabel} CT`;
+}
+
 export function buildCallInvite(input: {
   name: string;
   phone?: string;
@@ -140,7 +240,7 @@ export function buildCallInvite(input: {
 }): { start: Date; end: Date; filename: string; content: string; contentType: "text/calendar" } | null {
   if (!isCallDayId(input.day) || !isCallTimeId(input.time)) return null;
   const start = nextCallSlot(input.day, input.time, input.now);
-  const end = new Date(start.getTime() + 30 * 60 * 1000);
+  const end = new Date(start.getTime() + 60 * 60 * 1000);
   const who = input.name.trim() || "new lead";
   const window = callWindowLabel(input.day, input.time);
   const title = input.test ? `TEST – Call ${who} — Acadiana Bathrooms` : `Call ${who} — Acadiana Bathrooms`;

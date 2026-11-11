@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AddressAutocomplete, type AddressSelection } from "@/components/address-autocomplete";
 import { CallWindowFields } from "@/components/call-window-fields";
-import { SaveJustinContact } from "@/components/save-justin-contact";
+import { CallbackConfirmation } from "@/components/callback-confirmation";
 import { appendAttribution } from "@/components/lead-attribution";
 import { brand } from "@/lib/copy";
 import { cn } from "cn";
@@ -728,16 +728,17 @@ export function WindowsTool() {
 
       {step === "thanks" ? (
         <section data-testid="windows-thanks">
-          <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Justin will call you</h1>
-          <p className="mt-4 text-lg leading-8">
-            Thanks. Justin has your request and will call you to discuss your windows project and set a time to take measurements. He
-            gives you the final price.
-          </p>
-          {estimate ? <p className="mt-4 text-base leading-7">{estimateHeadline(estimate)}</p> : null}
-          <p className="mt-4 text-base leading-7 text-foreground">
-            This is a ballpark range, not a quote. Justin gives you the final price after he measures.
-          </p>
-          <SaveJustinContact className="mt-8" buttonClassName={`${primaryBtn}`} />
+          <CallbackConfirmation
+            name={name}
+            day={preferredCallDay}
+            time={preferredCallTime}
+            buttonClassName={primaryBtn}
+          >
+            {estimate ? <p className="text-base leading-7">{estimateHeadline(estimate)}</p> : null}
+            <p className="text-base leading-7 text-foreground">
+              This is a ballpark range, not a quote. Justin gives you the final price after he measures.
+            </p>
+          </CallbackConfirmation>
         </section>
       ) : null}
     </div>

@@ -3,16 +3,15 @@ import {
   choiceLabel,
   firstName,
   formatEmailSize,
-  formatPhone,
   localityLine,
   projectLabels,
   timingLabel,
 } from "./lead-display";
 import { withTestSubject } from "./lead-notify";
 import { parseFeatures, type LeadEmailAttachment, type LeadEmailPhoto } from "./lead-email";
-import { EMAIL, esc, eyebrow, panel, para, pillButton, rowsTable, sectionTitle, shell, testBanner, type Row } from "./email-layout";
-import { callWindowLabel } from "./call-window";
-import { SITE_URL } from "./site";
+import { EMAIL, esc, panel, para, pillButton, rowsTable, sectionTitle, shell, testBanner, type Row } from "./email-layout";
+import { callWindowLabel, customerCallbackSubject } from "./call-window";
+import { justinVcfAttachment } from "./justin-vcf";
 
 /** What the customer told us, shown back to them so they have it saved. */
 export type CustomerRecap = {
@@ -32,6 +31,9 @@ export type CustomerConfirmationInput = {
   sourcePage: string;
   photos?: LeadEmailPhoto[];
   recap?: CustomerRecap;
+  preferredCallDay?: string;
+  preferredCallTime?: string;
+  now?: Date;
   test?: boolean;
 };
 
@@ -81,21 +83,23 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
   const isDesign = input.sourcePage === "/design";
   const isWindows = input.sourcePage === "/windows";
   const test = Boolean(input.test);
+  const now = input.now ?? new Date();
   const subject = withTestSubject(
-    isDesign ? "We got your bathroom design" : isWindows ? "We got your window quote request" : "We got your request",
+    customerCallbackSubject(input.preferredCallDay || "", input.preferredCallTime || "", now),
     test,
   );
 
-  const formatted = input.phone ? formatPhone(input.phone) : "";
-  const callAt = formatted.startsWith("(") ? ` at ${formatted}` : "";
-  const telAt = formatted.startsWith("(") ? formatted : "";
-  const opener = isDesign
-    ? "Thanks for sending your photo. Here’s the look you picked, next to your bathroom."
-    : isWindows
-      ? "Thanks for requesting a window quote. Here’s your ballpark and what you told us, so you have it saved."
-      : "Thanks for reaching out about your bathroom. Here’s a recap of what you sent, so you have it saved.";
-  const next = "You're on Justin's list. He'll call around the time you picked to discuss your project.";
-  const nextText = next;
+  const windowSubject = customerCallbackSubject(input.preferredCallDay || "", input.preferredCallTime || "", now);
+  const dayBit = windowSubject.replace(/^Justin will call you /, "");
+  const hasWindow = Boolean(input.preferredCallDay && input.preferredCallTime);
+  const vcfUrl = "https://abclafayette.com/justin.vcf";
+
+  const thanks = hasWindow
+    ? `Thanks for reaching out to Acadiana Bathrooms. Justin, the owner, will call you ${dayBit} to discuss your project. Save his number so you'll know it's him: (337) 522-0023. You can call or text him there anytime.`
+    : "Thanks for reaching out to Acadiana Bathrooms. Justin, the owner, will call you to discuss your project. Save his number so you'll know it's him: (337) 522-0023. You can call or text him there anytime.";
+  const nextSteps =
+    "What happens next: Justin calls to discuss your project. Then he sets a time to take measurements, walk you through materials and design options, and give you your exact price at that visit.";
+  const signoff = "Talk soon,\nAcadiana Bathrooms · abclafayette.com";
 
   const before = isDesign ? input.photos?.[0] : undefined;
   const after = isDesign ? input.photos?.[1] : undefined;
@@ -116,11 +120,11 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
       contentId: "design-after",
     });
   }
+  attachments.push(justinVcfAttachment());
 
   const recap = input.recap;
   const style = recap?.style?.trim() || "";
   const recapRows = recap?.rows.filter((row) => (row.htmlValue ?? row.value ?? "").trim()) ?? [];
-  const windowsLink = `${SITE_URL}/windows`;
 
   // ---------- plain text ----------
   const textLines = [
@@ -128,21 +132,27 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
     test ? "" : null,
     `Hi ${given},`,
     "",
-    opener,
+    thanks,
     "",
+    `Save Justin's Contact: ${vcfUrl}`,
+    "",
+    nextSteps,
+    "",
+    "Talk soon,",
+    "Acadiana Bathrooms · abclafayette.com",
   ].filter((line): line is string => line !== null);
-  if (isDesign && style) textLines.push(`The look you picked: ${style}`);
-  if (isDesign && after) textLines.push("Your bathroom and the design preview are attached.", DESIGN_FINE_PRINT, "");
-  if (recap?.headline) textLines.push(recap.headline);
-  if (recap?.note) textLines.push(recap.note);
-  if (recap?.headline || recap?.note) textLines.push("");
-  if (recapRows.length) {
-    textLines.push("WHAT YOU SENT US");
-    for (const row of recapRows) textLines.push(`${row.label}: ${(row.value ?? "").replace(/\n/g, "; ")}`);
-    textLines.push("");
+  if (isDesign && style) {
+    textLines.push("", `The look you picked: ${style}`);
   }
-  textLines.push(nextText, "", `Questions before then? Call us at ${brand.phone}.`, "", "Thanks,", "Justin", brand.name, brand.phone);
-  if (!isWindows) textLines.push("", `Need windows too? Get a window quote: ${windowsLink}`);
+  if (isDesign && after) {
+    textLines.push("Your bathroom and the design preview are attached.", DESIGN_FINE_PRINT);
+  }
+  if (recap?.headline) textLines.push("", recap.headline);
+  if (recap?.note) textLines.push(recap.note);
+  if (recapRows.length) {
+    textLines.push("", "WHAT YOU SENT US");
+    for (const row of recapRows) textLines.push(`${row.label}: ${(row.value ?? "").replace(/\n/g, "; ")}`);
+  }
   const text = textLines.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
 
   // ---------- HTML ----------
@@ -177,36 +187,26 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
     : "";
   const recapHtml =
     headlineHtml || recapRows.length
-      ? `${sectionTitle(isWindows ? "Your window ballpark" : "What you sent us").replace("margin:26px 0 10px", "margin:6px 0 10px")}
+      ? `${sectionTitle(isWindows ? "Your window ballpark" : "What you sent us").replace("margin:26px 0 10px", "margin:18px 0 10px")}
          ${panel(`${headlineHtml}${headlineHtml && recapRows.length ? `<div style="height:6px;line-height:6px;font-size:1px;">&nbsp;</div>` : ""}${rowsTable(recapRows, { labelWidth: 120 })}`, { padding: headlineHtml ? "8px 18px 6px" : "4px 18px" })}`
       : "";
 
-  const body = `${eyebrow(isDesign ? "Your design" : isWindows ? "Window quote request" : "Request received", EMAIL.green)}
-    <p style="margin:0 0 14px;font-family:${EMAIL.serif};font-size:26px;line-height:1.2;color:${EMAIL.ink};">Hi ${esc(given)},</p>
-    ${para(esc(opener))}
+  const thanksHtml = thanks
+    .replace("(337) 522-0023", '<a href="tel:+13375220023" style="color:' + EMAIL.green + ';text-decoration:none;font-weight:700;white-space:nowrap;">(337) 522-0023</a>');
+
+  const body = `<p style="margin:0 0 14px;font-family:${EMAIL.serif};font-size:26px;line-height:1.2;color:${EMAIL.ink};">Hi ${esc(given)},</p>
+    ${para(thanksHtml)}
+    <p style="margin:6px 0 22px;">${pillButton(vcfUrl, "Save Justin's Contact")}</p>
+    ${para(esc(nextSteps))}
+    <p style="margin:0 0 22px;font-family:${EMAIL.font};font-size:16px;line-height:1.55;color:${EMAIL.ink};">Talk soon,<br />Acadiana Bathrooms · <a href="https://abclafayette.com" style="color:${EMAIL.green};text-decoration:none;">abclafayette.com</a></p>
     ${designHtml}
-    ${recapHtml}
-    ${para(esc(next).replace(esc(telAt), telAt ? `<span style="white-space:nowrap;">${esc(telAt)}</span>` : ""))}
-    ${para(`Questions before then? We’re one tap away.`)}
-    <p style="margin:6px 0 22px;">${pillButton(brand.phoneHref, `Call ${brand.phone}`)}</p>
-    <p style="margin:0 0 2px;font-family:${EMAIL.font};font-size:16px;line-height:1.55;color:${EMAIL.ink};">Thanks,</p>
-    <p style="margin:0 0 22px;font-family:${EMAIL.font};font-size:16px;line-height:1.55;color:${EMAIL.ink};">Justin<br /><span style="color:${EMAIL.muted};">${esc(brand.name)}</span><br /><a href="${esc(brand.phoneHref)}" style="color:${EMAIL.green};text-decoration:none;font-weight:600;">${esc(brand.phone)}</a></p>`;
+    ${recapHtml}`;
 
-  const footer = [
-    isWindows
-      ? ""
-      : `Need windows too? <a href="${esc(windowsLink)}" style="color:${EMAIL.green};text-decoration:underline;">Get a window quote.</a>`,
-    `You’re getting this because you asked ${esc(brand.name)} for a quote. Just reply if you have a question.`,
-    `${esc(brand.name)} · Serving Acadiana`,
-  ]
-    .filter(Boolean)
-    .join("<br />");
+  const footer = `You're getting this because you asked ${esc(brand.name)} for a quote. Just reply if you have a question.<br />${esc(brand.name)} · Serving Acadiana`;
 
-  const preheader = recap?.headline
-    ? `${recap.headline}. Justin will call you soon.`
-    : isDesign
-      ? "Here’s your design preview. Justin will call you soon."
-      : "Here’s a recap of your request. Justin will call you soon.";
+  const preheader = hasWindow
+    ? windowSubject
+    : "Justin, the owner, will call you to discuss your project.";
 
   const html = shell({
     title: subject,

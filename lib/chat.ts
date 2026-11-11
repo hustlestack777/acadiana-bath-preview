@@ -1,3 +1,4 @@
+import { callbackWindow } from "./call-window";
 import { brand, care, hero } from "./copy";
 import { OUTSIDE_AREA, checkCity } from "./coverage";
 import { geoFaqs } from "./faq-page";
@@ -403,7 +404,11 @@ function askCallDay(session: GigiSession, callTime: NonNullable<GigiSession["cal
 
 function finishHandoff(session: GigiSession, callDay: NonNullable<GigiSession["callDay"]>): GigiResponse {
   const next = { ...session, phase: "offer" as const, callDay };
-  return { text: answers.handoff, chips: handoffChips(next), session: next };
+  const window = callbackWindow(callDay, session.callTime || "");
+  const text = window
+    ? `Thanks. Here's the quote form. After you submit, Justin, the owner, will call you ${window.phrase} to discuss your project. Save his number so you know it's him calling: (337) 522-0023.`
+    : answers.handoff;
+  return { text, chips: handoffChips(next), session: next };
 }
 
 function windowsReply(session: GigiSession): GigiResponse {

@@ -2,8 +2,11 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   buildCallInvite,
+  callbackThanksPlain,
+  callbackWindow,
   callWindowLabel,
   chicagoCivilToDate,
+  customerCallbackSubject,
   nextCallSlot,
 } from "./call-window";
 
@@ -55,6 +58,39 @@ test("the invite is a Chicago-timed .ics for the computed slot", () => {
   assert.equal(invite.contentType, "text/calendar");
   assert.match(invite.content, /BEGIN:VCALENDAR/);
   assert.match(invite.content, /DTSTART:20261111T150000Z/); // 9 AM CST
+  assert.match(invite.content, /DTEND:20261111T160000Z/); // 10 AM CST
   assert.match(invite.content, /SUMMARY:Call TEST Ada Quail/);
   assert.equal(callWindowLabel("weekday", "morning"), "Weekday · Morning (9 AM CT)");
+});
+
+test("the one-hour callback window is formatted for the thank-you and emails", () => {
+  const wednesdayMorning = chicagoCivilToDate(2026, 11, 11, 7, 0);
+  const morning = callbackWindow("weekday", "morning", wednesdayMorning);
+  assert.ok(morning);
+  assert.equal(morning.dayLabel, "Wednesday, Nov 11");
+  assert.equal(morning.startLabel, "9 AM");
+  assert.equal(morning.endLabel, "10 AM");
+  assert.equal(morning.compact, "Wednesday, Nov 11, 9–10 AM CT");
+  assert.equal(morning.phrase, "Wednesday, Nov 11 between 9 AM and 10 AM CT");
+  assert.equal(
+    customerCallbackSubject("weekday", "morning", wednesdayMorning),
+    "Justin will call you Wednesday, Nov 11 between 9 AM and 10 AM CT",
+  );
+  assert.match(
+    callbackThanksPlain("Adam Bomb", "weekday", "morning", wednesdayMorning),
+    /You're all set, Adam\. Justin, the owner, will call you Wednesday, Nov 11 between 9 AM and 10 AM CT to discuss your project\. Save his number so you know it's him calling: \(337\) 522-0023\. Need to change the time\? Call or text Justin at that number\./,
+  );
+
+  const afterTwo = chicagoCivilToDate(2026, 11, 11, 15, 0);
+  const afternoon = callbackWindow("weekday", "afternoon", afterTwo);
+  assert.ok(afternoon);
+  assert.equal(afternoon.dayLabel, "Thursday, Nov 12");
+  assert.equal(afternoon.compactRange, "2–3 PM CT");
+
+  const friday = chicagoCivilToDate(2026, 11, 13, 7, 0);
+  const evening = callbackWindow("any", "evening", friday);
+  assert.ok(evening);
+  assert.equal(evening.dayLabel, "Saturday, Nov 14");
+  assert.equal(evening.startLabel, "6 PM");
+  assert.equal(evening.endLabel, "7 PM");
 });

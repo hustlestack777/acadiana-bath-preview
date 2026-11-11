@@ -6,7 +6,7 @@ import { consentLabel } from "@/lib/copy";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { appendAttribution } from "@/components/lead-attribution";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
-import { SaveJustinContact } from "@/components/save-justin-contact";
+import { CallbackConfirmation } from "@/components/callback-confirmation";
 import { designCopy } from "@/lib/design-styles";
 import {
   designFinishes,
@@ -516,9 +516,17 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
 
       {step === "custom-done" ? (
         <section aria-labelledby="design-custom-done" data-testid="design-custom-done">
-          <h2 id="design-custom-done" tabIndex={-1} data-step-heading className="font-heading text-3xl">Justin will call you</h2>
-          <p className="mt-3 text-base leading-7 text-muted-foreground">{designCopy.customThanks(lookName)}</p>
-          <SaveJustinContact className="mt-6" buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground" />
+          <CallbackConfirmation
+            name={form.name}
+            day={form.preferredCallDay}
+            time={form.preferredCallTime}
+            as="h2"
+            headingId="design-custom-done"
+            headingClassName="font-heading text-3xl outline-none"
+            buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground"
+          >
+            <p className="text-base leading-7 text-muted-foreground">He'll also put together a custom design for the {lookName} look you picked.</p>
+          </CallbackConfirmation>
           <WindowsQuoteLine className="mt-4 text-muted-foreground" />
           {related.length ? <RelatedLooks items={related} /> : null}
         </section>
@@ -535,8 +543,13 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
             <img src={reveal.after} alt="Your bathroom, redesigned" className="rounded-2xl" />
           </div>
           <div className="mt-6 rounded-[1.4rem] border border-border bg-card p-5" data-testid="design-quote">
-            <h3 className="font-heading text-2xl">Justin will call you</h3>
-            <p className="mt-2 text-base leading-7 text-muted-foreground">You're on Justin's list. He'll call around the time you picked to discuss your project.</p>
+            <CallbackConfirmation
+              name={form.name}
+              day={form.preferredCallDay}
+              time={form.preferredCallTime}
+              as="h3"
+              headingClassName="font-heading text-2xl outline-none"
+            />
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <a href={reveal.after} download="acadiana-bathroom-design.jpg" className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground">
                 Download
@@ -545,7 +558,6 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
                 Try your other free look
               </button>
             </div>
-            <SaveJustinContact className="mt-5" />
           </div>
           {related.length ? <RelatedLooks items={related} /> : null}
           <WindowsQuoteLine className="mt-4 text-muted-foreground" />

@@ -126,12 +126,13 @@ export function isTestLead(name: string) {
   return name.trim().toUpperCase().startsWith("TEST");
 }
 
-export function leadSubject(name: string, town: string, kind: "new" | "update") {
+export function leadSubject(name: string, town: string, kind: "new" | "update", window?: string) {
   const who = name.trim() || "New lead";
   const where = town.trim();
+  const slot = (window || "").trim();
   const core =
     kind === "update"
-      ? `Quote update \u00b7 ${who}${where ? ` \u00b7 ${where}` : ""}`
-      : `New quote \u00b7 ${who}${where ? ` \u00b7 ${where}` : ""}`;
+      ? `Quote update \u00b7 ${who}${where ? ` \u00b7 ${where}` : ""}${slot ? ` \u00b7 ${slot}` : ""}`
+      : `New quote \u00b7 ${who}${where ? ` \u00b7 ${where}` : ""}${slot ? ` \u00b7 ${slot}` : ""}`;
   return isTestLead(name) ? `${TEST_PREFIX}${core}` : core;
 }

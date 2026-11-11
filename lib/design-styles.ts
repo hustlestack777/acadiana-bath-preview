@@ -222,7 +222,7 @@ export const designCopy = {
   customBody: (look: string) =>
     `Your bathroom deserves a closer look than our quick preview can give. Tell us where to send it, and Justin will design the ${look} look for your space himself.`,
   customThanks: (look: string) =>
-    `You're on Justin's list. He'll call around the time you picked to discuss your project. He'll also put together a custom design for the ${look} look you picked.`,
+    `You're all set. Justin, the owner, will call you in the one-hour window you picked to discuss your project. He'll also put together a custom design for the ${look} look you picked.`,
   smsConsent:
     "Yes, Acadiana Bathrooms and Countertops may call or text me about my project at the number above, including automated texts. Consent isn't a condition of purchase. Msg & data rates may apply. Reply STOP to opt out.",
   privacy:

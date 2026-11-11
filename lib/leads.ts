@@ -630,6 +630,8 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
       phone: input.phone,
       sourcePage: input.sourcePage,
       photos: input.photos,
+      preferredCallDay: input.preferredCallDay || "",
+      preferredCallTime: input.preferredCallTime,
       recap:
         options.customerRecap ??
         recapFromLead({

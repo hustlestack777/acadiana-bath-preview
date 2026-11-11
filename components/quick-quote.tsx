@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { MAIN_TOWNS, checkCity } from "@/lib/coverage";
-import { brand, consentLabel, homeowners, pathProjects, payments, timings } from "@/lib/copy";
+import { consentLabel, homeowners, pathProjects, payments, timings } from "@/lib/copy";
 import { budgetOptions, budgetQuestion, budgetTag } from "@/lib/budget";
 import { validateDetails, validateStreet } from "@/lib/estimate";
 import { GROUT_COLORS, GROUT_PICK_EVENT, groutLabel } from "@/lib/grout";
@@ -10,6 +10,7 @@ import { cn } from "cn";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { CallWindowFields } from "@/components/call-window-fields";
 import { appendAttribution } from "@/components/lead-attribution";
+import { CallbackConfirmation } from "@/components/callback-confirmation";
 
 type Path = "solid" | "tile";
 
@@ -163,18 +164,16 @@ export function QuickQuote({ path }: { path: Path }) {
 
   if (status === "done") {
     return (
-      <div className="rounded-[1.6rem] border border-border bg-card p-7 text-center" role="status">
-        <h3 id={`${path}-done`} tabIndex={-1} className="text-3xl">
-          Thanks. Justin has your request.
-        </h3>
-        <p className="mt-3 leading-7 text-muted-foreground">
-          He'll call around the time you picked to discuss your project. Nothing to pay today.
-        </p>
-        <p className="mt-4">
-          <a className="font-medium underline underline-offset-4" href={brand.phoneHref}>
-            {brand.phone}
-          </a>
-        </p>
+      <div className="rounded-[1.6rem] border border-border bg-card p-7 text-left" role="status">
+        <CallbackConfirmation
+          name={form.name}
+          day={form.preferredCallDay}
+          time={form.preferredCallTime}
+          as="h3"
+          headingId={`${path}-done`}
+          headingClassName="text-3xl outline-none"
+          buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground"
+        />
       </div>
     );
   }

@@ -75,13 +75,28 @@ test("test subjects get a single [TEST] prefix", () => {
 });
 
 test("the customer confirmation is short, signed, and has no banned claims", () => {
-  const email = buildCustomerConfirmation({ name: "Adam Bomb", sourcePage: "/estimate", test: true });
-  assert.equal(email.subject, "TEST – We got your request");
-  assert.match(email.text, /Hi Adam/);
-  assert.match(email.text, /You're on Justin's list/);
-  assert.match(email.text, /Acadiana Bathrooms and Countertops/);
-  assert.match(email.text, /\(337\) 522-0023/);
+  const now = new Date("2026-11-11T13:00:00Z"); // 7 AM CT Wednesday
+  const email = buildCustomerConfirmation({
+    name: "Adam Bomb",
+    sourcePage: "/estimate",
+    preferredCallDay: "weekday",
+    preferredCallTime: "morning",
+    now,
+    test: true,
+  });
+  assert.equal(email.subject, "TEST – Justin will call you Wednesday, Nov 11 between 9 AM and 10 AM CT");
+  assert.match(email.text, /Hi Adam,/);
+  assert.match(email.text, /Thanks for reaching out to Acadiana Bathrooms\./);
+  assert.match(email.text, /Justin, the owner, will call you Wednesday, Nov 11 between 9 AM and 10 AM CT to discuss your project\./);
+  assert.match(email.text, /Save his number so you'll know it's him: \(337\) 522-0023\./);
+  assert.match(email.text, /You can call or text him there anytime\./);
+  assert.match(email.text, /Save Justin's Contact: https:\/\/abclafayette\.com\/justin\.vcf/);
+  assert.match(email.text, /What happens next: Justin calls to discuss your project\. Then he sets a time to take measurements, walk you through materials and design options, and give you your exact price at that visit\./);
+  assert.match(email.text, /Talk soon,\nAcadiana Bathrooms · abclafayette\.com/);
+  assert.match(email.html, /Save Justin(?:&#39;|')s Contact/);
+  assert.match(email.html, /href="https:\/\/abclafayette\.com\/justin\.vcf"/);
   assert.match(email.html, /tel:\+13375220023/);
+  assert.equal(email.attachments.some((item) => item.filename === "justin-acadiana-bathrooms.vcf" && item.contentType === "text/vcard"), true);
   const blob = `${email.subject}\n${email.text}\n${email.html}`.toLowerCase();
   for (const banned of ["deposit", "licensed", "insured", "onyx", "pella", "within 24", "tomorrow", "same day"]) {
     assert.equal(blob.includes(banned), false, banned);
@@ -90,16 +105,21 @@ test("the customer confirmation is short, signed, and has no banned claims", () 
   const design = buildCustomerConfirmation({
     name: "Nasty Nick",
     sourcePage: "/design",
+    preferredCallDay: "weekday",
+    preferredCallTime: "afternoon",
+    now,
     test: true,
     photos: [
       { filename: "before.jpg", contentType: "image/jpeg", bytes: Buffer.from("aaaa") },
       { filename: "after.jpg", contentType: "image/jpeg", bytes: Buffer.from("bbbb") },
     ],
   });
-  assert.equal(design.subject, "TEST – We got your bathroom design");
+  assert.equal(design.subject, "TEST – Justin will call you Wednesday, Nov 11 between 2 PM and 3 PM CT");
   assert.match(design.html, /cid:design-before/);
   assert.match(design.html, /cid:design-after/);
   assert.match(design.html, /Your bathroom/);
   assert.match(design.html, /Design preview/);
-  assert.equal(design.attachments.length, 2);
+  assert.equal(design.attachments.length, 3);
+  assert.equal(design.attachments[2]?.filename, "justin-acadiana-bathrooms.vcf");
 });
+

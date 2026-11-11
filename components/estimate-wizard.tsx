@@ -14,7 +14,7 @@ import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { appendAttribution } from "@/components/lead-attribution";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
 import { CallWindowFields } from "@/components/call-window-fields";
-import { SaveJustinContact } from "@/components/save-justin-contact";
+import { CallbackConfirmation } from "@/components/callback-confirmation";
 import { checkCity, MAIN_TOWNS } from "@/lib/coverage";
 import {
   brand,
@@ -691,12 +691,14 @@ export function EstimateWizard() {
             <div className="flex size-14 items-center justify-center rounded-full bg-[#103830] text-[26px] text-white" aria-hidden="true">
               ✓
             </div>
-            <h1 id="result-title" tabIndex={-1} data-step-heading className="mt-4 font-heading text-[40px] font-medium leading-[0.95] outline-none">
-              {lead.savedTitle}
-            </h1>
-            <p className="mt-2.5 text-lg leading-snug">{lead.thanks}</p>
-            <p className="mt-2 mb-5 leading-snug text-[#55574c]">{lead.savedNote}</p>
-            <SaveJustinContact className="mb-5" buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-[#103830] px-6 text-base font-semibold text-white" />
+            <CallbackConfirmation
+              name={form.name}
+              day={form.preferredCallDay}
+              time={form.preferredCallTime}
+              headingId="result-title"
+              headingClassName="mt-4 font-heading text-[40px] font-medium leading-[0.95] outline-none"
+              buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-[#103830] px-6 text-base font-semibold text-white"
+            />
             <WindowsQuoteLine className="mb-5 text-[#55574c]" />
             <section className="rounded-[24px] border border-[#d8d3c4] bg-[#fffaf3] px-5 py-[22px]">
               <p className="font-heading text-[32px] leading-[1.05]">{form.name.trim()}</p>
