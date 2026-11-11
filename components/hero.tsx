@@ -5,19 +5,19 @@ import { ConsultLink } from "@/components/consult-link";
 import { brand, cardClaims, hero, services } from "@/lib/copy";
 
 /**
- * Hero video built from bathroom photographs (see public/video/SOURCES.md).
+ * Hero video built from bathroom photographs (see docs/video-sources.md).
  * Desktop gets a three-panel landscape cut, phones get a full-screen portrait cut.
  */
 const HERO_VIDEO = {
   desktop: {
-    webm: "/video/hero-onyx-desktop.webm",
-    mp4: "/video/hero-onyx-desktop.mp4",
-    poster: "/video/hero-onyx-desktop-poster.webp",
+    webm: "/video/hero-desktop.webm",
+    mp4: "/video/hero-desktop.mp4",
+    poster: "/video/hero-desktop-poster.webp",
   },
   mobile: {
-    webm: "/video/hero-onyx-mobile.webm",
-    mp4: "/video/hero-onyx-mobile.mp4",
-    poster: "/video/hero-onyx-mobile-poster.webp",
+    webm: "/video/hero-mobile.webm",
+    mp4: "/video/hero-mobile.mp4",
+    poster: "/video/hero-mobile-poster.webp",
   },
 } as const;
 

@@ -11,7 +11,6 @@ import { ConsultLink } from "@/components/consult-link";
 
 const LINKS = [
   { href: "#gallery", label: "Gallery" },
-  { href: "#finishes", label: "Patterns" },
   { href: "#surface", label: "The surface" },
   { href: "#process", label: "How it works" },
   { href: "#area", label: "Service area" },

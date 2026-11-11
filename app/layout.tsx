@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s · Acadiana Bathrooms and Countertops",
   },
   description:
-    "Custom-fit Onyx Collection showers and bathroom work from Acadiana Bathrooms and Countertops. Free Consult. Call 337-522-0023.",
+    "Bathroom remodels in Lafayette and the surrounding area from Acadiana Bathrooms and Countertops. Many options, including solid surface. Free Consult. Call 337-522-0023.",
   robots: { index: false, follow: false },
   icons: {
     icon: [
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Acadiana Bathrooms and Countertops",
     description:
-      "Custom-fit Onyx Collection showers and bathroom work from Acadiana Bathrooms and Countertops. Free Consult. Call 337-522-0023.",
+      "Bathroom remodels in Lafayette and the surrounding area from Acadiana Bathrooms and Countertops. Many options, including solid surface. Free Consult. Call 337-522-0023.",
     url: "/",
     siteName: "Acadiana Bathrooms and Countertops",
     images: [
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Acadiana Bathrooms and Countertops",
     description:
-      "Custom-fit Onyx Collection showers and bathroom work from Acadiana Bathrooms and Countertops. Free Consult. Call 337-522-0023.",
+      "Bathroom remodels in Lafayette and the surrounding area from Acadiana Bathrooms and Countertops. Many options, including solid surface. Free Consult. Call 337-522-0023.",
     images: ["/brand/og-image.png"],
   },
 };

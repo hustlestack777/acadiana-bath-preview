@@ -10,19 +10,19 @@ export function SiteFooter() {
         <div>
           <MaisonLogo onDark className="text-secondary-foreground" />
           <p className="mt-4 text-sm leading-6 text-fig-muted">
-            {brand.name} uses{" "}
-            <a href={brand.onyxHref} className="underline underline-offset-4">
-              {brand.onyx}
-            </a>{" "}
-            solid-surface products. Product statements on this site come from manufacturer materials and are separate
-            from installation.
+            Bathroom remodels in Lafayette and the planned service area. Call or email to talk about your project.
           </p>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Visit and call</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Visit, call, or email</p>
           <p className="mt-3">
             <a href={brand.phoneHref} className="text-lg font-medium">
               {brand.phone}
+            </a>
+          </p>
+          <p className="mt-1">
+            <a href={brand.emailHref} className="underline underline-offset-4">
+              {brand.email}
             </a>
           </p>
           <p className="mt-1">
@@ -31,7 +31,7 @@ export function SiteFooter() {
             </a>
           </p>
           <p className="mt-3 text-sm">
-            {cardClaims.consult}. {cardClaims.lifetime}.
+            {cardClaims.consult}. {cardClaims.lifetime}
           </p>
           <ConsultLink className="mt-4 inline-block text-sm underline underline-offset-4">
             Free Consult
@@ -47,7 +47,7 @@ export function SiteFooter() {
         </div>
       </div>
       <p className="border-t border-white/15 px-5 py-4 text-center text-xs leading-5 text-fig-muted">
-        No labor coverage is added on this site. Product warranty terms are separate from installation.
+        {brand.name}. {cardClaims.lifetime}
       </p>
     </footer>
   );

@@ -13,6 +13,7 @@ test("lead notification accepts one address or a comma-separated list", () => {
   assert.deepEqual(leadNotifyRecipients(" a@b.com, c@d.com ,"), ["a@b.com", "c@d.com"]);
   assert.deepEqual(leadNotifyRecipients("only@one.com"), ["only@one.com"]);
   assert.deepEqual(leadNotifyRecipients("  ,  "), [
+    "acadianabathandcounter@gmail.com",
     "shaun.brasher@gmail.com",
     "shaun@lagniapperealmlabs.com",
   ]);
@@ -165,9 +166,9 @@ test("assistant answers stay inside the published facts", () => {
     assert.equal(/\$\s?\d/.test(output), false, output);
     assert.equal(output.includes("5,000") || output.includes("5000"), false);
   }
-  assert.match(replyTo("What is the product warranty?"), /manufacturer product warranty/i);
-  assert.match(replyTo(`what is your ${pledge}?`), /manufacturer product warranty/i);
-  assert.match(replyTo("Is it natural stone?"), /not a slab of quarried natural onyx/i);
+  assert.match(replyTo("What is the product warranty?"), /Lifetime material warranty/);
+  assert.match(replyTo(`what is your ${pledge}?`), /we'll handle the replacement/);
+  assert.match(replyTo("Is it natural stone?"), /solid surface/i);
   assert.match(replyTo("how much"), /No dollar amount is published/i);
   assert.match(replyTo("are you a person"), /AI assistant/i);
 });

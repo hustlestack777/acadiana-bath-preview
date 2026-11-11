@@ -14,7 +14,7 @@ const answers = {
   proof:
     "This site does not publish ratings, job counts, licenses, or testimonials.",
   compare:
-    "This site does not compare other companies. I can only repeat the Onyx Collection statements published here.",
+    "This site does not compare other companies. I can only repeat the facts published here.",
   human: `I’m an AI assistant, not a person at ${brand.name} and not Justin. For your room, use Request My Project Review.`,
   fallback: `I only answer from the facts on this site. I am an AI assistant, not Justin. For your own room, use Request My Project Review. This chat is not submitted or saved.`,
 } as const;
@@ -23,7 +23,7 @@ export const CHAT_ANSWERS = answers;
 
 export const QUICK_PROMPTS = [
   { label: "What is it made of?", message: "What is the surface made of?" },
-  { label: "Is it natural stone?", message: "Is it natural stone?" },
+  { label: "What materials do you use?", message: "What materials do you use?" },
   { label: "How do I clean it?", message: "How do I clean it?" },
   { label: "What is the product warranty?", message: "What is the product warranty?" },
   { label: "Which towns are planned?", message: "Which towns are planned?" },
@@ -46,7 +46,7 @@ export function replyTo(message: string) {
   const text = message.toLowerCase().trim();
   if (!text) return answers.disclosure;
   if (asksAboutOtherBrands(text)) return answers.compare;
-  if (asksAboutPhrase(text) || /natural stone|quarried|natural onyx/.test(text)) {
+  if (asksAboutPhrase(text) || /natural stone|quarried|natural on[yx]{2}/.test(text)) {
     return answers.material;
   }
   if (/clean|abrasive|maintenance|soap/.test(text)) return answers.care;
@@ -58,7 +58,7 @@ export function replyTo(message: string) {
   }
   if (/quote|photo|picture|exact/.test(text)) return answers.quote;
   if (/cost|price|how much|budget|range/.test(text)) return answers.cost;
-  if (/custom|fit|resin|alumina|made of|material|what is onyx|composition/.test(text)) {
+  if (/custom|fit|resin|alumina|made of|material|what is on[yx]{2}|composition/.test(text)) {
     return answers.material;
   }
   if (/how long|timeline|schedule|install time/.test(text)) return answers.timing;

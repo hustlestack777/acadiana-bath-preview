@@ -1,4 +1,4 @@
-# Renders the Onyx hero video from public/images. Run from the repo root: python3 scripts/hero-video/render_mobile.py (needs Pillow + ffmpeg). Output goes to out/, then compress into public/video.
+# Renders the hero video from public/images. Run from the repo root: python3 scripts/hero-video/render_mobile.py (needs Pillow + ffmpeg). Output goes to out/, then compress into public/video.
 import sys, subprocess, math
 from PIL import Image, ImageFilter, ImageEnhance, ImageDraw
 SRC="public/images/"

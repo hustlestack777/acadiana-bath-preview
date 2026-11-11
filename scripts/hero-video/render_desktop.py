@@ -1,4 +1,4 @@
-# Renders the Onyx hero video from public/images. Run from the repo root: python3 scripts/hero-video/render_desktop.py (needs Pillow + ffmpeg). Output goes to out/, then compress into public/video.
+# Renders the hero video from public/images. Run from the repo root: python3 scripts/hero-video/render_desktop.py (needs Pillow + ffmpeg). Output goes to out/, then compress into public/video.
 import subprocess
 from PIL import Image
 SRC="public/images/"

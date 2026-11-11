@@ -14,15 +14,13 @@ import {
   gallery,
   hero,
   material,
-  patterns,
   reasons,
   steps,
-  swatches,
   talk,
   warranty,
 } from "@/lib/copy";
 import { ALSO_PLANNED, CORRIDOR, EXCLUDED } from "@/lib/coverage";
-import { beforeAfterPhotos, colorChips, galleryPhotos, patternPhotos } from "@/lib/images";
+import { beforeAfterPhotos, galleryPhotos } from "@/lib/images";
 
 export function HomePage() {
   return (
@@ -81,57 +79,7 @@ export function HomePage() {
           <h2 className="mt-3 text-4xl md:text-5xl">{material.title}</h2>
           <p className="mt-5 text-lg leading-8">{material.body}</p>
           <p className="mt-4 leading-7 text-muted-foreground">{material.close}</p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <p className="rounded-2xl bg-tint-lagoon p-5 leading-7">
-              63% alumina trihydrate, a mineral-derived ingredient, and 37% specially formulated polyester resin.
-            </p>
-            <p className="rounded-2xl bg-tint-clay p-5 leading-7">
-              It is a cast bathroom material. It is not a slab of quarried natural onyx.
-            </p>
-          </div>
         </div>
-      </section>
-
-      <section id="finishes" className="rise scroll-mt-28 bg-card">
-        <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Patterns</p>
-          <h2 className="mt-3 max-w-2xl text-4xl md:text-5xl">{patterns.title}</h2>
-          <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">{patterns.body}</p>
-          <ul className="mt-10 flex snap-x gap-4 overflow-x-auto pb-2 lg:grid lg:grid-cols-3 lg:overflow-visible">
-            {patterns.items.map((item) => {
-              const photo = patternPhotos[item.id];
-              return (
-                <li key={item.id} className="w-[78%] shrink-0 snap-start sm:w-[46%] lg:w-auto">
-                  <article className="h-full">
-                    <div className="relative aspect-[4/5] overflow-hidden rounded-[1.4rem] bg-muted">
-                      <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 30vw, 80vw" className="object-cover" />
-                    </div>
-                    <h3 className="mt-4 text-2xl">{item.name}</h3>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.note}</p>
-                  </article>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </section>
-
-      <section id="colors" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Color</p>
-        <h2 className="mt-3 max-w-2xl text-4xl md:text-5xl">{swatches.title}</h2>
-        <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">{swatches.body}</p>
-        <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {colorChips.map((chip) => (
-            <li key={chip.src}>
-              <div className="overflow-hidden rounded-2xl border border-border bg-card p-3">
-                <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
-                  <Image src={chip.src} alt={chip.alt} fill sizes="200px" className="scale-125 object-cover" />
-                </div>
-                <p className="mt-3 font-heading text-xl">{chip.caption}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
       </section>
 
       <section id="changes" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
@@ -197,16 +145,13 @@ export function HomePage() {
       <section id="warranty" className="rise scroll-mt-28 bg-fig text-fig-foreground">
         <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 md:grid-cols-12 md:py-24">
           <div className="md:col-span-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-fig-muted">Manufacturer product warranty</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-fig-muted">Warranty</p>
             <h2 className="mt-3 text-4xl md:text-5xl">{warranty.title}</h2>
             <p className="mt-5 text-lg leading-8">{warranty.body}</p>
           </div>
           <aside className="rounded-[1.4rem] bg-fig-foreground p-6 text-foreground md:col-span-5">
-            <h3 className="text-2xl">{warranty.asideTitle}</h3>
-            <p className="mt-3 leading-7">{warranty.aside}</p>
-            <p className="mt-4 text-sm font-semibold">
-              {cardClaims.consult}. {cardClaims.lifetime}.
-            </p>
+            <p className="text-sm font-semibold">{cardClaims.consult}</p>
+            <p className="mt-3 leading-7">{cardClaims.lifetime}</p>
           </aside>
         </div>
       </section>
@@ -263,9 +208,14 @@ export function HomePage() {
           <p className="mt-4 max-w-md leading-7 text-muted-foreground">{talk.body}</p>
         </div>
         <div className="rounded-[1.6rem] border border-border bg-card p-7">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brass">Call</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brass">Call or email</p>
           <p className="mt-3 font-heading text-4xl">
             <a href={brand.phoneHref}>{brand.phone}</a>
+          </p>
+          <p className="mt-3">
+            <a href={brand.emailHref} className="underline underline-offset-4">
+              {brand.email}
+            </a>
           </p>
           <p className="mt-3">
             <a href={brand.websiteHref} className="underline underline-offset-4">
@@ -273,7 +223,7 @@ export function HomePage() {
             </a>
           </p>
           <p className="mt-4 text-sm font-semibold">
-            {cardClaims.consult}. {cardClaims.lifetime}.
+            {cardClaims.consult}. {cardClaims.lifetime}
           </p>
           <ConsultLink
             className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-medium text-primary-foreground"

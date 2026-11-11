@@ -4,10 +4,10 @@ export const brand = {
   name: "Acadiana Bathrooms and Countertops",
   phone: "337-522-0023",
   phoneHref: "tel:+13375220023",
+  email: "acadianabathandcounter@gmail.com",
+  emailHref: "mailto:acadianabathandcounter@gmail.com",
   website: "abclafayette.com",
   websiteHref: "https://abclafayette.com",
-  onyx: "Onyx Collection",
-  onyxHref: "https://onyxcollection.com",
 } as const;
 
 export const services = [
@@ -21,14 +21,14 @@ export const services = [
 
 export const cardClaims = {
   consult: "Free Consult",
-  lifetime: "Lifetime Guarantee",
+  lifetime: "Lifetime material warranty. If the material has a defect or fails, we'll handle the replacement.",
 } as const;
 
 export const hero = {
   eyebrow: "Lafayette, Louisiana",
   title: "Bring a little beautiful to every day.",
   support:
-    "Onyx Collection showers, tubs, and lavatories for the bathroom you actually want. Tell us what you want to change, and let’s explore the options for your space.",
+    "There are many options for your shower, tub, and bathroom. Most customers prefer solid surface, because there's less grout to clean, and many types of solid surface can be installed. Onyx is a preferred material — we'll walk through the options for your space.",
   primary: "Free Consult",
   secondary: "337-522-0023",
 } as const;
@@ -36,42 +36,39 @@ export const hero = {
 export const editorial = {
   eyebrow: "The room, considered",
   title: "Less stepping over. More stepping into.",
-  body: "A shower, a tub, a lavatory, the floor underfoot. Acadiana Bathrooms and Countertops plans the work with Onyx Collection solid-surface products, and Justin reviews the scope with you.",
+  body: "A shower, a tub, a lavatory, the floor underfoot. Acadiana Bathrooms and Countertops plans the work with you, and Justin reviews the scope.",
 } as const;
 
 export const reasons = [
   {
     title: "Custom fit",
-    body: "Custom-fit Onyx Collection showers for the bathroom you actually want.",
+    body: "Custom-fit showers and bathroom work for the space you actually want.",
   },
   {
-    title: "The look",
-    body: "A cast bathroom material with a range of colors. The Onyx Collection combines mineral-derived alumina trihydrate with a specially formulated resin.",
+    title: "Many options",
+    body: "Most customers prefer solid surface, because there's less grout to clean. Many types of solid surface can be installed.",
   },
   {
     title: "Easy cleaning",
-    body: "Onyx says a simple weekly cleaning is often enough. Follow the manufacturer’s care instructions and use non-abrasive cleaners.",
+    body: "A simple weekly cleaning is enough.",
   },
 ] as const;
 
 export const material = {
-  title: "Meet your next shower surface.",
-  body: "The Onyx Collection combines mineral-derived alumina trihydrate with a specially formulated resin. The result is a cast bathroom material with a range of colors and a finish designed for regular care with non-abrasive cleaners.",
+  title: "The surface that fits your room.",
+  body: "Most customers prefer solid surface for a cleaner look with less grout. Many types of solid surface can be installed, and we'll help you choose the right one for your bathroom.",
   close:
-    "Find the look that feels like home. Choose your finish and talk through the details with Justin before deciding what goes into your bathroom.",
+    "Find the look that feels like home. Talk through the details with Justin before deciding what goes into your bathroom.",
 } as const;
 
 export const care = {
   title: "Less fuss on cleaning day.",
-  body: "Onyx says a simple weekly cleaning is often enough to keep its showers looking new. Follow the manufacturer’s care instructions and use non-abrasive cleaners to protect the finish.",
+  body: "A simple weekly cleaning is enough.",
 } as const;
 
 export const warranty = {
-  title: "A manufacturer that stands behind its products.",
-  body: "Acadiana Bathrooms and Countertops states Lifetime Guarantee. That phrase is not expanded with extra terms here. The Onyx Collection publishes a manufacturer product warranty. Its published statement says that if its product fails, it will provide a new item or refund the cost. Ask us to review the manufacturer’s current terms with you. Installation workmanship and any labor coverage are separate and must be confirmed before work begins.",
-  asideTitle: "Separate from installation",
-  aside:
-    "The manufacturer product warranty covers the product. It is not a labor promise. Workmanship and any labor coverage must be confirmed with Justin. This site does not add installer labor coverage.",
+  title: "Lifetime material warranty",
+  body: "Lifetime material warranty. If the material has a defect or fails, we'll handle the replacement.",
 } as const;
 
 export const steps = [
@@ -101,60 +98,18 @@ export const area = {
 
 export const beforeAfter = {
   title: "Before and after",
-  body: "A shower refresh and a tub-to-shower conversion, shown before and after.",
+  body: "Examples of what your remodel could look like",
 } as const;
 
 export const gallery = {
   title: "Showers, tubs, and lavatories",
-  body: "Walk-in showers, tub surrounds, and vanities in finishes homeowners actually want.",
-} as const;
-
-export const patterns = {
-  title: "Wall patterns",
-  body: "Onyx Collection solid-surface wall patterns. Justin will confirm what can be made for your room.",
-  items: [
-    {
-      id: "gloss",
-      name: "Gloss smooth",
-      note: "Onyx calls this its most popular finish: a smooth surface cared for with non-abrasive cleaners.",
-    },
-    {
-      id: "subway",
-      name: "Subway tile",
-      note: "A smooth panel molded with the look of subway tile and shallow grout lines.",
-    },
-    {
-      id: "stone",
-      name: "Stone tile",
-      note: "A panel molded from a stone-tile pattern, cast as a solid surface.",
-    },
-    {
-      id: "wavy",
-      name: "Wavy tile",
-      note: "A vertical wave texture across the panel.",
-    },
-    {
-      id: "shiplap",
-      name: "Shiplap",
-      note: "A smooth panel with recessed grooves.",
-    },
-    {
-      id: "artisan",
-      name: "Artisan tile",
-      note: "A larger tile look with molded grout lines.",
-    },
-  ],
-} as const;
-
-export const swatches = {
-  title: "Colors",
-  body: "Onyx Collection colors, labeled with the names Onyx publishes. Confirm a finish with a physical sample.",
+  body: "Examples of what your remodel could look like",
 } as const;
 
 export const faqs = [
   {
-    q: "Is Onyx natural stone?",
-    a: "No. The Onyx Collection describes its product as 63% alumina trihydrate, a mineral-derived ingredient, and 37% specially formulated polyester resin. It is not a slab of quarried natural onyx.",
+    q: "What materials do you use?",
+    a: "There are many options available. Most customers prefer solid surface, because there's less grout to clean, and many types of solid surface can be installed. Onyx is a preferred material. We'll talk through the options that fit your room.",
   },
   {
     q: "Can photos give me an exact quote?",
@@ -169,14 +124,14 @@ export const faqs = [
     a: area.faq,
   },
   {
-    q: "What does the manufacturer product warranty cover?",
+    q: "What is the lifetime material warranty?",
     a: warranty.body,
   },
 ] as const;
 
 export const talk = {
   title: "Talk about your project",
-  body: "Call when you would rather talk than fill out the review. There is no email address on the card, so this site does not list one.",
+  body: "Call or email when you would rather talk than fill out the review.",
 } as const;
 
 export const close = {
@@ -204,7 +159,7 @@ export const lead = {
 
 export const projects = [
   { id: "tub-to-shower", label: "Tub-to-shower conversion", detail: "Replace a tub with a walk-in shower." },
-  { id: "showers", label: "Showers", detail: "Including Onyx Collection solid-surface showers." },
+  { id: "showers", label: "Showers", detail: "Walk-in showers and shower updates." },
   { id: "tubs", label: "Tubs", detail: "Tub work in the bathroom." },
   { id: "lavatories", label: "Lavatories", detail: "Sinks and the surrounding area." },
   { id: "flooring", label: "Flooring", detail: "Flooring in the bathroom." },

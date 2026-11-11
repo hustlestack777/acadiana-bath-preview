@@ -20,9 +20,9 @@ npm start
 
 ## Leads
 
-The review form validates the fields, rejects a filled honeypot, and rate-limits by IP. It stores the lead, including the street address and photos, when `DATABASE_URL` is set. It emails Shaun (and whoever is listed in `LEAD_NOTIFY_EMAIL`) when both `RESEND_API_KEY` and `RESEND_FROM` are set. The customer is not emailed.
+The review form validates the fields, rejects a filled honeypot, and rate-limits by IP. It stores the lead, including the street address and photos, when `DATABASE_URL` is set. It emails Justin at `acadianabathandcounter@gmail.com`, plus Shaun at the addresses listed in `LEAD_NOTIFY_EMAIL`, when both `RESEND_API_KEY` and `RESEND_FROM` are set. The customer is not emailed.
 
-`LEAD_NOTIFY_EMAIL` defaults to `shaun.brasher@gmail.com,shaun@lagniapperealmlabs.com`. A comma-separated list is split, trimmed, and every address receives the lead email. `RESEND_FROM` must be an address on a domain verified in Resend. If email is not configured, the lead can still be stored and the response says the notification was not sent. The page does not claim success when storage fails.
+`LEAD_NOTIFY_EMAIL` defaults to `acadianabathandcounter@gmail.com,shaun.brasher@gmail.com,shaun@lagniapperealmlabs.com`. A comma-separated list is split, trimmed, and every address receives the lead email. `RESEND_FROM` must be an address on a domain verified in Resend. If email is not configured, the lead can still be stored and the response says the notification was not sent. The page does not claim success when storage fails.
 
 The notification is a phone-readable card: name, call and email buttons, street address, project, size, home, timing, payment, and notes that were actually filled in. A name that starts with `TEST` keeps the `[TEST]` subject prefix. Times are America/Chicago. Photos are shown in the email and also attached as files. The public thank-you page does not show the street address or a house photo.
 
@@ -32,9 +32,9 @@ Customers can add up to 8 photos (camera or library). The browser resizes each o
 
 Every Free Consult button links to `/estimate#start`. The form scrolls fully into view under the fixed header and focuses the first field.
 
-The home hero is a looping muted background video in `public/video`. Shot sources are listed in `public/video/SOURCES.md`.
+The home hero is a looping muted background video in `public/video`. Shot sources are listed in `docs/video-sources.md`.
 
-Photographs in `public/images` are used with permission. Sources are listed in `public/images/SOURCES.md`.
+Photographs in `public/images` are used with permission. Sources are listed in `docs/image-sources.md`.
 
 ## Render
 
