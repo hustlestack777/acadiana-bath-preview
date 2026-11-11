@@ -1,5 +1,5 @@
 import { brand } from "./copy";
-import { firstName } from "./lead-display";
+import { firstName, formatPhone } from "./lead-display";
 import { withTestSubject } from "./lead-notify";
 import type { LeadEmailAttachment, LeadEmailPhoto } from "./lead-email";
 
@@ -26,6 +26,8 @@ function esc(value: string) {
 
 export type CustomerConfirmationInput = {
   name: string;
+  /** Customer's phone as typed; shown formatted like (337) 555-0142. */
+  phone?: string;
   sourcePage: string;
   photos?: LeadEmailPhoto[];
   test?: boolean;
@@ -40,11 +42,12 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
     Boolean(input.test),
   );
 
+  const callAt = input.phone && formatPhone(input.phone).startsWith("(") ? ` at ${formatPhone(input.phone)}` : "";
   const opener = isDesign
-    ? "Thanks for sending your photo. Here's the look you picked, next to your bathroom. Justin will call you soon to talk through it."
+    ? `Thanks for sending your photo. Here's the look you picked, next to your bathroom. Justin will call you soon${callAt} to talk through it.`
     : isWindows
-      ? "Thanks for requesting a window quote. Justin will call you soon to talk through it."
-      : "Thanks for reaching out. Justin will call you soon to talk through your project.";
+      ? `Thanks for requesting a window quote. Justin will call you soon${callAt} to talk through it.`
+      : `Thanks for reaching out. Justin will call you soon${callAt} to talk through your project.`;
 
   const before = isDesign ? input.photos?.[0] : undefined;
   const after = isDesign ? input.photos?.[1] : undefined;

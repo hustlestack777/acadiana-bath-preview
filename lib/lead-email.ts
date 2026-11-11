@@ -355,6 +355,15 @@ function htmlBody(input: {
           <p style="margin:0 0 8px;font-family:${SANS};font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#e4d8b4;font-weight:700;">${esc(input.kicker)}</p>
           <h1 style="margin:0 0 6px;font-family:${SERIF};font-size:34px;line-height:1;font-weight:500;color:#f6f1e6;">${esc(input.name)}</h1>
           <p style="margin:0;font-family:${SERIF};font-size:16px;line-height:1.3;color:#e4d8b4;">${esc(subline)}</p>
+          ${
+            input.phone
+              ? `<p style="margin:10px 0 0;font-family:${SANS};font-size:20px;line-height:1.2;font-weight:700;">${
+                  input.tel
+                    ? `<a href="${esc(input.tel)}" style="color:#f6f1e6;text-decoration:underline;text-underline-offset:3px;">${esc(input.phone)}</a>`
+                    : `<span style="color:#f6f1e6;">${esc(input.phone)}</span>`
+                }</p>`
+              : ""
+          }
         </td></tr>
         <tr><td style="padding:22px;">
           ${

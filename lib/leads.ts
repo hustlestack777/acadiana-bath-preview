@@ -593,6 +593,7 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
   if (customer) {
     const confirmation = buildCustomerConfirmation({
       name: input.name,
+      phone: input.phone,
       sourcePage: input.sourcePage,
       photos: input.photos,
       test: route.test,
