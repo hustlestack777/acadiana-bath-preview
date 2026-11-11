@@ -65,7 +65,8 @@ test("the lead email is a card with real labels, inline photos, and no empty non
   assert.match(email.html, /NEW CONSULT|New consult/);
   assert.match(email.html, /Jane Comeaux/);
   assert.match(email.html, /tel:\+13375550142/);
-  assert.match(email.html, /Call \(337\) 555-0142/);
+  assert.match(email.html, />\(337\) 555-0142</);
+  assert.match(email.html, />Call now</);
   assert.match(email.html, /mailto:jane\.comeaux@email\.com/);
   assert.match(email.html, /Email Jane/);
   assert.match(email.html, /412 Sample Street/);
@@ -109,7 +110,8 @@ test("empty notes, payment, and photos are left out, and a street view image is 
   });
   assert.equal(email.html.includes("Notes"), false);
   assert.equal(email.html.includes("Payment"), false);
-  assert.equal(email.html.includes("Their photos"), false);
+  assert.match(email.html, /No photos uploaded\./);
+  assert.equal(email.html.includes("cid:photo-1"), false);
   assert.match(email.html, /cid:house-street-view/);
   assert.match(email.html, /Open Street View/);
   assert.match(email.html, /Open in Google Maps/);

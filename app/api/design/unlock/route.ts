@@ -12,7 +12,7 @@ import {
 import { isTeamTestLead, withTestSubject } from "@/lib/lead-notify";
 import { consentRecord } from "@/lib/lead-consent";
 import { formatChicago } from "@/lib/lead-display";
-import { budgetTag } from "@/lib/budget";
+import { budgetTag, findBudget } from "@/lib/budget";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -154,7 +154,17 @@ export async function POST(request: Request) {
   let emailSent = true;
   if (!leadId) {
     try {
-      const result = await saveLead(input, ip, { subject, test });
+      const result = await saveLead(input, ip, {
+        subject,
+        test,
+        customerRecap: {
+          style: style.name,
+          rows: [
+            { label: "Budget", value: findBudget(session.budget)?.label ?? "" },
+            { label: "Address", value: [street.trim(), city.trim()].filter(Boolean).join(", ") },
+          ],
+        },
+      });
       if (!result.ok) return fail(result.error, result.status);
       leadId = result.id;
       emailSent = result.emailSent;

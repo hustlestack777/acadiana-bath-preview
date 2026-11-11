@@ -1,11 +1,11 @@
 import {
+  choiceLabel,
   firstName,
   formatChicago,
   formatEmailSize,
   formatPhone,
   fullAddress,
   homeownerLabel,
-  leadNotes,
   leadSubject,
   localityLine,
   paymentLabel,
@@ -15,6 +15,18 @@ import {
 } from "./lead-display";
 import { mapsSearchUrl, openInMapsUrl } from "./street-view";
 import { campaignLine, sourceLine } from "./lead-attribution";
+import { finishes } from "./copy";
+import {
+  EMAIL,
+  esc,
+  escLines,
+  eyebrow,
+  rowsTable,
+  sectionTitle,
+  shell,
+  testBanner,
+  type Row,
+} from "./email-layout";
 
 export type LeadEmailPhoto = {
   filename: string;
@@ -45,7 +57,10 @@ export type LeadEmailContent = {
   payment: string;
   timing: string;
   preferredCallTime: string;
+  finish?: string;
   photos: LeadEmailPhoto[];
+  /** Full-size links for each photo, same order as `photos`. Empty strings are skipped. */
+  photoLinks?: string[];
   newPhotoCount?: number;
   houseImage?: { bytes: Buffer; contentType: string } | null;
   consent?: boolean;
@@ -67,28 +82,7 @@ export type LeadEmailAttachment = {
   contentId?: string;
 };
 
-const INK = "#1c241c";
-const MUTED = "#55574c";
-const CARD = "#fffaf3";
-const LINE = "#d8d3c4";
-const CLAY = "#103830";
-const CREAM = "#f3efe4";
-const CANVAS = "#e7e3d6";
-const SERIF = "Georgia, 'Times New Roman', serif";
-const SANS = "Arial, Helvetica, sans-serif";
-
-function esc(value: string) {
-  return value.replace(/[&<>"']/g, (character) => {
-    const map: Record<string, string> = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;",
-    };
-    return map[character] ?? character;
-  });
-}
+const TEST_LINE = "TEST LEAD — sent to Shaun only, not to Justin.";
 
 function safeFilename(filename: string, index: number) {
   const cleaned = filename.replace(/[/\\]/g, "").replace(/[^\w.\- ]+/g, "").trim() || "photo.jpg";
@@ -99,6 +93,50 @@ function photoCid(index: number) {
   return `photo-${index + 1}`;
 }
 
+/** Caption for a photo, from the filenames the design and estimate flows use. */
+export function photoCaption(filename: string, index: number, style = "") {
+  const name = filename.toLowerCase();
+  if (name.includes("after-design-preview")) return style ? `Design preview · ${style}` : "Design preview";
+  if (name.includes("before-their-photo")) return "Their bathroom (before)";
+  if (name.includes("their-second-photo")) return "Their second photo";
+  return `Photo ${index + 1}`;
+}
+
+type Parsed = { rows: Row[]; style: string; customDesign: string; notes: string[] };
+
+/** Turn the stored features text ("Label: value" lines) into clean rows. */
+export function parseFeatures(features: string, consent: boolean): Parsed {
+  const rows: Row[] = [];
+  const notes: string[] = [];
+  let style = "";
+  let customDesign = "";
+  const pieces = features
+    .split("\n")
+    .flatMap((line) => line.split(" \u00b7 "))
+    .map((piece) => piece.trim());
+  for (const line of pieces) {
+    if (!line) continue;
+    if (/^photo 1 is their bathroom/i.test(line)) continue;
+    if (/^qa_failed/i.test(line)) {
+      customDesign = line.replace(/^qa_failed:\s*/i, "");
+      continue;
+    }
+    if (/^sms consent:/i.test(line) && consent) continue;
+    const match = /^([A-Za-z][A-Za-z /()-]{1,40}):\s+(.+)$/.exec(line);
+    if (!match) {
+      notes.push(line);
+      continue;
+    }
+    const label = match[1].trim();
+    const value = match[2].trim();
+    if (/^style picked$/i.test(label)) {
+      style = value;
+    }
+    rows.push({ label, value });
+  }
+  return { rows, style, customDesign, notes };
+}
+
 export function buildLeadEmail(input: LeadEmailContent) {
   const name = input.name.trim();
   const town = input.city.trim();
@@ -107,41 +145,44 @@ export function buildLeadEmail(input: LeadEmailContent) {
   const phone = formatPhone(input.phone);
   const tel = phoneTel(input.phone);
   const email = input.email.trim();
-  const project = projectLabels(input.project);
-  const size = formatEmailSize(input.width, input.depth, input.height);
-  const notes = leadNotes(input.measurements, input.features, input.budget);
-  const home = homeownerLabel(input.homeowner);
-  const payment = paymentLabel(input.payment);
-  const timing = timingLabel(input.timing);
-  const callTime = input.preferredCallTime.trim();
+  const given = firstName(name);
+  const test = Boolean(input.test);
   const street = input.street.trim();
   const locality = localityLine(town, input.zip);
   const address = fullAddress(street, town, input.zip);
   const mapsUrl = street ? mapsSearchUrl(address) : "";
   const streetViewUrl = street ? openInMapsUrl(address, input.latitude, input.longitude) : "";
   const kicker = input.kind === "update" ? "Consult update" : "New consult";
-  const given = firstName(name);
-  const test = Boolean(input.test);
+  const isWindows = input.project.split(",").map((item) => item.trim()).includes("windows");
+
+  const parsed = parseFeatures(input.features, Boolean(input.consent));
+  const project = projectLabels(input.project);
+  const size = formatEmailSize(input.width, input.depth, input.height);
+  const finishId = (input.finish || "").trim();
+  const finish = !isWindows && finishId && finishId !== "unsure" ? choiceLabel(finishId, finishes) : "";
+  const budgetLines = parseFeatures(input.budget, true);
+
+  const details: Row[] = [
+    { label: "Project", value: project },
+    { label: "Size", value: size },
+    { label: "Measurements", value: input.measurements.trim() },
+    { label: "Finish", value: finish },
+    ...parsed.rows.filter((row) => !/^style picked$/i.test(row.label)),
+    ...budgetLines.rows,
+    ...budgetLines.notes.map((value) => ({ label: "Budget", value })),
+    { label: "Home", value: homeownerLabel(input.homeowner) },
+    { label: "Timing", value: timingLabel(input.timing) },
+    { label: "Payment", value: paymentLabel(input.payment) },
+    { label: "Best time to call", value: input.preferredCallTime.trim() },
+    ...(parsed.notes.length ? [{ label: "Their notes", value: parsed.notes.join("\n") }] : []),
+  ].filter((row) => (row.value ?? "").trim());
+
+  const consentAt = input.consent && input.consentAt ? formatChicago(new Date(input.consentAt)) : "";
+  const consentRecord = (input.consentText || "").trim();
 
   const source = sourceLine(input.sourcePage || "", input.formPage || "");
   const campaign = campaignLine(input.utmSource || "", input.utmMedium || "", input.utmCampaign || "");
   const referrer = (input.referrer || "").trim();
-  const rows = [
-    source ? ["Source", source] : null,
-    referrer ? ["Referrer", referrer] : null,
-    campaign ? ["Campaign", campaign] : null,
-    home ? ["Home", home] : null,
-    timing ? ["Timing", timing] : null,
-    payment ? ["Payment", payment] : null,
-    callTime ? ["Call time", callTime] : null,
-    notes ? ["Notes", notes] : null,
-    input.consent
-      ? [
-          "Consent",
-          `Yes${input.consentAt ? `, ${formatChicago(new Date(input.consentAt))}` : ""}${input.consentText ? `\n${input.consentText}` : ""}`,
-        ]
-      : null,
-  ].filter((row): row is [string, string] => Boolean(row));
 
   const attachments: LeadEmailAttachment[] = [];
   if (input.houseImage?.bytes.length) {
@@ -155,125 +196,186 @@ export function buildLeadEmail(input: LeadEmailContent) {
   input.photos.forEach((photo, index) => {
     const filename = safeFilename(photo.filename, index);
     const content = photo.bytes.toString("base64");
-    attachments.push({
-      filename,
-      content,
-      contentType: photo.contentType,
-      contentId: photoCid(index),
-    });
-    attachments.push({
-      filename,
-      content,
-      contentType: photo.contentType,
-    });
+    attachments.push({ filename, content, contentType: photo.contentType, contentId: photoCid(index) });
+    attachments.push({ filename, content, contentType: photo.contentType });
   });
 
-  const text = textBody({
-    kicker,
-    test,
-    name,
-    town,
-    when,
-    phone,
-    email,
-    street,
-    locality,
-    mapsUrl,
-    streetViewUrl,
-    project,
-    size,
-    rows,
-    photoCount: input.photos.length,
-    newPhotoCount: input.newPhotoCount ?? 0,
-    kind: input.kind,
-    id: input.id,
-  });
+  const captions = input.photos.map((photo, index) => photoCaption(photo.filename, index, parsed.style));
+  const links = input.photos.map((_, index) => input.photoLinks?.[index] ?? "");
 
-  const html = htmlBody({
-    kicker,
-    test,
-    name,
-    town,
-    when,
-    phone,
-    tel,
-    email,
-    given,
-    street,
-    locality,
-    mapsUrl,
-    streetViewUrl,
-    hasHouseImage: Boolean(input.houseImage?.bytes.length),
-    project,
-    size,
-    rows,
-    photoCount: input.photos.length,
-    newPhotoCount: input.newPhotoCount ?? 0,
-    kind: input.kind,
-    id: input.id,
+  // ---------- plain text ----------
+  const text = (() => {
+    const lines: string[] = [];
+    if (test) lines.push(TEST_LINE, "");
+    lines.push(`${kicker.toUpperCase()} · ${when}`, name || "New lead");
+    if (input.kind === "update") lines.push(updateSentence(input.newPhotoCount ?? 0));
+    lines.push("");
+    if (phone) lines.push(`Call now: ${phone}`);
+    if (email) lines.push(`Email: ${email}`);
+    if (street) lines.push(`Address: ${address}`);
+    else if (locality) lines.push(`Town: ${locality}`);
+    lines.push("");
+    lines.push(parsed.style ? `PHOTOS & DESIGN (style: ${parsed.style})` : "PHOTOS");
+    if (parsed.customDesign) lines.push(`Custom design needed: ${parsed.customDesign}`);
+    if (input.photos.length) {
+      input.photos.forEach((_, index) => {
+        lines.push(`- ${captions[index]}${links[index] ? `: ${links[index]}` : ""}`);
+      });
+      lines.push("(Also attached to this email as files.)");
+    } else {
+      lines.push("No photos uploaded.");
+    }
+    lines.push("", "PROJECT DETAILS");
+    for (const row of details) lines.push(`${row.label}: ${(row.value ?? "").replace(/\n/g, "; ")}`);
+    lines.push("", "CONSENT");
+    if (input.consent) {
+      lines.push(`Yes${consentAt ? `, ${consentAt}` : ""}`);
+      if (consentRecord) lines.push(consentRecord);
+    } else {
+      lines.push("No text consent. Call or email only.");
+    }
+    if (street) {
+      lines.push("", "THE HOUSE (FOR YOUR VISIT)", address);
+      if (streetViewUrl) lines.push(`Street View: ${streetViewUrl}`);
+      if (mapsUrl) lines.push(`Open in Google Maps: ${mapsUrl}`);
+    }
+    lines.push("", "---");
+    if (source) lines.push(`Source: ${source}`);
+    if (referrer) lines.push(`Referrer: ${referrer}`);
+    if (campaign) lines.push(`Campaign (UTM): ${campaign}`);
+    lines.push(`Internal lead email only — not sent to the homeowner. Lead ${input.id.slice(0, 8)}.`);
+    return lines.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
+  })();
+
+  // ---------- HTML ----------
+  const contactLines = [
+    phone
+      ? `<p style="margin:0 0 4px;font-family:${EMAIL.font};font-size:22px;line-height:1.3;font-weight:700;">${
+          tel
+            ? `<a href="${esc(tel)}" style="color:${EMAIL.onGreen};text-decoration:none;">${esc(phone)}</a>`
+            : `<span style="color:${EMAIL.onGreen};">${esc(phone)}</span>`
+        }</p>`
+      : "",
+    email
+      ? `<p style="margin:0 0 4px;font-family:${EMAIL.font};font-size:15px;line-height:1.45;"><a href="${esc(`mailto:${email}`)}" style="color:${EMAIL.onGreenMuted};text-decoration:underline;">${esc(email)}</a></p>`
+      : "",
+    street || locality
+      ? `<p style="margin:0;font-family:${EMAIL.font};font-size:15px;line-height:1.45;color:${EMAIL.onGreenMuted};">${esc(street)}${street && locality ? "<br />" : ""}${esc(locality)}</p>`
+      : "",
+  ].join("");
+
+  const callButton =
+    phone && tel
+      ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 0;">
+          <tr>
+            <td class="ab-stack" valign="top" style="padding:0 6px 0 0;">${callNow(tel)}</td>
+            ${email ? `<td class="ab-stack" valign="top" width="42%" style="padding:0 0 0 6px;">${emailButton(email, given)}</td>` : ""}
+          </tr>
+        </table>`
+      : email
+        ? `<div style="margin:18px 0 0;">${emailButton(email, given)}</div>`
+        : "";
+
+  const header = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr><td class="ab-pad" style="background:${EMAIL.green};padding:24px 28px 24px;">
+        ${eyebrow(`${kicker} · ${when}`, EMAIL.onGreenMuted)}
+        <h1 style="margin:0 0 10px;font-family:${EMAIL.serif};font-size:30px;line-height:1.15;font-weight:500;color:#ffffff;">${esc(name || "New lead")}</h1>
+        ${contactLines}
+        ${callButton}
+      </td></tr>
+    </table>`;
+
+  const update =
+    input.kind === "update"
+      ? `<p style="margin:0 0 6px;font-family:${EMAIL.font};font-size:15px;line-height:1.5;color:${EMAIL.muted};">${esc(updateSentence(input.newPhotoCount ?? 0))}</p>`
+      : "";
+
+  const photoTitle = parsed.style || captions.some((caption) => caption.startsWith("Design preview")) ? "Photos & design" : "Their photos";
+  const styleLine = parsed.style
+    ? `<p style="margin:0 0 12px;font-family:${EMAIL.font};font-size:16px;line-height:1.5;color:${EMAIL.ink};"><span style="color:${EMAIL.muted};">Style they picked:</span> <strong>${esc(parsed.style)}</strong></p>`
+    : "";
+  const customLine = parsed.customDesign
+    ? `<p style="margin:0 0 12px;padding:10px 14px;background:${EMAIL.alertWash};border-radius:10px;font-family:${EMAIL.font};font-size:14px;line-height:1.5;color:${EMAIL.alert};"><strong>Custom design needed.</strong> ${esc(parsed.customDesign.replace(/^CUSTOM DESIGN NEEDED\.\s*/i, ""))}</p>`
+    : "";
+  const photosHtml = input.photos.length
+    ? input.photos
+        .map((_, index) => {
+          const img = `<img src="cid:${photoCid(index)}" alt="${esc(captions[index])}" width="504" style="display:block;width:100%;max-width:504px;height:auto;border:0;border-radius:12px;" />`;
+          const linked = links[index] ? `<a href="${esc(links[index])}" style="text-decoration:none;">${img}</a>` : img;
+          const open = links[index]
+            ? ` &nbsp;·&nbsp; <a href="${esc(links[index])}" style="color:${EMAIL.green};font-weight:600;text-decoration:underline;">Open full size</a>`
+            : "";
+          return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;">
+            <tr><td>${linked}</td></tr>
+            <tr><td style="padding:6px 2px 0;font-family:${EMAIL.font};font-size:13px;line-height:1.4;color:${EMAIL.muted};"><strong style="color:${EMAIL.ink};">${esc(captions[index])}</strong>${open}</td></tr>
+          </table>`;
+        })
+        .join("")
+    : `<p style="margin:0 0 14px;padding:12px 14px;background:${EMAIL.wash};border:1px dashed ${EMAIL.line};border-radius:10px;font-family:${EMAIL.font};font-size:15px;line-height:1.5;color:${EMAIL.muted};">No photos uploaded.</p>`;
+
+  const consentHtml = input.consent
+    ? `<p style="margin:0 0 6px;font-family:${EMAIL.font};font-size:15px;line-height:1.5;color:${EMAIL.ink};"><strong>Yes${consentAt ? `, ${esc(consentAt)}` : ""}</strong></p>
+       ${consentRecord ? `<p style="margin:0;font-family:${EMAIL.font};font-size:14px;line-height:1.5;color:${EMAIL.muted};">${escLines(consentRecord)}</p>` : ""}`
+    : `<p style="margin:0;font-family:${EMAIL.font};font-size:15px;line-height:1.5;color:${EMAIL.muted};">No text consent. Call or email only.</p>`;
+
+  const hasHouseImage = Boolean(input.houseImage?.bytes.length);
+  const houseHtml = street
+    ? `${sectionTitle("The house (for your visit)")}
+       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 18px;">
+         <tr>
+           ${
+             hasHouseImage
+               ? `<td valign="top" width="150" style="width:150px;padding:0 14px 0 0;"><a href="${esc(streetViewUrl || mapsUrl)}" style="text-decoration:none;"><img src="cid:house-street-view" alt="Street View of the house" width="150" style="display:block;width:150px;height:auto;border:1px solid ${EMAIL.line};border-radius:10px;" /></a></td>`
+               : ""
+           }
+           <td valign="top" style="font-family:${EMAIL.font};font-size:14px;line-height:1.55;color:${EMAIL.ink};">
+             ${esc(street)}${locality ? `<br />${esc(locality)}` : ""}<br />
+             ${streetViewUrl ? `<a href="${esc(streetViewUrl)}" style="color:${EMAIL.green};font-weight:600;text-decoration:underline;">Open Street View</a>` : ""}
+             ${mapsUrl ? `<br /><a href="${esc(mapsUrl)}" style="color:${EMAIL.green};font-weight:600;text-decoration:underline;">Open in Google Maps</a>` : ""}
+           </td>
+         </tr>
+       </table>`
+    : "";
+
+  const footerBits = [
+    source ? `Source: ${esc(source)}` : "",
+    referrer ? `Referrer: ${esc(referrer)}` : "",
+    campaign ? `Campaign (UTM): ${esc(campaign)}` : "",
+    `Internal lead email only — not sent to the homeowner. Lead ${esc(input.id.slice(0, 8))}.`,
+  ].filter(Boolean);
+
+  const body = `${update}
+    ${sectionTitle(photoTitle).replace("margin:26px 0 10px", "margin:4px 0 10px")}
+    ${styleLine}
+    ${customLine}
+    ${photosHtml}
+    ${details.length ? `${sectionTitle("Project details")}${rowsTable(details)}` : ""}
+    ${sectionTitle("Consent")}
+    ${consentHtml}
+    ${houseHtml || `<div style="height:14px;line-height:14px;font-size:1px;">&nbsp;</div>`}`;
+
+  const preheader = [phone, town, project, input.photos.length ? `${input.photos.length} photo${input.photos.length === 1 ? "" : "s"}` : "no photos"]
+    .filter(Boolean)
+    .join(" · ");
+
+  const html = shell({
+    title: subject,
+    preheader,
+    banner: test ? testBanner(TEST_LINE) : "",
+    header,
+    body,
+    footer: footerBits.join("<br />"),
   });
 
   return { subject, text, html, attachments };
 }
 
-function textBody(input: {
-  kicker: string;
-  name: string;
-  town: string;
-  when: string;
-  phone: string;
-  email: string;
-  test: boolean;
-  street: string;
-  locality: string;
-  mapsUrl: string;
-  streetViewUrl: string;
-  project: string;
-  size: string;
-  rows: Array<[string, string]>;
-  photoCount: number;
-  newPhotoCount: number;
-  kind: "new" | "update";
-  id: string;
-}) {
-  const lines = [
-    input.test ? "TEST LEAD — sent to Shaun only, not to Justin." : "",
-    input.kicker.toUpperCase(),
-    input.name,
-    [input.town, input.when].filter(Boolean).join(" · "),
-    "",
-  ];
-  if (input.kind === "update") {
-    lines.push(updateSentence(input.newPhotoCount), "");
-  }
-  if (input.phone) lines.push(`Call: ${input.phone}`);
-  if (input.email) lines.push(`Email: ${input.email}`);
-  if (input.phone || input.email) lines.push("");
-  if (input.street) {
-    lines.push(input.street);
-    if (input.locality) lines.push(input.locality);
-    if (input.streetViewUrl) lines.push(`Street View: ${input.streetViewUrl}`);
-    if (input.mapsUrl) lines.push(`Open in Google Maps: ${input.mapsUrl}`);
-    lines.push("");
-  }
-  if (input.project) lines.push(input.project);
-  if (input.size) lines.push(input.size);
-  if (input.project || input.size) lines.push("");
-  for (const [label, value] of input.rows) {
-    lines.push(`${label}: ${value.replace(/\n/g, " ")}`);
-  }
-  if (input.rows.length) lines.push("");
-  if (input.photoCount) {
-    lines.push(
-      `Their photos: ${input.photoCount} (shown in this email and attached as files)`,
-      "",
-    );
-  }
-  lines.push(
-    "Internal lead email only — not sent to the homeowner.",
-    `Lead ${input.id.slice(0, 8)}.`,
-  );
-  return lines.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
+function callNow(tel: string) {
+  return `<a href="${esc(tel)}" style="display:block;background:#ffffff;color:${EMAIL.green};text-decoration:none;padding:14px 18px;border-radius:999px;font-weight:700;font-size:17px;line-height:1.2;text-align:center;font-family:${EMAIL.font};">Call now</a>`;
+}
+
+function emailButton(email: string, given: string) {
+  return `<a href="${esc(`mailto:${email}`)}" style="display:block;background:transparent;color:#ffffff;border:1px solid ${EMAIL.onGreenMuted};text-decoration:none;padding:13px 18px;border-radius:999px;font-weight:700;font-size:16px;line-height:1.2;text-align:center;font-family:${EMAIL.font};">Email ${esc(given || "them")}</a>`;
 }
 
 function updateSentence(newPhotoCount: number) {
@@ -283,165 +385,3 @@ function updateSentence(newPhotoCount: number) {
   return "Updated details for this consult.";
 }
 
-function htmlBody(input: {
-  kicker: string;
-  name: string;
-  town: string;
-  when: string;
-  phone: string;
-  tel: string;
-  email: string;
-  test: boolean;
-  given: string;
-  street: string;
-  locality: string;
-  mapsUrl: string;
-  streetViewUrl: string;
-  hasHouseImage: boolean;
-  project: string;
-  size: string;
-  rows: Array<[string, string]>;
-  photoCount: number;
-  newPhotoCount: number;
-  kind: "new" | "update";
-  id: string;
-}) {
-  const subline = [input.town, input.when].filter(Boolean).join(" · ");
-  const buttons = buttonRow(input.phone, input.tel, input.email, input.given);
-  const address = input.street
-    ? `<p style="margin:0 0 4px;font-family:${SANS};font-size:17px;line-height:1.3;color:${INK};"><strong>${esc(input.street)}</strong></p>
-       ${input.locality ? `<p style="margin:0 0 8px;font-family:${SANS};font-size:14px;line-height:1.4;color:${MUTED};">${esc(input.locality)}</p>` : ""}
-       ${
-         input.hasHouseImage
-           ? `<p style="margin:10px 0 6px;font-family:${SANS};font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:${MUTED};">Street View</p>
-              <img src="cid:house-street-view" alt="Street View of the house" width="520" style="display:block;width:100%;max-width:520px;height:auto;border-radius:16px;border:1px solid ${LINE};margin:0 0 8px;" />`
-           : ""
-       }
-       ${mapLinks(input.streetViewUrl, input.mapsUrl, input.hasHouseImage)}`
-    : "";
-
-  const job =
-    input.project || input.size
-      ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px;background:${CREAM};border-radius:16px;">
-          <tr><td style="padding:14px 16px;font-family:${SANS};color:${INK};">
-            ${input.project ? `<p style="margin:0 0 4px;font-size:18px;line-height:1.3;font-weight:700;">${esc(input.project)}</p>` : ""}
-            ${input.size ? `<p style="margin:0;font-size:15px;line-height:1.4;">${esc(input.size)}</p>` : ""}
-          </td></tr>
-        </table>`
-      : "";
-
-  const meta = input.rows
-    .map(
-      ([label, value]) => `<tr>
-        <td valign="top" width="88" style="padding:0 8px 10px 0;font-family:${SANS};font-size:15px;line-height:1.35;color:${MUTED};font-weight:700;">${esc(label)}</td>
-        <td valign="top" style="padding:0 0 10px;font-family:${SANS};font-size:15px;line-height:1.35;color:${INK};">${esc(value).replace(/\n/g, "<br />")}</td>
-      </tr>`,
-    )
-    .join("");
-
-  const update =
-    input.kind === "update"
-      ? `<p style="margin:0 0 14px;font-family:${SANS};font-size:14px;line-height:1.4;color:${MUTED};">${esc(updateSentence(input.newPhotoCount))}</p>`
-      : "";
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>${esc(input.kicker)}</title></head>
-<body style="margin:0;padding:0;background:${CANVAS};">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CANVAS};">
-    <tr><td align="center" style="padding:16px 12px 24px;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:${CARD};border-radius:20px;overflow:hidden;">
-        <tr><td style="background:${INK};padding:22px 22px 20px;">
-          <p style="margin:0 0 8px;font-family:${SANS};font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#e4d8b4;font-weight:700;">${esc(input.kicker)}</p>
-          <h1 style="margin:0 0 6px;font-family:${SERIF};font-size:34px;line-height:1;font-weight:500;color:#f6f1e6;">${esc(input.name)}</h1>
-          <p style="margin:0;font-family:${SERIF};font-size:16px;line-height:1.3;color:#e4d8b4;">${esc(subline)}</p>
-          ${
-            input.phone
-              ? `<p style="margin:10px 0 0;font-family:${SANS};font-size:20px;line-height:1.2;font-weight:700;">${
-                  input.tel
-                    ? `<a href="${esc(input.tel)}" style="color:#f6f1e6;text-decoration:underline;text-underline-offset:3px;">${esc(input.phone)}</a>`
-                    : `<span style="color:#f6f1e6;">${esc(input.phone)}</span>`
-                }</p>`
-              : ""
-          }
-        </td></tr>
-        <tr><td style="padding:22px;">
-          ${
-            input.test
-              ? `<p style="margin:0 0 14px;font-family:${SANS};font-size:13px;line-height:1.4;color:#8c4030;font-weight:700;">TEST LEAD — sent to Shaun only, not to Justin.</p>`
-              : ""
-          }
-          ${update}
-          ${buttons}
-          ${address}
-          ${job}
-          ${meta ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 8px;">${meta}</table>` : ""}
-          ${photoBlock(input.photoCount)}
-        </td></tr>
-        <tr><td style="padding:14px 22px 18px;border-top:1px solid ${LINE};font-family:${SANS};font-size:12px;line-height:1.45;color:${MUTED};">
-          Internal lead email only — not sent to the homeowner. Lead ${esc(input.id.slice(0, 8))}.
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`;
-}
-
-
-function mapLinks(streetViewUrl: string, mapsUrl: string, hasHouseImage: boolean) {
-  if (!streetViewUrl && !mapsUrl) return "";
-  const primaryUrl = streetViewUrl || mapsUrl;
-  const maps = mapsUrl
-    ? `<a href="${esc(mapsUrl)}" style="color:#103830;font-weight:700;text-decoration:underline;text-underline-offset:3px;">Open in Google Maps</a>`
-    : "";
-  if (hasHouseImage) {
-    const street = `<a href="${esc(primaryUrl)}" style="color:#103830;font-weight:700;text-decoration:underline;text-underline-offset:3px;">Open Street View</a>`;
-    const items = [street, maps].filter(Boolean).join(" &nbsp;·&nbsp; ");
-    return `<p style="margin:0 0 18px;font-family:${SANS};">${items}</p>`;
-  }
-  const button = `<a href="${esc(primaryUrl)}" style="display:block;background:${CLAY};color:#ffffff;text-decoration:none;border-radius:999px;padding:12px 16px;font-weight:700;font-size:16px;text-align:center;">Open Street View</a>`;
-  const under = maps
-    ? `<p style="margin:10px 0 18px;font-family:${SANS};font-size:14px;text-align:center;">${maps}</p>`
-    : "";
-  return `<p style="margin:8px 0 0;font-family:${SANS};">${button}</p>${under}`;
-}
-
-function buttonRow(phone: string, tel: string, email: string, given: string) {
-  const call = phone && tel
-    ? `<a href="${esc(tel)}" style="display:block;background:${CLAY};color:#ffffff;text-decoration:none;border-radius:999px;padding:12px 8px;font-weight:700;font-size:15px;text-align:center;font-family:${SANS};">Call ${esc(phone)}</a>`
-    : "";
-  const mail = email
-    ? `<a href="${esc(`mailto:${email}`)}" style="display:block;background:#ffffff;color:${INK};text-decoration:none;border:1px solid ${LINE};border-radius:999px;padding:12px 8px;font-weight:700;font-size:15px;text-align:center;font-family:${SANS};">Email ${esc(given || "customer")}</a>`
-    : "";
-  if (!call && !mail) return "";
-  if (call && mail) {
-    return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 18px;">
-      <tr>
-        <td width="50%" valign="top" style="padding-right:4px;">${call}</td>
-        <td width="50%" valign="top" style="padding-left:4px;">${mail}</td>
-      </tr>
-    </table>`;
-  }
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 18px;"><tr><td>${call || mail}</td></tr></table>`;
-}
-
-function photoBlock(count: number) {
-  if (!count) return "";
-  const image = (index: number) =>
-    `<img src="cid:${photoCid(index)}" alt="Customer photo ${index + 1}" width="250" style="display:block;width:100%;max-width:250px;height:auto;border-radius:14px;border:0;" />`;
-  if (count === 1) {
-    return `<h2 style="margin:8px 0 10px;font-family:${SERIF};font-size:22px;line-height:1.1;font-weight:500;color:${INK};">Their photos</h2>
-      <img src="cid:${photoCid(0)}" alt="Customer photo 1" width="520" style="display:block;width:100%;max-width:520px;height:auto;border-radius:14px;" />`;
-  }
-  let rows = "";
-  for (let index = 0; index < count; index += 2) {
-    const right = index + 1 < count ? image(index + 1) : "";
-    rows += `<tr>
-      <td width="50%" valign="top" style="padding:0 4px 8px 0;">${image(index)}</td>
-      <td width="50%" valign="top" style="padding:0 0 8px 4px;">${right}</td>
-    </tr>`;
-  }
-  return `<h2 style="margin:8px 0 10px;font-family:${SERIF};font-size:22px;line-height:1.1;font-weight:500;color:${INK};">Their photos</h2>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>`;
-}

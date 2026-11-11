@@ -3,12 +3,14 @@ import { isTestRequest, clientIp } from "@/lib/design-sessions";
 import { isTeamTestLead } from "@/lib/lead-notify";
 import { consentRecord } from "@/lib/lead-consent";
 import { saveLead, validateLead, type LeadInput } from "@/lib/leads";
+import { fullAddress } from "@/lib/lead-display";
 import {
   computeWindowEstimate,
   MATERIAL_BANDS,
   parseWindowCount,
   ROOMS,
   STYLES,
+  windowCustomerRecap,
   windowLeadNotes,
   windowLeadSubject,
   WINDOWS_CONSENT_TEXT,
@@ -135,7 +137,20 @@ export async function POST(request: Request) {
   const result = await saveLead(
     input,
     clientIp(request),
-    { test, subject: windowLeadSubject(name, city, standardCount, material) },
+    {
+      test,
+      subject: windowLeadSubject(name, city, standardCount, material),
+      customerRecap: windowCustomerRecap({
+        standardCount,
+        bayBowCount,
+        material,
+        styles,
+        rooms,
+        replaceAll: replaceAll === "all" || replaceAll === "some" ? replaceAll : "",
+        estimate,
+        address: fullAddress(street, city, zip),
+      }),
+    },
   );
   if (!result.ok) return fail(result.error, result.status);
   return NextResponse.json({

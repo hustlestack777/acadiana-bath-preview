@@ -2,7 +2,8 @@ import { Pool } from "pg";
 import { Resend } from "resend";
 import { validateDetails, validateExtras, validateStreet, validateZip } from "./estimate";
 import { checkCity } from "./coverage";
-import { buildCustomerConfirmation } from "./customer-email";
+import { buildCustomerConfirmation, recapFromLead, type CustomerRecap } from "./customer-email";
+import { leadPhotoUrl, sortPhotosByFilename } from "./lead-photo-link";
 import { buildLeadEmail } from "./lead-email";
 import {
   isTeamTestLead,
@@ -215,6 +216,8 @@ export type LeadNotifyOptions = {
   subject?: string;
   /** Header-based QA flag. Team test mode also trips on a 555 phone or Grok Bot inbox. */
   test?: boolean;
+  /** What the customer sees recapped in their confirmation. Defaults to the saved choices. */
+  customerRecap?: CustomerRecap;
 };
 
 export async function saveLead(input: LeadInput, ip: string, options: LeadNotifyOptions = {}) {
@@ -434,7 +437,7 @@ export async function updateLeadExtras(id: string, extras: LeadExtras) {
   }>(`SELECT width, depth, height, measurements, preferred_call_time FROM leads WHERE id = $1`, [id]);
   const current = updated.rows[0];
   const allPhotos = await db.query<{ filename: string; content_type: string; bytes: Buffer }>(
-    `SELECT filename, content_type, bytes FROM lead_photos WHERE lead_id = $1 ORDER BY filename`,
+    `SELECT filename, content_type, bytes FROM lead_photos WHERE lead_id = $1 ORDER BY filename COLLATE "C", id`,
     [id],
   );
 
@@ -535,6 +538,7 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
     latitude: mapLinks.latitude,
     longitude: mapLinks.longitude,
   });
+  const leadPhotos = sortPhotosByFilename(input.photos);
   const message = buildLeadEmail({
     kind: "new",
     id,
@@ -558,7 +562,9 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
     payment: input.payment,
     timing: input.timing,
     preferredCallTime: input.preferredCallTime,
-    photos: input.photos,
+    finish: input.finish,
+    photos: leadPhotos,
+    photoLinks: leadPhotos.map((_, index) => leadPhotoUrl(id, index)),
     houseImage,
     consent: input.consent,
     consentAt: input.consentAt ?? (input.consent ? createdAt : null),
@@ -596,6 +602,24 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
       phone: input.phone,
       sourcePage: input.sourcePage,
       photos: input.photos,
+      recap:
+        options.customerRecap ??
+        recapFromLead({
+          project: input.project,
+          width: input.width,
+          depth: input.depth,
+          height: input.height,
+          measurements: input.measurements,
+          finish: input.finish,
+          features: input.features,
+          budget: input.budget,
+          timing: input.timing,
+          preferredCallTime: input.preferredCallTime,
+          street: input.street,
+          city: input.city,
+          zip: input.zip,
+          photoCount: input.photos.length,
+        }),
       test: route.test,
     });
     const confirmResult = await sendWithRetry("customer confirmation", () =>
@@ -688,6 +712,7 @@ async function notifyLeadExtras(
     timing: input.timing,
     preferredCallTime: input.preferredCallTime,
     photos: input.photos,
+    photoLinks: input.photos.map((_, index) => leadPhotoUrl(id, index)),
     newPhotoCount: input.newPhotoCount,
     houseImage,
     test: route.test,

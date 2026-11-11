@@ -217,3 +217,53 @@ export function windowLeadNotes(input: {
   ];
   return lines.filter(Boolean).join("\n");
 }
+
+/** Short ballpark line for the customer's confirmation, e.g. "8 vinyl windows: $3,600 to $10,800". */
+export function windowRecapHeadline(estimate: WindowEstimate) {
+  const parts: string[] = [];
+  if (estimate.standardCount > 0) {
+    parts.push(`${estimate.standardCount} ${estimate.materialLabel} window${estimate.standardCount === 1 ? "" : "s"}`);
+  }
+  if (estimate.bayBowCount > 0) {
+    parts.push(`${estimate.bayBowCount} bay or bow opening${estimate.bayBowCount === 1 ? "" : "s"}`);
+  }
+  return `${parts.join(" + ")}: ${formatRange(estimate.low, estimate.high, estimate.openHigh)}`;
+}
+
+/** The customer's window answers, recapped in their confirmation email. */
+export function windowCustomerRecap(input: {
+  standardCount: number | null;
+  bayBowCount: number;
+  material: MaterialId;
+  styles: StyleId[];
+  rooms: RoomId[];
+  replaceAll: "all" | "some" | "";
+  estimate: WindowEstimate | null;
+  address: string;
+}) {
+  const styleNames = input.styles
+    .map((id) => STYLES.find((item) => item.id === id)?.name)
+    .filter(Boolean)
+    .join(", ");
+  const roomNames = input.rooms
+    .map((id) => ROOMS.find((item) => item.id === id)?.name)
+    .filter(Boolean)
+    .join(", ");
+  const material = MATERIALS.find((item) => item.id === input.material)?.name ?? "";
+  const rows = [
+    { label: "Windows", value: input.standardCount == null ? "Not sure yet. Justin will count when he measures." : String(input.standardCount) },
+    { label: "Bay or bow", value: input.bayBowCount > 0 ? String(input.bayBowCount) : "" },
+    { label: "Material", value: material },
+    { label: "Styles", value: styleNames },
+    { label: "Rooms", value: roomNames },
+    { label: "Replacing", value: input.replaceAll === "all" ? "All the windows" : input.replaceAll === "some" ? "Only some" : "" },
+    { label: "Address", value: input.address },
+  ].filter((row) => row.value.trim());
+  return {
+    headline: input.estimate ? windowRecapHeadline(input.estimate) : undefined,
+    note: input.estimate
+      ? "This is a ballpark range, not a quote. Justin gives you the final price after he measures."
+      : "Justin will count your windows and give you a real price after he measures.",
+    rows,
+  };
+}
