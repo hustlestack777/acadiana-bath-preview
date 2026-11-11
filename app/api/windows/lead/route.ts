@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isTestRequest, clientIp } from "@/lib/design-sessions";
 import { isTeamTestLead } from "@/lib/lead-notify";
+import { consentRecord } from "@/lib/lead-consent";
 import { saveLead, validateLead, type LeadInput } from "@/lib/leads";
 import {
   computeWindowEstimate,
@@ -86,7 +87,6 @@ export async function POST(request: Request) {
     rooms,
     replaceAll: replaceAll === "all" || replaceAll === "some" ? replaceAll : "",
     estimate,
-    consentAt,
     streetViewSuggested: suggested,
   });
 
@@ -122,7 +122,7 @@ export async function POST(request: Request) {
     payment: "",
     consent: true,
     consentAt,
-    consentText: WINDOWS_CONSENT_TEXT,
+    consentText: consentRecord(WINDOWS_CONSENT_TEXT, text(form, "formPage", 80) || WINDOWS_SOURCE_PAGE),
     preferredCallTime: "",
     photos: [],
   };

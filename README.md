@@ -24,7 +24,7 @@ The review form validates the fields, rejects a filled honeypot, and rate-limits
 
 `LEAD_NOTIFY_EMAIL` defaults to `acadianabathandcounter@gmail.com,shaun.brasher@gmail.com,shaun@lagniapperealmlabs.com`. Justin is always the To address on a real lead; the other listed addresses are CC'd. `RESEND_FROM` must be an address on a domain verified in Resend. If email is not configured, the lead can still be stored and the response says the notification was not sent. The page does not claim success when storage fails.
 
-The notification is a phone-readable card: source page (and form page if different), referrer and UTM campaign when present, name, call and email buttons, street address, project, size, home, timing, payment, and notes that were actually filled in. Times are America/Chicago. Photos are shown in the email and also attached as files. The public thank-you page does not show the street address or a house photo.
+The notification is a phone-readable card: source page (and form page if different), referrer and UTM campaign when present, name, call and email buttons, street address, project, size, home, timing, payment, notes that were actually filled in, and consent (the exact checkbox wording, the page it was on, and the timestamp). Times are America/Chicago. Photos are shown in the email and also attached as files. The public thank-you page does not show the street address or a house photo.
 
 ### Team test mode
 

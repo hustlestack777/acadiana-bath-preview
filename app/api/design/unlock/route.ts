@@ -10,6 +10,7 @@ import {
   phoneDigits,
 } from "@/lib/design-sessions";
 import { isTeamTestLead, withTestSubject } from "@/lib/lead-notify";
+import { consentRecord } from "@/lib/lead-consent";
 import { formatChicago } from "@/lib/lead-display";
 import { budgetTag } from "@/lib/budget";
 
@@ -133,6 +134,8 @@ export async function POST(request: Request) {
     homeowner,
     payment: "not-sure",
     consent: smsConsent,
+    consentAt: smsConsent ? now : null,
+    consentText: smsConsent ? consentRecord(designCopy.smsConsent, text(form, "formPage", 80) || "/design") : "",
     preferredCallTime: "",
     photos,
   };

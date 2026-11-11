@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { MAX_PHOTOS, saveLead, validateLead, type LeadPhoto } from "@/lib/leads";
+import { consentLabel } from "@/lib/copy";
+import { consentRecord } from "@/lib/lead-consent";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -97,13 +99,20 @@ export async function POST(request: Request) {
     preferredCallTime: text(form, "preferredCallTime"),
     photos,
   };
-  const { errors } = validateLead(input);
+  const consented = input.consent;
+  const formPage = input.formPage || input.sourcePage || "/estimate";
+  const recorded = {
+    ...input,
+    consentAt: consented ? new Date() : null,
+    consentText: consented ? consentRecord(consentLabel, formPage) : "",
+  };
+  const { errors } = validateLead(recorded);
   if (Object.keys(errors).length) {
     return NextResponse.json({ ok: false, error: "Check the highlighted fields.", errors }, { status: 400 });
   }
 
   try {
-    const result = await saveLead(input, clientIp(request));
+    const result = await saveLead(recorded, clientIp(request));
     if (!result.ok) {
       return NextResponse.json({ ok: false, error: result.error }, { status: result.status });
     }

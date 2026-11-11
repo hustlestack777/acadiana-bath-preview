@@ -191,7 +191,6 @@ export function windowLeadNotes(input: {
   rooms: RoomId[];
   replaceAll: "all" | "some" | "";
   estimate: WindowEstimate | null;
-  consentAt: Date;
   streetViewSuggested?: number | null;
 }) {
   const styleNames = input.styles
@@ -215,8 +214,6 @@ export function windowLeadNotes(input: {
     input.estimate
       ? `Estimate shown: ${formatRange(input.estimate.low, input.estimate.high, input.estimate.openHigh)} (ballpark, not a quote)`
       : "Estimate shown: none (count unsure)",
-    `Consent: yes, ${input.consentAt.toLocaleString("en-US", { timeZone: "America/Chicago", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }).replace(/\u202f/g, " ")}`,
-    `Consent text: ${WINDOWS_CONSENT_TEXT}`,
   ];
   return lines.filter(Boolean).join("\n");
 }
