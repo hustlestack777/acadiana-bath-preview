@@ -95,7 +95,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="ml-auto flex items-center gap-2 rounded-full bg-fig px-4 py-3 text-sm font-semibold text-fig-foreground shadow-lg"
+        className="ml-auto flex items-center gap-2 rounded-full bg-fig px-4 py-3 text-sm font-semibold text-fig-foreground shadow-lg max-md:[[data-sticky-cta]_&]:hidden"
         aria-expanded={open}
       >
         <span className="rounded-full bg-fig-foreground px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-fig">

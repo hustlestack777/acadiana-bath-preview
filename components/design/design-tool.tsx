@@ -14,7 +14,7 @@ import { useScrollToStep } from "@/lib/scroll-to-step";
 type Step = "photos" | "budget" | "style" | "rendering" | "teaser" | "cap-pending" | "reveal" | "custom-done";
 type Shot = { file: File; url: string };
 
-// The server already regenerates up to 2 times behind its QA check; the browser only retries a dropped connection once.
+// The server returns the first usable preview and only retries if that image is unusable; the browser retries a dropped connection once.
 const MAX_TRIES = 2;
 const TOKEN_KEY = "abc-design-token";
 
@@ -41,16 +41,21 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
     shotsRef.current = shots;
   }, [shots]);
   useEffect(() => () => shotsRef.current.forEach((shot) => URL.revokeObjectURL(shot.url)), []);
+  useEffect(() => {
+    document.documentElement.dataset.stickyCta = "true";
+    return () => {
+      delete document.documentElement.dataset.stickyCta;
+    };
+  }, []);
   useScrollToStep(step, topRef);
 
-  // Rotating scanner copy; the bar stays under 90% until the server answers.
+  // Fallback creep while we wait; real stage events from the server jump the bar ahead.
   useEffect(() => {
     if (step !== "rendering") return;
     const started = Date.now();
     const timer = window.setInterval(() => {
       const seconds = (Date.now() - started) / 1000;
-      setBusyMsg(Math.min(designCopy.steps.length - 1, Math.floor(seconds / 9)));
-      setProgress(Math.min(90, Math.round(90 * (1 - Math.exp(-seconds / 18)))));
+      setProgress((current) => Math.max(current, Math.min(90, Math.round(90 * (1 - Math.exp(-seconds / 25))))));
     }, 400);
     return () => window.clearInterval(timer);
   }, [step]);
@@ -95,8 +100,23 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
       body.set("company_fax", form.company_fax);
       body.set("token", window.localStorage.getItem(TOKEN_KEY) || "");
       try {
-        const response = await fetch("/api/design/render", { method: "POST", body });
-        const json = await response.json().catch(() => ({}));
+        const response = await fetch("/api/design/render", {
+          method: "POST",
+          body,
+          headers: { Accept: "application/x-ndjson, application/json", "x-design-progress": "1" },
+        });
+        const json = await readRenderResponse(response, (stage) => {
+          if (stage === "preparing") {
+            setBusyMsg(0);
+            setProgress((current) => Math.max(current, 12));
+          } else if (stage === "editing" || stage === "retrying") {
+            setBusyMsg(2);
+            setProgress((current) => Math.max(current, stage === "retrying" ? 50 : 28));
+          } else if (stage === "checking") {
+            setBusyMsg(4);
+            setProgress((current) => Math.max(current, 80));
+          }
+        });
         if (response.ok && json.ok) {
           setProgress(100);
           if (json.capped) {
@@ -210,15 +230,17 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
               ))}
             </ul>
           ) : null}
-          <button
-            type="button"
-            disabled={!shots.length}
-            onClick={() => setStep("budget")}
-            className="mt-6 h-14 w-full rounded-full bg-[#103830] text-base font-semibold text-white disabled:opacity-40"
-            data-testid="design-next"
-          >
-            Next: pick a look
-          </button>
+          <div className="sticky bottom-0 z-30 -mx-5 mt-6 border-t border-border bg-background/95 px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:static md:mx-0 md:mt-6 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
+            <button
+              type="button"
+              disabled={!shots.length}
+              onClick={() => setStep("budget")}
+              className="h-14 w-full rounded-full bg-[#103830] text-base font-semibold text-white disabled:opacity-40"
+              data-testid="design-next"
+            >
+              Next: pick a look
+            </button>
+          </div>
         </section>
       ) : null}
 
@@ -298,7 +320,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             aria-hidden="true"
             className="absolute -left-[9999px] h-0 w-0 opacity-0"
           />
-          <div className="mt-5 flex gap-3">
+          <div className="sticky bottom-0 z-30 -mx-5 mt-6 border-t border-border bg-background/95 px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:static md:mx-0 md:mt-6 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none flex gap-3">
             <button type="button" onClick={() => setStep("budget")} className="h-14 rounded-full border border-border px-6 font-semibold">
               Back
             </button>
@@ -306,7 +328,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
               type="button"
               disabled={!style || !shots.length}
               onClick={render}
-              className="h-14 flex-1 rounded-full bg-primary text-base font-semibold text-primary-foreground disabled:opacity-40"
+              className="h-14 min-w-0 flex-1 rounded-full bg-primary px-4 text-base font-semibold text-primary-foreground disabled:opacity-40"
               data-testid="design-render"
             >
               Design my bathroom
@@ -326,7 +348,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-border">
             <div className="h-full rounded-full bg-primary transition-[width] duration-500" style={{ width: `${progress}%` }} />
           </div>
-          <p className="mt-2 text-sm text-muted-foreground">Usually about a minute. Keep this page open.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Usually under a minute. Keep this page open.</p>
         </section>
       ) : null}
 
@@ -447,6 +469,45 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
       ) : null}
     </div>
   );
+}
+
+
+async function readRenderResponse(response: Response, onStage: (stage: string) => void) {
+  const type = response.headers.get("content-type") || "";
+  if (!type.includes("ndjson") || !response.body) {
+    return response.json().catch(() => ({}));
+  }
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let last: Record<string, unknown> = {};
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? "";
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      try {
+        const event = JSON.parse(line) as Record<string, unknown>;
+        if (typeof event.stage === "string") onStage(event.stage);
+        last = event;
+      } catch {
+        // Skip a partial or malformed line.
+      }
+    }
+  }
+  if (buffer.trim()) {
+    try {
+      const event = JSON.parse(buffer) as Record<string, unknown>;
+      if (typeof event.stage === "string") onStage(event.stage);
+      last = event;
+    } catch {
+      // Ignore a trailing fragment.
+    }
+  }
+  return last;
 }
 
 function Field({ id, label, error, children }: { id: string; label: string; error?: string; children: React.ReactNode }) {

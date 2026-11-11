@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { findStyle } from "@/lib/design-styles";
 import { findBudget } from "@/lib/budget";
-import { normalizePhoto, renderDesign, RenderError, teaser } from "@/lib/design-render";
+import { normalizePhoto, renderDesign, RenderError, teaser, type RenderResult, type RenderStage } from "@/lib/design-render";
 import {
   checkLimits,
   clientIp,
@@ -106,9 +106,17 @@ export async function POST(request: Request) {
     [id, ipHash, deviceId, style.key, test, before, extra, phone, budget],
   );
 
-  try {
-    const result = await renderDesign(before, style);
-    // Log every QA verdict server-side (table + log line), pass or fail.
+
+  const stream = request.headers.get("x-design-progress") === "1" || (request.headers.get("accept") || "").includes("application/x-ndjson");
+  const cookie = {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: true,
+    maxAge: 60 * 60 * 24 * 365,
+    path: "/",
+  };
+
+  const finish = async (result: RenderResult) => {
     for (const attempt of result.attempts) {
       const verdict = attempt.verdict;
       console.log(
@@ -149,40 +157,30 @@ export async function POST(request: Request) {
           })),
         }
       : {};
-
-    let response: NextResponse;
     if (!result.after) {
-      // Every attempt failed QA: show no image. The visitor still leaves their info and Justin builds a custom design.
       await db.query(
         `UPDATE design_sessions SET status='qa_failed', qa_failed=true, attempts=$2, cost_usd=$3, latency_ms=$4, model=$5 WHERE id=$1`,
         [id, result.attempts.length, result.costUsd.toFixed(4), result.latencyMs, result.model],
       );
       console.log(`design render qa_failed style=${style.key} attempts=${result.attempts.length} ms=${result.latencyMs} usd=${result.costUsd.toFixed(4)}`);
-      response = NextResponse.json({ ok: true, id, qaFailed: true, latencyMs: result.latencyMs, ...debug });
-    } else {
-      const preview = await teaser(result.after);
-      await db.query(
-        `UPDATE design_sessions SET status='done', after=$2, cost_usd=$3, latency_ms=$4, model=$5, attempts=$6 WHERE id=$1`,
-        [id, result.after, result.costUsd.toFixed(4), result.latencyMs, result.model, result.attempts.length],
-      );
-      console.log(`design render ok style=${style.key} attempts=${result.attempts.length} ms=${result.latencyMs} usd=${result.costUsd.toFixed(4)}`);
-      response = NextResponse.json({
-        ok: true,
-        id,
-        teaser: `data:image/jpeg;base64,${preview.toString("base64")}`,
-        latencyMs: result.latencyMs,
-        ...debug,
-      });
+      return { ok: true, id, qaFailed: true, latencyMs: result.latencyMs, ...debug };
     }
-    response.cookies.set(DEVICE_COOKIE, deviceId, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: true,
-      maxAge: 60 * 60 * 24 * 365,
-      path: "/",
-    });
-    return response;
-  } catch (error) {
+    const preview = await teaser(result.after);
+    await db.query(
+      `UPDATE design_sessions SET status='done', after=$2, cost_usd=$3, latency_ms=$4, model=$5, attempts=$6 WHERE id=$1`,
+      [id, result.after, result.costUsd.toFixed(4), result.latencyMs, result.model, result.attempts.length],
+    );
+    console.log(`design render ok style=${style.key} attempts=${result.attempts.length} ms=${result.latencyMs} usd=${result.costUsd.toFixed(4)}`);
+    return {
+      ok: true,
+      id,
+      teaser: `data:image/jpeg;base64,${preview.toString("base64")}`,
+      latencyMs: result.latencyMs,
+      ...debug,
+    };
+  };
+
+  const failRender = async (error: unknown) => {
     const known = error instanceof RenderError ? error : null;
     await db
       .query(`UPDATE design_sessions SET status=$2, error=$3, cost_usd=$4, before=NULL, extra=NULL WHERE id=$1`, [
@@ -193,8 +191,52 @@ export async function POST(request: Request) {
       ])
       .catch(() => undefined);
     console.error("design render failed", known?.message || (error instanceof Error ? error.name : "unknown"));
-    return fail(known?.userMessage || "The designer hit a snag. Let's try again.", known && !known.retryable ? 422 : 502, {
+    return {
+      ok: false as const,
+      error: known?.userMessage || "The designer hit a snag. Let's try again.",
+      status: known && !known.retryable ? 422 : 502,
       retryable: known ? known.retryable : true,
+    };
+  };
+
+  if (stream) {
+    const encoder = new TextEncoder();
+    const body = new ReadableStream({
+      async start(controller) {
+        const send = (payload: Record<string, unknown>) => {
+          controller.enqueue(encoder.encode(`${JSON.stringify(payload)}\n`));
+        };
+        try {
+          send({ stage: "preparing" as RenderStage });
+          const result = await renderDesign(before, style, (stage) => send({ stage }));
+          const payload = await finish(result);
+          send({ stage: "done", ...payload });
+        } catch (error) {
+          const failed = await failRender(error);
+          send({ stage: "error", ok: false, error: failed.error, retryable: failed.retryable, status: failed.status });
+        } finally {
+          controller.close();
+        }
+      },
     });
+    const response = new NextResponse(body, {
+      headers: {
+        "Content-Type": "application/x-ndjson; charset=utf-8",
+        "Cache-Control": "no-store",
+      },
+    });
+    response.cookies.set(DEVICE_COOKIE, deviceId, cookie);
+    return response;
+  }
+
+  try {
+    const result = await renderDesign(before, style);
+    const payload = await finish(result);
+    const response = NextResponse.json(payload);
+    response.cookies.set(DEVICE_COOKIE, deviceId, cookie);
+    return response;
+  } catch (error) {
+    const failed = await failRender(error);
+    return fail(failed.error, failed.status, { retryable: failed.retryable });
   }
 }

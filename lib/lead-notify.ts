@@ -47,7 +47,7 @@ export function shouldTextLead(phone: string, email: string) {
 export function withTestSubject(subject: string, test: boolean) {
   const trimmed = subject.trim();
   if (!test) return trimmed;
-  return /^\s*\[TEST\]/i.test(trimmed) ? trimmed : `[TEST] ${trimmed}`;
+  return /^\s*\[TEST\b/i.test(trimmed) ? trimmed : `[TEST] ${trimmed}`;
 }
 
 function uniqueAddresses(addresses: string[]) {

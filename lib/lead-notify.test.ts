@@ -70,6 +70,7 @@ test("real leads go To Justin and CC Shaun; test leads go to Shaun only", () => 
 test("test subjects get a single [TEST] prefix", () => {
   assert.equal(withTestSubject("New consult · Ada · Lafayette", true), "[TEST] New consult · Ada · Lafayette");
   assert.equal(withTestSubject("[TEST] New consult · Ada · Lafayette", true), "[TEST] New consult · Ada · Lafayette");
+  assert.equal(withTestSubject("[TEST v2] New consult · Ada · Lafayette", true), "[TEST v2] New consult · Ada · Lafayette");
   assert.equal(withTestSubject("New consult · Ada · Lafayette", false), "New consult · Ada · Lafayette");
 });
 

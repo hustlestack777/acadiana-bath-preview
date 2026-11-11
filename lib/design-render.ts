@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import type { DesignStyle } from "./design-styles";
-import { qaCheck, type QaVerdict } from "./design-qa";
+import { isUsableRedesign, qaCheck, rankUsableAttempts, type QaCheck, type QaVerdict } from "./design-qa";
 
 /**
  * Two-step render (same pattern as GetMowed /api/landscape-design):
@@ -14,6 +14,8 @@ export const VISION_MODEL = process.env.DESIGN_VISION_MODEL || "grok-4.20-0309-n
 export const IMAGE_MODEL = process.env.DESIGN_IMAGE_MODEL || "grok-imagine-image-2.0";
 const IMAGE_QUALITY = process.env.DESIGN_IMAGE_QUALITY || "medium";
 const USD_TICKS = 10_000_000_000;
+/** Long edge sent to the vision and image models. Smaller than the stored photo, faster to edit. */
+export const MODEL_EDGE = 1024;
 
 export class RenderError extends Error {
   constructor(
@@ -203,56 +205,139 @@ export type RenderAttempt = {
   error?: string;
 };
 
-/** First try plus up to DESIGN_QA_RETRIES silent regenerations (default 2). */
-export const QA_RETRIES = Math.max(0, Math.min(3, Number(process.env.DESIGN_QA_RETRIES ?? 2)));
-/** Stop starting new attempts after this long so the visitor is never left waiting forever. */
-const RENDER_BUDGET_MS = Number(process.env.DESIGN_RENDER_BUDGET_MS || 170_000);
+/** At most one extra try, and only when the first image is unusable. */
+export const QA_RETRIES = Math.max(0, Math.min(3, Number(process.env.DESIGN_QA_RETRIES ?? 1)));
+/** Stop starting a retry after this long so the visitor is never left waiting forever. */
+const RENDER_BUDGET_MS = Number(process.env.DESIGN_RENDER_BUDGET_MS || 100_000);
+
+const DRAFT_SCAN: RoomScan = {
+  is_bathroom: true,
+  has_person: false,
+  camera: "as shown in the photo",
+  layout: "",
+  lighting: "as shown",
+  clutter: [],
+  fixtures: [],
+  sinkCount: 0,
+};
+
+export type RenderStage = "preparing" | "editing" | "checking" | "retrying";
+
+async function showable(bytes: Buffer | null, failed?: QaCheck[]) {
+  if (!bytes || !isUsableRedesign(failed ?? [], true)) return false;
+  try {
+    const meta = await sharp(bytes).metadata();
+    return Boolean(meta.width && meta.height && Math.min(meta.width, meta.height) >= 400);
+  } catch {
+    return false;
+  }
+}
 
 /**
- * Scan once, then edit + QA up to 1 + QA_RETRIES times. Returns the first image that passes QA,
- * or after = null when every attempt failed (the visitor then gets the custom-design message).
+ * Downscale for the models, start the room scan and the first edit together, QA that
+ * first image, and return as soon as we have a passing or usable preview (target: under
+ * ~45 seconds). A second attempt runs only if the first image is clearly unusable.
  */
-export async function renderDesign(photo: Buffer, style: DesignStyle): Promise<RenderResult> {
+export async function renderDesign(
+  photo: Buffer,
+  style: DesignStyle,
+  onProgress?: (stage: RenderStage) => void,
+): Promise<RenderResult> {
   const started = Date.now();
-  const { scan, costUsd: scanCost } = await scanRoom(photo);
-  if (!scan.is_bathroom) {
-    throw new RenderError("not a bathroom", "That doesn't look like a bathroom. Try a photo of your shower or tub.", false, scanCost);
-  }
-  if (scan.has_person) {
-    throw new RenderError("person in photo", "We see a person in that photo. Try one with just the bathroom.", false, scanCost);
-  }
-  const attempts: RenderAttempt[] = [];
-  let costUsd = scanCost;
-  let passed: Buffer | null = null;
-  for (let attempt = 1; attempt <= 1 + QA_RETRIES; attempt += 1) {
-    if (attempt > 1 && Date.now() - started > RENDER_BUDGET_MS) break;
+  onProgress?.("preparing");
+  const source = await modelPhoto(photo);
+
+  onProgress?.("editing");
+  const scanPromise = scanRoom(source).then(
+    (value) => ({ ok: true as const, value }),
+    (error) => ({ ok: false as const, error }),
+  );
+  const firstEditPromise = (async () => {
     const editStarted = Date.now();
-    let edit: { bytes: Buffer; costUsd: number };
     try {
-      edit = await editRoom(photo, style, scan);
+      const edit = await editRoom(source, style, DRAFT_SCAN);
+      const after = await sharp(edit.bytes).rotate().jpeg({ quality: 88 }).toBuffer();
+      return { editStarted, after, costUsd: edit.costUsd, error: undefined as string | undefined };
     } catch (error) {
       const known = error instanceof RenderError ? error : null;
-      costUsd += known?.costUsd ?? 0;
-      if (known && !known.retryable) {
-        known.costUsd = costUsd;
-        throw known;
-      }
-      attempts.push({ attempt, after: null, verdict: null, editMs: Date.now() - editStarted, costUsd: known?.costUsd ?? 0, error: known?.message ?? "edit failed" });
-      continue;
+      return {
+        editStarted,
+        after: null as Buffer | null,
+        costUsd: known?.costUsd ?? 0,
+        error: known?.message ?? "edit failed",
+        fatal: known && !known.retryable ? known : undefined,
+      };
     }
-    const editMs = Date.now() - editStarted;
-    const after = await sharp(edit.bytes).rotate().jpeg({ quality: 88 }).toBuffer();
-    const verdict = await qaCheck(photo, after, scan, style);
-    costUsd += edit.costUsd + verdict.costUsd;
-    attempts.push({ attempt, after, verdict, editMs, costUsd: edit.costUsd + verdict.costUsd });
-    if (verdict.pass) {
-      passed = after;
-      break;
+  })();
+
+  const scanned = await scanPromise;
+  let scan = DRAFT_SCAN;
+  let costUsd = 0;
+  if (scanned.ok) {
+    scan = scanned.value.scan;
+    costUsd += scanned.value.costUsd;
+    if (!scan.is_bathroom) {
+      await firstEditPromise;
+      throw new RenderError("not a bathroom", "That doesn't look like a bathroom. Try a photo of your shower or tub.", false, costUsd);
+    }
+    if (scan.has_person) {
+      await firstEditPromise;
+      throw new RenderError("person in photo", "We see a person in that photo. Try one with just the bathroom.", false, costUsd);
     }
   }
+
+  const first = await firstEditPromise;
+  if (first.fatal) {
+    first.fatal.costUsd = costUsd + first.costUsd;
+    throw first.fatal;
+  }
+
+  const attempts: RenderAttempt[] = [];
+  let passed: Buffer | null = null;
+
+  const finishAttempt = async (attempt: number, editMs: number, after: Buffer | null, editCost: number, error?: string) => {
+    if (!after) {
+      attempts.push({ attempt, after: null, verdict: null, editMs, costUsd: editCost, error: error ?? "edit failed" });
+      costUsd += editCost;
+      return;
+    }
+    onProgress?.("checking");
+    const verdict = await qaCheck(source, after, scan, style);
+    costUsd += editCost + verdict.costUsd;
+    attempts.push({ attempt, after, verdict, editMs, costUsd: editCost + verdict.costUsd });
+    if (verdict.pass || (await showable(after, verdict.failed))) passed = after;
+  };
+
+  await finishAttempt(1, Date.now() - first.editStarted, first.after, first.costUsd, first.error);
+
+  for (let attempt = 2; !passed && attempt <= 1 + QA_RETRIES; attempt += 1) {
+    if (Date.now() - started > RENDER_BUDGET_MS) break;
+    onProgress?.("retrying");
+    const editStarted = Date.now();
+    try {
+      const edit = await editRoom(source, style, scan);
+      const after = await sharp(edit.bytes).rotate().jpeg({ quality: 88 }).toBuffer();
+      await finishAttempt(attempt, Date.now() - editStarted, after, edit.costUsd);
+    } catch (error) {
+      const known = error instanceof RenderError ? error : null;
+      if (known && !known.retryable) {
+        known.costUsd = costUsd + (known.costUsd ?? 0);
+        throw known;
+      }
+      await finishAttempt(attempt, Date.now() - editStarted, null, known?.costUsd ?? 0, known?.message ?? "edit failed");
+    }
+  }
+
   if (!attempts.some((item) => item.after) && attempts.length) {
-    // Every attempt failed at the image service itself: that's an outage, not a QA fail.
     throw new RenderError("all edits failed", "The designer hit a snag. Let's try again.", true, costUsd);
+  }
+  if (!passed) {
+    for (const candidate of rankUsableAttempts(attempts)) {
+      if (await showable(candidate.after, candidate.verdict?.failed)) {
+        passed = candidate.after;
+        break;
+      }
+    }
   }
   return {
     after: passed,
@@ -262,6 +347,15 @@ export async function renderDesign(photo: Buffer, style: DesignStyle): Promise<R
     latencyMs: Date.now() - started,
     model: IMAGE_MODEL,
   };
+}
+
+/** Downscale a photo to the long edge used by the models. */
+export async function modelPhoto(bytes: Buffer) {
+  return sharp(bytes, { failOn: "error" })
+    .rotate()
+    .resize(MODEL_EDGE, MODEL_EDGE, { fit: "inside", withoutEnlargement: true })
+    .jpeg({ quality: 85 })
+    .toBuffer();
 }
 
 /** Clean, stripped copy of the upload (EXIF/GPS removed, max 1600 px). */
