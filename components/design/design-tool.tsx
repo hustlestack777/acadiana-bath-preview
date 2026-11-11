@@ -31,7 +31,9 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   const topRef = useRef<HTMLDivElement>(null);
 
   const shotsRef = useRef<Shot[]>([]);
-  shotsRef.current = shots;
+  useEffect(() => {
+    shotsRef.current = shots;
+  }, [shots]);
   useEffect(() => () => shotsRef.current.forEach((shot) => URL.revokeObjectURL(shot.url)), []);
   const firstStep = useRef(true);
   useEffect(() => {
