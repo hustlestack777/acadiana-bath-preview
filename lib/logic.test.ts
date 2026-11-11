@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { CHAT_ANSWERS, replyTo } from "./chat";
+import { CHAT_ANSWERS, GIGI_GREETING_DESIGN, GIGI_GREETING_LEAD, GIGI_GREETING_RARE, greetingForPath, replyTo, shouldShowGreeting } from "./chat";
 import { checkCity } from "./coverage";
 import { validateDetails, validateExtras, validateStreet, validateZip } from "./estimate";
 import { leadNotifyRecipients, validateLead } from "./leads";
@@ -168,5 +168,25 @@ test("assistant answers stay inside the published facts", () => {
   assert.match(replyTo("how much"), /\$5K–\$30K\+/);
   assert.match(replyTo("are you a person"), /AI assistant/i);
   assert.match(replyTo("are you a person"), /Gigi/);
-  assert.match(CHAT_ANSWERS.disclosure, /Gigi, the AI assistant/);
+  assert.match(CHAT_ANSWERS.disclosure, /Hey! I’m Gigi\. I can give you a ballpark price/);
+  assert.match(CHAT_ANSWERS.disclosure, /Justin, the owner/);
+  assert.equal(/AI assistant/i.test(CHAT_ANSWERS.disclosure), false);
+  assert.match(replyTo("What's a ballpark price?"), /Starting at \$5K/);
+  assert.match(replyTo("What's a ballpark price?"), /whole bathroom/);
+});
+
+test("Gigi's greeting bubble copy and page rules", () => {
+  assert.equal(shouldShowGreeting("/"), true);
+  assert.equal(shouldShowGreeting("/design"), true);
+  assert.equal(shouldShowGreeting("/privacy"), false);
+  assert.equal(shouldShowGreeting("/privacy/"), false);
+  assert.equal(shouldShowGreeting("/terms"), false);
+  assert.equal(shouldShowGreeting("/policy"), false);
+  assert.equal(shouldShowGreeting("/blog"), false);
+  assert.equal(shouldShowGreeting("/blog/some-post"), false);
+  assert.equal(greetingForPath("/design", 0), GIGI_GREETING_DESIGN);
+  assert.equal(greetingForPath("/design", 0.99), GIGI_GREETING_DESIGN);
+  assert.equal(greetingForPath("/", 0.14), GIGI_GREETING_RARE);
+  assert.equal(greetingForPath("/", 0.15), GIGI_GREETING_LEAD);
+  assert.equal(greetingForPath("/estimate", 0.9), GIGI_GREETING_LEAD);
 });

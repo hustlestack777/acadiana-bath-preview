@@ -7,8 +7,28 @@ function faqAnswer(question: string) {
   return item.a;
 }
 
+export const GIGI_GREETING_LEAD = "Hey, I’m Gigi 👋 Need help with your bathroom?";
+export const GIGI_GREETING_RARE = "Thinking about a remodel? I can help 😊";
+export const GIGI_GREETING_DESIGN = "Want to see your new bathroom first? Ask me!";
+export const GIGI_HEADER_SUBLINE = "Here to help";
+export const GIGI_GREETING_DELAY_MS = 12_000;
+
+export function shouldShowGreeting(pathname: string) {
+  const path = (pathname.replace(/\/+$/, "") || "/") || "/";
+  return !/^\/(privacy|terms|policy|blog)(\/|$)/i.test(path);
+}
+
+/** Lead line most of the time; rare line least often; design page always gets the design line. */
+export function greetingForPath(pathname: string, random = Math.random()) {
+  if (pathname === "/design" || pathname.startsWith("/design/")) return GIGI_GREETING_DESIGN;
+  return random < 0.15 ? GIGI_GREETING_RARE : GIGI_GREETING_LEAD;
+}
+
 const answers = {
-  disclosure: `Hey there! I’m Gigi, the AI assistant for ${brand.name}. I’m not a person, and I answer from what’s on this site. What you type here stays in your browser and isn’t saved. For your own bathroom, tap Design My Bathroom or Get My Free Quote.`,
+  disclosure:
+    "Hey! I’m Gigi. I can give you a ballpark price, show you your bathroom redesigned, or get you a free quote from Justin, the owner. What sounds good?",
+  ballpark:
+    "Starting at $5K, with most projects $5K–$30K+. The exact number is given at a free consult. Is this a shower, a vanity, or the whole bathroom? And about how big is the space?",
   material: faqAnswer("What materials do you use?"),
   care: care.body,
   warranty: solidPath.warranty,
@@ -63,6 +83,7 @@ export function replyTo(message: string) {
     return answers.area;
   }
   if (/quote|photo|picture|exact/.test(text)) return answers.quote;
+  if (/ballpark/.test(text)) return answers.ballpark;
   if (/cost|price|how much|budget|range/.test(text)) return answers.cost;
   if (/custom|fit|resin|alumina|made of|material|what is onyx|composition/.test(text)) {
     return answers.material;
