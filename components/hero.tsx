@@ -19,7 +19,7 @@ import {
 
 /**
  * Rotating photo hero. AI-generated design examples (docs/image-sources.md), never presented as completed jobs.
- * Each headline is paired with one still. Only the first slide is preloaded; the rest mount after first paint.
+ * Each headline is paired with one still. Only the first slide is preloaded; later stills mount one ahead of the rotation.
  * Reduced motion shows the first slide and its headline only. No video, no random shuffle.
  */
 const SLIDES = HERO_SLIDES;
@@ -39,8 +39,9 @@ export function Hero() {
   const reducedMotion = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, getReducedMotionServer);
   const [active, setActive] = useState(0);
   const [previous, setPrevious] = useState(-1);
-  const [mounted, setMounted] = useState(false);
-  const [loaded, setLoaded] = useState<boolean[]>(() => SLIDES.map((_, index) => index === 0));
+  // Only the opening still mounts at first; later stills are added one ahead of the rotation.
+  const [mounted, setMounted] = useState<Set<number>>(() => new Set([0]));
+  const [loaded, setLoaded] = useState<boolean[]>(() => SLIDES.map(() => false));
   const loadedRef = useRef(loaded);
   useEffect(() => {
     loadedRef.current = loaded;
@@ -48,8 +49,22 @@ export function Hero() {
 
   useEffect(() => {
     if (reducedMotion) return;
-    // Mount the other slides after first paint so only the first image competes for bandwidth.
-    const mountTimer = window.setTimeout(() => setMounted(true), 1200);
+    const next = (active + 1) % SLIDES.length;
+    // Wait until the current still has loaded, then fetch the next one for the crossfade.
+    if (!loaded[active]) return;
+    const mountTimer = window.setTimeout(() => {
+      setMounted((current) => {
+        if (current.has(next)) return current;
+        const updated = new Set(current);
+        updated.add(next);
+        return updated;
+      });
+    }, 400);
+    return () => window.clearTimeout(mountTimer);
+  }, [reducedMotion, active, loaded]);
+
+  useEffect(() => {
+    if (reducedMotion) return;
     const tick = window.setInterval(() => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         setActive(0);
@@ -62,10 +77,7 @@ export function Hero() {
         return next;
       });
     }, INTERVAL_MS);
-    return () => {
-      window.clearTimeout(mountTimer);
-      window.clearInterval(tick);
-    };
+    return () => window.clearInterval(tick);
   }, [reducedMotion]);
 
   const visibleIndex = reducedMotion ? 0 : active;
@@ -74,7 +86,7 @@ export function Hero() {
     <section className="relative min-h-[100svh] overflow-hidden bg-[#14261f] text-[#f6f1e6]" aria-label="Introduction">
       <div className="absolute inset-0" aria-hidden="true">
         {SLIDES.map((slide, index) =>
-          index === 0 || mounted ? (
+          index === 0 || mounted.has(index) || index === visibleIndex || index === previous ? (
             <div
               key={slide.n}
               className="absolute inset-0 transition-opacity duration-[2000ms] ease-in-out"
