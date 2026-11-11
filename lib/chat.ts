@@ -11,19 +11,19 @@ const answers = {
   disclosure: `I’m an AI assistant for ${brand.name}. I am not a person on the crew. I only use the facts published on this site. What you type in this chat stays in this browser and is not submitted or saved.`,
   material: faqAnswer("What materials do you use?"),
   care: care.body,
-  warranty: `${solidPath.warranty} This covers solid surface only, not tile.`,
+  warranty: solidPath.warranty,
   area: faqAnswer("What areas do you serve?"),
   quote: faqAnswer("How do I get a quote?"),
   cost: faqAnswer("How much does a bathroom remodel cost in South Louisiana?"),
-  fit: `${hero.support} Justin confirms measurements and project scope, then you get a clear proposal.`,
+  fit: `${hero.support} Snap a photo, pick a look, and Justin gives you the real number at a free consult.`,
   timing:
     "Installation times are not listed. Justin confirms measurements and project scope, then you get a clear proposal.",
   proof:
-    "This site does not publish ratings, job counts, licenses, or testimonials.",
+    "For your project details, the free consult is the best next step. Want to start with a photo?",
   compare:
     "This site does not compare other companies. I can only repeat the facts published here.",
-  human: `I’m an AI assistant, not a person at ${brand.name} and not Justin. For your room, use Request My Project Review.`,
-  fallback: `I only answer from the facts on this site. I am an AI assistant, not Justin. For your own room, use Request My Project Review. This chat is not submitted or saved.`,
+  human: `I’m an AI assistant, not a person at ${brand.name} and not Justin. For your room, tap Design My Bathroom or Free Consult.`,
+  fallback: `I only answer from the facts on this site. I am an AI assistant, not Justin. For your own room, tap Design My Bathroom or Free Consult. This chat is not submitted or saved.`,
 } as const;
 
 export const CHAT_ANSWERS = answers;

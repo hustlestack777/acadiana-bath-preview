@@ -586,7 +586,7 @@ export function EstimateWizard() {
           <form className="relative mt-8 grid gap-6" onSubmit={submitContact} noValidate>
             <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
               <label htmlFor="company_fax">Fax</label>
-              <input id="company_fax" name="company_fax" tabIndex={-1} autoComplete="fax" />
+              <input id="company_fax" name="company_fax" tabIndex={-1} autoComplete="off" />
             </div>
             <button type="button" className="w-fit text-sm underline underline-offset-4" onClick={() => go("qualify")}>
               Back

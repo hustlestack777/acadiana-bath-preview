@@ -19,6 +19,7 @@ import {
   material,
   reasons,
   steps,
+  stepsTitle,
   talk,
 } from "@/lib/copy";
 import { MAIN_TOWNS } from "@/lib/coverage";
@@ -110,7 +111,7 @@ export function HomePage() {
 
       <section id="process" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">How it works</p>
-        <h2 className="mt-3 text-4xl md:text-5xl">Three steps, then a confirmed proposal</h2>
+        <h2 className="mt-3 text-4xl md:text-5xl">{stepsTitle}</h2>
         <ol className="mt-10 grid gap-4 md:grid-cols-3">
           {steps.map((step, index) => (
             <li key={step.title} className="rounded-[1.4rem] border border-border bg-card p-6">

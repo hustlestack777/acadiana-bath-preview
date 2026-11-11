@@ -68,7 +68,7 @@ test("service JSON-LD is present for both service paths and has no reviews", () 
   assert.equal(tile["@type"], "Service");
   assert.match(solid.url, /\/solid-surface$/);
   assert.match(tile.url, /\/custom-tile$/);
-  assert.match(solid.description, /Lifetime material warranty on solid surface/);
+  assert.match(solid.description, /Lifetime Guarantee/);
   assert.equal(tile.description.includes("warranty"), false);
   assert.deepEqual(assertSafeJsonLd(solid), []);
   assert.deepEqual(assertSafeJsonLd(tile), []);

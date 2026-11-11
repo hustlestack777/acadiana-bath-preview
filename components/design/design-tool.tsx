@@ -296,7 +296,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             value={form.company_fax}
             onChange={(e) => setForm({ ...form, company_fax: e.target.value })}
             tabIndex={-1}
-            autoComplete="fax"
+            autoComplete="off"
             aria-hidden="true"
             className="absolute -left-[9999px] h-0 w-0 opacity-0"
           />

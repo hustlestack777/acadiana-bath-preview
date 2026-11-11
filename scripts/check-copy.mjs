@@ -10,6 +10,7 @@ const APPROVED_RANGE =
   "Complete bathroom remodels typically run $5,000 to $30,000+, depending on size, materials and layout. Your free consult gets you an exact number.";
 
 const APPROVED_HERO_QUOTE = "Bathroom remodels from $5,000. Free in-home quote.";
+const APPROVED_PRICE_FROM = "Bathroom remodels from $5,000.";
 const APPROVED_PRICE_SHORT = "$5,000 to $30,000+";
 const APPROVED_SCHEMA_PRICE_RANGE = "$5,000–$30,000+";
 
@@ -51,6 +52,7 @@ for (const file of files) {
     .replaceAll("Lifetime Guarantee", "")
     .replaceAll(APPROVED_RANGE, "")
     .replaceAll(APPROVED_HERO_QUOTE, "")
+    .replaceAll(APPROVED_PRICE_FROM, "")
     .replaceAll(APPROVED_SCHEMA_PRICE_RANGE, "")
     .replaceAll(APPROVED_PRICE_SHORT, "");
   for (const rule of rules) {

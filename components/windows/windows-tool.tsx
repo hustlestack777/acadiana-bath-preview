@@ -586,7 +586,7 @@ export function WindowsTool() {
             Leave your name and a good number. We&apos;ll show a ballpark estimate for planning — not a quote.
           </p>
           <form className="mt-8 space-y-4" onSubmit={(event) => void submitLead(event)}>
-            <input className="hidden" tabIndex={-1} autoComplete="fax" value={fax} onChange={(event) => setFax(event.target.value)} name="company_fax" />
+            <input className="hidden" tabIndex={-1} autoComplete="off" value={fax} onChange={(event) => setFax(event.target.value)} name="company_fax" />
             <div>
               <label htmlFor="windows-name" className="text-sm font-medium">
                 First and last name

@@ -27,7 +27,7 @@ export const hero = {
   eyebrow: "Lafayette, Louisiana",
   title: "Bring a little beautiful to every day.",
   support:
-    "There are many options for your shower, tub, and bathroom. Most customers prefer solid surface, because there's less grout to clean, and many types of solid surface can be installed. Onyx is a preferred material — we'll walk through the options for your space.",
+    "There are many options for your shower, tub, and bathroom. Many types of solid surface can be installed, and Onyx is a preferred material — we'll walk through the options for your space.",
   primary: "Free Consult",
   secondary: "(337) 522-0023",
 } as const;
@@ -62,22 +62,22 @@ export const editorial = {
 
 export const reasons = [
   {
-    title: "Custom fit",
-    body: "Custom-fit showers and bathroom work for the space you actually want.",
+    title: "Made for your room.",
+    body: "Niches where you need them, a bench if you want one, and an entry with no step when the space allows.",
   },
   {
-    title: "Many options",
-    body: "Most customers prefer solid surface, because there's less grout to clean. Many types of solid surface can be installed.",
+    title: "Style you choose.",
+    body: "Zellige, patterned floors, quartz, quartzite or seamless solid surface. Bold or calm, it's your call.",
   },
   {
-    title: "Easy cleaning",
-    body: "A simple weekly cleaning is enough.",
+    title: "Easy to live with.",
+    body: "Low-grout options and finishes picked for Louisiana humidity.",
   },
 ] as const;
 
 export const material = {
-  title: "The surface that fits your room.",
-  body: "Most customers prefer solid surface for a cleaner look with less grout. Many types of solid surface can be installed, and we'll help you choose the right one for your bathroom.",
+  title: "Tile or solid surface? We'll help you pick.",
+  body: "Solid surface gives you clean lines and almost no grout. Custom tile gives you color, texture and pattern. Many types of solid surface can be installed, and Justin will help you weigh the look, the budget and the upkeep.",
   close:
     "Find the look that feels like home. Talk through the details with Justin before deciding what goes into your bathroom.",
 } as const;
@@ -87,28 +87,30 @@ export const care = {
   body: "A simple weekly cleaning is enough.",
 } as const;
 
+export const stepsTitle = "Three easy steps to a bathroom you love.";
+
 export const steps = [
   {
-    title: "Show us your space.",
-    body: "Share photos and tell us what you want to change.",
+    title: "Snap your shower.",
+    body: "Upload a photo and pick a look, or tell us what you want to change.",
   },
   {
-    title: "Explore your options.",
-    body: "Discuss the layout, finishes and features that matter to you.",
+    title: "Meet Justin at home.",
+    body: "A free consult to measure, talk finishes and see what fits.",
   },
   {
-    title: "Get a clear proposal.",
-    body: "Justin confirms measurements and project scope, then you get a clear proposal.",
+    title: "Get your real number.",
+    body: "A clear proposal with the exact price before any work starts.",
   },
 ] as const;
 
 export const area = {
   title: "Where we work",
   intro:
-    "Based in Lafayette, serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge and Alexandria to Houma.",
+    "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux.",
   townsLabel: "Towns people often ask about",
-  outside: "Don't see your town? Ask anyway. Justin confirms every visit.",
-  faq: "Based in Lafayette, serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge and Alexandria to Houma. Don't see your town? Ask anyway. Justin confirms every visit.",
+  outside: "Don't see your town? Ask anyway. If we can get there, we'll come to you.",
+  faq: "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux. Don't see your town? Ask anyway. If we can get there, we'll come to you.",
 } as const;
 
 export const beforeAfter = {
@@ -123,8 +125,8 @@ export const gallery = {
 export { homeFaqs as faqs } from "./faq-page";
 
 export const talk = {
-  title: "Talk about your project",
-  body: "Call or email when you would rather talk than fill out the review.",
+  title: "Rather talk it through?",
+  body: "Send a photo and a quick note, and Justin will reach out. Or email acadianabathandcounter@gmail.com.",
 } as const;
 
 export const close = {
@@ -195,10 +197,10 @@ export const timings = [
 ] as const;
 
 export const projectNote =
-  "Choose every option that applies. Tub-to-shower is listed first because most homeowners start there. Listing a wish does not mean every option is available until the visit.";
+  "Pick everything you'd like. Justin will go over what fits at your visit.";
 
 export const featureNote =
-  "Describe the layout, finishes, and features you want to talk about. Listing something here does not mean it is available. Justin confirms the options.";
+  "Pick everything you'd like. Justin will go over what fits at your visit.";
 
 export const photoNote =
   "Optional photos: one wide bathroom view, the shower or tub, and any problem areas. Leave out people and personal documents. Up to 8 photos. They are resized in your browser before sending.";
@@ -222,10 +224,10 @@ export const solidPath = {
   slug: "/solid-surface",
   eyebrow: "Path one · Solid surface",
   cardTitle: "Solid surface showers & tub walls",
-  cardBody: "The affordable, faster route. Tub-to-shower conversions and tub or shower walls with less grout to scrub.",
+  cardBody: "The affordable, low-grout route. Tub-to-shower conversions and fresh shower or tub walls that wipe clean.",
   title: "Clean lines. Less grout. Less to scrub.",
   support:
-    "Most customers prefer solid surface for less grout. Many types of solid surface can be installed, with many colors and finishes to choose from.",
+    "Seamless walls, soft arches, and almost no grout to scrub. Many types of solid surface can be installed, in lots of colors and finishes.",
   cta: "Get a solid surface quote",
   whyTitle: "Why most customers start here",
   why: [
@@ -239,10 +241,10 @@ export const solidPath = {
     { title: "Shower walls", body: "New walls for an existing shower, with niches and a seat if the space allows." },
     { title: "Tub walls and surrounds", body: "Keep the tub and refresh the walls around it." },
   ],
-  warranty: "Lifetime material warranty on solid surface. If the material has a defect or fails, we'll handle the replacement.",
+  warranty: "Lifetime Guarantee. Ask Justin for the details at your free consult.",
   care: "A simple weekly cleaning is enough.",
   formTitle: "Solid surface quote",
-  formBody: "One short form. Justin follows up to talk through your space. This is not a final quote.",
+  formBody: "A few quick questions. Justin will reach out to set up your free consult.",
 } as const;
 
 export const tilePath = {
@@ -266,14 +268,14 @@ export const tilePath = {
     "Colors from the Mapei grout and caulk palette. Tap a swatch to preview it and add it to your tile request.",
   groutNote: "Screen colors are approximate. Justin brings real samples to compare in your light.",
   formTitle: "Custom tile consult",
-  formBody: "One short form. Tell us the look you want and Justin follows up. Every tile project is quoted after a visit.",
+  formBody: "Tell us the look you love. Justin will reach out and bring samples to your free consult.",
 } as const;
 
 export const ideas = {
   eyebrow: "Finishing touches",
   title: "Ideas for the rest of the room",
-  body: "Browse these brands for inspiration, then bring what you like to your consult. Justin will tell you what fits your project.",
-  note: "Ideas only. Acadiana Bathrooms and Countertops is not a dealer for or partner of these brands.",
+  body: "Save what you love, then bring it to your consult. Justin will tell you what fits your space.",
+  note: "Ideas to spark your style. Justin works with some of these brands and will tell you what fits your project.",
   items: [
     {
       name: "Wallism",

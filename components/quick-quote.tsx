@@ -368,7 +368,7 @@ export function QuickQuote({ path }: { path: Path }) {
 
       <div className="hidden" aria-hidden="true">
         <label htmlFor={`${path}-fax`}>Company fax</label>
-        <input id={`${path}-fax`} tabIndex={-1} autoComplete="fax" value={form.company_fax} onChange={(e) => set("company_fax", e.target.value)} />
+        <input id={`${path}-fax`} tabIndex={-1} autoComplete="off" value={form.company_fax} onChange={(e) => set("company_fax", e.target.value)} />
       </div>
 
       <label className="flex items-start gap-3 text-sm leading-6" htmlFor={`${path}-consent`}>

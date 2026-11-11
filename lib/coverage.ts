@@ -5,7 +5,7 @@
  */
 
 export const SERVICE_AREA =
-  "Based in Lafayette, serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge and Alexandria to Houma.";
+  "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux.";
 
 export const MAIN_TOWNS = [
   "Lafayette",

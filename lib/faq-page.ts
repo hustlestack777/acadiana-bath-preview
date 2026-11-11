@@ -11,12 +11,12 @@ export const geoFaqs = [
   },
   {
     q: "How much does a bathroom remodel cost in South Louisiana?",
-    a: "Plan on $5,000 to $30,000+, depending on the room and the finish. That range covers the work we do: custom showers, tile, quartz and quartzite countertops, and solid surface. The exact price is set at the free consult, not in a form or over a quick message. Snap a couple of photos, pick the look you love, and see your new bathroom in about a minute. Justin follows up with your price.",
-    link: { text: "see your new bathroom", href: "/design" },
+    a: "Bathroom remodels range from $5,000 to $30,000+, depending on the size of the room and the finishes you love. Start with Design My Bathroom: snap your shower, pick a look, and see it in your own space. Justin uses your photos and your style pick to prep, then gives you the real number at a free consult in your home.",
+    link: { text: "Design My Bathroom", href: "/design" },
   },
   {
     q: "What areas do you serve?",
-    a: "We serve Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria to Houma and Thibodaux. We are not a Lafayette-only company. If you are in that area and want a custom shower, tile, or new bathroom surfaces, we can talk. Justin comes to your home for the consult and the measure.",
+    a: "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux. Justin comes to your home for the consult.",
   },
   {
     q: "Do you have an office in my town?",
@@ -28,7 +28,7 @@ export const geoFaqs = [
   },
   {
     q: "What materials do you use?",
-    a: "There are many options available. Most customers prefer solid surface, because there's less grout to clean, and many types of solid surface can be installed. Onyx is a preferred material. We'll talk through the options that fit your room.",
+    a: "There are many options. Many types of solid surface can be installed, and Onyx is a preferred material. For tile, think handmade zellige, patterned floors and stone-look slabs. Justin will walk you through what fits your room.",
   },
   {
     q: "What is zellige tile?",
@@ -52,7 +52,7 @@ export const geoFaqs = [
   },
   {
     q: "Can I see a design before we start?",
-    a: "Yes. Design My Bathroom lets you upload a photo of your shower and see a redesign idea. Those images are examples of what a remodel could look like. Justin still comes to the house to measure and give the actual quote. We will add real job photos, with the homeowner's permission, as they come in.",
+    a: "Yes. Design My Bathroom lets you upload a photo of your shower and see a redesign idea. The photos on this site are design ideas, not finished jobs. Justin can walk you through real options at your consult.",
   },
 ] as const;
 

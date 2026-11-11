@@ -3,7 +3,7 @@ import { EstimateWizard } from "@/components/estimate-wizard";
 import { SiteShell } from "@/components/site-shell";
 
 export const metadata: Metadata = {
-  title: "Project review",
+  title: "Free Consult · Acadiana Bathrooms",
   description:
     "Free Consult with Acadiana Bathrooms and Countertops. Share the bathroom you have. The request is saved for follow-up. It is not a final quote.",
 };
