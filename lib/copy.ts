@@ -1,5 +1,7 @@
 /** Customer-facing copy. No invented prices or coverage terms. */
 
+import { OUTSIDE_AREA, SERVICE_AREA } from "./coverage";
+
 export const brand = {
   name: "Acadiana Bathrooms and Countertops",
   phone: "(337) 522-0023",
@@ -48,7 +50,7 @@ export const heroHeadlines = [
 export const heroHeadlineReduced = "Your bathroom shouldn't be boring.";
 
 export const heroSubhead =
-  "Custom showers, tile, quartz, quartzite and marble from people who sweat the details. Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge.";
+  `Custom showers, tile, quartz, quartzite and marble from people who sweat the details. ${SERVICE_AREA}`;
 
 export const heroDesignCta = "Design My Bathroom";
 
@@ -111,11 +113,10 @@ export const steps = [
 
 export const area = {
   title: "Where we work",
-  intro:
-    "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux.",
+  intro: SERVICE_AREA,
   townsLabel: "Towns we serve include",
-  outside: "Don't see your town? Reach out anyway. Justin covers a wide stretch of South Louisiana and will confirm your visit when he calls.",
-  faq: "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux. Don't see your town? Reach out anyway. Justin covers a wide stretch of South Louisiana and will confirm your visit when he calls.",
+  outside: OUTSIDE_AREA,
+  faq: `${SERVICE_AREA} ${OUTSIDE_AREA}`,
 } as const;
 
 export const beforeAfter = {

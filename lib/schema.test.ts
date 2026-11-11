@@ -11,6 +11,7 @@ import {
   solidSurfaceServiceJsonLd,
   townAreaJsonLd,
 } from "./schema";
+import { MAIN_TOWNS, OUTSIDE_AREA } from "./coverage";
 import { AI_SEARCH_USER_AGENTS, EXCLUDED_SERVICE_AREAS, SCHEMA_PRICE_RANGE, SCHEMA_SERVICE_AREA, SITE_NAME, SITE_PHONE, SITE_SHORT_NAME, SITE_TELEPHONE, VISIBLE_SERVICES } from "./site";
 import { geoFaqs, homeFaqs } from "./faq-page";
 import { buildSitemap } from "./sitemap-config";
@@ -50,6 +51,9 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   assert.deepEqual(assertSafeJsonLd(data), []);
   const names = JSON.stringify(data.areaServed);
   for (const city of requiredCities) {
+    assert.match(names, new RegExp(city));
+  }
+  for (const city of MAIN_TOWNS) {
     assert.match(names, new RegExp(city));
   }
   assert.match(names, /Acadiana/);
@@ -135,7 +139,7 @@ test("sitemap lists public pages, includes lastmod, and omits town pages until g
   assert.equal(urls.some((url) => url.includes("/serving-")), false);
 
   const live = buildSitemap(true).map((entry) => entry.url);
-  assert.equal(towns.length, 3);
+  assert.equal(towns.length, 7);
   for (const town of towns) {
     assert.ok(live.some((url) => url.endsWith(townPath(town.slug))), town.slug);
   }
@@ -145,6 +149,12 @@ test("sitemap lists public pages, includes lastmod, and omits town pages until g
 test("cleared FAQ and town copy has no windows mentions and town schema is area-only", () => {
   const blob = [geoFaqs, towns].map((value) => JSON.stringify(value)).join("\n");
   assert.equal(/window/i.test(blob), false);
+  assert.equal(/older home|remodeling an older|historic home/i.test(blob), false);
+  assert.equal(blob.includes("Don't see your town"), false);
+  assert.equal(/hotel/i.test(blob), false);
+  for (const excluded of EXCLUDED_SERVICE_AREAS) {
+    assert.equal(blob.includes(excluded), false, excluded);
+  }
   assert.equal(geoFaqs.length, 12);
   for (const town of towns) {
     const data = townAreaJsonLd(town);
@@ -174,6 +184,13 @@ test("llms.txt summarizes the business without banned claims", () => {
   assert.match(text, /\/serving-lake-charles/);
   assert.match(text, /\/serving-baton-rouge/);
   assert.match(text, /\/serving-houma/);
+  assert.match(text, /\/serving-alexandria/);
+  assert.match(text, /\/serving-new-iberia/);
+  assert.match(text, /\/serving-gonzales/);
+  assert.match(text, /\/serving-prairieville/);
+  assert.equal(text.includes(OUTSIDE_AREA), true);
+  assert.equal(text.includes("Don't see your town"), false);
+  assert.equal(text.includes("hotel"), false);
   for (const banned of [
     "Onyx",
     "Pella",

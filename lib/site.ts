@@ -9,7 +9,7 @@
  */
 
 import { brand } from "./copy";
-import { MAIN_TOWNS } from "./coverage";
+import { MAIN_TOWNS, SERVICE_AREA } from "./coverage";
 
 /** The preview stays noindex until this is exactly "true" and the service is redeployed. */
 export const SITE_INDEXABLE = process.env.SITE_INDEXABLE === "true";
@@ -50,8 +50,7 @@ export const VISIBLE_SERVICES = [
 ] as const;
 
 /** Exact service-area sentence for schema descriptions and llms.txt. Do not use in visible marketing copy. */
-export const SCHEMA_SERVICE_AREA =
-  "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux.";
+export const SCHEMA_SERVICE_AREA = SERVICE_AREA;
 
 /** Places that must not appear in schema, llms.txt, or other new SEO copy. */
 export const EXCLUDED_SERVICE_AREAS = [
@@ -109,7 +108,7 @@ function city(name: string, containedInPlace: SchemaPlace = louisiana): SchemaPl
 
 /** City node for schema areaServed. Lake Charles-area towns stay in Calcasieu Parish. */
 export function cityPlace(name: string): SchemaPlace {
-  if (name === "Lake Charles" || name === "Sulphur" || name === "Moss Bluff") {
+  if (name === "Lake Charles" || name === "Sulphur" || name === "Westlake" || name === "Moss Bluff") {
     return city(name, calcasieu);
   }
   return city(name);
@@ -117,10 +116,10 @@ export function cityPlace(name: string): SchemaPlace {
 
 /**
  * areaServed for schema: Lafayette/Acadiana core, the I-10 corridor from
- * Calcasieu Parish (Lake Charles) east to Baton Rouge, plus Prairieville,
- * Gonzales, Alexandria, Houma and Thibodaux, then other towns already shown
- * on the home page. Do not add North Shore, New Orleans, DeRidder/Beauregard,
- * or western areas north of I-10.
+ * Calcasieu Parish (Lake Charles, Sulphur, Westlake, Moss Bluff) east to
+ * Baton Rouge, Gonzales, Prairieville and Plaquemine, plus Alexandria,
+ * Houma and Thibodaux, then other towns already shown on the home page.
+ * Do not add North Shore, New Orleans, or DeRidder/Beauregard.
  */
 export const SCHEMA_AREA_SERVED: SchemaPlace[] = [
   city("Lafayette"),

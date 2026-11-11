@@ -4,6 +4,7 @@ import { brand, cardClaims, heroDesignCta, services } from "@/lib/copy";
 import { SERVICE_AREA } from "@/lib/coverage";
 import { ConsultLink } from "@/components/consult-link";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
+import { townPath, towns } from "@/lib/towns";
 
 export function SiteFooter() {
   return (
@@ -46,9 +47,11 @@ export function SiteFooter() {
             <a href="/custom-tile#grout" className="underline underline-offset-4">Grout colors</a>
             <a href="/gallery" className="underline underline-offset-4">Gallery</a>
             <a href="/faq" className="underline underline-offset-4">FAQ</a>
-            <a href="/serving-lake-charles" className="underline underline-offset-4">Lake Charles</a>
-            <a href="/serving-baton-rouge" className="underline underline-offset-4">Baton Rouge</a>
-            <a href="/serving-houma" className="underline underline-offset-4">Houma</a>
+            {towns.map((town) => (
+              <a key={town.slug} href={townPath(town.slug)} className="underline underline-offset-4">
+                {town.name}
+              </a>
+            ))}
           </p>
           <p className="mt-4 text-sm leading-6 text-fig-muted">
             {SERVICE_AREA}

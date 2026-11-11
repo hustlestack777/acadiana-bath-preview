@@ -1,5 +1,5 @@
 import { heroQuoteLine, services, solidPath } from "./copy";
-import { MAIN_TOWNS } from "./coverage";
+import { MAIN_TOWNS, OUTSIDE_AREA } from "./coverage";
 import { townPath, towns } from "./towns";
 import { SCHEMA_SERVICE_AREA, SITE_EMAIL, SITE_NAME, SITE_PHONE, SITE_URL } from "./site";
 
@@ -30,7 +30,7 @@ ${heroQuoteLine} Most projects $5K–$30K+. Your free consult gets you an exact 
 ## Service area
 ${SCHEMA_SERVICE_AREA}
 Towns we serve include: ${MAIN_TOWNS.join(", ")}.
-Don't see your town? Reach out anyway. Justin confirms every visit.
+${OUTSIDE_AREA}
 
 ## Key pages
 ${page("/", "Home")}

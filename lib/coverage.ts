@@ -1,36 +1,34 @@
 /**
  * Service area. Based in Lafayette, serving Acadiana and South Louisiana.
  * There is no allow-list: any town or ZIP is accepted on every form, and Justin confirms the visit.
- * MAIN_TOWNS only feeds suggestions.
+ * MAIN_TOWNS only feeds suggestions and visible town lists.
+ * Focus markets set 11/11/2026. Do not list North Shore, New Orleans, or DeRidder.
  */
 
 export const SERVICE_AREA =
-  "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux.";
+  "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Lafayette, New Iberia, Youngsville, Broussard, Crowley, Jennings, Sulphur, Westlake, Moss Bluff, Prairieville, Gonzales and Plaquemine, and from Alexandria down to Houma and Thibodaux, north to about Gillis.";
+
+export const OUTSIDE_AREA =
+  "Outside our area? Reach out anyway. Justin takes projects outside the area, with travel built into your quote.";
 
 export const MAIN_TOWNS = [
   "Lafayette",
-  "Broussard",
-  "Youngsville",
-  "Scott",
-  "Carencro",
-  "Breaux Bridge",
   "New Iberia",
-  "Abbeville",
+  "Youngsville",
+  "Broussard",
   "Crowley",
-  "Opelousas",
-  "Eunice",
+  "Jennings",
   "Lake Charles",
   "Sulphur",
+  "Westlake",
   "Moss Bluff",
-  "Jennings",
   "Alexandria",
-  "Pineville",
   "Baton Rouge",
-  "Prairieville",
   "Gonzales",
+  "Prairieville",
+  "Plaquemine",
   "Houma",
   "Thibodaux",
-  "Morgan City",
 ] as const;
 
 /** Kept for older imports: suggestions only, never a gate. */

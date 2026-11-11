@@ -2,6 +2,8 @@
  * Customer-facing copy must not name brands, licenses, timelines, deposits, or "AI".
  */
 
+import { SERVICE_AREA } from "./coverage";
+
 export const GET_MY_CUSTOM_QUOTE = "Get My Custom Quote";
 
 export const WINDOWS_CONSENT_TEXT =
@@ -12,8 +14,7 @@ export const BUTTON_SUB =
 
 export const WINDOWS_SOURCE_PAGE = "/windows";
 
-export const SERVICE_AREA_WINDOWS =
-  "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux.";
+export const SERVICE_AREA_WINDOWS = SERVICE_AREA;
 
 export const MAX_STANDARD_STEPPER = 30;
 

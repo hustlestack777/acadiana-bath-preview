@@ -1,4 +1,7 @@
 /** Cleared FAQ copy from the AI search playbook. No windows mentions. */
+
+import { OUTSIDE_AREA, SERVICE_AREA } from "./coverage";
+
 export const faqPageTitle = "Acadiana Bathrooms FAQ";
 
 export const faqPageIntro =
@@ -16,7 +19,7 @@ export const geoFaqs = [
   },
   {
     q: "What areas do you serve?",
-    a: "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux. Justin comes to your home for the consult.",
+    a: `${SERVICE_AREA} ${OUTSIDE_AREA} Justin comes to your home for the consult.`,
   },
   {
     q: "Do you have an office in my town?",
