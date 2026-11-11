@@ -131,7 +131,8 @@ export function parseFeatures(features: string, consent: boolean): Parsed {
       continue;
     }
     const label = match[1].trim();
-    const value = match[2].trim();
+    const rawValue = match[2].trim();
+    const value = /^[a-z]/.test(rawValue) ? rawValue[0].toUpperCase() + rawValue.slice(1) : rawValue;
     if (/^style picked$/i.test(label)) {
       style = value;
     }
