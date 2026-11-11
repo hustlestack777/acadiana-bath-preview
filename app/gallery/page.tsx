@@ -22,7 +22,7 @@ export default function GalleryPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">{gallery.eyebrow}</p>
           <h1 className="mt-3 max-w-4xl font-heading text-4xl leading-[1.05] md:text-6xl">{gallery.title}</h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
-            Custom tile, stone, and solid surface looks to start from. Pick a direction, then get a free quote from Justin.
+            Custom tile, stone, and solid surface looks to start from. Pick a direction, then get a free quote from Justin, the owner.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <ConsultLink className="inline-flex h-12 items-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground">

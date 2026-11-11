@@ -40,6 +40,11 @@ export function businessJsonLd() {
     description: `Bathroom remodels from ${SITE_NAME}. ${SCHEMA_SERVICE_AREA} ${OUTSIDE_AREA} See your new bathroom free: Design My Bathroom.`,
     areaServed: SCHEMA_AREA_SERVED,
     priceRange: SCHEMA_PRICE_RANGE,
+    founder: {
+      "@type": "Person",
+      name: "Justin",
+      jobTitle: "Owner",
+    },
     // No address: Justin has no public storefront yet (a Broussard warehouse is pending).
     // TODO(Justin): add the confirmed public address, GBP URL (sameAs), and hours when ready.
     hasOfferCatalog: {

@@ -4,7 +4,7 @@ import { LookImage } from "@/components/look-image";
 import { LookLink } from "@/components/look-link";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { brand, hero, heroDesignCta, ideas, priceRange, solidPath, tilePath, trustLine } from "@/lib/copy";
+import { brand, hero, heroDesignCta, ideas, priceRange, solidPath, tilePath, trustLine, trustLineFollow } from "@/lib/copy";
 import type { Photo } from "@/lib/images";
 import { findStartingLookBySrc } from "@/lib/starting-looks";
 import { cn } from "cn";
@@ -22,6 +22,7 @@ export function PathHero({
   ctaHref: _ctaHref,
   position = "center",
   children,
+  trust = trustLine,
 }: {
   position?: string;
   image: string;
@@ -32,6 +33,7 @@ export function PathHero({
   cta: string;
   ctaHref: string;
   children?: ReactNode;
+  trust?: string;
 }) {
   return (
     <section className="relative min-h-[92svh] overflow-hidden bg-[#14261f] text-[#f6f1e6]" aria-label="Introduction">
@@ -55,7 +57,7 @@ export function PathHero({
         <a href={brand.phoneHref} className="hero-copy mt-3 inline-block text-sm font-semibold text-[#f6f1e6] underline underline-offset-4">
           {brand.phone}
         </a>
-        <p className="hero-copy mt-3 max-w-xl text-sm text-[#e4d8b4]">{trustLine}</p>
+        <p className="hero-copy mt-3 max-w-xl text-sm text-[#e4d8b4]">{trust}</p>
         <p className="hero-copy mt-2 max-w-xl text-sm leading-6 text-white/90" data-testid="price-range">{priceRange}</p>
         {children}
       </div>

@@ -10,7 +10,7 @@ export const faqPageIntro =
 export const geoFaqs = [
   {
     q: "How much does a walk-in shower cost in Louisiana?",
-    a: "Bathroom remodels starting at $5K, with most projects $5K–$30K+. The exact number is given at a free consult, after Justin looks at the space, the materials, and the work involved. A simple refresh and a fully custom walk-in with handmade tile or a quartzite vanity are priced differently, so Justin prices your project to your room and your finishes. Use Design My Bathroom or the quote form, and Justin will call to talk it through and set up a time to measure.",
+    a: "Bathroom remodels starting at $5K, with most projects $5K–$30K+. The exact number is given at a free consult, after Justin, the owner, looks at the space, the materials, and the work involved. A simple refresh and a fully custom walk-in with handmade tile or a quartzite vanity are priced differently, so Justin prices your project to your room and your finishes. Use Design My Bathroom or the quote form, and Justin will call to talk it through and set up a time to measure.",
   },
   {
     q: "How much does a bathroom remodel cost in South Louisiana?",

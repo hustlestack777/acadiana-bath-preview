@@ -57,6 +57,10 @@ export const heroDesignCta = "Design My Bathroom";
 export const quoteCta = "Get My Free Quote";
 
 export const trustLine =
+  "Free quote. No obligation. Justin, the owner, calls you personally with your price.";
+
+/** Later mentions on pages that already used trustLine or another first mention. */
+export const trustLineFollow =
   "Free quote. No obligation. Justin calls you personally with your price.";
 
 export const heroQuoteLine = "Starting at $5K · Free quote.";
@@ -143,9 +147,9 @@ export const close = {
 export const lead = {
   title: "Free Consult",
   subhead:
-    "Four quick steps: where you are, what you want to change, and how to reach you. Justin calls you personally and gives you an exact price once he sees the space.",
+    "Four quick steps: where you are, what you want to change, and how to reach you. Justin, the owner, calls you personally and gives you an exact price once he sees the space.",
   submit: "Request My Free Consult",
-  thanks: "Got it! Justin will reach out to talk through your bathroom and set up a time to come see it.",
+  thanks: "Got it! Justin, the owner, will reach out to talk through your bathroom and set up a time to come see it.",
   savedNote: "Nothing to pay today. Justin sets your exact price once he sees your bathroom.",
   savedTitle: "Got it!",
   photosTitle: "Their photos",
@@ -233,7 +237,7 @@ export const solidPath = {
   cardBody: "The affordable, low-grout route. Tub-to-shower conversions and fresh shower or tub walls that wipe clean.",
   title: "Clean lines. Less grout. Less to scrub.",
   support:
-    "Seamless walls, soft arches, and almost no grout to scrub, in a wide range of colors and finishes. Justin helps you pick the one that fits your space and budget.",
+    "Seamless walls, soft arches, and almost no grout to scrub, in a wide range of colors and finishes. Justin, the owner, helps you pick the one that fits your space and budget.",
   cta: "Get a solid surface quote",
   whyTitle: "Why most customers start here",
   why: [

@@ -24,7 +24,7 @@ import {
   homeowners,
   lead,
   paymentNote,
-  trustLine,
+  trustLineFollow,
   payments,
   photoNote,
   projectNote,
@@ -471,7 +471,7 @@ export function EstimateWizard() {
             <Button type="submit" className="h-12 rounded-xl text-base">
               Continue
             </Button>
-            <p className="text-center text-sm leading-6 text-muted-foreground">{trustLine}</p>
+            <p className="text-center text-sm leading-6 text-muted-foreground">{trustLineFollow}</p>
             <p className="text-center text-sm">
               <a href={brand.phoneHref} className="font-semibold underline underline-offset-4">{brand.phone}</a>
             </p>
@@ -526,7 +526,7 @@ export function EstimateWizard() {
             <Button type="submit" className="h-12 rounded-xl text-base">
               Continue
             </Button>
-            <p className="text-center text-sm leading-6 text-muted-foreground">{trustLine}</p>
+            <p className="text-center text-sm leading-6 text-muted-foreground">{trustLineFollow}</p>
             <p className="text-center text-sm">
               <a href={brand.phoneHref} className="font-semibold underline underline-offset-4">{brand.phone}</a>
             </p>
@@ -587,7 +587,7 @@ export function EstimateWizard() {
             <Button type="submit" className="h-12 rounded-xl text-base">
               Continue
             </Button>
-            <p className="text-center text-sm leading-6 text-muted-foreground">{trustLine}</p>
+            <p className="text-center text-sm leading-6 text-muted-foreground">{trustLineFollow}</p>
             <p className="text-center text-sm">
               <a href={brand.phoneHref} className="font-semibold underline underline-offset-4">{brand.phone}</a>
             </p>

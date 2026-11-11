@@ -6,7 +6,7 @@ import { SERVICE_AREA_WINDOWS } from "@/lib/windows";
 
 export const metadata: Metadata = {
   title: "Window estimate",
-  description: `Get a ballpark for new windows. Justin measures for the real quote. ${SERVICE_AREA_WINDOWS}`,
+  description: `Get a ballpark for new windows. Justin, the owner, measures for the real quote. ${SERVICE_AREA_WINDOWS}`,
   robots: siteRobots,
 
   alternates: { canonical: pageCanonical("/windows") },

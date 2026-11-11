@@ -42,6 +42,9 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   assert.equal("address" in data, false);
   assert.equal("aggregateRating" in data, false);
   assert.equal(data.priceRange, SCHEMA_PRICE_RANGE);
+  assert.equal(data.founder["@type"], "Person");
+  assert.equal(data.founder.name, "Justin");
+  assert.equal(data.founder.jobTitle, "Owner");
   assert.equal(data.hasOfferCatalog["@type"], "OfferCatalog");
   const serviceNames = data.hasOfferCatalog.itemListElement.map((item: { name: string }) => item.name);
   for (const service of VISIBLE_SERVICES) {
@@ -132,14 +135,14 @@ test("sitemap lists public pages, includes lastmod, and omits town pages until g
   const urls = preview.map((entry) => entry.url);
   assert.ok(preview.every((entry) => entry.lastModified));
   assert.ok(urls.some((url) => url.endsWith("onrender.com") || url.endsWith("onrender.com/")));
-  for (const path of ["/solid-surface", "/custom-tile", "/gallery", "/design", "/estimate", "/faq", "/privacy", "/windows"]) {
+  for (const path of ["/solid-surface", "/custom-tile", "/gallery", "/design", "/estimate", "/faq", "/areas", "/privacy", "/windows"]) {
     assert.ok(urls.some((url) => url.endsWith(path)), path);
   }
   assert.equal(urls.some((url) => url.includes("/api/")), false);
   assert.equal(urls.some((url) => url.includes("/serving-")), false);
 
   const live = buildSitemap(true).map((entry) => entry.url);
-  assert.equal(towns.length, 7);
+  assert.equal(towns.length, 20);
   for (const town of towns) {
     assert.ok(live.some((url) => url.endsWith(townPath(town.slug))), town.slug);
   }
@@ -181,13 +184,11 @@ test("llms.txt summarizes the business without banned claims", () => {
   assert.match(text, new RegExp(heroQuoteLine.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(text, new RegExp(solidPath.warranty.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(text, /\/faq/);
-  assert.match(text, /\/serving-lake-charles/);
-  assert.match(text, /\/serving-baton-rouge/);
-  assert.match(text, /\/serving-houma/);
-  assert.match(text, /\/serving-alexandria/);
-  assert.match(text, /\/serving-new-iberia/);
-  assert.match(text, /\/serving-gonzales/);
-  assert.match(text, /\/serving-prairieville/);
+  assert.match(text, /\/areas/);
+  assert.match(text, /Owned and run by Justin\./);
+  for (const town of towns) {
+    assert.match(text, new RegExp(`/serving-${town.slug}`));
+  }
   assert.equal(text.includes(OUTSIDE_AREA), true);
   assert.equal(OUTSIDE_AREA, "Outside our area? Ask for a quote.");
   assert.equal(text.includes("Don't see your town"), false);

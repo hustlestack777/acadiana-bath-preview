@@ -3,7 +3,7 @@ import Image from "next/image";
 import { SiteShell } from "@/components/site-shell";
 import { ExampleGrid, PathHero } from "@/components/path-sections";
 import { QuickQuote } from "@/components/quick-quote";
-import { brand, solidPath } from "@/lib/copy";
+import { brand, solidPath, trustLineFollow } from "@/lib/copy";
 import { solidPhotos } from "@/lib/images";
 import { JsonLd } from "@/components/json-ld";
 import { solidSurfaceServiceJsonLd } from "@/lib/schema";
@@ -28,6 +28,7 @@ export default function SolidSurfacePage() {
           eyebrow={solidPath.eyebrow}
           title={solidPath.title}
           support={solidPath.support}
+          trust={trustLineFollow}
           cta={solidPath.cta}
           ctaHref="#solid-quote"
           position="72% center"

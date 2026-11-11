@@ -47,6 +47,7 @@ export function SiteFooter() {
             <a href="/custom-tile#grout" className="underline underline-offset-4">Grout colors</a>
             <a href="/gallery" className="underline underline-offset-4">Gallery</a>
             <a href="/faq" className="underline underline-offset-4">FAQ</a>
+            <a href="/areas" className="underline underline-offset-4">Areas we serve</a>
             {towns.map((town) => (
               <a key={town.slug} href={townPath(town.slug)} className="underline underline-offset-4">
                 {town.name}

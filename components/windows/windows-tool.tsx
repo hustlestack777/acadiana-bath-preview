@@ -220,7 +220,7 @@ export function WindowsTool() {
         <section data-testid="windows-start">
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">Windows</p>
           <h1 tabIndex={-1} data-step-heading className="mt-3 font-heading text-[clamp(2.4rem,7vw,4.2rem)] leading-[0.98]">
-            Get a ballpark for new windows. Justin measures for the real quote.
+            Get a ballpark for new windows. Justin, the owner, measures for the real quote.
           </h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{SERVICE_AREA_WINDOWS}</p>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{OUTSIDE_AREA}</p>

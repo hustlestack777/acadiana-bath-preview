@@ -363,7 +363,7 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
         <section aria-labelledby="design-budget">
           <StepKicker n={STEP_LABELS.budget.n} optional />
           <h2 id="design-budget" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">{budgetQuestion}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">This helps Justin recommend the right path. You can skip this.</p>
+          <p className="mt-2 text-sm text-muted-foreground">This helps Justin, the owner, recommend the right path. You can skip this.</p>
           <div className="mt-5 grid grid-cols-2 gap-3">
             {budgetOptions.map((option) => (
               <button
