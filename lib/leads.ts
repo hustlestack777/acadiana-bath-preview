@@ -140,13 +140,8 @@ export function validateLead(input: LeadInput) {
   const zipError = validateZip(input.zip);
   if (zipError) errors.zip = zipError;
   const coverage = checkCity(input.city);
-  if (coverage.status === "empty") errors.city = "Enter the city first.";
-  if (coverage.status === "unknown") {
-    errors.city = "Enter one planned city. ZIP codes are not used to approve a town.";
-  }
-  if (coverage.status === "excluded") {
-    errors.city = `${coverage.name} is outside the planned coverage.`;
-  }
+  if (coverage.status === "empty") errors.city = "Enter your town or ZIP.";
+  if (coverage.status === "invalid") errors.city = "Keep the town under 80 characters.";
   if (!["/", "/estimate", "/solid-surface", "/custom-tile"].includes(input.sourcePage)) {
     errors.sourcePage = "Unknown source page.";
   }

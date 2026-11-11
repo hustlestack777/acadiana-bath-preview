@@ -25,7 +25,7 @@ export const QUICK_PROMPTS = [
   { label: "What is it made of?", message: "What is the surface made of?" },
   { label: "What materials do you use?", message: "What materials do you use?" },
   { label: "How do I clean it?", message: "How do I clean it?" },
-  { label: "Which towns are planned?", message: "Which towns are planned?" },
+  { label: "Where do you work?", message: "Where do you work?" },
   { label: "Can photos give an exact quote?", message: "Can photos give an exact quote?" },
 ] as const;
 

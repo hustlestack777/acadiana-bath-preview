@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { SUPPORTED_TOWNS } from "@/lib/coverage";
+import { MAIN_TOWNS, checkCity } from "@/lib/coverage";
 import { brand, consentLabel, homeowners, pathProjects, payments, timings } from "@/lib/copy";
 import { validateDetails, validateStreet } from "@/lib/estimate";
 import { GROUT_COLORS, GROUT_PICK_EVENT, groutLabel } from "@/lib/grout";
@@ -86,7 +86,9 @@ export function QuickQuote({ path }: { path: Path }) {
     });
     const streetError = validateStreet(form.street);
     if (streetError) next.street = streetError;
-    if (!form.city) next.city = "Choose your town.";
+    const coverage = checkCity(form.city);
+    if (coverage.status === "empty") next.city = "Enter your town.";
+    if (coverage.status === "invalid") next.city = "Keep the town under 80 characters.";
     if (!form.phone.trim() && !form.email.trim()) next.phone = "Enter a phone number or an email.";
     setErrors(next);
     if (Object.keys(next).length) {
@@ -248,12 +250,21 @@ export function QuickQuote({ path }: { path: Path }) {
         </div>
         <div>
           <label className={label} htmlFor={`${path}-city`}>Town</label>
-          <select id={`${path}-city`} className={cn(field, "mt-1")} value={form.city} onChange={(e) => set("city", e.target.value)} aria-invalid={Boolean(errors.city)}>
-            <option value="">Choose your town</option>
-            {SUPPORTED_TOWNS.map((town) => (
-              <option key={town}>{town}</option>
+          <input
+            id={`${path}-city`}
+            list={`${path}-towns`}
+            className={cn(field, "mt-1")}
+            autoComplete="address-level2"
+            placeholder="Any Louisiana town"
+            value={form.city}
+            onChange={(e) => set("city", e.target.value)}
+            aria-invalid={Boolean(errors.city)}
+          />
+          <datalist id={`${path}-towns`}>
+            {MAIN_TOWNS.map((town) => (
+              <option key={town} value={town} />
             ))}
-          </select>
+          </datalist>
           {err("city")}
         </div>
         <div>

@@ -81,13 +81,12 @@ export const steps = [
 ] as const;
 
 export const area = {
-  title: "Where a project can be planned",
+  title: "Where we work",
   intro:
-    "Planned coverage for Justin to confirm. These are towns, not office locations.",
-  corridorLabel: "I-10 corridor, west to east",
-  stop: "The corridor stops at Baton Rouge. It does not continue toward Prairieville or Gonzales.",
-  alsoLabel: "Also on the planned list",
-  faq: "Planned coverage for Justin to confirm: Lake Charles, Jennings, Crowley, Lafayette, Broussard, Youngsville, New Iberia, Opelousas, Alexandria, Franklin, Morgan City, Thibodaux, Houma and Baton Rouge. Prairieville and Gonzales are not included. This is not an office in each town.",
+    "Based in Lafayette, serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge and Alexandria to Houma.",
+  townsLabel: "Towns people often ask about",
+  outside: "Don't see your town? Ask anyway. Justin confirms every visit.",
+  faq: "Based in Lafayette, serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge and Alexandria to Houma. Don't see your town? Ask anyway. Justin confirms every visit.",
 } as const;
 
 export const beforeAfter = {

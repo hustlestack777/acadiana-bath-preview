@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
-import { checkCity, SUPPORTED_TOWNS } from "@/lib/coverage";
+import { checkCity, MAIN_TOWNS } from "@/lib/coverage";
 import {
   brand,
   callTimeNote,
@@ -138,27 +138,15 @@ export function EstimateWizard() {
     const zipError = validateZip(form.zip);
     if (zipError) next.zip = zipError;
     const coverage = checkCity(form.city);
-    if (coverage.status === "empty") next.city = "Enter the city first.";
-    if (coverage.status === "unknown") {
-      next.city =
-        "Enter one planned city, such as Lafayette, Lake Charles, Houma, or Alexandria. ZIP codes are not used to approve a town.";
-    }
-    if (coverage.status === "excluded") {
-      setCoverageNote(
-        `${coverage.name} is outside the planned coverage. The I-10 corridor on this site stops at Baton Rouge. Prairieville and Gonzales are not included.`,
-      );
-      setErrors(next);
-      return;
-    }
+    if (coverage.status === "empty") next.city = "Enter your town.";
+    if (coverage.status === "invalid") next.city = "Keep the town under 80 characters.";
     if (Object.keys(next).length) {
       setCoverageNote("");
       setErrors(next);
       return;
     }
     if (coverage.status !== "supported") return;
-    setCoverageNote(
-      `${coverage.name} is on the planned list. Justin still confirms capacity. Coverage was checked by city, not by ZIP.`,
-    );
+    setCoverageNote(`Thanks. Justin confirms the visit for ${coverage.name}.`);
     patch({ town: coverage.name });
     go("project");
   }
@@ -426,7 +414,7 @@ export function EstimateWizard() {
                 }
               />
             </Field>
-            <Field id="city" label="City / town" error={errors.city} hint="Enter one city. The planned list is checked before you continue.">
+            <Field id="city" label="City / town" error={errors.city} hint="Any Louisiana town. Start typing for suggestions.">
               <Input
                 id="city"
                 name="city"
@@ -439,7 +427,7 @@ export function EstimateWizard() {
                 aria-describedby={errors.city ? "city-error" : "city-hint"}
               />
               <datalist id="planned-towns">
-                {SUPPORTED_TOWNS.map((town) => (
+                {MAIN_TOWNS.map((town) => (
                   <option key={town} value={town} />
                 ))}
               </datalist>
@@ -448,7 +436,7 @@ export function EstimateWizard() {
               id="zip"
               label="ZIP code (optional)"
               error={errors.zip}
-              hint="A ZIP is not used to approve or decline coverage. The city decides."
+              hint="Optional."
             >
               <Input
                 id="zip"

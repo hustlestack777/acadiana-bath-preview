@@ -1,78 +1,48 @@
-/** Planned towns only. ZIP codes are not used to approve coverage. */
+/**
+ * Service area. Based in Lafayette, serving Acadiana and South Louisiana.
+ * There is no allow-list: any town or ZIP is accepted on every form, and Justin confirms the visit.
+ * MAIN_TOWNS only feeds suggestions.
+ */
 
-export const CORRIDOR = [
-  "Lake Charles",
-  "Jennings",
-  "Crowley",
+export const SERVICE_AREA =
+  "Based in Lafayette, serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge and Alexandria to Houma.";
+
+export const MAIN_TOWNS = [
   "Lafayette",
-  "Opelousas",
-  "Baton Rouge",
-] as const;
-
-export const ALSO_PLANNED = [
   "Broussard",
   "Youngsville",
+  "Scott",
+  "Carencro",
+  "Breaux Bridge",
   "New Iberia",
-  "Franklin",
-  "Morgan City",
-  "Thibodaux",
-  "Houma",
+  "Abbeville",
+  "Crowley",
+  "Opelousas",
+  "Eunice",
+  "Lake Charles",
+  "Sulphur",
+  "Moss Bluff",
+  "Jennings",
   "Alexandria",
+  "Pineville",
+  "Baton Rouge",
+  "Prairieville",
+  "Gonzales",
+  "Houma",
+  "Thibodaux",
+  "Morgan City",
 ] as const;
 
-export const EXCLUDED = ["Prairieville", "Gonzales"] as const;
+/** Kept for older imports: suggestions only, never a gate. */
+export const SUPPORTED_TOWNS = MAIN_TOWNS;
 
-export const SUPPORTED_TOWNS = [...CORRIDOR, ...ALSO_PLANNED] as const;
+export type Coverage = { status: "empty" } | { status: "invalid" } | { status: "supported"; name: string };
 
-const FILLERS = new Set(["la", "louisiana", "city", "town", "the", "of"]);
-
-export type Coverage =
-  | { status: "empty" }
-  | { status: "excluded"; name: string }
-  | { status: "supported"; name: string }
-  | { status: "unknown" };
-
-function normalize(input: string) {
-  return input
-    .toLowerCase()
-    .replace(/[^a-z\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function containsPhrase(text: string, phrase: string) {
-  const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return new RegExp(`(?:^|\\s)${escaped}(?:\\s|$)`).test(text);
-}
-
+/** Accepts any town or ZIP. Only blank or absurdly long input is rejected. */
 export function checkCity(input: string): Coverage {
-  const trimmed = input.trim();
+  const trimmed = input.trim().replace(/\s+/g, " ");
   if (!trimmed) return { status: "empty" };
-
-  const normalized = normalize(trimmed);
-  if (!normalized) return { status: "unknown" };
-
-  for (const town of EXCLUDED) {
-    if (containsPhrase(normalized, town.toLowerCase())) {
-      return { status: "excluded", name: town };
-    }
-  }
-
-  const hits = SUPPORTED_TOWNS.filter((town) =>
-    containsPhrase(normalized, town.toLowerCase()),
-  );
-
-  if (hits.length !== 1) return { status: "unknown" };
-
-  const town = hits[0];
-  const remainder = normalized
-    .replace(town.toLowerCase(), " ")
-    .split(/\s+/)
-    .filter(Boolean);
-
-  if (remainder.every((word) => FILLERS.has(word))) {
-    return { status: "supported", name: town };
-  }
-
-  return { status: "unknown" };
+  if (trimmed.length > 80) return { status: "invalid" };
+  const known = MAIN_TOWNS.find((town) => town.toLowerCase() === trimmed.toLowerCase().replace(/,?\s*(la|louisiana)\.?$/, ""));
+  return { status: "supported", name: known ?? trimmed };
 }

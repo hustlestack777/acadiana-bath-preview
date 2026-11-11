@@ -20,7 +20,7 @@ import {
   steps,
   talk,
 } from "@/lib/copy";
-import { ALSO_PLANNED, CORRIDOR, EXCLUDED } from "@/lib/coverage";
+import { MAIN_TOWNS } from "@/lib/coverage";
 import { beforeAfterPhotos, galleryPhotos } from "@/lib/images";
 
 export function HomePage() {
@@ -160,25 +160,15 @@ export function HomePage() {
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass-soft">Service area</p>
           <h2 className="mt-3 max-w-2xl text-4xl md:text-5xl">{area.title}</h2>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-fig-muted">{area.intro}</p>
-          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-brass-soft">{area.corridorLabel}</p>
-          <ol className="mt-4 flex flex-wrap gap-2">
-            {CORRIDOR.map((town, index) => (
-              <li key={town} className="rounded-full border border-white/20 px-3 py-1.5 text-sm">
-                {town}
-                {index === CORRIDOR.length - 1 ? <span className="ms-2 text-xs text-brass-soft">Stops here</span> : null}
-              </li>
-            ))}
-          </ol>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-fig-muted">{area.stop}</p>
-          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-brass-soft">{area.alsoLabel}</p>
+          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-brass-soft">{area.townsLabel}</p>
           <ul className="mt-4 flex flex-wrap gap-2">
-            {ALSO_PLANNED.map((town) => (
+            {MAIN_TOWNS.map((town) => (
               <li key={town} className="rounded-full border border-white/20 px-3 py-1.5 text-sm">
                 {town}
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-sm text-fig-muted">Not included: {EXCLUDED.join(" and ")}.</p>
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-fig-muted">{area.outside}</p>
         </div>
       </section>
 

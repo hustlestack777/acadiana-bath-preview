@@ -19,20 +19,13 @@ test("lead notification accepts one address or a comma-separated list", () => {
   ]);
 });
 
-test("planned towns are accepted and the corridor stops before the excluded towns", () => {
-  assert.equal(checkCity("Lafayette").status, "supported");
-  assert.equal(checkCity("lafayette, la").status, "supported");
-  assert.equal(checkCity("Baton Rouge").status, "supported");
-  assert.equal(checkCity("New Iberia").status, "supported");
-  assert.equal(checkCity("Youngsville").status, "supported");
-  assert.equal(checkCity("Alexandria").status, "supported");
-  assert.deepEqual(checkCity("Prairieville"), { status: "excluded", name: "Prairieville" });
-  assert.deepEqual(checkCity("Gonzales, LA"), { status: "excluded", name: "Gonzales" });
-  assert.equal(checkCity("near Prairieville").status, "excluded");
-  assert.equal(checkCity("West Baton Rouge").status, "unknown");
-  assert.equal(checkCity("70501").status, "unknown");
+test("any town or ZIP is accepted; there is no allow-list", () => {
+  for (const town of ["Lafayette", "lafayette, la", "Houma", "Prairieville", "Gonzales, LA", "West Baton Rouge", "Ville Platte", "70360", "Shreveport"]) {
+    assert.equal(checkCity(town).status, "supported", town);
+  }
+  assert.deepEqual(checkCity("houma, la"), { status: "supported", name: "Houma" });
   assert.equal(checkCity("").status, "empty");
-  assert.equal(checkCity("Lafayette and Broussard").status, "unknown");
+  assert.equal(checkCity("x".repeat(81)).status, "invalid");
 });
 
 test("street address requires a house number and stays optional for zip", () => {
@@ -149,7 +142,7 @@ test("assistant answers stay inside the published facts", () => {
     "How do I clean it?",
     "What is the product warranty?",
     `what is your ${pledge}?`,
-    "Which towns are planned?",
+    "Where do you work?",
     "Can photos give an exact quote?",
     "how much does it cost",
     "do you beat bath fitter",

@@ -49,7 +49,7 @@ export function validateZip(zip: string) {
   const trimmed = zip.trim();
   if (!trimmed) return "";
   if (!/^\d{5}(?:-\d{4})?$/.test(trimmed)) {
-    return "Use a 5-digit ZIP, or leave it blank. The city decides coverage on this prototype.";
+    return "Use a 5-digit ZIP, or leave it blank.";
   }
   return "";
 }
