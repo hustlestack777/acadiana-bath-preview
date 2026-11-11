@@ -38,7 +38,7 @@ export default function CustomTilePage() {
               </article>
             ))}
           </div>
-          <ExampleGrid photos={tilePhotos} className="mt-10" />
+          <ExampleGrid photos={tilePhotos} className="mt-10" title="Looks we can build for you" />
         </section>
 
         <section id="grout" className="rise scroll-mt-28 bg-card" aria-labelledby="grout-title">

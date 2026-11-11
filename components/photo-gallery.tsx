@@ -55,7 +55,6 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
                   />
                 </span>
               </button>
-              <figcaption className="mt-2 px-1 text-sm">{item.caption}</figcaption>
             </figure>
           </li>
         ))}
@@ -82,7 +81,7 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
               <Image src={photo.src} alt={photo.alt} fill sizes="96vw" className="object-contain" />
             </div>
             <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-              <p className="text-sm">{photo.caption}</p>
+              <span />
               <div className="flex gap-2">
                 <button type="button" className="h-10 rounded-full border border-white/30 px-4 text-sm" onClick={() => step(-1)}>
                   Previous

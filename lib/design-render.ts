@@ -210,14 +210,6 @@ export async function normalizePhoto(bytes: Buffer) {
 
 const asset = (name: string) => readFile(path.join(process.cwd(), "design-refs", name));
 
-/** Full-res render with the permanent "AI design idea" label burned in (pre-rendered PNG, no server fonts needed). */
-export async function labeledFull(after: Buffer) {
-  const meta = await sharp(after).metadata();
-  const width = meta.width ?? 1024;
-  const label = await sharp(await asset("label.png")).resize({ width }).png().toBuffer();
-  return sharp(after).composite([{ input: label, gravity: "south" }]).jpeg({ quality: 86 }).toBuffer();
-}
-
 /** Small, blurred, watermarked teaser. The full render never leaves the server before unlock. */
 export async function teaser(after: Buffer) {
   const small = await sharp(after).resize(512, 512, { fit: "inside" }).blur(8).toBuffer();

@@ -257,7 +257,6 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         <section aria-labelledby="design-step-2">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 2 of 3</p>
           <h2 id="design-step-2" className="mt-2 font-heading text-3xl">Pick a look</h2>
-          <p className="mt-2 text-xs text-muted-foreground">{designCopy.examples}</p>
           <div className="mt-4 -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-3 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0" role="radiogroup" aria-label="Looks">
             {orderByBudget(designStyles, budget).map((item) => (
               <button
@@ -328,12 +327,11 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         <section aria-labelledby="design-step-3">
           <div className="relative overflow-hidden rounded-3xl">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={design.teaser} alt="Blurred preview of your AI design idea" className="w-full" data-testid="design-teaser" />
+            <img src={design.teaser} alt="Blurred preview of your new bathroom design" className="w-full" data-testid="design-teaser" />
             <div className="absolute inset-0 flex items-center justify-center bg-black/25 p-6 text-center">
               <p className="font-heading text-2xl text-white drop-shadow">Unlock your full design + before/after.</p>
             </div>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">{designCopy.label}</p>
           <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 3 of 3</p>
           <h2 id="design-step-3" className="mt-2 font-heading text-3xl">Where should we send it?</h2>
           <form onSubmit={unlock} noValidate className="mt-4 grid gap-4" data-testid="design-unlock-form">
@@ -379,6 +377,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             <button type="submit" disabled={sending} className="h-14 rounded-full bg-primary text-base font-semibold text-primary-foreground disabled:opacity-50" data-testid="design-unlock">
               {sending ? "Unlocking…" : "Unlock my design"}
             </button>
+            <p className="-mt-2 text-center text-[0.7rem] text-muted-foreground/80" data-testid="design-fine-print">{designCopy.finePrint}</p>
             <p className="text-xs leading-5 text-muted-foreground">
               {designCopy.privacy}{" "}
               <a href="/privacy" className="underline underline-offset-4">Privacy policy</a>
@@ -389,20 +388,19 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
 
       {step === "reveal" && reveal ? (
         <section aria-labelledby="design-reveal" data-testid="design-reveal">
-          <h2 id="design-reveal" className="font-heading text-3xl">Your {reveal.style} design idea</h2>
+          <h2 id="design-reveal" className="font-heading text-3xl">Your new {reveal.style} bathroom</h2>
           <BeforeAfter before={reveal.before} after={reveal.after} />
-          <p className="mt-2 text-xs font-semibold text-muted-foreground">{designCopy.label}</p>
           <div className="mt-4 grid grid-cols-2 gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={reveal.before} alt="Your bathroom now" className="rounded-2xl" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={reveal.after} alt="AI design idea for your bathroom" className="rounded-2xl" />
+            <img src={reveal.after} alt="Your bathroom, redesigned" className="rounded-2xl" />
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <a href={`/${chosen?.path === "solid-surface" ? "solid-surface#solid-quote" : "custom-tile#tile-quote"}`} className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground" data-testid="design-quote">
               Get my free quote
             </a>
-            <a href={reveal.after} download="acadiana-ai-design-idea.jpg" className="inline-flex h-14 items-center justify-center rounded-full border border-border bg-card px-6 text-base font-semibold">
+            <a href={reveal.after} download="acadiana-bathroom-design.jpg" className="inline-flex h-14 items-center justify-center rounded-full border border-border bg-card px-6 text-base font-semibold">
               Download
             </a>
             <button type="button" onClick={tryAnother} className="h-14 rounded-full border border-border px-6 text-base font-semibold">
@@ -434,7 +432,7 @@ function BeforeAfter({ before, after }: { before: string; after: string }) {
   return (
     <div className="relative mt-4 select-none overflow-hidden rounded-3xl" data-testid="design-slider">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={after} alt="AI design idea" className="block w-full" draggable={false} />
+      <img src={after} alt="Your bathroom, redesigned" className="block w-full" draggable={false} />
       <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - split}% 0 0)` }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={before} alt="Your bathroom now" className="h-full w-full object-cover" draggable={false} />
@@ -443,14 +441,14 @@ function BeforeAfter({ before, after }: { before: string; after: string }) {
         <span className="absolute top-1/2 left-1/2 flex size-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-xs font-bold text-[#1c1014] shadow">⇆</span>
       </div>
       <span className="absolute left-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-xs text-white">Before</span>
-      <span className="absolute right-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-xs text-white">AI design idea</span>
+      <span className="absolute right-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-xs text-white">After</span>
       <input
         type="range"
         min={0}
         max={100}
         value={split}
         onChange={(e) => setSplit(Number(e.target.value))}
-        aria-label="Slide between before and the AI design idea"
+        aria-label="Slide between before and after"
         className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
       />
     </div>

@@ -312,3 +312,28 @@
 @media (prefers-reduced-motion: reduce) {
   .design-scanline { animation: none; opacity: 0.4; }
 }
+
+/* Home hero (GetMaids style): darkened photos, slow Ken Burns 1.0 -> 1.08 over 8s, 2s crossfade every 6s. */
+.home-hero-img {
+  filter: brightness(0.58);
+  transform: scale(1);
+}
+.home-hero-scrim {
+  background:
+    linear-gradient(90deg, rgba(14, 8, 11, 0.86) 0%, rgba(14, 8, 11, 0.6) 34%, rgba(14, 8, 11, 0.18) 64%, rgba(14, 8, 11, 0) 82%),
+    linear-gradient(180deg, rgba(14, 8, 11, 0.45) 0%, rgba(14, 8, 11, 0) 22%, rgba(14, 8, 11, 0.35) 58%, rgba(14, 8, 11, 0.95) 100%);
+}
+@media (max-width: 767px) {
+  .home-hero-scrim {
+    background: linear-gradient(180deg, rgba(14, 8, 11, 0.55) 0%, rgba(14, 8, 11, 0.2) 24%, rgba(14, 8, 11, 0.62) 56%, rgba(14, 8, 11, 0.96) 100%);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .home-hero-zoom {
+    animation: homeHeroZoom 8s ease-out forwards;
+  }
+}
+@keyframes homeHeroZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}

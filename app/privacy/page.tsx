@@ -59,9 +59,8 @@ export default function PrivacyPage() {
           <section>
             <h2>Design My Bathroom photos</h2>
             <p>
-              When you use Design My Bathroom, your photo is sent to an AI image service to make your design idea. We use
-              your photos and design only to make the design and prepare your estimate, never for ads. Designs are AI
-              ideas, not a quote or final result.
+              When you use Design My Bathroom, your photo is sent to an AI image service to make your design preview. We use
+              your photos and design only to make the design and prepare your estimate, never for ads.
             </p>
           </section>
 

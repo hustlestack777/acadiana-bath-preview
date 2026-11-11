@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ConsultLink } from "@/components/consult-link";
 import { DesignCta } from "@/components/design/design-cta";
@@ -11,17 +10,22 @@ import { brand, cardClaims, hero, priceRange, services } from "@/lib/copy";
  * Only the first slide is preloaded; the rest mount after first paint. Reduced motion shows the first slide only.
  */
 const SLIDES = [
-  { src: "/images/hero/hero-17.webp", position: "42% center", alt: "Blush pink zellige bathroom with a floating oak vanity, white top and arched walk-in shower." },
-  { src: "/images/hero/hero-18.webp", position: "55% center", alt: "Emerald green zellige walk-in shower with a tiled bench, niche and linear drain." },
-  { src: "/images/hero/hero-24.webp", position: "50% center", alt: "Dark green handmade tile behind a thick stone-look vanity top and an arched mirror." },
-  { src: "/images/hero/hero-19.webp", position: "30% center", alt: "Terracotta handmade tile shower beside a light oak vanity on a herringbone floor." },
-  { src: "/images/hero/hero-22.webp", position: "35% center", alt: "Terracotta and cream checkerboard floor under a freestanding tub by a window." },
+  { n: "17", position: "42% center" },
+  { n: "18", position: "55% center" },
+  { n: "24", position: "50% center" },
+  { n: "19", position: "30% center" },
+  { n: "22", position: "35% center" },
 ] as const;
 
-const INTERVAL_MS = 5200;
+/** Boogie's 2560x1440 upscales, pre-sized to 960/1600/2560. WebP first, JPG fallback. */
+const srcSet = (n: string, ext: "webp" | "jpg") =>
+  [960, 1600, 2560].map((w) => `/images/hero/hero-${n}-${w}.${ext} ${w}w`).join(", ");
+
+const INTERVAL_MS = 6000;
 
 export function Hero() {
   const [active, setActive] = useState(0);
+  const [previous, setPrevious] = useState(-1);
   const [mounted, setMounted] = useState(false);
   const [loaded, setLoaded] = useState<boolean[]>(() => SLIDES.map((_, index) => index === 0));
   const [before, word, after] = hero.title.split(/(beautiful)/i);
@@ -42,7 +46,9 @@ export function Hero() {
       }
       setActive((current) => {
         const next = (current + 1) % SLIDES.length;
-        return loadedRef.current[next] ? next : current;
+        if (!loadedRef.current[next]) return current;
+        setPrevious(current);
+        return next;
       });
     }, INTERVAL_MS);
     return () => {
@@ -57,27 +63,37 @@ export function Hero() {
         {SLIDES.map((slide, index) =>
           index === 0 || mounted ? (
             <div
-              key={slide.src}
-              className="absolute inset-0 transition-opacity duration-[1600ms] ease-in-out"
+              key={slide.n}
+              className="absolute inset-0 transition-opacity duration-[2000ms] ease-in-out"
               style={{ opacity: index === active ? 1 : 0 }}
             >
-              <Image
-                src={slide.src}
-                alt=""
-                fill
-                sizes="100vw"
-                priority={index === 0}
-                loading={index === 0 ? undefined : "eager"}
-                onLoad={() =>
-                  setLoaded((current) => (current[index] ? current : current.map((value, i) => (i === index ? true : value))))
-                }
-                className={index === active ? "hero-ken object-cover" : "object-cover"}
-                style={{ objectPosition: slide.position }}
-              />
+              <picture>
+                <source type="image/webp" srcSet={srcSet(slide.n, "webp")} sizes="100vw" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/images/hero/hero-${slide.n}-1600.jpg`}
+                  srcSet={srcSet(slide.n, "jpg")}
+                  sizes="100vw"
+                  alt=""
+                  width={2560}
+                  height={1440}
+                  fetchPriority={index === 0 ? "high" : "low"}
+                  decoding={index === 0 ? "sync" : "async"}
+                  onLoad={() =>
+                    setLoaded((current) => (current[index] ? current : current.map((value, i) => (i === index ? true : value))))
+                  }
+                  className={
+                    index === active || index === previous
+                      ? "home-hero-img home-hero-zoom absolute inset-0 h-full w-full object-cover"
+                      : "home-hero-img absolute inset-0 h-full w-full object-cover"
+                  }
+                  style={{ objectPosition: slide.position }}
+                />
+              </picture>
             </div>
           ) : null,
         )}
-        <div className="hero-video-scrim absolute inset-0" />
+        <div className="home-hero-scrim absolute inset-0" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-6xl flex-col justify-end px-5 pb-48 pt-24 md:pb-12 md:pt-28">
@@ -116,9 +132,6 @@ export function Hero() {
         </div>
         <DesignCta testId="hero-design-cta" />
         <p className="hero-copy mt-5 max-w-xl text-sm leading-6 text-white/90" data-testid="price-range">{priceRange}</p>
-        <p className="mt-6 text-xs text-white/70" data-testid="hero-caption">
-          Examples of what your remodel could look like.
-        </p>
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4 border-t border-white/20 pe-16 pt-4 md:pe-0">
           <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/80">
             {services.map((service) => (

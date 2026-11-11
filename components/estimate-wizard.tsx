@@ -380,7 +380,6 @@ export function EstimateWizard() {
             {" · "}
             <a href="/custom-tile#tile-quote" className="underline underline-offset-4">Custom tile consult</a>
           </p>
-          <p className="mt-4 text-xs text-white/65">Examples of what your remodel could look like.</p>
         </div>
       </section>
       )}

@@ -91,12 +91,11 @@ export const area = {
 
 export const beforeAfter = {
   title: "Before and after",
-  body: "Examples of what your remodel could look like",
 } as const;
 
 export const gallery = {
-  title: "Showers, tubs, and lavatories",
-  body: "Examples of what your remodel could look like",
+  eyebrow: "Gallery",
+  title: "Looks we can build for you",
 } as const;
 
 export const faqs = [
@@ -203,7 +202,6 @@ export const dimensionNote =
   "Rough numbers are fine. Justin measures everything in person.";
 
 /** Two clear paths. No prices on either path until Justin sends his pricing. */
-export const examplesLabel = "Examples of what your remodel could look like.";
 
 export const pathProjects = [
   { id: "ss-tub-to-shower", label: "Solid surface: tub-to-shower conversion", short: "Tub-to-shower conversion" },

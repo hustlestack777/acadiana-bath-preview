@@ -110,7 +110,7 @@ export function GroutPicker() {
             <Image src="/images/ai/tile-01.webp" alt="Deep-green zellige shower with grout that blends into the tile." fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
           </div>
           <figcaption className="text-sm text-muted-foreground md:col-span-2">
-            Contrast grout draws the grid (left). Matching grout keeps the wall calm (right). Examples of what your remodel could look like.
+            Contrast grout draws the grid (left). Matching grout keeps the wall calm (right).
           </figcaption>
         </figure>
       </div>

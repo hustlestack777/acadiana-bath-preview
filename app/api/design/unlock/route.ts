@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { saveLead, validateLead } from "@/lib/leads";
 import { designCopy, findStyle } from "@/lib/design-styles";
-import { labeledFull } from "@/lib/design-render";
 import {
   clientIp,
   designDb,
@@ -79,11 +78,11 @@ export async function POST(request: Request) {
   if (phoneDigits(phone).length !== 10) errors.phone = "Enter a 10-digit mobile number.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) errors.email = "Enter a valid email.";
 
-  const full = await labeledFull(session.after);
+  const full = session.after;
   const before = session.before;
   const photos = [
     { filename: "1-before-their-photo.jpg", contentType: "image/jpeg", bytes: before },
-    { filename: `2-after-ai-design-idea-${style.key}.jpg`, contentType: "image/jpeg", bytes: full },
+    { filename: `2-after-design-preview-${style.key}.jpg`, contentType: "image/jpeg", bytes: full },
     ...(session.extra ? [{ filename: "3-their-second-photo.jpg", contentType: "image/jpeg", bytes: session.extra }] : []),
   ];
 
@@ -92,7 +91,7 @@ export async function POST(request: Request) {
   const features = [
     "Path: Design My Bathroom",
     `Style picked: ${style.name} (${style.path === "solid-surface" ? "Solid surface" : "Custom tile"})`,
-    "Photo 1 is their bathroom. Photo 2 is the AI design idea (not a quote or final result).",
+    "Photo 1 is their bathroom. Photo 2 is the design preview we made from it.",
     smsConsent
       ? `SMS consent: YES at ${formatChicago(now)} from IP ${ip} (checkbox text v1 on /design: "${designCopy.smsConsent.slice(0, 60)}…")`
       : "SMS consent: no (call or email only).",

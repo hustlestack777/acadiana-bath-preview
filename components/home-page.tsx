@@ -96,14 +96,12 @@ export function HomePage() {
       <section id="changes" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Before and after</p>
         <h2 className="mt-3 max-w-3xl text-4xl md:text-5xl">{beforeAfter.title}</h2>
-        <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">{beforeAfter.body}</p>
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {beforeAfterPhotos.map((photo) => (
             <figure key={photo.src} className="overflow-hidden rounded-[1.4rem] border border-border bg-card">
               <div className="relative aspect-[2/1]">
                 <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 768px) 45vw, 100vw" className="object-cover" />
               </div>
-              <figcaption className="px-4 py-3 text-sm">{photo.caption}</figcaption>
             </figure>
           ))}
         </div>
@@ -113,7 +111,6 @@ export function HomePage() {
         <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Gallery</p>
           <h2 className="mt-3 max-w-3xl text-4xl md:text-5xl">{gallery.title}</h2>
-          <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">{gallery.body}</p>
           <PhotoGallery photos={galleryPhotos} />
         </div>
       </section>

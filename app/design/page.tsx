@@ -5,7 +5,7 @@ import { designCopy } from "@/lib/design-styles";
 
 export const metadata: Metadata = {
   title: "Design My Bathroom",
-  description: "Snap your shower, pick a look, and see an AI design idea in your own bathroom. Free consult across Acadiana and South Louisiana.",
+  description: "Snap your shower, pick a look, and see your new bathroom in your own space. Free consult across Acadiana and South Louisiana.",
   robots: { index: false, follow: false },
 };
 

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { brand, examplesLabel, ideas, priceRange, solidPath, tilePath } from "@/lib/copy";
+import { brand, ideas, priceRange, solidPath, tilePath } from "@/lib/copy";
 import type { Photo } from "@/lib/images";
 import { cn } from "cn";
 import { DesignCta } from "@/components/design/design-cta";
@@ -53,16 +53,16 @@ export function PathHero({
         <DesignCta testId="path-design-cta" />
         <p className="hero-copy mt-5 max-w-xl text-sm leading-6 text-white/90" data-testid="price-range">{priceRange}</p>
         {children}
-        <p className="mt-6 text-xs text-white/70">{examplesLabel}</p>
       </div>
     </section>
   );
 }
 
-/** Example photo grid. Every grid carries the examples label; none are presented as completed jobs. */
-export function ExampleGrid({ photos, className }: { photos: Photo[]; className?: string }) {
+/** Look grid. Titled "Looks we can build" so it never reads as past jobs; no per-image captions. */
+export function ExampleGrid({ photos, className, title }: { photos: Photo[]; className?: string; title?: string }) {
   return (
     <figure className={className}>
+      {title ? <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-brass">{title}</p> : null}
       <ul className="grid grid-cols-2 gap-3 md:grid-cols-12">
         {photos.map((photo, index) => (
           <li
@@ -77,7 +77,6 @@ export function ExampleGrid({ photos, className }: { photos: Photo[]; className?
           </li>
         ))}
       </ul>
-      <figcaption className="mt-3 text-sm text-muted-foreground">{examplesLabel}</figcaption>
     </figure>
   );
 }
@@ -114,7 +113,6 @@ export function PathChooser() {
           </Link>
         ))}
       </div>
-      <p className="mt-3 text-sm text-muted-foreground">{examplesLabel}</p>
     </section>
   );
 }
@@ -144,7 +142,6 @@ export function IdeasSection({ only }: { only?: string[] }) {
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-sm text-muted-foreground">{examplesLabel}</p>
         <p className="mt-1 text-xs text-muted-foreground">{ideas.note}</p>
       </div>
     </section>

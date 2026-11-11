@@ -213,8 +213,8 @@ export const designCopy = {
   cta: "Design My Bathroom",
   headline: "Your new bathroom, before you spend a dime.",
   sub: "Snap your shower, pick a look, and see it in your own space in about a minute.",
-  label: "AI design idea, not a quote or final result.",
-  examples: "Examples of what your remodel could look like.",
+  /** The only fine print in the tool (Shaun, 11/10/2026). */
+  finePrint: "Design preview. Final pricing at your free consult.",
   tips: "Stand in the doorway, phone at chest height, lights on, whole shower in frame.",
   steps: ["Scanning your bathroom…", "Clearing the clutter…", "Designing…", "Polishing…"],
   smsConsent:
