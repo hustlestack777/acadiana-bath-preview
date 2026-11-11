@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ConsultLink } from "@/components/consult-link";
+import { DesignCta } from "@/components/design/design-cta";
 import { brand, cardClaims, hero, priceRange, services } from "@/lib/copy";
 
 /**
@@ -117,6 +118,7 @@ export function Hero() {
             {brand.phone}
           </a>
         </div>
+        <DesignCta testId="hero-design-cta" />
         <p className="hero-copy mt-5 max-w-xl text-sm leading-6 text-white/90" data-testid="price-range">{priceRange}</p>
         <div className="mt-10 flex flex-wrap items-end justify-between gap-4 border-t border-white/20 pe-16 pt-4 md:pe-0">
           <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/80">

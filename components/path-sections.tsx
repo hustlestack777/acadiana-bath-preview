@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { brand, examplesLabel, ideas, priceRange, solidPath, tilePath } from "@/lib/copy";
 import type { Photo } from "@/lib/images";
 import { cn } from "cn";
+import { DesignCta } from "@/components/design/design-cta";
 
 /** Full-bleed photo hero used by both paths. */
 export function PathHero({
@@ -49,6 +50,7 @@ export function PathHero({
             {brand.phone}
           </a>
         </div>
+        <DesignCta testId="path-design-cta" />
         <p className="hero-copy mt-5 max-w-xl text-sm leading-6 text-white/90" data-testid="price-range">{priceRange}</p>
         {children}
         <p className="mt-6 text-xs text-white/70">{examplesLabel}</p>

@@ -299,3 +299,16 @@
 #start {
   scroll-margin-top: 5.5rem;
 }
+
+/* Design My Bathroom scanner line */
+.design-scanline {
+  background: linear-gradient(to bottom, transparent, rgba(240, 199, 184, 0.55) 85%, rgba(255, 255, 255, 0.95));
+  animation: design-scan 2.4s ease-in-out infinite alternate;
+}
+@keyframes design-scan {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(400%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .design-scanline { animation: none; opacity: 0.4; }
+}

@@ -57,6 +57,15 @@ export default function PrivacyPage() {
           </section>
 
           <section>
+            <h2>Design My Bathroom photos</h2>
+            <p>
+              When you use Design My Bathroom, your photo is sent to an AI image service to make your design idea. We use
+              your photos and design only to make the design and prepare your estimate, never for ads. Designs are AI
+              ideas, not a quote or final result.
+            </p>
+          </section>
+
+          <section>
             <h2>Calls and texts</h2>
             <p>
               We call or text you only if you ask for a quote or opt in. You can tell us to stop at any time.
@@ -66,7 +75,8 @@ export default function PrivacyPage() {
           <section>
             <h2>Cookies and analytics</h2>
             <p>
-              This site does not use analytics, ad tracking or cookies. If that changes, we will update this page first.
+              This site does not use analytics or ad tracking. The Design My Bathroom tool sets one small cookie so we
+              can count your free designs. If that changes, we will update this page first.
             </p>
           </section>
 

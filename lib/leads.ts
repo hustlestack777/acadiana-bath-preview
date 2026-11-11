@@ -65,7 +65,7 @@ export function databaseConfigured() {
   return Boolean(process.env.DATABASE_URL);
 }
 
-function getPool() {
+export function getPool() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) return null;
   if (!pool) {
@@ -142,8 +142,14 @@ export function validateLead(input: LeadInput) {
   const coverage = checkCity(input.city);
   if (coverage.status === "empty") errors.city = "Enter your town or ZIP.";
   if (coverage.status === "invalid") errors.city = "Keep the town under 80 characters.";
-  if (!["/", "/estimate", "/solid-surface", "/custom-tile"].includes(input.sourcePage)) {
+  if (!["/", "/estimate", "/solid-surface", "/custom-tile", "/design"].includes(input.sourcePage)) {
     errors.sourcePage = "Unknown source page.";
+  }
+  // Design My Bathroom asks only name, phone, address and email; own/rent is optional there.
+  // SMS consent is optional there too (the design is still emailed and Justin may call back about the request).
+  if (input.sourcePage === "/design") {
+    if (!input.homeowner) delete errors.homeowner;
+    delete errors.consent;
   }
   if (input.photos.length > MAX_PHOTOS) {
     errors.photos = `Send up to ${MAX_PHOTOS} photos.`;
@@ -160,7 +166,13 @@ export function validateLead(input: LeadInput) {
   return { errors, town: coverage.status === "supported" ? coverage.name : "" };
 }
 
-export async function saveLead(input: LeadInput, ip: string) {
+export type LeadNotifyOptions = {
+  /** Override LEAD_NOTIFY_EMAIL (used for design-tool test leads). */
+  recipients?: string[];
+  subject?: string;
+};
+
+export async function saveLead(input: LeadInput, ip: string, options: LeadNotifyOptions = {}) {
   const db = getPool();
   if (!db) {
     return { ok: false as const, status: 503, error: "Lead storage is not configured. DATABASE_URL is missing." };
@@ -233,7 +245,7 @@ export async function saveLead(input: LeadInput, ip: string) {
     client.release();
   }
 
-  const notification = await notifyLead(id, createdAt, input);
+  const notification = await notifyLead(id, createdAt, input, options);
   await db.query(`UPDATE leads SET email_status = $2, email_error = $3 WHERE id = $1`, [
     id,
     notification.sent ? "sent" : "failed",
@@ -420,10 +432,10 @@ async function housePreview(input: { street: string; city: string; zip: string; 
   return fetchStreetViewImage({ address, lat: input.latitude, lon: input.longitude });
 }
 
-async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
+async function notifyLead(id: string, createdAt: Date, input: LeadInput, options: LeadNotifyOptions = {}) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
-  const to = leadNotifyRecipients();
+  const to = options.recipients?.length ? options.recipients : leadNotifyRecipients();
   if (!apiKey) return { sent: false, error: "RESEND_API_KEY is not set." };
   if (!from) return { sent: false, error: "RESEND_FROM is not set." };
 
@@ -459,7 +471,7 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput) {
     {
       from,
       to,
-      subject: message.subject,
+      subject: options.subject || message.subject,
       text: message.text,
       html: message.html,
       attachments: message.attachments,
