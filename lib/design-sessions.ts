@@ -2,7 +2,7 @@ import { createHash, randomBytes } from "node:crypto";
 import type { Pool } from "pg";
 import { getPool } from "./leads";
 
-/** Caps from the PRD: 2 looks per phone/device, 3 renders per IP per day, about 125 renders (DESIGN_DAILY_USD_CAP) per day overall. */
+/** Caps from the PRD: 2 looks per phone/device, 3 renders per IP per day, about 125 renders (DESIGN_DAILY_USD_CAP) per day overall. QA test runs (is_test) don't count toward the daily caps. */
 export const LOOKS_PER_PERSON = Number(process.env.DESIGN_LOOKS_PER_PERSON || 2);
 export const RENDERS_PER_IP_PER_DAY = Number(process.env.DESIGN_IP_DAILY_CAP || 3);
 export const DAILY_RENDER_CAP = Number(process.env.DESIGN_DAILY_RENDER_CAP || 125);
@@ -39,6 +39,25 @@ export async function ensureDesignSchema(db: Pool) {
           unlocked_at timestamptz
         );
         ALTER TABLE design_sessions ADD COLUMN IF NOT EXISTS budget text NOT NULL DEFAULT '';
+        ALTER TABLE design_sessions ADD COLUMN IF NOT EXISTS attempts integer NOT NULL DEFAULT 0;
+        ALTER TABLE design_sessions ADD COLUMN IF NOT EXISTS qa_failed boolean NOT NULL DEFAULT false;
+        CREATE TABLE IF NOT EXISTS design_qa_log (
+          id bigserial PRIMARY KEY,
+          created_at timestamptz NOT NULL DEFAULT now(),
+          session_id uuid NOT NULL,
+          attempt integer NOT NULL,
+          pass boolean NOT NULL,
+          failed text[] NOT NULL DEFAULT '{}',
+          reasons jsonb NOT NULL DEFAULT '[]',
+          error text NOT NULL DEFAULT '',
+          qa_model text NOT NULL DEFAULT '',
+          edit_ms integer NOT NULL DEFAULT 0,
+          qa_ms integer NOT NULL DEFAULT 0,
+          cost_usd numeric(10,4) NOT NULL DEFAULT 0,
+          style_key text NOT NULL DEFAULT '',
+          is_test boolean NOT NULL DEFAULT false
+        );
+        CREATE INDEX IF NOT EXISTS design_qa_log_session_idx ON design_qa_log (session_id);
         CREATE INDEX IF NOT EXISTS design_sessions_created_idx ON design_sessions (created_at);
         CREATE INDEX IF NOT EXISTS design_sessions_ip_idx ON design_sessions (ip_hash, created_at);
         CREATE INDEX IF NOT EXISTS design_sessions_phone_idx ON design_sessions (phone_digits);
@@ -75,7 +94,7 @@ export async function checkLimits(
 ): Promise<LimitCheck> {
   const today = await db.query<{ count: string; cost: string }>(
     `SELECT count(*)::text AS count, coalesce(sum(cost_usd),0)::text AS cost
-       FROM design_sessions WHERE created_at >= ${CT_MIDNIGHT} AND status <> 'blocked'`,
+       FROM design_sessions WHERE created_at >= ${CT_MIDNIGHT} AND status <> 'blocked' AND is_test = false`,
   );
   const count = Number(today.rows[0]?.count ?? 0);
   const cost = Number(today.rows[0]?.cost ?? 0);
@@ -89,7 +108,7 @@ export async function checkLimits(
   if (!input.skipIp) {
     const ip = await db.query<{ count: string }>(
       `SELECT count(*)::text AS count FROM design_sessions
-        WHERE ip_hash = $1 AND created_at > now() - interval '24 hours' AND status IN ('rendering','done')`,
+        WHERE ip_hash = $1 AND created_at > now() - interval '24 hours' AND status IN ('rendering','done','qa_failed')`,
       [input.ipHash],
     );
     if (Number(ip.rows[0]?.count ?? 0) >= RENDERS_PER_IP_PER_DAY) {

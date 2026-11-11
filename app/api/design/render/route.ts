@@ -16,7 +16,7 @@ import {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 180;
+export const maxDuration = 300;
 
 const MAX_UPLOAD = 4 * 1024 * 1024;
 const ALLOWED = /^image\/(jpeg|png|webp)$/;
@@ -91,19 +91,72 @@ export async function POST(request: Request) {
 
   try {
     const result = await renderDesign(before, style);
-    const preview = await teaser(result.after);
-    await db.query(
-      `UPDATE design_sessions SET status='done', after=$2, cost_usd=$3, latency_ms=$4, model=$5 WHERE id=$1`,
-      [id, result.after, result.costUsd.toFixed(4), result.latencyMs, result.model],
-    );
-    console.log(`design render ok style=${style.key} ms=${result.latencyMs} usd=${result.costUsd.toFixed(4)}`);
-    const response = NextResponse.json({
-      ok: true,
-      id,
-      teaser: `data:image/jpeg;base64,${preview.toString("base64")}`,
-      latencyMs: result.latencyMs,
-      ...(test ? { costUsd: result.costUsd } : {}),
-    });
+    // Log every QA verdict server-side (table + log line), pass or fail.
+    for (const attempt of result.attempts) {
+      const verdict = attempt.verdict;
+      console.log(
+        `design qa session=${id} style=${style.key} attempt=${attempt.attempt} ${verdict?.pass ? "PASS" : "FAIL"} edit_ms=${attempt.editMs} qa_ms=${verdict?.latencyMs ?? 0} failed=${verdict?.failed.join(",") || attempt.error || verdict?.error || ""} reasons=${JSON.stringify(verdict?.reasons ?? [])}${test ? " test" : ""}`,
+      );
+      await db
+        .query(
+          `INSERT INTO design_qa_log (session_id, attempt, pass, failed, reasons, error, qa_model, edit_ms, qa_ms, cost_usd, style_key, is_test)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+          [
+            id,
+            attempt.attempt,
+            verdict?.pass === true,
+            verdict?.failed ?? [],
+            JSON.stringify(verdict?.reasons ?? []),
+            (attempt.error || verdict?.error || "").slice(0, 200),
+            verdict?.model ?? "",
+            attempt.editMs,
+            verdict?.latencyMs ?? 0,
+            attempt.costUsd.toFixed(4),
+            style.key,
+            test,
+          ],
+        )
+        .catch((error) => console.error("design qa log failed", error instanceof Error ? error.name : "unknown"));
+    }
+    const debug = test
+      ? {
+          costUsd: result.costUsd,
+          scan: result.scan,
+          attempts: result.attempts.map((attempt) => ({
+            attempt: attempt.attempt,
+            editMs: attempt.editMs,
+            costUsd: attempt.costUsd,
+            error: attempt.error,
+            verdict: attempt.verdict,
+            image: attempt.after ? `data:image/jpeg;base64,${attempt.after.toString("base64")}` : null,
+          })),
+        }
+      : {};
+
+    let response: NextResponse;
+    if (!result.after) {
+      // Every attempt failed QA: show no image. The visitor still leaves their info and Justin builds a custom design.
+      await db.query(
+        `UPDATE design_sessions SET status='qa_failed', qa_failed=true, attempts=$2, cost_usd=$3, latency_ms=$4, model=$5 WHERE id=$1`,
+        [id, result.attempts.length, result.costUsd.toFixed(4), result.latencyMs, result.model],
+      );
+      console.log(`design render qa_failed style=${style.key} attempts=${result.attempts.length} ms=${result.latencyMs} usd=${result.costUsd.toFixed(4)}`);
+      response = NextResponse.json({ ok: true, id, qaFailed: true, latencyMs: result.latencyMs, ...debug });
+    } else {
+      const preview = await teaser(result.after);
+      await db.query(
+        `UPDATE design_sessions SET status='done', after=$2, cost_usd=$3, latency_ms=$4, model=$5, attempts=$6 WHERE id=$1`,
+        [id, result.after, result.costUsd.toFixed(4), result.latencyMs, result.model, result.attempts.length],
+      );
+      console.log(`design render ok style=${style.key} attempts=${result.attempts.length} ms=${result.latencyMs} usd=${result.costUsd.toFixed(4)}`);
+      response = NextResponse.json({
+        ok: true,
+        id,
+        teaser: `data:image/jpeg;base64,${preview.toString("base64")}`,
+        latencyMs: result.latencyMs,
+        ...debug,
+      });
+    }
     response.cookies.set(DEVICE_COOKIE, deviceId, {
       httpOnly: true,
       sameSite: "lax",

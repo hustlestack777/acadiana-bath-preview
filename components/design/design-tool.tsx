@@ -9,10 +9,11 @@ import { brand } from "@/lib/copy";
 import { budgetOptions, budgetQuestion, orderByBudget } from "@/lib/budget";
 import { cn } from "cn";
 
-type Step = "photos" | "budget" | "style" | "rendering" | "teaser" | "reveal";
+type Step = "photos" | "budget" | "style" | "rendering" | "teaser" | "reveal" | "custom-done";
 type Shot = { file: File; url: string };
 
-const MAX_TRIES = 3; // first try + up to 2 retries
+// The server already regenerates up to 2 times behind its QA check; the browser only retries a dropped connection once.
+const MAX_TRIES = 2;
 const TOKEN_KEY = "abc-design-token";
 
 const field =
@@ -26,7 +27,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   const [error, setError] = useState("");
   const [busyMsg, setBusyMsg] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [design, setDesign] = useState<{ id: string; teaser: string } | null>(null);
+  const [design, setDesign] = useState<{ id: string; teaser: string | null } | null>(null);
   const [reveal, setReveal] = useState<{ before: string; after: string; style: string } | null>(null);
   const [form, setForm] = useState({ name: "", phone: "", email: "", street: "", city: "", zip: "", latitude: "", longitude: "", smsConsent: false, company_fax: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -104,7 +105,8 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         const json = await response.json().catch(() => ({}));
         if (response.ok && json.ok) {
           setProgress(100);
-          setDesign({ id: json.id, teaser: json.teaser });
+          // qaFailed: no image passed the quality check. Show the custom-design message, still take the lead.
+          setDesign({ id: json.id, teaser: json.qaFailed ? null : json.teaser });
           window.setTimeout(() => setStep("teaser"), 350);
           return;
         }
@@ -147,8 +149,12 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         return;
       }
       window.localStorage.setItem(TOKEN_KEY, json.token);
-      setReveal({ before: json.before, after: json.after, style: json.style });
       setError("");
+      if (json.custom) {
+        setStep("custom-done");
+        return;
+      }
+      setReveal({ before: json.before, after: json.after, style: json.style });
       setStep("reveal");
     } catch {
       setError("We lost the connection. Try again.");
@@ -320,19 +326,26 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-border">
             <div className="h-full rounded-full bg-primary transition-[width] duration-500" style={{ width: `${progress}%` }} />
           </div>
-          <p className="mt-2 text-sm text-muted-foreground">Usually 30 to 60 seconds. Keep this page open.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Usually about a minute. Keep this page open.</p>
         </section>
       ) : null}
 
       {step === "teaser" && design ? (
         <section aria-labelledby="design-step-3">
-          <div className="relative overflow-hidden rounded-3xl">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={design.teaser} alt="Blurred preview of your new bathroom design" className="w-full" data-testid="design-teaser" />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/25 p-6 text-center">
-              <p className="font-heading text-2xl text-white drop-shadow">Unlock your full design + before/after.</p>
+          {design.teaser ? (
+            <div className="relative overflow-hidden rounded-3xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={design.teaser} alt="Blurred preview of your new bathroom design" className="w-full" data-testid="design-teaser" />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/25 p-6 text-center">
+                <p className="font-heading text-2xl text-white drop-shadow">Unlock your full design + before/after.</p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="rounded-3xl border border-border bg-card p-6" data-testid="design-custom">
+              <h2 className="font-heading text-2xl">{designCopy.customTitle}</h2>
+              <p className="mt-2 text-base leading-7 text-muted-foreground">{designCopy.customBody(chosen?.name ?? "")}</p>
+            </div>
+          )}
           <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 3 of 3</p>
           <h2 id="design-step-3" className="mt-2 font-heading text-3xl">Where should we send it?</h2>
           <form onSubmit={unlock} noValidate className="mt-4 grid gap-4" data-testid="design-unlock-form">
@@ -376,7 +389,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
               <span>{designCopy.smsConsent} (Optional)</span>
             </label>
             <button type="submit" disabled={sending} className="h-14 rounded-full bg-primary text-base font-semibold text-primary-foreground disabled:opacity-50" data-testid="design-unlock">
-              {sending ? "Unlocking…" : "Unlock my design"}
+              {sending ? "Sending…" : design.teaser ? "Unlock my design" : "Get my custom design"}
             </button>
             <p className="-mt-2 text-center text-[0.7rem] text-muted-foreground/80" data-testid="design-fine-print">{designCopy.finePrint}</p>
             <p className="text-xs leading-5 text-muted-foreground">
@@ -384,6 +397,21 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
               <a href="/privacy" className="underline underline-offset-4">Privacy policy</a>
             </p>
           </form>
+        </section>
+      ) : null}
+
+      {step === "custom-done" ? (
+        <section aria-labelledby="design-custom-done" data-testid="design-custom-done">
+          <h2 id="design-custom-done" className="font-heading text-3xl">You&apos;re all set</h2>
+          <p className="mt-3 text-base leading-7 text-muted-foreground">{designCopy.customThanks(chosen?.name ?? "")}</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <a href={`/${chosen?.path === "solid-surface" ? "solid-surface#solid-quote" : "custom-tile#tile-quote"}`} className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground">
+              Get my free quote
+            </a>
+            <a href={brand.phoneHref} className="inline-flex h-14 items-center justify-center rounded-full border border-border px-6 text-base font-semibold">
+              Call {brand.phone}
+            </a>
+          </div>
         </section>
       ) : null}
 

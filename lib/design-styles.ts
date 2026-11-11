@@ -25,7 +25,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Warm-white solid surface walk-in shower with frameless glass and brass fixtures.",
     path: "solid-surface",
     project: "ss-shower-walls",
-    spec: "smooth seamless warm-white solid surface shower wall panels with no grout lines, a matching solid surface shower base, one recessed niche, frameless clear glass, brushed brass shower fixtures",
+    spec: "smooth seamless warm-white solid surface shower wall panels with no grout lines, a matching solid surface shower base, one recessed niche, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "ss-arch",
@@ -36,7 +36,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Cream solid surface shower with an arched opening and a built-in bench.",
     path: "solid-surface",
     project: "ss-shower-walls",
-    spec: "seamless cream solid surface shower walls with no grout lines, a soft arched shower opening if the shower opening allows it, a low built-in bench, matching solid surface base, brushed brass fixtures",
+    spec: "seamless cream solid surface shower walls with no grout lines, one soft arched recessed niche, a matching solid surface tub or shower surround, brushed brass fixture finish",
   },
   {
     key: "zellige",
@@ -47,7 +47,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Deep-green zellige-look tile shower with brass fixtures and frameless glass.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "deep green glossy handmade zellige-look square wall tile with thin light grout, a recessed niche, small light hex mosaic shower floor, frameless clear glass, brushed brass fixtures",
+    spec: "deep green glossy handmade zellige-look square wall tile with thin light grout, a recessed niche, small light hex mosaic shower floor, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "curbless",
@@ -58,7 +58,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Light stone-look tile curbless shower with a linear drain, grab bar and handheld shower.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "light warm-grey large-format stone-look porcelain wall tile, a step-free curbless shower floor with a linear drain, a matte black grab bar, handheld shower on a slide bar, a recessed niche, frameless clear glass panel",
+    spec: "light warm-grey large-format stone-look porcelain wall and floor tile, a low-profile tiled shower floor if it is already a walk-in shower, one recessed niche, a frameless clear glass panel, matte black fixture finish",
   },
   {
     key: "dark-spa",
@@ -69,7 +69,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Charcoal stone-look tile spa shower with a rain head and a wood bench.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "charcoal large-format stone-look porcelain wall and floor tile, a ceiling rain shower head plus handheld, a floating teak bench, warm recessed lighting, frameless clear glass, brushed brass fixtures",
+    spec: "charcoal large-format stone-look porcelain wall and floor tile, warm soft lighting from the existing light fixtures, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "warm-arch",
@@ -80,7 +80,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Arched shower opening finished in warm travertine-look tile with brass fixtures.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "warm beige travertine-look porcelain tile walls and floor, a soft arched shower opening if the opening allows it, a recessed niche, brushed brass fixtures, frameless clear glass",
+    spec: "warm beige travertine-look porcelain tile walls and floor, one soft arched recessed niche, brushed brass fixture finish, frameless clear glass",
   },
   {
     key: "sand-niche",
@@ -91,7 +91,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Glossy sand-colored square tile shower wall with two lit arched niches.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "glossy sand-colored handmade-look square wall tile, two arched recessed niches on the valve wall, aged brass fixtures, light pebble-look shower floor, frameless clear glass",
+    spec: "glossy sand-colored handmade-look square wall tile, one arched recessed niche on the valve wall, aged brass fixture finish, light pebble-look shower floor, frameless clear glass",
   },
   {
     key: "neo-deco",
@@ -102,7 +102,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Burgundy marble-look slab shower with a lit arched niche and brass fixtures.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "bold burgundy marble-look large porcelain slab walls with cream veining, a lit arched niche, brushed brass fixtures, cream stone-look floor tile, frameless clear glass",
+    spec: "bold burgundy marble-look large porcelain slab walls with cream veining, one arched recessed niche, brushed brass fixture finish, cream stone-look floor tile, frameless clear glass",
   },
   {
     key: "limewash",
@@ -113,7 +113,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Calm bathroom with limewash-look walls, a stone-look ledge and a vessel basin.",
     path: "custom-tile",
     project: "tile-bathroom",
-    spec: "soft warm-white limewash-look walls, simple large light stone-look shower wall tile, a recessed niche, light stone-look floor, frameless clear glass, brushed brass fixtures",
+    spec: "soft warm-white limewash-look walls, simple large light stone-look shower wall tile, a recessed niche, light stone-look floor, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "pink-zellige",
@@ -124,7 +124,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Blush pink zellige-look tile walls with a light wood vanity and brass fixtures.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "blush pink glossy handmade zellige-look square wall tile in the shower, light warm floor tile, frameless clear glass, brushed brass fixtures",
+    spec: "blush pink glossy handmade zellige-look square wall tile in the shower, light warm floor tile, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "butter",
@@ -135,7 +135,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Butter-yellow zellige-look shower tile with brass fixtures and a light vanity.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "soft butter-yellow glossy handmade zellige-look square wall tile in the shower, light cream floor tile, frameless clear glass, brushed brass fixtures",
+    spec: "soft butter-yellow glossy handmade zellige-look square wall tile in the shower, light cream floor tile, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "checker",
@@ -146,7 +146,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Muted sage and cream checkerboard floor with a freestanding tub.",
     path: "custom-tile",
     project: "tile-floor",
-    spec: "a muted sage-green and cream diagonal checkerboard floor tile, clean warm-white shower walls in large light tile, frameless clear glass, brushed brass fixtures",
+    spec: "a muted sage-green and cream diagonal checkerboard floor tile, clean warm-white shower walls in large light tile, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "bold-checker",
@@ -157,7 +157,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Terracotta and cream checkerboard floor with a freestanding tub.",
     path: "custom-tile",
     project: "tile-floor",
-    spec: "a terracotta and cream diagonal checkerboard floor tile, clean warm-white shower walls in large light tile, frameless clear glass, brushed brass fixtures",
+    spec: "a terracotta and cream diagonal checkerboard floor tile, clean warm-white shower walls in large light tile, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "emerald",
@@ -168,7 +168,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Emerald-green zellige-look tile shower with a linear drain and brass fixtures.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "rich emerald-green glossy handmade zellige-look wall tile floor to ceiling in the shower, a recessed niche, a linear drain, light floor tile, frameless clear glass panel, brushed brass fixtures",
+    spec: "rich emerald-green glossy handmade zellige-look wall tile floor to ceiling in the shower, one recessed niche, light floor tile, frameless clear glass panel, brushed brass fixture finish",
   },
   {
     key: "cobalt",
@@ -179,7 +179,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Cobalt-blue tile shower and walls with brass fixtures.",
     path: "custom-tile",
     project: "tile-bathroom",
-    spec: "deep cobalt-blue glossy square tile on the shower walls and floor, frameless clear glass, brushed brass fixtures",
+    spec: "deep cobalt-blue glossy square tile on the shower walls and floor, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "terracotta",
@@ -190,7 +190,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Terracotta handmade-look tile shower with a herringbone terracotta floor.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "warm terracotta handmade-look square wall tile in the shower, a terracotta herringbone floor, frameless clear glass, brushed brass fixtures",
+    spec: "warm terracotta handmade-look square wall tile in the shower, a terracotta herringbone floor, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "quartzite",
@@ -201,7 +201,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Quartzite-look vanity top under deep green glossy tile and a brass mirror.",
     path: "custom-tile",
     project: "tile-bathroom",
-    spec: "deep green glossy handmade zellige-look wall tile, a warm quartzite-look stone vanity top if a vanity is visible in the photo, matching green tile in the shower, frameless clear glass, brushed brass fixtures",
+    spec: "deep green glossy handmade zellige-look wall tile, a warm quartzite-look stone vanity top if a vanity is visible in the photo, matching green tile in the shower, frameless clear glass, brushed brass fixture finish",
   },
 ];
 
@@ -216,7 +216,13 @@ export const designCopy = {
   /** The only fine print in the tool (Shaun, 11/10/2026). */
   finePrint: "Design preview. Final pricing at your free consult.",
   tips: "Stand in the doorway, phone at chest height, lights on, whole shower in frame.",
-  steps: ["Scanning your bathroom…", "Clearing the clutter…", "Designing…", "Polishing…"],
+  steps: ["Scanning your bathroom…", "Clearing the clutter…", "Designing…", "Polishing…", "Checking every detail…"],
+  /** Shown instead of an image when no render passes the automatic QA check. */
+  customTitle: "Justin will put together a custom design for you.",
+  customBody: (look: string) =>
+    `Your bathroom deserves a closer look than our quick preview can give. Tell us where to send it, and Justin will design the ${look} look for your space himself.`,
+  customThanks: (look: string) =>
+    `Justin has your photos and the ${look} look you picked. He'll put together a custom design for your bathroom and reach out about your free quote.`,
   smsConsent:
     "Yes, Acadiana Bathrooms and Countertops may call or text me about my project at the number above, including automated texts. Consent isn't a condition of purchase. Msg & data rates may apply. Reply STOP to opt out.",
   privacy:

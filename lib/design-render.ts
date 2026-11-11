@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import type { DesignStyle } from "./design-styles";
+import { qaCheck, type QaVerdict } from "./design-qa";
 
 /**
  * Two-step render (same pattern as GetMowed /api/landscape-design):
@@ -32,10 +33,15 @@ export type RoomScan = {
   layout: string;
   lighting: string;
   clutter: string[];
+  /** One line per fixture or opening (count, place in frame, mounting). Locks them in the edit and the QA. */
+  fixtures: string[];
+  sinkCount: number;
 };
 
 export type RenderResult = {
-  after: Buffer;
+  /** The first render that passed QA, or null when every attempt failed QA. */
+  after: Buffer | null;
+  attempts: RenderAttempt[];
   scan: RoomScan;
   costUsd: number;
   latencyMs: number;
@@ -78,11 +84,13 @@ async function xai(pathname: string, body: unknown, timeoutMs: number) {
   return json;
 }
 
-const SCAN_PROMPT = `You are prepping a homeowner's bathroom photo for a photo-realistic remodel render. Return ONLY JSON with these keys:
+const SCAN_PROMPT = `You are prepping a homeowner's bathroom photo for a photo-realistic remodel render that must keep every fixture exactly where it is. Return ONLY JSON with these keys:
 {"is_bathroom": boolean (true only if this is a bathroom, shower or tub),
- "has_person": boolean (true if any person or face is visible),
- "camera": "camera position, height and angle, and the framing",
- "layout": "very specific: which walls are visible, the shower or tub footprint and where it sits in the frame, tub vs shower stall, window position and size, door or doorway positions, toilet or vanity positions if visible, the valve and showerhead wall, the ceiling line",
+ "has_person": boolean (true if any person or face is visible, including in a mirror),
+ "camera": "camera position, height, angle and framing in one sentence",
+ "layout": "which walls are visible, the tub or shower footprint and where it sits in the frame, window and door or doorway positions, the ceiling line",
+ "fixtures": ["one line per fixture or opening, with its count, where it is in the frame and how it is mounted, e.g. 'one white pedestal sink at the left wall, lower-left of frame, with one faucet centered on its back rim', 'one shower head on the back wall at head height, valve handle below it at waist height', 'one window above the tub, upper-center'. Cover every sink, faucet, toilet, tub, shower head, shower valve or handle, tub spout, vanity, mirror or medicine cabinet, light fixture, window, door or doorway, towel bar, grab bar and shower door or curtain that is visible. Write 'no sink visible' if there is no sink."],
+ "sink_count": integer,
  "lighting": "light sources and direction",
  "clutter": ["every loose item that must be removed: bottles, razors, towels, loofahs, toys, mats, laundry, anything on ledges, shelves or the floor"]}`;
 
@@ -109,10 +117,12 @@ export async function scanRoom(photo: Buffer): Promise<{ scan: RoomScan; costUsd
   const usage = json.usage as { cost_in_usd_ticks?: number } | undefined;
   const costUsd = ticksToUsd(usage?.cost_in_usd_ticks);
   let parsed: Partial<RoomScan> = {};
+  let raw: Record<string, unknown> = {};
   try {
-    const raw = choices?.[0]?.message?.content ?? "";
-    const match = raw.match(/\{[\s\S]*\}/);
-    parsed = match ? JSON.parse(match[0]) : {};
+    const content = choices?.[0]?.message?.content ?? "";
+    const match = content.match(/\{[\s\S]*\}/);
+    raw = match ? JSON.parse(match[0]) : {};
+    parsed = raw as Partial<RoomScan>;
   } catch {
     throw new RenderError("scan parse failed", "We couldn't read that photo. Let's try again.", true, costUsd);
   }
@@ -128,18 +138,30 @@ export async function scanRoom(photo: Buffer): Promise<{ scan: RoomScan; costUsd
       clutter: Array.isArray(parsed.clutter)
         ? parsed.clutter.filter((item): item is string => typeof item === "string").slice(0, 30).map((item) => item.slice(0, 60))
         : [],
+      fixtures: Array.isArray(raw.fixtures)
+        ? raw.fixtures.filter((item): item is string => typeof item === "string").slice(0, 24).map((item) => item.slice(0, 200))
+        : [],
+      sinkCount: Number.isFinite(Number(raw.sink_count)) ? Math.max(0, Math.min(4, Math.round(Number(raw.sink_count)))) : 0,
     },
   };
 }
 
+/**
+ * Edit prompt, written per xAI's Imagine prompting guide: lead with the change, then lock the
+ * fixtures one for one (from the scan) and the room geometry. The image service has no mask or
+ * inpaint mode, so the fixture inventory plus the QA pass below is what keeps the layout.
+ */
 export function buildEditPrompt(style: DesignStyle, scan: RoomScan) {
-  const clutter = scan.clutter.length ? `${scan.clutter.join(", ")}, ` : "";
-  return `Photo-realistic remodel of THIS exact bathroom (image 1). Keep the exact camera position, camera angle and framing, the room dimensions, wall positions, ceiling line, window and door positions and sizes, and the lighting direction identical to image 1.
-Layout to preserve: ${scan.layout || "as shown in image 1"}. Camera: ${scan.camera || "as shown in image 1"}. Lighting: ${scan.lighting || "as shown in image 1"}.
-Keep the same shower or tub footprint and size. Replace ONLY the shower or tub surround walls, the shower floor or tub, the shower door, glass or curtain, and the plumbing fixtures with: ${style.spec}. Replace any old framed door or curtain with the new glass.
-Use image 2 only as a reference for materials, colors and finish. Do NOT copy its room layout, size or camera angle.
-Remove ALL clutter completely: ${clutter}every shampoo, conditioner and soap bottle, bar soap, razor, towel, washcloth, loofah, sponge, toiletry, toy, bath mat, shoe, laundry basket or hamper, trash can, and anything on ledges, shelves, the tub edge or the floor. Every surface must be clean and empty, like a professionally staged finished-remodel photo, bright and tidy.
-Do not add rooms, windows, doors or fixtures that are not in image 1. No people, no text, no logos, no watermark.`;
+  const inventory = scan.fixtures.length
+    ? scan.fixtures.map((line) => `- ${line}`).join("\n")
+    : `- every fixture, window and door exactly as in <IMAGE_0>${scan.layout ? ` (${scan.layout})` : ""}`;
+  const clutter = scan.clutter.length ? `${scan.clutter.join(", ")}, plus any` : "any";
+  return `<IMAGE_0> is a homeowner's bathroom photo. Show this same bathroom remodeled with new finishes: ${style.spec}. Only surface materials and fixture finishes change: the wall tile or wall panels, the floor tile, the tub or shower surround, clear shower glass in place of any old curtain or framed door, the vanity top, and the finish of the existing faucets, handles and lights. Match the colors, texture and finish of <IMAGE_1>, which is a material sample only; take nothing else from it.
+Every fixture and opening stays where it is, one for one, at the same size and in the same spot in the frame:
+${inventory}
+The plumbing reads correctly: each faucet sits centered over its own sink basin with the spout pointing into the bowl. The shower valve and its handle sit on the wet wall at waist height, under the shower head, which sits on the same wall at head height. Handles and knobs are level, symmetrical and attached to the fixture they control. Nothing floats, appears twice or goes missing. The fixture count stays exactly as listed above: no added grab bar, shelf, caddy, soap dish, towel bar, bench, extra niche, extra valve, extra spout or extra shower head, and no new window, door or wall.
+Remove the clutter: ${clutter} bottles, soap, razors, towels, loofahs, mats and loose items, so every ledge, shelf, tub edge and floor is clean and empty.
+Same camera position, lens, angle and crop as <IMAGE_0> (${scan.camera || "as shown"}), same walls and ceiling line, same window and door openings at the same positions and sizes, same tub or shower footprint, same light direction (${scan.lighting || "as shown"}). A bright, sharp, realistic real-estate photograph with no people and no text, letters, logos or watermark.`;
 }
 
 async function styleReference(style: DesignStyle) {
@@ -171,6 +193,25 @@ export async function editRoom(photo: Buffer, style: DesignStyle, scan: RoomScan
   return { bytes: Buffer.from(b64, "base64"), costUsd };
 }
 
+export type RenderAttempt = {
+  attempt: number;
+  /** null when the edit call itself failed (counted as a failed attempt). */
+  after: Buffer | null;
+  verdict: QaVerdict | null;
+  editMs: number;
+  costUsd: number;
+  error?: string;
+};
+
+/** First try plus up to DESIGN_QA_RETRIES silent regenerations (default 2). */
+export const QA_RETRIES = Math.max(0, Math.min(3, Number(process.env.DESIGN_QA_RETRIES ?? 2)));
+/** Stop starting new attempts after this long so the visitor is never left waiting forever. */
+const RENDER_BUDGET_MS = Number(process.env.DESIGN_RENDER_BUDGET_MS || 170_000);
+
+/**
+ * Scan once, then edit + QA up to 1 + QA_RETRIES times. Returns the first image that passes QA,
+ * or after = null when every attempt failed (the visitor then gets the custom-design message).
+ */
 export async function renderDesign(photo: Buffer, style: DesignStyle): Promise<RenderResult> {
   const started = Date.now();
   const { scan, costUsd: scanCost } = await scanRoom(photo);
@@ -180,18 +221,44 @@ export async function renderDesign(photo: Buffer, style: DesignStyle): Promise<R
   if (scan.has_person) {
     throw new RenderError("person in photo", "We see a person in that photo. Try one with just the bathroom.", false, scanCost);
   }
-  let edit;
-  try {
-    edit = await editRoom(photo, style, scan);
-  } catch (error) {
-    if (error instanceof RenderError) error.costUsd += scanCost;
-    throw error;
+  const attempts: RenderAttempt[] = [];
+  let costUsd = scanCost;
+  let passed: Buffer | null = null;
+  for (let attempt = 1; attempt <= 1 + QA_RETRIES; attempt += 1) {
+    if (attempt > 1 && Date.now() - started > RENDER_BUDGET_MS) break;
+    const editStarted = Date.now();
+    let edit: { bytes: Buffer; costUsd: number };
+    try {
+      edit = await editRoom(photo, style, scan);
+    } catch (error) {
+      const known = error instanceof RenderError ? error : null;
+      costUsd += known?.costUsd ?? 0;
+      if (known && !known.retryable) {
+        known.costUsd = costUsd;
+        throw known;
+      }
+      attempts.push({ attempt, after: null, verdict: null, editMs: Date.now() - editStarted, costUsd: known?.costUsd ?? 0, error: known?.message ?? "edit failed" });
+      continue;
+    }
+    const editMs = Date.now() - editStarted;
+    const after = await sharp(edit.bytes).rotate().jpeg({ quality: 88 }).toBuffer();
+    const verdict = await qaCheck(photo, after, scan, style);
+    costUsd += edit.costUsd + verdict.costUsd;
+    attempts.push({ attempt, after, verdict, editMs, costUsd: edit.costUsd + verdict.costUsd });
+    if (verdict.pass) {
+      passed = after;
+      break;
+    }
   }
-  const after = await sharp(edit.bytes).rotate().jpeg({ quality: 88 }).toBuffer();
+  if (!attempts.some((item) => item.after) && attempts.length) {
+    // Every attempt failed at the image service itself: that's an outage, not a QA fail.
+    throw new RenderError("all edits failed", "The designer hit a snag. Let's try again.", true, costUsd);
+  }
   return {
-    after,
+    after: passed,
+    attempts,
     scan,
-    costUsd: scanCost + edit.costUsd,
+    costUsd,
     latencyMs: Date.now() - started,
     model: IMAGE_MODEL,
   };
