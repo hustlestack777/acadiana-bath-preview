@@ -229,7 +229,12 @@ test("Gigi walks through the quote flow with matching chips", () => {
 
   const look = respond("Bold color or tile", project.session);
   assert.equal(look.text, CHAT_ANSWERS.location);
-  assert.deepEqual(look.chips, []);
+  assert.deepEqual(look.chips.map((chip) => chip.label), ["Lafayette", "Youngsville", "Broussard", "Baton Rouge", "Lake Charles", "Another town"]);
+  assert.equal(look.chips.at(-1)?.focusInput, true);
+  for (const town of ["Lafayette", "Youngsville", "Broussard", "Baton Rouge", "Lake Charles"]) {
+    const picked = respond(town, look.session);
+    assert.equal(picked.text, CHAT_ANSWERS.offer, town);
+  }
   assert.equal(look.session.project, "Tub to shower");
   assert.equal(look.session.look, "Bold color or tile");
 

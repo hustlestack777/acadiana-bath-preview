@@ -186,6 +186,15 @@ export const LOOK_CHIPS: GigiChip[] = [
   SOMETHING_ELSE_CHIP,
 ];
 
+export const LOCATION_CHIPS: GigiChip[] = [
+  { label: "Lafayette", message: "Lafayette" },
+  { label: "Youngsville", message: "Youngsville" },
+  { label: "Broussard", message: "Broussard" },
+  { label: "Baton Rouge", message: "Baton Rouge" },
+  { label: "Lake Charles", message: "Lake Charles" },
+  { label: "Another town", focusInput: true },
+];
+
 export const CALL_TIME_CHIPS: GigiChip[] = [
   { label: "Morning", message: "Morning" },
   { label: "Afternoon", message: "Afternoon" },
@@ -388,7 +397,7 @@ function askLook(session: GigiSession, project: string): GigiResponse {
 function askLocation(session: GigiSession, look: string): GigiResponse {
   return {
     text: answers.location,
-    chips: [],
+    chips: LOCATION_CHIPS,
     session: { ...session, phase: "location", look },
   };
 }
@@ -438,7 +447,7 @@ function withCurrentChips(text: string, session: GigiSession, extra?: GigiChip[]
             : session.phase === "callDay"
               ? CALL_DAY_CHIPS
               : session.phase === "location"
-                ? []
+                ? LOCATION_CHIPS
                 : INTRO_CHIPS;
   return { text, chips: extra ?? chips, session };
 }
@@ -450,7 +459,7 @@ export function respond(message: string, session: GigiSession = { phase: "intro"
   if (session.phase === "location" && looksLikePlace(text)) {
     const coverage = checkCity(message);
     if (coverage.status === "invalid" || coverage.status === "empty") {
-      return { text: answers.locationRetry, chips: [], session };
+      return { text: answers.locationRetry, chips: LOCATION_CHIPS, session };
     }
     if (isOutsideArea(message)) {
       const next = { ...session, phase: "offer" as const, location: message.trim() };
