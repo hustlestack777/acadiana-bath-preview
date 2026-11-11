@@ -143,6 +143,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.125rem; /* 18px, matching Riad Tile body on mobile */
+    line-height: 1.55;
   }
   h1,
   h2,
@@ -340,4 +342,36 @@ section[aria-label="Introduction"] .hero-copy {
 @keyframes homeHeroZoom {
   from { transform: scale(1); }
   to { transform: scale(1.08); }
+}
+
+
+/* Shop-by-look marquee: pause on hover/focus; no motion when requested. */
+.looks-scroller {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--brass) 45%, transparent) transparent;
+}
+.looks-scroller::-webkit-scrollbar {
+  height: 6px;
+}
+.looks-scroller::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--brass) 45%, transparent);
+  border-radius: 999px;
+}
+@keyframes looks-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.looks-track {
+  display: flex;
+  width: max-content;
+  gap: 0.9rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .looks-track-animate {
+    animation: looks-marquee 48s linear infinite;
+  }
+  .looks-scroller:hover .looks-track-animate,
+  .looks-scroller:focus-within .looks-track-animate {
+    animation-play-state: paused;
+  }
 }

@@ -7,20 +7,36 @@ type LogoProps = {
 };
 
 export function MaisonLogo({ className, compact = false, onDark = false }: LogoProps) {
-  const src = compact ? "/brand/mark.png" : onDark ? "/brand/logo-on-dark.png" : "/brand/logo.png";
-  const width = compact ? 800 : 2316;
-  const height = compact ? 879 : 617;
-
   return (
-    <span className={cn("inline-flex min-w-0 items-center", className)}>
+    <span className={cn("inline-flex min-w-0 items-center gap-2 sm:gap-2.5", className)}>
       {/* Decorative; the parent link already names the business. */}
       <img
-        src={src}
+        src="/brand/mark.png"
         alt=""
-        width={width}
-        height={height}
-        className={cn("w-auto max-w-[min(100%,18rem)]", compact ? "h-11" : "h-10 sm:h-12")}
+        width={800}
+        height={879}
+        className={cn("w-auto shrink-0", compact ? "h-9 sm:h-10" : "h-11 sm:h-[3.25rem]")}
       />
+      <span className="flex min-w-0 flex-col items-start justify-center leading-none">
+        <span
+          className={cn(
+            "font-heading font-semibold tracking-[0.06em]",
+            compact ? "text-[1.45rem] sm:text-[1.65rem]" : "text-[1.7rem] sm:text-[1.95rem]",
+            onDark ? "text-[#f6f1e6] [text-shadow:0_1px_10px_rgba(0,0,0,0.5)]" : "text-[#14261f]",
+          )}
+        >
+          ACADIANA
+        </span>
+        <span
+          className={cn(
+            "mt-1 font-sans font-semibold",
+            compact ? "text-[0.78rem] leading-none sm:text-[0.82rem]" : "text-[0.84rem] leading-none sm:text-[0.92rem]",
+            onDark ? "text-[#e4d8b4] [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]" : "text-[#6b5a2a]",
+          )}
+        >
+          Bathrooms & Countertops
+        </span>
+      </span>
     </span>
   );
 }

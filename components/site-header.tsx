@@ -61,10 +61,9 @@ export function SiteHeader() {
       <a className="skip-link" href="#content">
         Skip to content
       </a>
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3">
+      <div className={cn("mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-5 sm:gap-4", scrolled ? "py-2" : "py-3 sm:py-3.5")}>
         <Link href="/" aria-label={brand.name} className={cn("min-w-0", overHero ? "text-[#f6f1e6]" : undefined)}>
-          <MaisonLogo compact onDark={overHero} className="sm:hidden" />
-          <MaisonLogo onDark={overHero} className="hidden sm:inline-flex" />
+          <MaisonLogo compact={!overHero} onDark={overHero} />
         </Link>
         <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary">
           {LINKS.map((link) => (

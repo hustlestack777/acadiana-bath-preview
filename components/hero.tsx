@@ -158,7 +158,7 @@ export function Hero() {
             </span>
           ))}
         </h1>
-        <p className="hero-copy mt-5 max-w-xl text-sm leading-6 text-[#f6f1e6] sm:mt-6 sm:text-lg sm:leading-8">{heroSubhead}</p>
+        <p className="hero-copy mt-5 max-w-xl text-lg leading-8 text-[#f6f1e6] sm:mt-6">{heroSubhead}</p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/design"
