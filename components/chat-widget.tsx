@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ConsultLink } from "@/components/consult-link";
+import Link from "next/link";
 import { DesignLink } from "@/components/design-link";
 import { GigiAvatar } from "@/components/gigi-avatar";
 import {
@@ -13,16 +13,19 @@ import {
   GIGI_GREETING_DELAY_MS,
   GIGI_GREETING_LEAD,
   GIGI_HEADER_SUBLINE,
-  QUICK_PROMPTS,
+  INTRO_CHIPS,
   greetingForPath,
-  replyTo,
+  respond,
   shouldShowGreeting,
+  type GigiChip,
+  type GigiSession,
 } from "@/lib/chat";
 import { cn } from "cn";
 
 type Turn = { role: "assistant" | "you"; text: string };
 
 const GREETING_KEY = "gigi-greeting";
+const DESKTOP_MQ = "(min-width: 768px)";
 
 type GreetingState = { line: string; status: "pending" | "shown" | "hidden" };
 
@@ -49,16 +52,108 @@ function writeGreeting(state: GreetingState) {
   }
 }
 
+function isDesktop() {
+  return window.matchMedia(DESKTOP_MQ).matches;
+}
+
+function collectHeroCtas(): Element[] {
+  const quote = document.querySelector("[data-testid=hero-cta]");
+  if (!quote) return [];
+  const nodes: Element[] = [];
+  const group = quote.parentElement;
+  if (group) nodes.push(...Array.from(group.querySelectorAll("a, button")));
+  else nodes.push(quote);
+  const after = group?.nextElementSibling;
+  if (after instanceof Element) {
+    if (after.matches('a[href^="tel:"]')) nodes.push(after);
+    else {
+      const phone = after.querySelector('a[href^="tel:"]');
+      if (phone) nodes.push(phone);
+    }
+  }
+  return nodes;
+}
+
+function isCtaOrPhone(el: HTMLElement) {
+  const href = el.getAttribute("href") || "";
+  const text = (el.textContent || "").replace(/\s+/g, " ").trim();
+  const testid = el.getAttribute("data-testid") || "";
+  if (href.startsWith("tel:")) return true;
+  if (testid === "hero-cta" || testid === "design-render" || testid === "design-unlock") return true;
+  if (/^get my free quote$/i.test(text) || /^get a free quote$/i.test(text)) return true;
+  if (/^design my bathroom$/i.test(text)) return true;
+  return false;
+}
+
+function collectPageCtas(widgetRoot: Element | null): HTMLElement[] {
+  return [...document.querySelectorAll<HTMLElement>("a, button, label")].filter(
+    (el) => !widgetRoot?.contains(el) && isCtaOrPhone(el),
+  );
+}
+
+function inViewport(el: Element) {
+  const r = el.getBoundingClientRect();
+  return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth;
+}
+
+function rectsOverlap(a: DOMRect, b: DOMRect, pad = 8) {
+  return !(a.right < b.left - pad || a.left > b.right + pad || a.bottom < b.top - pad || a.top > b.bottom + pad);
+}
+
+function measureStickyOffset(widgetRoot: Element | null) {
+  if (isDesktop()) return 0;
+  const vh = window.innerHeight;
+  const vw = window.innerWidth;
+  let offset = 0;
+  for (const el of document.querySelectorAll<HTMLElement>("div, nav, aside")) {
+    if (widgetRoot?.contains(el) || el === widgetRoot) continue;
+    const style = getComputedStyle(el);
+    if (style.position !== "fixed" && style.position !== "sticky") continue;
+    if (style.display === "none" || style.visibility === "hidden" || style.opacity === "0") continue;
+    const rect = el.getBoundingClientRect();
+    if (rect.height < 36 || rect.width < vw * 0.45) continue;
+    if (rect.top < vh * 0.5) continue;
+    if (rect.bottom < vh - 8) continue;
+    offset = Math.max(offset, Math.ceil(vh - rect.top));
+  }
+  return offset ? offset + 8 : 0;
+}
+
+function reservedDockRect(bottomOffset: number, withBubble: boolean) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const width = withBubble ? Math.min(15.5 * 16, vw - 24) : 108;
+  const height = withBubble ? 120 : 52;
+  const right = 16;
+  const bottom = vh - bottomOffset;
+  return new DOMRect(vw - right - width, bottom - height, width, height);
+}
+
 export function ChatWidget({ raised = false }: { raised?: boolean }) {
   const pathname = usePathname() || "/";
   const allowBubble = shouldShowGreeting(pathname);
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [turns, setTurns] = useState<Turn[]>([{ role: "assistant", text: CHAT_ANSWERS.disclosure }]);
+  const [session, setSession] = useState<GigiSession>({ phase: "intro" });
+  const [chips, setChips] = useState<GigiChip[]>(INTRO_CHIPS);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [bubbleLine, setBubbleLine] = useState(GIGI_GREETING_LEAD);
   const [bubbleReady, setBubbleReady] = useState(false);
   const [bubbleHidden, setBubbleHidden] = useState(true);
+  const [dockClear, setDockClear] = useState(true);
+  const [bottomPx, setBottomPx] = useState<number | null>(null);
   const greetingRef = useRef<GreetingState>({ line: GIGI_GREETING_LEAD, status: "pending" });
+  const widgetRef = useRef<HTMLDivElement>(null);
+  const bubbleReadyRef = useRef(false);
+  const bubbleHiddenRef = useRef(true);
+  const openRef = useRef(false);
+
+  useEffect(() => {
+    bubbleReadyRef.current = bubbleReady;
+    bubbleHiddenRef.current = bubbleHidden;
+    openRef.current = open;
+  }, [bubbleReady, bubbleHidden, open]);
 
   useEffect(() => {
     if (!allowBubble) {
@@ -77,14 +172,91 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
     setBubbleHidden(false);
     writeGreeting(saved);
     const timer = window.setTimeout(() => {
-      if (greetingRef.current.status !== "pending") return;
-      const next = { line: greetingRef.current.line, status: "shown" as const };
-      greetingRef.current = next;
-      writeGreeting(next);
+      if (greetingRef.current.status === "hidden") return;
       setBubbleReady(true);
     }, GIGI_GREETING_DELAY_MS);
     return () => window.clearTimeout(timer);
   }, [allowBubble, pathname]);
+
+  useLayoutEffect(() => {
+    let io: IntersectionObserver | null = null;
+    let raf = 0;
+
+    function compute() {
+      const root = widgetRef.current;
+      if (isDesktop()) {
+        setBottomPx(null);
+        setDockClear(true);
+        return;
+      }
+      const offset = measureStickyOffset(root) || (raised ? 96 : 16);
+      setBottomPx(offset);
+      if (openRef.current) {
+        setDockClear(true);
+        return;
+      }
+      if (collectHeroCtas().some(inViewport)) {
+        setDockClear(false);
+        return;
+      }
+      const wouldShowBubble = allowBubble && !bubbleHiddenRef.current && bubbleReadyRef.current;
+      const box = root && root.getBoundingClientRect().height > 0
+        ? root.getBoundingClientRect()
+        : reservedDockRect(offset, wouldShowBubble);
+      const overlap = collectPageCtas(root).some((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 || r.height === 0) return false;
+        // Already cleared by raising the dock above a sticky/fixed bottom bar.
+        if (offset && r.top >= window.innerHeight - offset) return false;
+        return rectsOverlap(box, r);
+      });
+      setDockClear(!overlap);
+    }
+
+    function schedule() {
+      if (raf) return;
+      raf = window.requestAnimationFrame(() => {
+        raf = 0;
+        compute();
+      });
+    }
+
+    function watchHero() {
+      io?.disconnect();
+      io = new IntersectionObserver(() => schedule(), { threshold: 0 });
+      for (const el of collectHeroCtas()) io.observe(el);
+    }
+
+    watchHero();
+    const mo = new MutationObserver(() => {
+      watchHero();
+      schedule();
+    });
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-sticky-cta"] });
+    mo.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    const mq = window.matchMedia(DESKTOP_MQ);
+    mq.addEventListener("change", schedule);
+    compute();
+    return () => {
+      if (raf) window.cancelAnimationFrame(raf);
+      io?.disconnect();
+      mo.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      mq.removeEventListener("change", schedule);
+    };
+  }, [raised, allowBubble, open, bubbleReady, bubbleHidden]);
+
+  useEffect(() => {
+    if (!allowBubble || bubbleHidden || !bubbleReady || !dockClear || open) return;
+    if (greetingRef.current.status === "pending") {
+      const next = { line: greetingRef.current.line, status: "shown" as const };
+      greetingRef.current = next;
+      writeGreeting(next);
+    }
+  }, [allowBubble, bubbleHidden, bubbleReady, dockClear, open]);
 
   function hideBubble() {
     const next = { line: greetingRef.current.line, status: "hidden" as const };
@@ -102,23 +274,47 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
   function ask(message: string) {
     const trimmed = message.trim();
     if (!trimmed) return;
+    const result = respond(trimmed, session);
     setTurns((current) => [
       ...current,
       { role: "you", text: trimmed },
-      { role: "assistant", text: replyTo(trimmed) },
+      { role: "assistant", text: result.text },
     ]);
+    setSession(result.session);
+    setChips(result.chips);
     setDraft("");
   }
 
-  const showBubble = !open && allowBubble && !bubbleHidden && bubbleReady;
-  const freshChat = turns.length === 1 && turns[0]?.role === "assistant";
+  function onChip(chip: GigiChip) {
+    if (chip.focusInput) {
+      inputRef.current?.focus();
+      return;
+    }
+    if (chip.message) ask(chip.message);
+  }
+
+  const showDock = open || dockClear;
+  const showBubble = !open && allowBubble && !bubbleHidden && bubbleReady && dockClear;
+  const chipClassName = "rounded-full border border-border bg-background px-3 py-1.5 text-left text-xs";
+  const placeholder =
+    session.phase === "location"
+      ? "Town or ZIP"
+      : session.phase === "callTime"
+        ? "Morning, afternoon, or evening"
+        : session.phase === "callDay"
+          ? "Weekday, weekend, or any day"
+          : "Ask about showers, tile, cost or area";
 
   return (
     <div
+      ref={widgetRef}
+      data-gigi-widget=""
       className={cn(
-        "fixed right-4 z-40 flex flex-col items-end",
-        raised ? "bottom-24 md:bottom-6" : "bottom-4 md:bottom-6",
+        "fixed right-4 z-40 flex flex-col items-end md:bottom-6",
+        bottomPx == null && (raised ? "bottom-24" : "bottom-4"),
+        bottomPx != null && "max-md:bottom-[var(--gigi-bottom)]",
       )}
+      style={bottomPx != null ? ({ "--gigi-bottom": `${bottomPx}px` } as CSSProperties) : undefined}
     >
       {open ? (
         <section
@@ -158,42 +354,27 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
                 </p>
               </div>
             ))}
-            {freshChat ? (
-              <div className="flex flex-wrap gap-2 pl-9">
-                <button
-                  type="button"
-                  className="rounded-full border border-border bg-background px-3 py-1.5 text-left text-xs"
-                  onClick={() => ask("What's a ballpark price?")}
-                >
-                  Ballpark price
-                </button>
-                <DesignLink
-                  className="rounded-full border border-border bg-background px-3 py-1.5 text-left text-xs"
-                  onClick={hideBubble}
-                >
-                  Redesign my bathroom
-                </DesignLink>
-                <ConsultLink
-                  className="rounded-full border border-border bg-background px-3 py-1.5 text-left text-xs"
-                  onClick={hideBubble}
-                >
-                  Get a free quote
-                </ConsultLink>
+            {chips.length ? (
+              <div className="flex flex-wrap gap-2 pl-9" data-testid="gigi-chips">
+                {chips.map((chip) =>
+                  chip.href ? (
+                    chip.href.startsWith("/design") ? (
+                      <DesignLink key={chip.label} look={chip.look} className={chipClassName} onClick={hideBubble}>
+                        {chip.label}
+                      </DesignLink>
+                    ) : (
+                      <Link key={chip.label} href={chip.href} className={chipClassName} onClick={hideBubble}>
+                        {chip.label}
+                      </Link>
+                    )
+                  ) : (
+                    <button key={chip.label} type="button" className={chipClassName} onClick={() => onChip(chip)}>
+                      {chip.label}
+                    </button>
+                  ),
+                )}
               </div>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {QUICK_PROMPTS.map((prompt) => (
-                  <button
-                    key={prompt.label}
-                    type="button"
-                    className="rounded-full border border-border bg-background px-3 py-1.5 text-left text-xs"
-                    onClick={() => ask(prompt.message)}
-                  >
-                    {prompt.label}
-                  </button>
-                ))}
-              </div>
-            )}
+            ) : null}
           </div>
           <form
             className="flex gap-2 border-t border-border p-3"
@@ -207,10 +388,11 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
             </label>
             <Input
               id="ai-question"
+              ref={inputRef}
               value={draft}
               maxLength={240}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="Ask about showers, tile, cost or area"
+              placeholder={placeholder}
               className="h-11 text-base md:text-base"
             />
             <Button type="submit" className="h-11 rounded-xl px-3">
@@ -221,7 +403,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       ) : null}
       {showBubble ? (
         <div
-          className="mb-2 max-w-[min(15.5rem,calc(100vw-5.5rem))] max-md:[[data-sticky-cta]_&]:hidden motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-200"
+          className="mb-2 max-w-[min(15.5rem,calc(100vw-5.5rem))] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-200"
           data-testid="gigi-greeting"
         >
           <div className="relative rounded-2xl rounded-br-md border border-border bg-card px-3 py-2 pr-8 text-card-foreground shadow-lg">
@@ -246,17 +428,19 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
           </div>
         </div>
       ) : null}
-      <button
-        type="button"
-        onClick={() => (open ? setOpen(false) : openChat())}
-        className="ml-auto flex items-center gap-2 rounded-full bg-fig px-3 py-2 pr-4 text-sm font-semibold text-fig-foreground shadow-lg max-md:[[data-sticky-cta]_&]:hidden"
-        aria-expanded={open}
-        aria-label="Chat with Gigi"
-        data-testid="gigi-launcher"
-      >
-        <GigiAvatar size={32} alt="" className="size-8 border border-white/20" />
-        Gigi
-      </button>
+      {showDock ? (
+        <button
+          type="button"
+          onClick={() => (open ? setOpen(false) : openChat())}
+          className="ml-auto flex items-center gap-2 rounded-full bg-fig px-3 py-2 pr-4 text-sm font-semibold text-fig-foreground shadow-lg"
+          aria-expanded={open}
+          aria-label="Chat with Gigi"
+          data-testid="gigi-launcher"
+        >
+          <GigiAvatar size={32} alt="" className="size-8 border border-white/20" />
+          Gigi
+        </button>
+      ) : null}
     </div>
   );
 }
