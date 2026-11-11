@@ -48,12 +48,28 @@ for (const item of roots) {
   else files.push(...(await filesIn(full)));
 }
 
+// Official Onyx "Yes, Guaranteed Forever" wording approved by Shaun on Nov 11, 2026.
+// Any other use of "guarantee" still fails.
+const APPROVED_ONYX_GUARANTEE = [
+  "The Onyx Collection “Yes, Guaranteed Forever”",
+  "We install The Onyx Collection shower panels, bases, and accessories. Those Onyx-manufactured products are covered by The Onyx Collection’s own manufacturer guarantee, officially named “Yes, Guaranteed Forever.”",
+  "In The Onyx Collection’s words: “If our product ever fails, we will either provide you with a new item or refund the cost.”",
+  "This guarantee applies only to Onyx-manufactured products we install. It does not cover tile, grout, caulk, or our installation work.",
+  "We stand behind our work, and we will make issues right.",
+  "Questions about an Onyx-manufactured product can also go to The Onyx Collection at 1-800-ONYXTOP (1-800-669-9867), or see their guarantee page at ",
+  "onyxcollection.com/guarantee",
+  "https://onyxcollection.com/guarantee/",
+  "Yes, Guaranteed Forever",
+  "manufacturer guarantee",
+  "their guarantee page",
+];
+
 let failed = 0;
 for (const file of files) {
   if (file.endsWith(`${path.sep}scripts${path.sep}check-copy.mjs`)) continue;
   if (file.endsWith(`${path.sep}lib${path.sep}logic.test.ts`)) continue;
   // The one approved price range (Shaun, 11/10/2026) is allowed; any other dollar amount still fails.
-  const text = (await readFile(file, "utf8"))
+  let text = (await readFile(file, "utf8"))
     .replaceAll("Lifetime Guarantee", "")
     .replaceAll(APPROVED_RANGE, "")
     .replaceAll(APPROVED_HERO_QUOTE, "")
@@ -65,6 +81,9 @@ for (const file of files) {
     .replaceAll(APPROVED_PRICE_SHORT, "")
     .replaceAll(APPROVED_JOBS_START_SHORT, "")
     .replaceAll(APPROVED_STARTING, "");
+  for (const phrase of APPROVED_ONYX_GUARANTEE) {
+    text = text.replaceAll(phrase, "");
+  }
   for (const rule of rules) {
     if (rule.name === "dollar amount" && file.endsWith(`${path.sep}lib${path.sep}leads.ts`)) continue;
     if (rule.name === "dollar amount" && file.endsWith(".test.ts")) continue;
