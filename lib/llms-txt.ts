@@ -29,8 +29,8 @@ ${heroQuoteLine} Most projects $5K–$30K+. Your free consult gets you an exact 
 
 ## Service area
 ${SCHEMA_SERVICE_AREA}
-Towns people often ask about: ${MAIN_TOWNS.join(", ")}.
-Don't see your town? Ask anyway. Justin confirms every visit.
+Towns we serve include: ${MAIN_TOWNS.join(", ")}.
+Don't see your town? Reach out anyway. Justin confirms every visit.
 
 ## Key pages
 ${page("/", "Home")}

@@ -11,7 +11,7 @@ export function SiteFooter() {
         <div>
           <MaisonLogo onDark className="text-secondary-foreground" />
           <p className="mt-4 text-sm leading-6 text-fig-muted">
-            Bathroom remodels. {SERVICE_AREA} Start with Design My Bathroom or a free consult.
+            Custom bathroom remodels, handled personally by Justin. {SERVICE_AREA} Start with Design My Bathroom or a free quote.
           </p>
         </div>
         <div>

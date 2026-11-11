@@ -6,7 +6,7 @@ import { pageCanonical } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Free Consult · Acadiana Bathrooms",
   description:
-    "Free Consult with Acadiana Bathrooms and Countertops. Share the bathroom you have. The request is saved for follow-up. It is not a final quote.",
+    "Free Consult with Acadiana Bathrooms and Countertops. Share the bathroom you have, and Justin will call you personally and give you an exact price once he sees the space.",
 
   alternates: { canonical: pageCanonical("/estimate") },
 };

@@ -6,7 +6,7 @@ import { pageCanonical, siteRobots } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Design My Bathroom",
-  description: "Snap your shower, pick a look, and see your new bathroom in your own space. Free consult across Acadiana and South Louisiana.",
+  description: "Snap your shower, pick a look, and see your new bathroom in your own space before you spend a dime. Free consult across Acadiana and South Louisiana.",
   robots: siteRobots,
 
   alternates: { canonical: pageCanonical("/design") },

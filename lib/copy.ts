@@ -27,7 +27,7 @@ export const hero = {
   eyebrow: "Lafayette, Louisiana",
   title: "Bring a little beautiful to every day.",
   support:
-    "There are many options for your shower, tub, and bathroom. Many types of solid surface can be installed, and Onyx is a preferred material — we'll walk through the options for your space.",
+    "From seamless solid surface, where Onyx is a preferred material, to handmade tile, quartz, quartzite and marble, Justin matches the right materials to your space and your budget.",
   primary: "Get My Free Quote",
   secondary: "(337) 522-0023",
 } as const;
@@ -55,14 +55,14 @@ export const heroDesignCta = "Design My Bathroom";
 export const quoteCta = "Get My Free Quote";
 
 export const trustLine =
-  "Free consult. No obligation. Justin follows up with your price.";
+  "Free quote. No obligation. Justin calls you personally with your price.";
 
 export const heroQuoteLine = "Starting at $5K · Free quote.";
 
 export const editorial = {
   eyebrow: "The room, considered",
   title: "Less stepping over. More stepping into.",
-  body: "A shower, a tub, a lavatory, the floor underfoot. Acadiana Bathrooms and Countertops plans the work with you, and Justin reviews the scope.",
+  body: "A shower, a tub, a lavatory, the floor underfoot. Justin plans every detail with you and handles your project personally, so you have one point of contact from the first call to the finished room.",
 } as const;
 
 export const reasons = [
@@ -76,15 +76,15 @@ export const reasons = [
   },
   {
     title: "Easy to live with.",
-    body: "Low-grout options and finishes picked for Louisiana humidity.",
+    body: "Low-grout options and finishes chosen to stand up to South Louisiana humidity.",
   },
 ] as const;
 
 export const material = {
-  title: "Tile or solid surface? We'll help you pick.",
-  body: "Solid surface gives you clean lines and almost no grout. Custom tile gives you color, texture and pattern. Many types of solid surface can be installed, and Justin will help you weigh the look, the budget and the upkeep.",
+  title: "Tile or solid surface? Justin helps you choose.",
+  body: "Solid surface gives you clean lines and almost no grout. Custom tile gives you color, texture and pattern. Justin lays out the look, the budget and the upkeep of each, so you choose with confidence.",
   close:
-    "Find the look that feels like home. Talk through the details with Justin before deciding what goes into your bathroom.",
+    "Find the look that feels like home. Justin walks you through every detail at your free quote, so nothing about your bathroom is left to chance.",
 } as const;
 
 export const care = {
@@ -100,11 +100,11 @@ export const steps = [
     body: "Upload a photo and pick a look, or tell us what you want to change.",
   },
   {
-    title: "Meet Justin at home.",
-    body: "A free consult to measure, talk finishes and see what fits.",
+    title: "Justin comes to you.",
+    body: "Your free consult: he measures, talks finishes with you and shows you what fits your space and budget.",
   },
   {
-    title: "Get your real number.",
+    title: "Get your exact price.",
     body: "A clear proposal with the exact price before any work starts.",
   },
 ] as const;
@@ -113,9 +113,9 @@ export const area = {
   title: "Where we work",
   intro:
     "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux.",
-  townsLabel: "Towns people often ask about",
-  outside: "Don't see your town? Ask anyway. If we can get there, we'll come to you.",
-  faq: "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux. Don't see your town? Ask anyway. If we can get there, we'll come to you.",
+  townsLabel: "Towns we serve include",
+  outside: "Don't see your town? Reach out anyway. Justin covers a wide stretch of South Louisiana and will confirm your visit when he calls.",
+  faq: "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux. Don't see your town? Reach out anyway. Justin covers a wide stretch of South Louisiana and will confirm your visit when he calls.",
 } as const;
 
 export const beforeAfter = {
@@ -131,21 +131,21 @@ export { homeFaqs as faqs } from "./faq-page";
 
 export const talk = {
   title: "Rather talk it through?",
-  body: "Send a photo and a quick note, and Justin will reach out. Or email acadianabathandcounter@gmail.com.",
+  body: "Send a photo and a quick note, and Justin will call you personally. Prefer email? Write acadianabathandcounter@gmail.com.",
 } as const;
 
 export const close = {
   title: "Start with the bathroom you have.",
-  body: "Tell us what you want to change and, if you want, share a few photos. The request is saved for follow-up. It is not a final quote.",
+  body: "Tell us what you want to change and share a few photos if you have them. Justin will call you personally, and you get your exact price once he sees the space.",
 } as const;
 
 export const lead = {
   title: "Free Consult",
   subhead:
-    "Four quick steps. Tell us where you are, what you want to change, and how to reach you. Justin follows up — this is not a final quote.",
+    "Four quick steps: where you are, what you want to change, and how to reach you. Justin calls you personally and gives you an exact price once he sees the space.",
   submit: "Request My Free Consult",
   thanks: "Got it! Justin will reach out to talk through your bathroom and set up a time to come see it.",
-  savedNote: "No payment was collected. Final pricing follows what he sees on site.",
+  savedNote: "Nothing to pay today. Justin sets your exact price once he sees your bathroom.",
   savedTitle: "Got it!",
   photosTitle: "Their photos",
   addressLabel: "Street address",
@@ -179,13 +179,13 @@ export const payments = [
 ] as const;
 
 export const paymentNote =
-  "Pick whatever fits today. Financing can be discussed on the consult — nothing here screens credit.";
+  "Pick whatever fits today. Justin can walk you through financing at your consult, and nothing here checks your credit.";
 
 export const consentLabel =
   "I agree that Acadiana Bathrooms and Countertops may contact me about this project request by phone, text, or email.";
 
 export const callTimeNote =
-  "Pick a good time to call. This is a preference, not a booked appointment."
+  "Pick a good time to call. Justin uses this to plan his call to you."
 
 export const finishes = [
   { id: "unsure", label: "Not sure yet" },
@@ -232,12 +232,12 @@ export const solidPath = {
   cardBody: "The affordable, low-grout route. Tub-to-shower conversions and fresh shower or tub walls that wipe clean.",
   title: "Clean lines. Less grout. Less to scrub.",
   support:
-    "Seamless walls, soft arches, and almost no grout to scrub. Many types of solid surface can be installed, in lots of colors and finishes.",
+    "Seamless walls, soft arches, and almost no grout to scrub, in a wide range of colors and finishes. Justin helps you pick the one that fits your space and budget.",
   cta: "Get a solid surface quote",
   whyTitle: "Why most customers start here",
   why: [
     { title: "Less grout", body: "Large panels mean far fewer grout lines than a tiled wall." },
-    { title: "Many options", body: "Many types of solid surface can be installed. Onyx is a preferred material, and there are many others." },
+    { title: "The right material", body: "Onyx is a preferred material, and Justin installs other quality solid surface options too, so your walls fit your style and your budget." },
     { title: "Easy care", body: "A simple weekly cleaning is enough." },
   ],
   servicesTitle: "What this path covers",
@@ -249,7 +249,7 @@ export const solidPath = {
   warranty: "Lifetime Guarantee. Ask Justin for the details at your free consult.",
   care: "A simple weekly cleaning is enough.",
   formTitle: "Solid surface quote",
-  formBody: "A few quick questions. Justin will reach out to set up your free consult.",
+  formBody: "A few quick questions, and Justin will call you personally to set up your free consult.",
 } as const;
 
 export const tilePath = {
@@ -273,14 +273,14 @@ export const tilePath = {
     "Colors from the Mapei grout and caulk palette. Tap a swatch to preview it and add it to your tile request.",
   groutNote: "Screen colors are approximate. Justin brings real samples to compare in your light.",
   formTitle: "Custom tile consult",
-  formBody: "Tell us the look you love. Justin will reach out and bring samples to your free consult.",
+  formBody: "Tell us the look you love. Justin will call you personally and bring real samples to your free consult.",
 } as const;
 
 export const ideas = {
   eyebrow: "Finishing touches",
   title: "Ideas for the rest of the room",
-  body: "Save what you love, then bring it to your consult. Justin will tell you what fits your space.",
-  note: "Ideas to spark your style. Justin works with some of these brands and will tell you what fits your project.",
+  body: "Save what you love and bring it to your free consult. Justin will show you how to pull it together in your space.",
+  note: "Ideas to spark your style. Bring your favorites to your free quote, and Justin will match the right materials to your space and budget.",
   items: [
     {
       name: "Wallism",

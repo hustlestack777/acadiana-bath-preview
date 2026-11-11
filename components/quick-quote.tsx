@@ -162,7 +162,7 @@ export function QuickQuote({ path }: { path: Path }) {
           Thanks. Justin has your request.
         </h3>
         <p className="mt-3 leading-7 text-muted-foreground">
-          He&apos;ll follow up to talk through your space. No payment was collected, and this is not a final quote.
+          He&apos;ll call you personally to talk through your space and set up your free consult. Nothing to pay today.
         </p>
         <p className="mt-4">
           <a className="font-medium underline underline-offset-4" href={brand.phoneHref}>
@@ -398,7 +398,7 @@ export function QuickQuote({ path }: { path: Path }) {
         {status === "sending" ? "Sending…" : isTile ? "Request my free tile consult" : "Get my solid surface quote"}
       </button>
       <p className="text-center text-xs text-muted-foreground">
-        Free consult. No payment is collected. Not a final quote.{" "}
+        Free consult. Nothing to pay today. Justin gives your exact price once he sees the space.{" "}
         <a href="/privacy" className="underline underline-offset-4">Privacy Policy</a>
       </p>
     </form>
