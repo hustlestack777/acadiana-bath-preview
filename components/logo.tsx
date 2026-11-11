@@ -8,8 +8,8 @@ type LogoProps = {
 
 export function MaisonLogo({ className, compact = false, onDark = false }: LogoProps) {
   const src = compact ? "/brand/mark.png" : onDark ? "/brand/logo-on-dark.png" : "/brand/logo.png";
-  const width = compact ? 350 : 1788;
-  const height = compact ? 420 : 444;
+  const width = compact ? 800 : 2316;
+  const height = compact ? 879 : 617;
 
   return (
     <span className={cn("inline-flex min-w-0 items-center", className)}>

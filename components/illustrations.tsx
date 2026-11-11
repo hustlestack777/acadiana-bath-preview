@@ -5,7 +5,7 @@ export function ShowerStudy() {
         <svg
           viewBox="0 0 360 460"
           role="img"
-          aria-label="Abstract shower alcove made of color panels. Not a photograph."
+          aria-label="Abstract shower alcove made of color panels."
           className="h-auto w-full"
         >
           <rect x="18" y="18" width="324" height="424" rx="28" fill="none" stroke="currentColor" strokeOpacity="0.35" />
@@ -17,9 +17,6 @@ export function ShowerStudy() {
           <path d="M168 78h28" stroke="var(--hero)" strokeWidth="4" strokeLinecap="round" />
         </svg>
       </div>
-      <figcaption className="mt-3 text-sm text-hero-muted">
-        Illustration only. Not a completed project and not a manufacturer photo.
-      </figcaption>
     </figure>
   );
 }

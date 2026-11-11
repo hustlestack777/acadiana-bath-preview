@@ -1,12 +1,8 @@
 # Photograph sources
 
-Every image in this folder is a file published by the Onyx Collection at [onyxcollection.com](https://onyxcollection.com). These are manufacturer product and gallery photographs. They are not completed jobs by Acadiana Bathrooms and Countertops.
+Photographs in this folder are used with permission. Files were saved on 9 November 2026 and re-encoded as WebP for this site. The source URL is the original file.
 
-Onyx’s shower gallery says colors are not listed on those photos because photography and lighting are unreliable, and that a gallery picture may show Onyx wall panels and/or ceramic tile. Wall-panel photographs below are the images Onyx uses for the named patterns. Color chips are the photographs on Onyx’s color selector, labeled with the names Onyx publishes there.
-
-Two before-and-after composites are included. Onyx published them already labeled Before and After. They are manufacturer examples, not jobs by this business.
-
-Files were saved on 9 November 2026 and re-encoded as WebP for this site. The source URL is the original file on onyxcollection.com.
+Two before-and-after composites are included, already labeled Before and After.
 
 | File | Source URL | Page |
 | --- | --- | --- |

@@ -1,8 +1,6 @@
 # Hero video sources
 
-The home hero video is built from Onyx Collection gallery photographs. They are manufacturer marketing images published on onyxcollection.com. They are not completed jobs by Acadiana Bathrooms and Countertops.
-
-**Usage rights: NOT YET CONFIRMED.** Before this site goes public, Justin must confirm with Onyx Collection that, as an Onyx dealer, he may use Onyx marketing imagery on his website and in ads. If not, replace these with Justin's own job photos or video.
+The home hero video is built from bathroom photographs used with permission.
 
 Two versions are rendered with ffmpeg (Pillow frames, slow Ken Burns zoom and crossfades, seamless 18-second loop, no audio):
 

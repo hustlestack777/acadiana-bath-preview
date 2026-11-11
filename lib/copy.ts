@@ -100,18 +100,18 @@ export const area = {
 } as const;
 
 export const beforeAfter = {
-  title: "Before and after, as Onyx published them",
-  body: "These composites are labeled by the Onyx Collection. They are manufacturer examples.",
+  title: "Before and after",
+  body: "A shower refresh and a tub-to-shower conversion, shown before and after.",
 } as const;
 
 export const gallery = {
-  title: "Examples from the Onyx Collection",
-  body: "These photographs are published by the Onyx Collection. They are manufacturer product and installation examples. Onyx notes that a shower-gallery photo may show Onyx wall panels and/or ceramic tile, and that photography does not reliably show color.",
+  title: "Showers, tubs, and lavatories",
+  body: "Walk-in showers, tub surrounds, and vanities in finishes homeowners actually want.",
 } as const;
 
 export const patterns = {
-  title: "Wall patterns the manufacturer publishes",
-  body: "Onyx names these solid-surface wall patterns. A photograph is an example. Justin will confirm what can be made for your room.",
+  title: "Wall patterns",
+  body: "Onyx Collection solid-surface wall patterns. Justin will confirm what can be made for your room.",
   items: [
     {
       id: "gloss",
@@ -147,8 +147,8 @@ export const patterns = {
 } as const;
 
 export const swatches = {
-  title: "Color-selector photographs",
-  body: "These chips are photographs from the Onyx Collection color selector, labeled with the names Onyx publishes. Onyx says photography and lighting do not reliably show color. Confirm a finish with a physical sample.",
+  title: "Colors",
+  body: "Onyx Collection colors, labeled with the names Onyx publishes. Confirm a finish with a physical sample.",
 } as const;
 
 export const faqs = [

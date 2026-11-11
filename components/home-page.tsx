@@ -44,7 +44,7 @@ export function HomePage() {
           <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem]">
             <Image
               src="/images/shower-warm.webp"
-              alt="Warm speckled walk-in shower with black hardware and a bronze-toned half wall. Onyx Collection shower-gallery example."
+              alt="Warm speckled walk-in shower with black hardware and a bronze-toned half wall."
               fill
               sizes="(min-width: 768px) 40vw, 100vw"
               className="object-cover"
@@ -70,7 +70,7 @@ export function HomePage() {
         <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem] md:col-span-5">
           <Image
             src="/images/shower-niche.webp"
-            alt="Speckled shower with a tall niche, bench, and handheld shower. Onyx Collection shower-gallery example."
+            alt="Speckled shower with a tall niche, bench, and handheld shower."
             fill
             sizes="(min-width: 768px) 40vw, 100vw"
             className="object-cover"
@@ -135,7 +135,7 @@ export function HomePage() {
       </section>
 
       <section id="changes" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">From the manufacturer</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Before and after</p>
         <h2 className="mt-3 max-w-3xl text-4xl md:text-5xl">{beforeAfter.title}</h2>
         <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">{beforeAfter.body}</p>
         <div className="mt-8 grid gap-4 md:grid-cols-2">
@@ -144,12 +144,7 @@ export function HomePage() {
               <div className="relative aspect-[2/1]">
                 <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 768px) 45vw, 100vw" className="object-cover" />
               </div>
-              <figcaption className="px-4 py-3 text-sm">
-                {photo.caption}.{" "}
-                <a href={photo.source} className="underline underline-offset-4">
-                  Onyx Collection file
-                </a>
-              </figcaption>
+              <figcaption className="px-4 py-3 text-sm">{photo.caption}</figcaption>
             </figure>
           ))}
         </div>
@@ -190,7 +185,7 @@ export function HomePage() {
           <div className="relative aspect-[4/3] overflow-hidden rounded-[1.6rem]">
             <Image
               src="/images/finish-shiplap.webp"
-              alt="Shiplap-style shower panels with recessed niches. Onyx Collection wall-panel example."
+              alt="Shiplap-style shower panels with recessed niches."
               fill
               sizes="(min-width: 768px) 45vw, 100vw"
               className="object-cover"

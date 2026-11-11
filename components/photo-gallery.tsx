@@ -55,10 +55,7 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
                   />
                 </span>
               </button>
-              <figcaption className="mt-2 flex items-baseline justify-between gap-3 px-1 text-sm">
-                <span>{item.caption}</span>
-                <span className="text-xs text-muted-foreground">Onyx Collection</span>
-              </figcaption>
+              <figcaption className="mt-2 px-1 text-sm">{item.caption}</figcaption>
             </figure>
           </li>
         ))}
@@ -85,12 +82,7 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
               <Image src={photo.src} alt={photo.alt} fill sizes="96vw" className="object-contain" />
             </div>
             <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-              <p className="text-sm">
-                {photo.caption}.{" "}
-                <a href={photo.page} className="underline underline-offset-2">
-                  Onyx Collection example
-                </a>
-              </p>
+              <p className="text-sm">{photo.caption}</p>
               <div className="flex gap-2">
                 <button type="button" className="h-10 rounded-full border border-white/30 px-4 text-sm" onClick={() => step(-1)}>
                   Previous

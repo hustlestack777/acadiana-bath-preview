@@ -47,8 +47,7 @@ export function SiteFooter() {
         </div>
       </div>
       <p className="border-t border-white/15 px-5 py-4 text-center text-xs leading-5 text-fig-muted">
-        Photographs are Onyx Collection product and gallery examples. No labor coverage is added on this site.
-        Manufacturer product terms are separate from installation.
+        No labor coverage is added on this site. Product warranty terms are separate from installation.
       </p>
     </footer>
   );

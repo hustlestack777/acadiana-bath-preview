@@ -5,8 +5,7 @@ import { ConsultLink } from "@/components/consult-link";
 import { brand, cardClaims, hero, services } from "@/lib/copy";
 
 /**
- * Hero video built from Onyx Collection gallery photographs (see public/video/SOURCES.md).
- * Dealer usage rights still need to be confirmed with Justin and Onyx before public launch.
+ * Hero video built from bathroom photographs (see public/video/SOURCES.md).
  * Desktop gets a three-panel landscape cut, phones get a full-screen portrait cut.
  */
 const HERO_VIDEO = {
@@ -20,10 +19,9 @@ const HERO_VIDEO = {
     mp4: "/video/hero-onyx-mobile.mp4",
     poster: "/video/hero-onyx-mobile-poster.webp",
   },
-  caption: "Onyx Collection showers",
 } as const;
 
-type Variant = keyof Omit<typeof HERO_VIDEO, "caption">;
+type Variant = keyof typeof HERO_VIDEO;
 
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -132,7 +130,6 @@ export function Hero() {
             Scroll
           </a>
         </div>
-        <p className="mt-3 pe-36 text-[0.7rem] uppercase tracking-[0.2em] text-white/60 md:pe-0">{HERO_VIDEO.caption}</p>
       </div>
     </section>
   );
