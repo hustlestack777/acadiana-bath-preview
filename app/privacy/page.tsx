@@ -49,7 +49,7 @@ export default function PrivacyPage() {
           <section>
             <h2>Who sees it</h2>
             <p>
-              Your information goes to {brand.name} and its marketing partner, who helps run this website and follow up
+              Your information goes to {brand.name} and our marketing partner, Lagniappe Realm Labs LLC, which helps run this website and follow up
               on quote requests. We also use a few service providers to run the site, such as website hosting, email
               delivery and address lookup. They handle your information only to provide those services to us.
             </p>
