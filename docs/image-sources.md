@@ -43,7 +43,9 @@ All are AI-generated design examples, not photos of completed jobs and not copie
 - `tile-01.webp` … `tile-08.webp` — custom tile inspiration set from Boogie (`/workspace/abc_brand/ai_inspiration`, 11/10/2026). Used on `/custom-tile`, the home path card and the Ideas section.
 
 Grout swatches in `lib/grout.ts` are approximate colors sampled from the Mapei 2023 grout and caulk palette PDF; the site says screen colors are approximate.
-- `tile-09`, `tile-10`, `tile-14`, `tile-15` — Boogie's trend set (arched travertine opening, arched niches, Neo Deco burgundy marble look, sage checkerboard floor), 11/10/2026. Used in the `/custom-tile` gallery.
+- `tile-09`, `tile-10`, `tile-14` — Boogie's trend set (arched travertine opening, arched niches, Neo Deco burgundy marble look), 11/10/2026. Used in the `/custom-tile` gallery. `tile-15` (sage checkerboard) was replaced by `tile-27`.
 - `ss-arch.webp` — Boogie's solid surface arched walk-in shower (boogie_13), 11/10/2026. Used in the `/solid-surface` gallery.
-- `public/images/hero/hero-17|18|24|19|22.webp` — Boogie's color-tile set (pink zellige, emerald zellige, dark green tile with stone-look vanity, terracotta, checkerboard), 11/10/2026. Rotating home hero, captioned.
+- `public/images/hero/hero-17|18|24|19|26|33|34|35` — Rotating home hero stills, each paired with one headline. 17/18/19/24 are Boogie's color-tile set (pink zellige, emerald zellige, terracotta, dark green), 11/10/2026. 26 (fully tiled arch), 33 (sunny yellow), 34 (star-pattern floor) and 35 (teal zellige) are from `/workspace/abc_brand/hero_options_nov10`, 11/10/2026. Hero 22 was retired.
+- `public/images/home/curbless-spa.webp`, `sage-handmade.webp`, `blush-terrazzo.webp` — gallery crops from hero options 29, 28 and 32 (not used in the hero). Replaced the untiled-arch shots on the home gallery, 11/10/2026.
+- `tile-27` — graphic black-and-white tile with octagon-and-dot floor, from hero option 27. Replaced the plain checkerboard (`tile-15`) in the `/custom-tile` gallery, 11/10/2026.
 - `tile-20`, `tile-21`, `tile-23` — Boogie's cobalt, butter yellow and soft geometric examples, 11/10/2026. `/custom-tile` gallery.

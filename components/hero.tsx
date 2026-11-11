@@ -4,11 +4,14 @@ import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ConsultLink } from "@/components/consult-link";
 import {
+  HERO_LONGEST_HEADLINE,
+  HERO_SLIDES,
+  heroSrcSet,
+} from "@/lib/hero-slides";
+import {
   brand,
   cardClaims,
   heroDesignCta,
-  heroHeadlineReduced,
-  heroHeadlines,
   heroQuoteLine,
   heroSubhead,
   services,
@@ -16,33 +19,12 @@ import {
 
 /**
  * Rotating photo hero. AI-generated design examples (docs/image-sources.md), never presented as completed jobs.
- * Only the first slide is preloaded; the rest mount after first paint. Reduced motion shows the first slide only.
- * Headlines come from a shuffled pool (random start per visit) and crossfade with each slide change.
+ * Each headline is paired with one still. Only the first slide is preloaded; the rest mount after first paint.
+ * Reduced motion shows the first slide and its headline only. No video, no random shuffle.
  */
-const SLIDES = [
-  { n: "17", position: "42% center" },
-  { n: "18", position: "55% center" },
-  { n: "24", position: "50% center" },
-  { n: "19", position: "30% center" },
-  { n: "22", position: "35% center" },
-] as const;
-
-const LONGEST_HEADLINE = "The bathroom your friends will ask about.";
-
-/** Boogie's 2560x1440 upscales, pre-sized to 960/1600/2560. WebP first, JPG fallback. */
-const srcSet = (n: string, ext: "webp" | "jpg") =>
-  [960, 1600, 2560].map((w) => `/images/hero/hero-${n}-${w}.${ext} ${w}w`).join(", ");
+const SLIDES = HERO_SLIDES;
 
 const INTERVAL_MS = 6000;
-
-function shuffleHeadlines(pool: readonly string[]) {
-  const items = [...pool];
-  for (let i = items.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [items[i], items[j]] = [items[j], items[i]];
-  }
-  return items;
-}
 
 function subscribeReducedMotion(onStoreChange: () => void) {
   const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -59,23 +41,13 @@ export function Hero() {
   const [previous, setPrevious] = useState(-1);
   const [mounted, setMounted] = useState(false);
   const [loaded, setLoaded] = useState<boolean[]>(() => SLIDES.map((_, index) => index === 0));
-  const [headlines, setHeadlines] = useState<string[]>(() => [...heroHeadlines]);
-  const [headlineIndex, setHeadlineIndex] = useState(0);
   const loadedRef = useRef(loaded);
-  const headlinesRef = useRef(headlines);
   useEffect(() => {
     loadedRef.current = loaded;
   }, [loaded]);
-  useEffect(() => {
-    headlinesRef.current = headlines;
-  }, [headlines]);
 
   useEffect(() => {
     if (reducedMotion) return;
-    const shuffleTimer = window.setTimeout(() => {
-      setHeadlines(shuffleHeadlines(heroHeadlines));
-      setHeadlineIndex(0);
-    }, 0);
     // Mount the other slides after first paint so only the first image competes for bandwidth.
     const mountTimer = window.setTimeout(() => setMounted(true), 1200);
     const tick = window.setInterval(() => {
@@ -87,19 +59,16 @@ export function Hero() {
         const next = (current + 1) % SLIDES.length;
         if (!loadedRef.current[next]) return current;
         setPrevious(current);
-        setHeadlineIndex((currentHeadline) => (currentHeadline + 1) % headlinesRef.current.length);
         return next;
       });
     }, INTERVAL_MS);
     return () => {
-      window.clearTimeout(shuffleTimer);
       window.clearTimeout(mountTimer);
       window.clearInterval(tick);
     };
   }, [reducedMotion]);
 
-  const visibleHeadlines = reducedMotion ? [heroHeadlineReduced] : headlines;
-  const visibleHeadlineIndex = reducedMotion ? 0 : headlineIndex;
+  const visibleIndex = reducedMotion ? 0 : active;
 
   return (
     <section className="relative min-h-[100svh] overflow-hidden bg-[#14261f] text-[#f6f1e6]" aria-label="Introduction">
@@ -109,13 +78,13 @@ export function Hero() {
             <div
               key={slide.n}
               className="absolute inset-0 transition-opacity duration-[2000ms] ease-in-out"
-              style={{ opacity: index === active ? 1 : 0 }}
+              style={{ opacity: index === visibleIndex ? 1 : 0 }}
             >
               <picture>
-                <source type="image/webp" srcSet={srcSet(slide.n, "webp")} sizes="100vw" />
+                <source type="image/webp" srcSet={heroSrcSet(slide.n, "webp")} sizes="100vw" />
                 <img
                   src={`/images/hero/hero-${slide.n}-1600.jpg`}
-                  srcSet={srcSet(slide.n, "jpg")}
+                  srcSet={heroSrcSet(slide.n, "jpg")}
                   sizes="100vw"
                   alt=""
                   width={2560}
@@ -126,7 +95,7 @@ export function Hero() {
                     setLoaded((current) => (current[index] ? current : current.map((value, i) => (i === index ? true : value))))
                   }
                   className={
-                    index === active || index === previous
+                    index === visibleIndex || index === previous
                       ? "home-hero-img home-hero-zoom absolute inset-0 h-full w-full object-cover"
                       : "home-hero-img absolute inset-0 h-full w-full object-cover"
                   }
@@ -145,16 +114,16 @@ export function Hero() {
           data-testid="hero-title"
         >
           <span className="invisible block" aria-hidden="true">
-            {LONGEST_HEADLINE}
+            {HERO_LONGEST_HEADLINE}
           </span>
-          {visibleHeadlines.map((line, index) => (
+          {SLIDES.map((slide, index) => (
             <span
-              key={`${index}-${line}`}
+              key={slide.n}
               className="absolute inset-0 transition-opacity duration-[2000ms] ease-in-out"
-              style={{ opacity: index === visibleHeadlineIndex ? 1 : 0 }}
-              aria-hidden={index !== visibleHeadlineIndex}
+              style={{ opacity: index === visibleIndex ? 1 : 0 }}
+              aria-hidden={index !== visibleIndex}
             >
-              {line}
+              {slide.headline}
             </span>
           ))}
         </h1>
