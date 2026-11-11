@@ -408,16 +408,14 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
 
       {step === "custom-done" ? (
         <section aria-labelledby="design-custom-done" data-testid="design-custom-done">
-          <h2 id="design-custom-done" className="font-heading text-3xl">You&apos;re all set</h2>
+          <h2 id="design-custom-done" className="font-heading text-3xl">Justin will call you</h2>
           <p className="mt-3 text-base leading-7 text-muted-foreground">{designCopy.customThanks(chosen?.name ?? "")}</p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <a href={`/${chosen?.path === "solid-surface" ? "solid-surface#solid-quote" : "custom-tile#tile-quote"}`} className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground">
-              Get my free quote
-            </a>
-            <a href={brand.phoneHref} className="inline-flex h-14 items-center justify-center rounded-full border border-border px-6 text-base font-semibold">
+            <a href={brand.phoneHref} className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground">
               Call {brand.phone}
             </a>
           </div>
+          <WindowsQuoteLine className="mt-4 text-muted-foreground" />
         </section>
       ) : null}
 
@@ -431,22 +429,22 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={reveal.after} alt="Your bathroom, redesigned" className="rounded-2xl" />
           </div>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <a href={`/${chosen?.path === "solid-surface" ? "solid-surface#solid-quote" : "custom-tile#tile-quote"}`} className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground" data-testid="design-quote">
-              Get my free quote
-            </a>
-            <a href={reveal.after} download="acadiana-bathroom-design.jpg" className="inline-flex h-14 items-center justify-center rounded-full border border-border bg-card px-6 text-base font-semibold">
-              Download
-            </a>
-            <button type="button" onClick={tryAnother} className="h-14 rounded-full border border-border px-6 text-base font-semibold">
-              Try your other free look
-            </button>
-            <a href={brand.phoneHref} className="inline-flex h-14 items-center justify-center rounded-full border border-border px-6 text-base font-semibold">
-              Call {brand.phone}
-            </a>
+          <div className="mt-6 rounded-[1.4rem] border border-border bg-card p-5" data-testid="design-quote">
+            <h3 className="font-heading text-2xl">Justin will call you</h3>
+            <p className="mt-2 text-base leading-7 text-muted-foreground">Thanks! Justin has your photos and the look you picked, and will reach out about your free quote.</p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <a href={brand.phoneHref} className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground">
+                Call {brand.phone}
+              </a>
+              <a href={reveal.after} download="acadiana-bathroom-design.jpg" className="inline-flex h-14 items-center justify-center rounded-full border border-border bg-background px-6 text-base font-semibold">
+                Download
+              </a>
+              <button type="button" onClick={tryAnother} className="h-14 rounded-full border border-border px-6 text-base font-semibold sm:col-span-2">
+                Try your other free look
+              </button>
+            </div>
           </div>
-          <p className="mt-4 text-sm text-muted-foreground">Thanks! Justin has your photos and the look you picked, and will reach out about your free quote.</p>
-          <WindowsQuoteLine className="mt-2 text-muted-foreground" />
+          <WindowsQuoteLine className="mt-4 text-muted-foreground" />
         </section>
       ) : null}
     </div>

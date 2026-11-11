@@ -55,6 +55,7 @@ export function HomePage() {
               alt="Curbless walk-in shower with limestone-look tile running level into the shower, a linear drain, and a teak bench."
               fill
               sizes="(min-width: 768px) 40vw, 100vw"
+              loading="lazy"
               className="object-cover"
             />
           </div>
@@ -80,6 +81,7 @@ export function HomePage() {
             alt="Speckled shower with a tall niche, bench, and handheld shower."
             fill
             sizes="(min-width: 768px) 40vw, 100vw"
+              loading="lazy"
             className="object-cover"
           />
         </div>
@@ -138,6 +140,7 @@ export function HomePage() {
               alt="Shiplap-style shower panels with recessed niches."
               fill
               sizes="(min-width: 768px) 45vw, 100vw"
+              loading="lazy"
               className="object-cover"
             />
           </div>
@@ -210,6 +213,7 @@ export function HomePage() {
           alt=""
           fill
           sizes="100vw"
+              loading="lazy"
           className="object-cover opacity-40"
         />
         <div className="absolute inset-0 bg-[#14261f]/55" />

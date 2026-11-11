@@ -11,8 +11,8 @@ export const geoFaqs = [
   },
   {
     q: "How much does a bathroom remodel cost in South Louisiana?",
-    a: "Bathroom remodels range from $5,000 to $30,000+, depending on the size of the room and the finishes you love. Start with Design My Bathroom: snap your shower, pick a look, and see it in your own space. Justin uses your photos and your style pick to prep, then gives you the real number at a free consult in your home.",
-    link: { text: "Design My Bathroom", href: "/design" },
+    a: "Bathroom remodels range from $5,000 to $30,000+, depending on the size of the room and the finishes you love. See your new bathroom in about a minute. Justin follows up with your price.",
+    link: { text: "See your new bathroom", href: "/design" },
   },
   {
     q: "What areas do you serve?",

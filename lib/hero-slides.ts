@@ -21,13 +21,17 @@ export const HERO_LONGEST_HEADLINE = "See your new bathroom before you spend a d
 
 export const HERO_WIDTHS = [960, 1600, 2560] as const;
 
-export const heroSrcSet = (n: string, ext: "webp" | "jpg") =>
+export const heroSrcSet = (n: string, ext: "avif" | "webp" | "jpg") =>
   HERO_WIDTHS.map((w) => `/images/hero/hero-${n}-${w}.${ext} ${w}w`).join(", ");
 
 const first = HERO_SLIDES[0];
 
-/** Preload the first still so the opening slide paints quickly. */
+/** Preload the first still so the opening slide paints quickly. AVIF first; WebP is the fallback. */
 export const FIRST_HERO_PRELOAD = {
-  href: `/images/hero/hero-${first.n}-1600.webp`,
-  srcSet: heroSrcSet(first.n, "webp"),
+  href: `/images/hero/hero-${first.n}-1600.avif`,
+  srcSet: heroSrcSet(first.n, "avif"),
+  type: "image/avif",
+  fallbackHref: `/images/hero/hero-${first.n}-1600.webp`,
+  fallbackSrcSet: heroSrcSet(first.n, "webp"),
+  fallbackType: "image/webp",
 } as const;

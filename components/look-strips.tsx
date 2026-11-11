@@ -209,6 +209,7 @@ export function ShopLooks() {
                   alt={duplicate ? "" : look.alt}
                   fill
                   sizes="(min-width: 640px) 216px, 184px"
+                  loading="lazy"
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                 />
               </span>
@@ -244,6 +245,7 @@ export function InspiringRow() {
               alt={photo.alt}
               fill
               sizes="(min-width: 640px) 320px, 264px"
+              loading="lazy"
               className="object-cover transition-transform duration-700 hover:scale-[1.03]"
             />
           </Link>

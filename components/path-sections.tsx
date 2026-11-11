@@ -100,7 +100,7 @@ export function PathChooser() {
             className="group relative block overflow-hidden rounded-[1.8rem] bg-[#14261f] text-[#f6f1e6] shadow-[0_40px_90px_-50px_rgba(28,36,28,0.8)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
           >
             <div className="relative aspect-[4/5] sm:aspect-[5/4]">
-              <Image src={card.image} alt={card.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
+              <Image src={card.image} alt={card.alt} fill sizes="(min-width: 768px) 50vw, 100vw" loading="lazy" className="object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#14261f]/95 via-[#14261f]/35 to-transparent" aria-hidden="true" />
             </div>
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">

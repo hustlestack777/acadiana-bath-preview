@@ -81,6 +81,7 @@ export function Hero() {
               style={{ opacity: index === visibleIndex ? 1 : 0 }}
             >
               <picture>
+                <source type="image/avif" srcSet={heroSrcSet(slide.n, "avif")} sizes="100vw" />
                 <source type="image/webp" srcSet={heroSrcSet(slide.n, "webp")} sizes="100vw" />
                 <img
                   src={`/images/hero/hero-${slide.n}-1600.jpg`}
@@ -90,6 +91,7 @@ export function Hero() {
                   width={2560}
                   height={1440}
                   fetchPriority={index === 0 ? "high" : "low"}
+                  loading={index === 0 ? "eager" : "lazy"}
                   decoding={index === 0 ? "sync" : "async"}
                   onLoad={() =>
                     setLoaded((current) => (current[index] ? current : current.map((value, i) => (i === index ? true : value))))

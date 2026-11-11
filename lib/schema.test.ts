@@ -93,6 +93,11 @@ test("FAQPage schema is built only from the visible questions passed in", () => 
   for (const item of homeFaqs) {
     assert.ok(geoFaqs.some((faq) => faq.q === item.q && faq.a === item.a), item.q);
   }
+  const cost = geoFaqs.find((faq) => faq.q === "How much does a bathroom remodel cost in South Louisiana?");
+  assert.ok(cost);
+  assert.match(cost.a, /See your new bathroom in about a minute\. Justin follows up with your price\./);
+  assert.equal(cost.link?.text, "See your new bathroom");
+  assert.equal(cost.link?.href, "/design");
 });
 
 test("preview robots.txt is disallow-all and hides the sitemap", () => {

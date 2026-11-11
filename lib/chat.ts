@@ -15,7 +15,7 @@ const answers = {
   area: faqAnswer("What areas do you serve?"),
   quote: faqAnswer("How do I get a quote?"),
   cost: faqAnswer("How much does a bathroom remodel cost in South Louisiana?"),
-  fit: `${hero.support} Snap a photo, pick a look, and Justin gives you the real number at a free consult.`,
+  fit: `${hero.support} See your new bathroom in about a minute. Justin follows up with your price.`,
   timing:
     "Installation times are not listed. Justin confirms measurements and project scope, then you get a clear proposal.",
   proof:

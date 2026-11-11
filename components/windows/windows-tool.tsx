@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AddressAutocomplete, type AddressSelection } from "@/components/address-autocomplete";
 import { appendAttribution } from "@/components/lead-attribution";
 import { Checkbox } from "@/components/ui/checkbox";
+import { brand } from "@/lib/copy";
 import { cn } from "cn";
 import {
   computeWindowEstimate,
@@ -700,7 +701,7 @@ export function WindowsTool() {
 
       {step === "thanks" ? (
         <section data-testid="windows-thanks">
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">{GET_MY_CUSTOM_QUOTE}</h1>
+          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Justin will call you</h1>
           <p className="mt-4 text-lg leading-8">
             Thanks. Justin has your request and will call you to talk through your windows and set up a time to measure. He
             gives you the final price.
@@ -709,6 +710,9 @@ export function WindowsTool() {
           <p className="mt-4 text-base leading-7 text-foreground">
             This is a ballpark range, not a quote. Justin gives you the final price after he measures.
           </p>
+          <a href={brand.phoneHref} className={`${primaryBtn} mt-8`}>
+            Call {brand.phone}
+          </a>
         </section>
       ) : null}
     </div>
