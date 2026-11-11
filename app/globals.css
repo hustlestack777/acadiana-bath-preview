@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Maison Acadiana colors live in the :root block below. */
+/* Live Oak colors live in the :root block below. */
 
 @theme inline {
   --color-background: var(--background);
@@ -67,66 +67,66 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Maison Acadiana: cream, terracotta, aubergine. */
+/* Live Oak: warm cream and forest pine, matching the Acadiana wordmark. */
 :root {
-  --background: #f6f0e8;
-  --foreground: #2c211c;
-  --card: #fffbf6;
-  --card-foreground: #2c211c;
-  --popover: #fffbf6;
-  --popover-foreground: #2c211c;
-  --primary: #8e3e2c;
-  --primary-foreground: #fff8f4;
-  --secondary: #5c3044;
-  --secondary-foreground: #fbf6f2;
-  --muted: #efe4d8;
-  --muted-foreground: #5e5148;
-  --accent: #f3e0d4;
-  --accent-foreground: #2c211c;
+  --background: #f3efe4;
+  --foreground: #1c241c;
+  --card: #fffaf3;
+  --card-foreground: #1c241c;
+  --popover: #fffaf3;
+  --popover-foreground: #1c241c;
+  --primary: #103830;
+  --primary-foreground: #f7f3ea;
+  --secondary: #14261f;
+  --secondary-foreground: #f6f1e6;
+  --muted: #e7e3d6;
+  --muted-foreground: #55574c;
+  --accent: #e8e6d8;
+  --accent-foreground: #1c241c;
   --destructive: #9f2d2d;
-  --border: #e2d2c4;
-  --input: #d8c4b4;
-  --ring: #5c3044;
+  --border: #d8d3c4;
+  --input: #c9c3b3;
+  --ring: #14261f;
   --radius: 0.9rem;
-  --hero: #f6f0e8;
-  --hero-foreground: #2c211c;
-  --hero-muted: #6b5348;
-  --brass: #8c4030;
-  --brass-soft: #f6e4d6;
-  --fig: #5c3044;
-  --fig-foreground: #fbf6f2;
-  --fig-muted: #f0d5de;
-  --sage: #8c4030;
-  --sage-wash: #f8e6dc;
-  --tint-clay: #f8e6dc;
-  --tint-lagoon: #f3e7ea;
-  --tint-brass: #f6efe4;
-  --swatch-clay: #c46a4a;
-  --swatch-lagoon: #5c3044;
-  --swatch-brass: #e7c3a8;
-  --swatch-fig: #5c3044;
-  --chart-1: #c46a4a;
-  --chart-2: #5c3044;
-  --chart-3: #8c4030;
-  --chart-4: #e7c3a8;
-  --chart-5: #6b5348;
-  --sidebar: #fffbf6;
-  --sidebar-foreground: #2c211c;
-  --sidebar-primary: #8e3e2c;
-  --sidebar-primary-foreground: #fff8f4;
-  --sidebar-accent: #f3e0d4;
-  --sidebar-accent-foreground: #2c211c;
-  --sidebar-border: #e2d2c4;
-  --sidebar-ring: #5c3044;
+  --hero: #f3efe4;
+  --hero-foreground: #1c241c;
+  --hero-muted: #55574c;
+  --brass: #103830;
+  --brass-soft: #e8e6d8;
+  --fig: #14261f;
+  --fig-foreground: #f6f1e6;
+  --fig-muted: #d5e2d8;
+  --sage: #103830;
+  --sage-wash: #e8e6d8;
+  --tint-clay: #e8e6d8;
+  --tint-lagoon: #e8e6d8;
+  --tint-brass: #e8e6d8;
+  --swatch-clay: #103830;
+  --swatch-lagoon: #14261f;
+  --swatch-brass: #103830;
+  --swatch-fig: #14261f;
+  --chart-1: #103830;
+  --chart-2: #14261f;
+  --chart-3: #103830;
+  --chart-4: #d4c48a;
+  --chart-5: #55574c;
+  --sidebar: #fffaf3;
+  --sidebar-foreground: #1c241c;
+  --sidebar-primary: #103830;
+  --sidebar-primary-foreground: #f7f3ea;
+  --sidebar-accent: #e8e6d8;
+  --sidebar-accent-foreground: #1c241c;
+  --sidebar-border: #d8d3c4;
+  --sidebar-ring: #14261f;
 }
 
 .checkerboard {
-  background-color: #f6e4d6;
+  background-color: #e8e6d8;
   background-image:
-    linear-gradient(45deg, #c46a4a 25%, transparent 25%),
-    linear-gradient(-45deg, #c46a4a 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #c46a4a 75%),
-    linear-gradient(-45deg, transparent 75%, #c46a4a 75%);
+    linear-gradient(45deg, #3d5c50 25%, transparent 25%),
+    linear-gradient(-45deg, #3d5c50 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #3d5c50 75%),
+    linear-gradient(-45deg, transparent 75%, #3d5c50 75%);
   background-size: 28px 28px;
   background-position: 0 0, 0 14px, 14px -14px, -14px 0;
 }
@@ -302,7 +302,7 @@
 
 /* Design My Bathroom scanner line */
 .design-scanline {
-  background: linear-gradient(to bottom, transparent, rgba(240, 199, 184, 0.55) 85%, rgba(255, 255, 255, 0.95));
+  background: linear-gradient(to bottom, transparent, rgba(212, 196, 138, 0.55) 85%, rgba(255, 255, 255, 0.95));
   animation: design-scan 2.4s ease-in-out infinite alternate;
 }
 @keyframes design-scan {

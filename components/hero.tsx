@@ -102,7 +102,7 @@ export function Hero() {
   const visibleHeadlineIndex = reducedMotion ? 0 : headlineIndex;
 
   return (
-    <section className="relative min-h-[100svh] overflow-hidden bg-[#1c1014] text-[#fbf6f2]" aria-label="Introduction">
+    <section className="relative min-h-[100svh] overflow-hidden bg-[#14261f] text-[#f6f1e6]" aria-label="Introduction">
       <div className="absolute inset-0" aria-hidden="true">
         {SLIDES.map((slide, index) =>
           index === 0 || mounted ? (
@@ -141,7 +141,7 @@ export function Hero() {
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-6xl flex-col justify-end px-5 pb-48 pt-24 md:pb-12 md:pt-28">
         <h1
-          className="home-hero-title relative mt-0 max-w-5xl font-heading text-[clamp(2.15rem,6.8vw,5.8rem)] leading-[0.96] font-semibold text-[#fbf6f2]"
+          className="home-hero-title relative mt-0 max-w-5xl font-heading text-[clamp(2.15rem,6.8vw,5.8rem)] leading-[0.96] font-semibold text-[#f6f1e6]"
           data-testid="hero-title"
         >
           <span className="invisible block" aria-hidden="true">
@@ -158,7 +158,7 @@ export function Hero() {
             </span>
           ))}
         </h1>
-        <p className="hero-copy mt-5 max-w-xl text-sm leading-6 text-[#fbf6f2] sm:mt-6 sm:text-lg sm:leading-8">{heroSubhead}</p>
+        <p className="hero-copy mt-5 max-w-xl text-sm leading-6 text-[#f6f1e6] sm:mt-6 sm:text-lg sm:leading-8">{heroSubhead}</p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/design"
@@ -177,7 +177,7 @@ export function Hero() {
             {brand.phone}
           </a>
         </div>
-        <p className="hero-copy mt-4 max-w-xl text-sm font-semibold tracking-wide text-[#f3d7cb]" data-testid="hero-quote-line">
+        <p className="hero-copy mt-4 max-w-xl text-sm font-semibold tracking-wide text-[#e4d8b4]" data-testid="hero-quote-line">
           {heroQuoteLine}
         </p>
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4 border-t border-white/20 pe-16 pt-4 md:pe-0">

@@ -184,7 +184,7 @@ export function AddressAutocomplete({
         <ul
           id={listId}
           role="listbox"
-          className="absolute z-30 mt-1 max-h-72 w-full overflow-auto rounded-xl border border-[#e8ddd4] bg-[#fffdf9] p-1 shadow-lg"
+          className="absolute z-30 mt-1 max-h-72 w-full overflow-auto rounded-xl border border-[#d8d3c4] bg-[#fffaf3] p-1 shadow-lg"
         >
           {suggestions.map((suggestion, index) => (
             <li
@@ -194,7 +194,7 @@ export function AddressAutocomplete({
               aria-selected={index === active}
               className={cn(
                 "cursor-pointer rounded-lg px-3 py-3 text-sm leading-5",
-                index === active ? "bg-[#f6f0e8]" : "",
+                index === active ? "bg-[#f3efe4]" : "",
               )}
               onMouseDown={(event) => {
                 event.preventDefault();

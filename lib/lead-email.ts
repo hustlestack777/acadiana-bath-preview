@@ -59,13 +59,13 @@ export type LeadEmailAttachment = {
   contentId?: string;
 };
 
-const INK = "#1c1014";
-const MUTED = "#6d5a54";
-const CARD = "#fffdf9";
-const LINE = "#e8ddd4";
-const CLAY = "#c46a4a";
-const CREAM = "#f6f0e8";
-const CANVAS = "#e7ddd3";
+const INK = "#1c241c";
+const MUTED = "#55574c";
+const CARD = "#fffaf3";
+const LINE = "#d8d3c4";
+const CLAY = "#103830";
+const CREAM = "#f3efe4";
+const CANVAS = "#e7e3d6";
 const SERIF = "Georgia, 'Times New Roman', serif";
 const SANS = "Arial, Helvetica, sans-serif";
 
@@ -332,9 +332,9 @@ function htmlBody(input: {
     <tr><td align="center" style="padding:16px 12px 24px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:${CARD};border-radius:20px;overflow:hidden;">
         <tr><td style="background:${INK};padding:22px 22px 20px;">
-          <p style="margin:0 0 8px;font-family:${SANS};font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#f3d7cb;font-weight:700;">${esc(input.kicker)}</p>
-          <h1 style="margin:0 0 6px;font-family:${SERIF};font-size:34px;line-height:1;font-weight:500;color:#fbf6f2;">${esc(input.name)}</h1>
-          <p style="margin:0;font-family:${SERIF};font-size:16px;line-height:1.3;color:#f3d7cb;">${esc(subline)}</p>
+          <p style="margin:0 0 8px;font-family:${SANS};font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#e4d8b4;font-weight:700;">${esc(input.kicker)}</p>
+          <h1 style="margin:0 0 6px;font-family:${SERIF};font-size:34px;line-height:1;font-weight:500;color:#f6f1e6;">${esc(input.name)}</h1>
+          <p style="margin:0;font-family:${SERIF};font-size:16px;line-height:1.3;color:#e4d8b4;">${esc(subline)}</p>
         </td></tr>
         <tr><td style="padding:22px;">
           ${update}
@@ -359,10 +359,10 @@ function mapLinks(streetViewUrl: string, mapsUrl: string, hasHouseImage: boolean
   if (!streetViewUrl && !mapsUrl) return "";
   const primaryUrl = streetViewUrl || mapsUrl;
   const maps = mapsUrl
-    ? `<a href="${esc(mapsUrl)}" style="color:#8c4030;font-weight:700;text-decoration:underline;text-underline-offset:3px;">Open in Google Maps</a>`
+    ? `<a href="${esc(mapsUrl)}" style="color:#103830;font-weight:700;text-decoration:underline;text-underline-offset:3px;">Open in Google Maps</a>`
     : "";
   if (hasHouseImage) {
-    const street = `<a href="${esc(primaryUrl)}" style="color:#8c4030;font-weight:700;text-decoration:underline;text-underline-offset:3px;">Open Street View</a>`;
+    const street = `<a href="${esc(primaryUrl)}" style="color:#103830;font-weight:700;text-decoration:underline;text-underline-offset:3px;">Open Street View</a>`;
     const items = [street, maps].filter(Boolean).join(" &nbsp;·&nbsp; ");
     return `<p style="margin:0 0 18px;font-family:${SANS};">${items}</p>`;
   }

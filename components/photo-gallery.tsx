@@ -42,7 +42,7 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
             <figure className="group h-full">
               <button
                 type="button"
-                className="relative block h-full w-full overflow-hidden rounded-2xl bg-[#1c1014] text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="relative block h-full w-full overflow-hidden rounded-2xl bg-[#14261f] text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 onClick={() => setActive(index)}
               >
                 <span className={frameFor(index)}>
@@ -62,7 +62,7 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
 
       <dialog
         ref={dialogRef}
-        className="m-auto w-[min(96vw,1100px)] max-w-none border-0 bg-transparent p-0 text-[#fbf6f2] backdrop:bg-[#1c1014]/80"
+        className="m-auto w-[min(96vw,1100px)] max-w-none border-0 bg-transparent p-0 text-[#f6f1e6] backdrop:bg-[#14261f]/80"
         aria-label={photo ? photo.caption : "Photograph"}
         onKeyDown={(event) => {
           if (event.key === "ArrowRight") {
@@ -76,7 +76,7 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
         }}
       >
         {photo ? (
-          <div className="overflow-hidden rounded-2xl bg-[#24181a]">
+          <div className="overflow-hidden rounded-2xl bg-[#1a3028]">
             <div className="relative aspect-[4/5] bg-black sm:aspect-[16/10]">
               <Image src={photo.src} alt={photo.alt} fill sizes="96vw" className="object-contain" />
             </div>
@@ -91,7 +91,7 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
                 </button>
                 <button
                   type="button"
-                  className="h-10 rounded-full bg-[#fbf6f2] px-4 text-sm text-[#2c211c]"
+                  className="h-10 rounded-full bg-[#f6f1e6] px-4 text-sm text-[#1c241c]"
                   onClick={() => dialogRef.current?.close()}
                 >
                   Close

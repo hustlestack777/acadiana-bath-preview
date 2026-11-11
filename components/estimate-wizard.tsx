@@ -360,13 +360,13 @@ export function EstimateWizard() {
   const phoneLabel = formatPhone(form.phone);
 
   return (
-    <main id="content" tabIndex={-1} className={step === "result" ? "bg-[#f6f0e8]" : undefined}>
+    <main id="content" tabIndex={-1} className={step === "result" ? "bg-[#f3efe4]" : undefined}>
       {step === "result" ? null : (
-      <section className="relative flex min-h-[44svh] items-end md:min-h-[52svh] overflow-hidden bg-[#1c1014] text-[#fbf6f2]">
+      <section className="relative flex min-h-[44svh] items-end md:min-h-[52svh] overflow-hidden bg-[#14261f] text-[#f6f1e6]">
         <Image src={banner.src} alt={banner.alt} fill priority sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1c1014] via-[#1c1014]/55 to-[#1c1014]/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#14261f] via-[#14261f]/55 to-[#14261f]/40" />
         <div className="relative z-10 mx-auto w-full max-w-3xl px-5 pb-10 pt-28">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#f3d7cb]">{hero.eyebrow}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#e4d8b4]">{hero.eyebrow}</p>
           <h1 className="mt-3 max-w-xl text-5xl leading-[0.95] md:text-7xl">{lead.title}</h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-white/85">{lead.subhead}</p>
           <p className="mt-5 text-lg">
@@ -643,30 +643,30 @@ export function EstimateWizard() {
         ) : null}
 
         {step === "result" ? (
-          <section className="text-[#1c1014]" aria-live="polite">
-            <div className="flex size-14 items-center justify-center rounded-full bg-[#c46a4a] text-[26px] text-white" aria-hidden="true">
+          <section className="text-[#1c241c]" aria-live="polite">
+            <div className="flex size-14 items-center justify-center rounded-full bg-[#103830] text-[26px] text-white" aria-hidden="true">
               ✓
             </div>
             <h1 id="result-title" tabIndex={-1} className="mt-4 font-heading text-[40px] font-medium leading-[0.95] outline-none">
               {lead.savedTitle}
             </h1>
             <p className="mt-2.5 text-lg leading-snug">{lead.thanks}</p>
-            <p className="mt-2 mb-5 leading-snug text-[#6d5a54]">{lead.savedNote}</p>
-            <section className="rounded-[24px] border border-[#e8ddd4] bg-[#fffdf9] px-5 py-[22px]">
+            <p className="mt-2 mb-5 leading-snug text-[#55574c]">{lead.savedNote}</p>
+            <section className="rounded-[24px] border border-[#d8d3c4] bg-[#fffaf3] px-5 py-[22px]">
               <p className="font-heading text-[32px] leading-[1.05]">{form.name.trim()}</p>
               <div className="mt-2.5">
                 {phoneHref ? (
-                  <a href={phoneHref} className="block text-xl font-semibold text-[#8c4030] underline underline-offset-4">
+                  <a href={phoneHref} className="block text-xl font-semibold text-[#103830] underline underline-offset-4">
                     {phoneLabel}
                   </a>
                 ) : null}
                 {form.email.trim() ? (
-                  <a href={`mailto:${form.email.trim()}`} className="mt-1 block text-[17px] font-medium text-[#1c1014] underline underline-offset-4">
+                  <a href={`mailto:${form.email.trim()}`} className="mt-1 block text-[17px] font-medium text-[#1c241c] underline underline-offset-4">
                     {form.email.trim()}
                   </a>
                 ) : null}
               </div>
-              <hr className="my-[18px] border-0 border-t border-[#e8ddd4]" />
+              <hr className="my-[18px] border-0 border-t border-[#d8d3c4]" />
               <dl className="grid gap-3.5">
                 <RecapRow label="Town" value={townValue} />
                 <RecapRow label="Project" value={projectLabel} />
@@ -681,7 +681,7 @@ export function EstimateWizard() {
                 <h2 className="font-heading text-2xl font-medium">{lead.photosTitle}</h2>
                 <ul className="mt-3 grid grid-cols-2 gap-2.5" data-testid="photo-previews">
                   {photos.map((photo, index) => (
-                    <li key={photo.id} className="relative overflow-hidden rounded-2xl border border-[#e8ddd4] bg-[#fffdf9]">
+                    <li key={photo.id} className="relative overflow-hidden rounded-2xl border border-[#d8d3c4] bg-[#fffaf3]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={photo.url} alt={`Photo ${index + 1}`} className="aspect-square w-full object-cover" />
                       {extrasSaved ? null : (
@@ -700,7 +700,7 @@ export function EstimateWizard() {
               </div>
             ) : null}
 
-            <div className="mt-6 rounded-[24px] border border-[#e8ddd4] bg-[#fffdf9] p-5">
+            <div className="mt-6 rounded-[24px] border border-[#d8d3c4] bg-[#fffaf3] p-5">
               <h3 className="text-2xl font-heading">{lead.extrasTitle}</h3>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{lead.extrasBody}</p>
               {extrasSaved ? (
@@ -916,7 +916,7 @@ function RecapRow({ label, value }: { label: string; value: string }) {
   if (!value.trim()) return null;
   return (
     <div className="grid grid-cols-[92px_1fr] gap-2 text-base leading-snug">
-      <dt className="font-semibold text-[#6d5a54]">{label}</dt>
+      <dt className="font-semibold text-[#55574c]">{label}</dt>
       <dd className="font-medium">{value}</dd>
     </div>
   );

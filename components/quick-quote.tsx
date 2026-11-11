@@ -178,7 +178,7 @@ export function QuickQuote({ path }: { path: Path }) {
   const groutPick = GROUT_COLORS.find((color) => color.code === form.grout);
 
   return (
-    <form noValidate onSubmit={submit} className="grid gap-5 rounded-[1.6rem] border border-border bg-card p-5 shadow-[0_30px_80px_-40px_rgba(44,33,28,0.45)] sm:p-7">
+    <form noValidate onSubmit={submit} className="grid gap-5 rounded-[1.6rem] border border-border bg-card p-5 shadow-[0_30px_80px_-40px_rgba(28,36,28,0.45)] sm:p-7">
       <fieldset>
         <legend className={label}>What are you thinking about?</legend>
         <div className="mt-2 flex flex-wrap gap-2" id={`${path}-project`} tabIndex={-1}>
@@ -211,7 +211,7 @@ export function QuickQuote({ path }: { path: Path }) {
           <div className="mt-2 flex items-center gap-3">
             <span
               className="size-12 shrink-0 rounded-xl border border-border"
-              style={{ background: groutPick?.hex ?? "repeating-linear-gradient(45deg,#efe4d8 0 6px,#fffbf6 6px 12px)" }}
+              style={{ background: groutPick?.hex ?? "repeating-linear-gradient(45deg,#e7e3d6 0 6px,#fffaf3 6px 12px)" }}
               aria-hidden="true"
             />
             <select id={`${path}-grout`} className={field} value={form.grout} onChange={(e) => set("grout", e.target.value)}>

@@ -74,7 +74,7 @@ export default function SolidSurfacePage() {
           </div>
         </section>
 
-        <section className="rise bg-[#f3e7df]" aria-labelledby="ss-gallery">
+        <section className="rise bg-[#eae6d8]" aria-labelledby="ss-gallery">
           <div className="mx-auto w-full max-w-6xl px-5 py-20 md:py-28">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Looks we can build</p>
             <h2 id="ss-gallery" className="mt-3 text-4xl md:text-6xl">Walk-ins, tub walls, and everything between.</h2>

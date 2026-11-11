@@ -207,7 +207,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             type="button"
             disabled={!shots.length}
             onClick={() => setStep("budget")}
-            className="mt-6 h-14 w-full rounded-full bg-[#1c1014] text-base font-semibold text-white disabled:opacity-40"
+            className="mt-6 h-14 w-full rounded-full bg-[#103830] text-base font-semibold text-white disabled:opacity-40"
             data-testid="design-next"
           >
             Next: pick a look
@@ -438,7 +438,7 @@ function BeforeAfter({ before, after }: { before: string; after: string }) {
         <img src={before} alt="Your bathroom now" className="h-full w-full object-cover" draggable={false} />
       </div>
       <div className="pointer-events-none absolute inset-y-0 w-0.5 bg-white shadow" style={{ left: `${split}%` }} aria-hidden="true">
-        <span className="absolute top-1/2 left-1/2 flex size-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-xs font-bold text-[#1c1014] shadow">⇆</span>
+        <span className="absolute top-1/2 left-1/2 flex size-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-xs font-bold text-[#1c241c] shadow">⇆</span>
       </div>
       <span className="absolute left-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-xs text-white">Before</span>
       <span className="absolute right-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-xs text-white">After</span>

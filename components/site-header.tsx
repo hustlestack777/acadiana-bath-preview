@@ -55,14 +55,14 @@ export function SiteHeader() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-40 transition-colors duration-300",
-        overHero ? "bg-transparent text-[#fbf6f2]" : "border-b border-border bg-background/95 text-foreground backdrop-blur-md",
+        overHero ? "bg-transparent text-[#f6f1e6]" : "border-b border-border bg-background/95 text-foreground backdrop-blur-md",
       )}
     >
       <a className="skip-link" href="#content">
         Skip to content
       </a>
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3">
-        <Link href="/" aria-label={brand.name} className={cn("min-w-0", overHero ? "text-[#fbf6f2]" : undefined)}>
+        <Link href="/" aria-label={brand.name} className={cn("min-w-0", overHero ? "text-[#f6f1e6]" : undefined)}>
           <MaisonLogo compact onDark={overHero} className="sm:hidden" />
           <MaisonLogo onDark={overHero} className="hidden sm:inline-flex" />
         </Link>

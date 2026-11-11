@@ -109,7 +109,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section id="gallery" className="rise scroll-mt-28 bg-[#f3e7df]">
+      <section id="gallery" className="rise scroll-mt-28 bg-[#eae6d8]">
         <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Gallery</p>
           <h2 className="mt-3 max-w-3xl text-4xl md:text-5xl">{gallery.title}</h2>
@@ -214,7 +214,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[#1c1014] text-[#fbf6f2]">
+      <section className="relative overflow-hidden bg-[#14261f] text-[#f6f1e6]">
         <Image
           src="/images/hero-rain.webp"
           alt=""
@@ -222,7 +222,7 @@ export function HomePage() {
           sizes="100vw"
           className="object-cover opacity-40"
         />
-        <div className="absolute inset-0 bg-[#1c1014]/55" />
+        <div className="absolute inset-0 bg-[#14261f]/55" />
         <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 py-20 md:flex-row md:items-end md:justify-between md:py-28">
           <div>
             <h2 className="max-w-xl text-4xl md:text-6xl">{close.title}</h2>
@@ -230,7 +230,7 @@ export function HomePage() {
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             <ConsultLink
-              className="inline-flex h-12 items-center justify-center rounded-full bg-[#fbf6f2] px-6 text-base font-medium text-[#2c211c]"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-[#f6f1e6] px-6 text-base font-medium text-[#1c241c]"
             >
               {hero.primary}
             </ConsultLink>

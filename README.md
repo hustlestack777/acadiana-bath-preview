@@ -1,6 +1,6 @@
 # Acadiana Bathrooms and Countertops
 
-Marketing site and project review for Acadiana Bathrooms and Countertops. The design is the Maison Acadiana palette: cream, terracotta, and aubergine. Search engines are asked not to index it.
+Marketing site and project review for Acadiana Bathrooms and Countertops. The design is the Live Oak palette: warm cream and forest pine. Search engines are asked not to index it.
 
 ## Run it
 

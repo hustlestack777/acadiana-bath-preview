@@ -22,7 +22,7 @@ export function GroutPicker() {
     <div className="mt-10 grid gap-8 lg:grid-cols-12">
       <div className="lg:col-span-5">
         <div
-          className="relative aspect-square overflow-hidden rounded-[1.6rem] border border-border shadow-[0_30px_80px_-40px_rgba(44,33,28,0.5)]"
+          className="relative aspect-square overflow-hidden rounded-[1.6rem] border border-border shadow-[0_30px_80px_-40px_rgba(28,36,28,0.5)]"
           style={{ backgroundColor: pick.hex }}
           aria-hidden="true"
         >
