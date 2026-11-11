@@ -48,6 +48,10 @@ export function Hero() {
     loadedRef.current = loaded;
   }, [loaded]);
 
+  const markLoaded = (index: number) => {
+    setLoaded((current) => (current[index] ? current : current.map((value, i) => (i === index ? true : value))));
+  };
+
   useEffect(() => {
     if (reducedMotion) return;
     const next = (active + 1) % SLIDES.length;
@@ -106,9 +110,12 @@ export function Hero() {
                   fetchPriority={index === 0 ? "high" : "low"}
                   loading={index === 0 ? "eager" : "lazy"}
                   decoding={index === 0 ? "sync" : "async"}
-                  onLoad={() =>
-                    setLoaded((current) => (current[index] ? current : current.map((value, i) => (i === index ? true : value))))
-                  }
+                  ref={(image) => {
+                    if (image && image.complete && image.naturalWidth > 0) {
+                      markLoaded(index);
+                    }
+                  }}
+                  onLoad={() => markLoaded(index)}
                   className={
                     index === visibleIndex || index === previous
                       ? "home-hero-img home-hero-zoom absolute inset-0 h-full w-full object-cover"
