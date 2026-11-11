@@ -1,8 +1,8 @@
-import { CallWindowFields } from "@/components/call-window-fields";
-import { consentLabel } from "@/lib/copy";
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ChangeEvent, type Dispatch, type FormEvent, type SetStateAction } from "react";
+import { CallWindowFields } from "@/components/call-window-fields";
+import { consentLabel } from "@/lib/copy";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { appendAttribution } from "@/components/lead-attribution";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
