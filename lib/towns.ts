@@ -78,7 +78,7 @@ export const towns: TownPageContent[] = [
     intro: [
       `We serve Baton Rouge with custom showers, tile, quartz and quartzite, and solid surface. ${SERVICE_AREA} Bathroom remodels starting at $5K. The exact price is set at a free consult, and Justin follows up with your price.`,
       "We serve homes around the Garden District, Mid City and Shenandoah, and we also serve Gonzales and Prairieville to the south. People in the capital region often want a bathroom that feels designed, not just replaced: a walk-in instead of a tub surround, a quartzite vanity with real veining, or a handmade tile wall with color.",
-      "Justin comes to you. He travels to your home to look at the room, talk through the design, and measure.",
+      "Justin comes to you. He comes to your home to look at the room, talk through the design, and measure.",
     ],
     servicesTitle: "What we build",
     services: [

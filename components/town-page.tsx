@@ -4,6 +4,7 @@ import { ConsultLink } from "@/components/consult-link";
 import { JsonLd } from "@/components/json-ld";
 import { LinkedCopy } from "@/components/linked-copy";
 import { brand, hero } from "@/lib/copy";
+import { OUTSIDE_AREA } from "@/lib/coverage";
 import { townAreaJsonLd } from "@/lib/schema";
 import type { TownPageContent } from "@/lib/towns";
 
@@ -18,6 +19,7 @@ export function TownPage({ town }: { town: TownPageContent }) {
           {town.intro.map((paragraph) => (
             <LinkedCopy key={paragraph.slice(0, 48)} text={paragraph} />
           ))}
+          <p>{OUTSIDE_AREA}</p>
         </div>
       </section>
 

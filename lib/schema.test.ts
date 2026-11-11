@@ -189,8 +189,13 @@ test("llms.txt summarizes the business without banned claims", () => {
   assert.match(text, /\/serving-gonzales/);
   assert.match(text, /\/serving-prairieville/);
   assert.equal(text.includes(OUTSIDE_AREA), true);
+  assert.equal(OUTSIDE_AREA, "Outside our area? Ask for a quote.");
   assert.equal(text.includes("Don't see your town"), false);
   assert.equal(text.includes("hotel"), false);
+  assert.equal(/travel/i.test(text), false);
+  const publicBlob = [geoFaqs, towns, text, businessJsonLd().description].map((value) => JSON.stringify(value)).join("\n");
+  assert.equal(/travel built into|Reach out anyway|outside the area/i.test(publicBlob), false);
+  assert.equal(/\btravel/i.test(publicBlob), false);
   for (const banned of [
     "Onyx",
     "Pella",

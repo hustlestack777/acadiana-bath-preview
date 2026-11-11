@@ -4,6 +4,7 @@
  */
 
 import { faqs as homeFaqs, solidPath, tilePath } from "./copy";
+import { OUTSIDE_AREA } from "./coverage";
 import {
   SCHEMA_AREA_SERVED,
   SCHEMA_PRICE_RANGE,
@@ -36,7 +37,7 @@ export function businessJsonLd() {
     email: SITE_EMAIL,
     logo: SITE_LOGO_URL,
     image: SITE_LOGO_URL,
-    description: `Bathroom remodels from ${SITE_NAME}. ${SCHEMA_SERVICE_AREA} See your new bathroom free: Design My Bathroom.`,
+    description: `Bathroom remodels from ${SITE_NAME}. ${SCHEMA_SERVICE_AREA} ${OUTSIDE_AREA} See your new bathroom free: Design My Bathroom.`,
     areaServed: SCHEMA_AREA_SERVED,
     priceRange: SCHEMA_PRICE_RANGE,
     // No address: Justin has no public storefront yet (a Broussard warehouse is pending).
@@ -62,7 +63,7 @@ export function townAreaJsonLd(town: TownPageContent) {
     "@type": "WebPage",
     name: town.title,
     url: `${SITE_URL}${townPath(town.slug)}`,
-    description: town.intro[0],
+    description: `${town.intro[0]} ${OUTSIDE_AREA}`,
     about: { "@id": BUSINESS_ID },
     areaServed: places,
     // Area served only. Do not add a local street address or branch office.

@@ -24,6 +24,7 @@ import {
   type RoomId,
   type StyleId,
 } from "@/lib/windows";
+import { OUTSIDE_AREA } from "@/lib/coverage";
 
 const field =
   "mt-1.5 h-12 w-full rounded-xl border border-input bg-card px-3 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
@@ -222,6 +223,7 @@ export function WindowsTool() {
             Get a ballpark for new windows. Justin measures for the real quote.
           </h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{SERVICE_AREA_WINDOWS}</p>
+          <p className="mt-4 text-lg leading-8 text-muted-foreground">{OUTSIDE_AREA}</p>
           <p className="mt-4 text-base leading-7 text-foreground">
             Works for one window or a whole house. Enter your address and we&apos;ll look up a Street View photo so you can
             confirm or edit the count. Prefer to type the number yourself? You can do that too. Then pick a style and
