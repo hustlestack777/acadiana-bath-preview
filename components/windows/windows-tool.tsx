@@ -6,13 +6,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "cn";
 import {
   computeWindowEstimate,
-  CONTACT_BUTTON_SUB,
+  BUTTON_SUB,
   estimateHeadline,
-  GET_MY_FREE_QUOTE,
+  GET_MY_CUSTOM_QUOTE,
   MATERIALS,
   MAX_STANDARD_STEPPER,
   parseWindowCount,
-  QUOTE_BUTTON_SUB,
   ROOMS,
   SERVICE_AREA_WINDOWS,
   STYLES,
@@ -216,8 +215,8 @@ export function WindowsTool() {
           <p className="mt-4 text-base leading-7 text-foreground">
             Works for one window or a whole house. Enter your address and we&apos;ll look up a Street View photo so you can
             confirm or edit the count. Prefer to type the number yourself? You can do that too. Then pick a style and
-            material, leave your name and phone, and see a ballpark estimate. Justin comes out, measures and shows you your
-            options, and gives you the final price. There&apos;s no obligation.
+            material, leave your name and phone, and see a ballpark estimate. Justin will call you to talk through your
+            windows and set up a time to measure, and he gives you the final price. There&apos;s no obligation.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <button type="button" className={primaryBtn} onClick={() => goCount(false)}>
@@ -441,7 +440,7 @@ export function WindowsTool() {
           <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Which rooms are we talking about?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
             Tap every room that has windows you want replaced. If it&apos;s just one window, tap that room. This helps Justin
-            plan the visit. It doesn&apos;t change your options.
+            plan. It doesn&apos;t change your options.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {ROOMS.map((room) => {
@@ -476,8 +475,8 @@ export function WindowsTool() {
         <section>
           <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">What style are you thinking?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
-            You can pick more than one. Justin will confirm what fits each opening when he comes out to measure and show you
-            the options.
+            You can pick more than one. Justin will confirm what fits each opening when he measures, and he gives you the
+            final price.
           </p>
           <div className="mt-6 grid gap-3">
             {STYLES.map((style) => {
@@ -522,8 +521,8 @@ export function WindowsTool() {
         <section>
           <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">What material feels right?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
-            This helps us build a ballpark range, not a quote. Your final price comes after Justin measures every window and
-            shows you the options in person.
+            This helps us build a ballpark range, not a quote. Justin gives you the final price after he measures every
+            window.
           </p>
           <div className="mt-6 grid gap-3">
             {MATERIALS.map((item) => (
@@ -634,7 +633,7 @@ export function WindowsTool() {
                 {submitting ? "Saving…" : "See my estimate"}
               </button>
             </div>
-            <p className="text-center text-sm text-muted-foreground">{CONTACT_BUTTON_SUB}</p>
+            <p className="text-center text-sm text-muted-foreground">{BUTTON_SUB}</p>
           </form>
         </section>
       ) : null}
@@ -646,13 +645,12 @@ export function WindowsTool() {
             <p className="mt-4 text-lg leading-8">{estimateHeadline(estimate)}</p>
           ) : (
             <p className="mt-4 text-lg leading-8">
-              We need a window count or a visit to show a dollar range. Request a free measure and Justin will count them
-              with you, show you the options, and give you the final price.
+              We need a window count to show a dollar range. Justin will call you to talk through your windows and set up a
+              time to measure, and he gives you the final price.
             </p>
           )}
           <p className="mt-4 text-base leading-7 text-foreground">
-            This is a ballpark range, not a quote. Justin comes out, measures, shows the options in person, and gives the
-            final price.
+            This is a ballpark range, not a quote. Justin gives you the final price after he measures.
           </p>
           <div className="mt-6 rounded-2xl border border-border bg-card p-5 text-sm leading-6">
             <p className="font-medium">Your recap</p>
@@ -665,24 +663,23 @@ export function WindowsTool() {
           </div>
           <div className="mt-8">
             <button type="button" className={primaryBtn} onClick={() => setStep("thanks")} data-testid="windows-get-quote">
-              {GET_MY_FREE_QUOTE}
+              {GET_MY_CUSTOM_QUOTE}
             </button>
-            <p className="mt-3 text-center text-sm text-muted-foreground">{QUOTE_BUTTON_SUB}</p>
+            <p className="mt-3 text-center text-sm text-muted-foreground">{BUTTON_SUB}</p>
           </div>
         </section>
       ) : null}
 
       {step === "thanks" ? (
         <section data-testid="windows-thanks">
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">{GET_MY_FREE_QUOTE}</h1>
+          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">{GET_MY_CUSTOM_QUOTE}</h1>
           <p className="mt-4 text-lg leading-8">
-            Thanks. Justin has your request and will be in touch to set up the free measure. At the visit he&apos;ll measure
-            every window, show you the different window options in person, and give you the final price.
+            Thanks. Justin has your request and will call you to talk through your windows and set up a time to measure. He
+            gives you the final price.
           </p>
           {estimate ? <p className="mt-4 text-base leading-7">{estimateHeadline(estimate)}</p> : null}
           <p className="mt-4 text-base leading-7 text-foreground">
-            This is a ballpark range, not a quote. Justin comes out, measures, shows the options in person, and gives the
-            final price.
+            This is a ballpark range, not a quote. Justin gives you the final price after he measures.
           </p>
         </section>
       ) : null}

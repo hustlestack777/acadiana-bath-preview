@@ -2,15 +2,13 @@
  * Customer-facing copy must not name brands, licenses, timelines, deposits, or "AI".
  */
 
-export const GET_MY_FREE_QUOTE = "Get My Free Quote";
+export const GET_MY_CUSTOM_QUOTE = "Get My Custom Quote";
 
 export const WINDOWS_CONSENT_TEXT =
   "By submitting, you agree Acadiana Bathrooms may call or text you about your quote, including automated texts. Msg & data rates may apply. Reply STOP to opt out.";
 
-export const CONTACT_BUTTON_SUB =
+export const BUTTON_SUB =
   "Justin will call you to talk through your windows and set up a time to measure.";
-
-export const QUOTE_BUTTON_SUB = "Justin comes out, measures and shows you your options.";
 
 export const WINDOWS_SOURCE_PAGE = "/windows";
 

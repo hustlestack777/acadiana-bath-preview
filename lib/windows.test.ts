@@ -3,14 +3,14 @@ import { test } from "node:test";
 import {
   computeWindowEstimate,
   formatRange,
-  GET_MY_FREE_QUOTE,
+  GET_MY_CUSTOM_QUOTE,
   parseWindowCount,
   WINDOWS_CONSENT_TEXT,
   windowLeadSubject,
 } from "./windows";
 
 test("button text is a single constant", () => {
-  assert.equal(GET_MY_FREE_QUOTE, "Get My Free Quote");
+  assert.equal(GET_MY_CUSTOM_QUOTE, "Get My Custom Quote");
 });
 
 test("consent text matches the approved wording", () => {
