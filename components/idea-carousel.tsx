@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { DesignIdeaTag } from "@/components/design-idea-tag";
+import { isDesignIdeaHero } from "@/lib/hero-slides";
 
 export type IdeaSlide = { src: string; alt: string };
 
@@ -128,6 +130,7 @@ export function IdeaCarousel({
               className="object-cover"
               loading="lazy"
             />
+            {isDesignIdeaHero(slide.src) ? <DesignIdeaTag className="left-3 top-3" /> : null}
           </div>
         ))}
       </div>

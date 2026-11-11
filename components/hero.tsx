@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ConsultLink } from "@/components/consult-link";
 import { DesignLink } from "@/components/design-link";
+import { DesignIdeaTag } from "@/components/design-idea-tag";
 import {
   HERO_LONGEST_HEADLINE,
   HERO_SLIDES,
   heroSrcSet,
+  isDesignIdeaHero,
 } from "@/lib/hero-slides";
 import {
   brand,
@@ -129,6 +131,10 @@ export function Hero() {
         )}
         <div className="home-hero-scrim absolute inset-0" />
       </div>
+
+      {isDesignIdeaHero(SLIDES[visibleIndex].n) ? (
+        <DesignIdeaTag className="left-4 top-24 z-20 sm:left-6 sm:top-28" />
+      ) : null}
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-6xl flex-col justify-end px-5 pb-28 pt-24 md:pb-12 md:pt-28">
         <h1

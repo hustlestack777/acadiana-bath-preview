@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { DesignIdeaTag } from "@/components/design-idea-tag";
 import { DesignLink } from "@/components/design-link";
 import { LookImage } from "@/components/look-image";
 import { LookLink } from "@/components/look-link";
 import { inspiringLooks, shopLooks } from "@/lib/images";
+import { isDesignIdeaHero } from "@/lib/hero-slides";
 import { findStartingLookBySrc } from "@/lib/starting-looks";
 
 export function ShopLooks() {
@@ -165,14 +167,17 @@ export function InspiringRow() {
           const starting = findStartingLookBySrc(photo.src);
           const className = "relative aspect-[4/5] w-[16.5rem] shrink-0 snap-start overflow-hidden rounded-[1.3rem] bg-muted sm:w-[20rem]";
           const image = (
-            <LookImage
-              src={photo.src}
-              jpg={photo.jpg}
-              alt={photo.alt}
-              sizes="(min-width: 640px) 320px, 264px"
-              loading="lazy"
-              className="object-cover transition-transform duration-700 hover:scale-[1.03]"
-            />
+            <>
+              <LookImage
+                src={photo.src}
+                jpg={photo.jpg}
+                alt={photo.alt}
+                sizes="(min-width: 640px) 320px, 264px"
+                loading="lazy"
+                className="object-cover transition-transform duration-700 hover:scale-[1.03]"
+              />
+              {isDesignIdeaHero(photo.src) ? <DesignIdeaTag className="left-3 top-3" /> : null}
+            </>
           );
           if (starting) {
             return (

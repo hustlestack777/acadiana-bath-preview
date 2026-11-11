@@ -17,6 +17,15 @@ export const HERO_SLIDES: readonly HeroSlide[] = [
   { n: "17", position: "42% center", headline: "Your bathroom shouldn't be boring." },
 ] as const;
 
+/** Boogie AI / inspiration stills, not photos of finished jobs. See docs/image-sources.md. */
+export const DESIGN_IDEA_HERO_NUMBERS = new Set(["17", "18", "19", "24", "26", "33", "34", "35"]);
+
+export function isDesignIdeaHero(srcOrNumber: string): boolean {
+  const match = srcOrNumber.match(/\/images\/hero\/hero-(\d+)/);
+  const n = match ? match[1] : srcOrNumber;
+  return DESIGN_IDEA_HERO_NUMBERS.has(n);
+}
+
 export const HERO_LONGEST_HEADLINE = "See your new bathroom before you spend a dime.";
 
 export const HERO_WIDTHS = [960, 1600, 2560] as const;
