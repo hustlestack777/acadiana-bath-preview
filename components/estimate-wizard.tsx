@@ -35,6 +35,7 @@ import { validateDetails, validateExtras, validateStreet, validateZip } from "@/
 import { formatPhone, formatThankYouSize, localityLine, phoneTel } from "@/lib/lead-display";
 import { heroSlides } from "@/lib/images";
 import { cn } from "cn";
+import { useScrollToStep } from "@/lib/scroll-to-step";
 
 type Photo = { id: string; name: string; url: string; file: File };
 type Step = "town" | "project" | "qualify" | "contact" | "result";
@@ -88,6 +89,8 @@ export function EstimateWizard() {
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const [processing, setProcessing] = useState(false);
+  const startRef = useRef<HTMLDivElement>(null);
+  useScrollToStep(step, startRef);
 
   /** Bring the whole form on screen under the fixed header and focus its first field. */
   const focusForm = useCallback(() => {
@@ -132,7 +135,6 @@ export function EstimateWizard() {
     setStep(next);
     setErrors({});
     setSubmitError("");
-    requestAnimationFrame(() => requestAnimationFrame(focusForm));
   }
 
   function checkTown(event: FormEvent) {
@@ -385,6 +387,7 @@ export function EstimateWizard() {
       )}
       <div
         id="start"
+        ref={startRef}
         className={cn(
           "mx-auto w-full px-5",
           step === "result" ? "max-w-[420px] pb-16 pt-24" : "max-w-3xl py-8 md:py-12",
@@ -394,7 +397,7 @@ export function EstimateWizard() {
 
         {step === "town" ? (
           <form className="mt-8 grid gap-5" onSubmit={checkTown} noValidate>
-            <p className="text-sm font-semibold text-muted-foreground">1. Where should we visit?</p>
+            <p tabIndex={-1} data-step-heading className="text-sm font-semibold text-muted-foreground outline-none">1. Where should we visit?</p>
             <Field id="street" label={lead.addressLabel} error={errors.street} hint={lead.addressHint} hintFirst>
               <AddressAutocomplete
                 id="street"
@@ -484,7 +487,7 @@ export function EstimateWizard() {
               Change town
             </button>
             <fieldset id="project" tabIndex={-1} className="grid gap-3 outline-none">
-              <legend className="text-xl font-heading">2. What would you like to change?</legend>
+              <legend tabIndex={-1} data-step-heading className="text-xl font-heading">2. What would you like to change?</legend>
               <p className="text-sm leading-6 text-muted-foreground">{projectNote}</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {projects.map((item) => {
@@ -536,7 +539,7 @@ export function EstimateWizard() {
               Back
             </button>
             <fieldset id="homeowner" tabIndex={-1} className="grid gap-3 outline-none">
-              <legend className="text-xl font-heading">3. Home, timing, and payment</legend>
+              <legend tabIndex={-1} data-step-heading className="text-xl font-heading">3. Home, timing, and payment</legend>
               <p className="text-sm font-medium">Do you own this home?</p>
               <RadioGroup
                 value={form.homeowner}
@@ -611,7 +614,7 @@ export function EstimateWizard() {
               </div>
             ) : null}
             <fieldset className="grid gap-4">
-              <legend className="text-xl font-heading">4. How can Justin reach you?</legend>
+              <legend tabIndex={-1} data-step-heading className="text-xl font-heading">4. How can Justin reach you?</legend>
               <Field id="name" label="Name" error={errors.name}>
                 <Input id="name" name="name" autoComplete="name" value={form.name} onChange={(event) => patch({ name: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.name)} />
               </Field>
@@ -671,7 +674,7 @@ export function EstimateWizard() {
             <div className="flex size-14 items-center justify-center rounded-full bg-[#103830] text-[26px] text-white" aria-hidden="true">
               ✓
             </div>
-            <h1 id="result-title" tabIndex={-1} className="mt-4 font-heading text-[40px] font-medium leading-[0.95] outline-none">
+            <h1 id="result-title" tabIndex={-1} data-step-heading className="mt-4 font-heading text-[40px] font-medium leading-[0.95] outline-none">
               {lead.savedTitle}
             </h1>
             <p className="mt-2.5 text-lg leading-snug">{lead.thanks}</p>

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AddressAutocomplete, type AddressSelection } from "@/components/address-autocomplete";
 import { SaveJustinContact } from "@/components/save-justin-contact";
 import { appendAttribution } from "@/components/lead-attribution";
 import { Checkbox } from "@/components/ui/checkbox";
 import { brand } from "@/lib/copy";
 import { cn } from "cn";
+import { useScrollToStep } from "@/lib/scroll-to-step";
 import {
   computeWindowEstimate,
   BUTTON_SUB,
@@ -66,6 +67,9 @@ export function WindowsTool() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [fax, setFax] = useState("");
+
+  const rootRef = useRef<HTMLDivElement>(null);
+  useScrollToStep(step, rootRef);
 
   const standardCount = unsureCount ? null : parseWindowCount(overThirty ? standardInput : standardInput || null);
   const estimate = useMemo(
@@ -204,7 +208,7 @@ export function WindowsTool() {
   const progress = flowIndex >= 0 ? flowIndex + 1 : 0;
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-5 pb-16 pt-6 md:pt-12">
+    <div ref={rootRef} className="mx-auto w-full max-w-3xl px-5 pb-16 pt-6 md:pt-12">
       {progress > 0 && step !== "estimate" && step !== "thanks" ? (
         <p className="mb-6 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
           Step {progress} of {FLOW.length}
@@ -214,7 +218,7 @@ export function WindowsTool() {
       {step === "start" ? (
         <section data-testid="windows-start">
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">Windows</p>
-          <h1 className="mt-3 font-heading text-[clamp(2.4rem,7vw,4.2rem)] leading-[0.98]">
+          <h1 tabIndex={-1} data-step-heading className="mt-3 font-heading text-[clamp(2.4rem,7vw,4.2rem)] leading-[0.98]">
             Get a ballpark for new windows. Justin measures for the real quote.
           </h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{SERVICE_AREA_WINDOWS}</p>
@@ -237,7 +241,7 @@ export function WindowsTool() {
 
       {step === "address" ? (
         <section>
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Where should we look?</h1>
+          <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Where should we look?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
             We&apos;ll use this address to find your house on Street View. You&apos;ll confirm the window count before we go
             further — one window is fine, and so is a whole house.
@@ -300,7 +304,7 @@ export function WindowsTool() {
 
       {step === "lookup" ? (
         <section aria-live="polite" aria-busy="true">
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Looking at your home…</h1>
+          <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Looking at your home…</h1>
           {streetView?.image ? (
             <div className="relative mt-6 overflow-hidden rounded-3xl bg-black">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -318,7 +322,7 @@ export function WindowsTool() {
 
       {step === "count" ? (
         <section>
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">How many windows do you want replaced?</h1>
+          <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">How many windows do you want replaced?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">One window is fine. So is a whole house, or anything in between.</p>
           {streetView?.image ? (
             <figure className="mt-6 overflow-hidden rounded-3xl border border-border bg-card">
@@ -455,7 +459,7 @@ export function WindowsTool() {
 
       {step === "rooms" ? (
         <section>
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Which rooms are we talking about?</h1>
+          <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Which rooms are we talking about?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
             Tap every room that has windows you want replaced. If it&apos;s just one window, tap that room. This helps Justin
             plan. It doesn&apos;t change your options.
@@ -491,7 +495,7 @@ export function WindowsTool() {
 
       {step === "style" ? (
         <section>
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">What style are you thinking?</h1>
+          <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">What style are you thinking?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
             You can pick more than one. Justin will confirm what fits each opening when he measures, and he gives you the
             final price.
@@ -537,7 +541,7 @@ export function WindowsTool() {
 
       {step === "material" ? (
         <section>
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">What material feels right?</h1>
+          <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">What material feels right?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
             This helps us build a ballpark range, not a quote. Justin gives you the final price after he measures every
             window.
@@ -583,7 +587,7 @@ export function WindowsTool() {
 
       {step === "contact" ? (
         <section>
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Unlock your ballpark</h1>
+          <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Unlock your ballpark</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
             Leave your name and a good number. We&apos;ll show a ballpark estimate for planning — not a quote.
           </p>
@@ -670,7 +674,7 @@ export function WindowsTool() {
 
       {step === "estimate" ? (
         <section data-testid="windows-estimate">
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Your estimate</h1>
+          <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Your estimate</h1>
           {estimate ? (
             <p className="mt-4 text-lg leading-8">{estimateHeadline(estimate)}</p>
           ) : (
@@ -702,7 +706,7 @@ export function WindowsTool() {
 
       {step === "thanks" ? (
         <section data-testid="windows-thanks">
-          <h1 className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Justin will call you</h1>
+          <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Justin will call you</h1>
           <p className="mt-4 text-lg leading-8">
             Thanks. Justin has your request and will call you to talk through your windows and set up a time to measure. He
             gives you the final price.

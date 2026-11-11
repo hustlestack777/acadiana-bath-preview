@@ -9,6 +9,7 @@ import { designCopy, designStyles, findStyle } from "@/lib/design-styles";
 import { resizePhoto } from "@/lib/photo-resize";
 import { budgetOptions, budgetQuestion, orderByBudget } from "@/lib/budget";
 import { cn } from "cn";
+import { useScrollToStep } from "@/lib/scroll-to-step";
 
 type Step = "photos" | "budget" | "style" | "rendering" | "teaser" | "cap-pending" | "reveal" | "custom-done";
 type Shot = { file: File; url: string };
@@ -40,15 +41,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
     shotsRef.current = shots;
   }, [shots]);
   useEffect(() => () => shotsRef.current.forEach((shot) => URL.revokeObjectURL(shot.url)), []);
-  const firstStep = useRef(true);
-  useEffect(() => {
-    if (firstStep.current) {
-      firstStep.current = false;
-      return;
-    }
-    // scrollIntoView can return a Promise in newer browsers; never return it from the effect.
-    void topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [step]);
+  useScrollToStep(step, topRef);
 
   // Rotating scanner copy; the bar stays under 90% until the server answers.
   useEffect(() => {
@@ -191,7 +184,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
       {step === "photos" ? (
         <section aria-labelledby="design-step-1">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 1 of 3</p>
-          <h2 id="design-step-1" className="mt-2 font-heading text-3xl">Snap your shower</h2>
+          <h2 id="design-step-1" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">Snap your shower</h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">{designCopy.tips} Add 1 or 2 photos. We design from the first one.</p>
           <div className="mt-5 grid grid-cols-2 gap-3">
             <label className="flex h-14 cursor-pointer items-center justify-center rounded-full bg-primary px-5 text-base font-semibold text-primary-foreground">
@@ -232,7 +225,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
       {step === "budget" ? (
         <section aria-labelledby="design-budget">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Optional</p>
-          <h2 id="design-budget" className="mt-2 font-heading text-3xl">{budgetQuestion}</h2>
+          <h2 id="design-budget" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">{budgetQuestion}</h2>
           <p className="mt-2 text-sm text-muted-foreground">We&apos;ll show the looks that fit best first. You&apos;ll still see every look.</p>
           <div className="mt-5 grid grid-cols-2 gap-3">
             {budgetOptions.map((option) => (
@@ -270,7 +263,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
       {step === "style" ? (
         <section aria-labelledby="design-step-2">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 2 of 3</p>
-          <h2 id="design-step-2" className="mt-2 font-heading text-3xl">Pick a look</h2>
+          <h2 id="design-step-2" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">Pick a look</h2>
           <div className="mt-4 -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-3 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0" role="radiogroup" aria-label="Looks">
             {orderByBudget(designStyles, budget).map((item) => (
               <button
@@ -329,7 +322,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             <img src={shots[0].url} alt="Your bathroom being scanned" className="aspect-[4/3] w-full object-cover opacity-80" />
             <span className="design-scanline pointer-events-none absolute inset-x-0 top-0 h-1/4" aria-hidden="true" />
           </div>
-          <p className="mt-5 font-heading text-2xl">{designCopy.steps[busyMsg]}</p>
+          <p tabIndex={-1} data-step-heading className="mt-5 font-heading text-2xl">{designCopy.steps[busyMsg]}</p>
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-border">
             <div className="h-full rounded-full bg-primary transition-[width] duration-500" style={{ width: `${progress}%` }} />
           </div>
@@ -341,7 +334,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         <section aria-labelledby={step === "cap-pending" ? "design-cap-pending" : "design-step-3"}>
           {step === "cap-pending" ? (
             <div className="rounded-3xl border border-border bg-card p-6" data-testid="design-cap-pending">
-              <h2 id="design-cap-pending" className="font-heading text-2xl">Your photos are in! We&apos;ll create your custom design by hand. Tell us where to send it.</h2>
+              <h2 id="design-cap-pending" tabIndex={-1} data-step-heading className="font-heading text-2xl">Your photos are in! We&apos;ll create your custom design by hand. Tell us where to send it.</h2>
             </div>
           ) : design.teaser ? (
             <div className="relative overflow-hidden rounded-3xl">
@@ -353,12 +346,12 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             </div>
           ) : (
             <div className="rounded-3xl border border-border bg-card p-6" data-testid="design-custom">
-              <h2 className="font-heading text-2xl">{designCopy.customTitle}</h2>
+              <h2 tabIndex={-1} data-step-heading className="font-heading text-2xl">{designCopy.customTitle}</h2>
               <p className="mt-2 text-base leading-7 text-muted-foreground">{designCopy.customBody(chosen?.name ?? "")}</p>
             </div>
           )}
           {step === "cap-pending" ? null : <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Step 3 of 3</p>}
-          {step === "cap-pending" ? null : <h2 id="design-step-3" className="mt-2 font-heading text-3xl">Where should we send it?</h2>}
+          {step === "cap-pending" ? null : <h2 id="design-step-3" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">Where should we send it?</h2>}
           <form onSubmit={unlock} noValidate className="mt-4 grid gap-4" data-testid="design-unlock-form">
             <Field id="d-name" label="First and last name" error={errors.name}>
               <input id="d-name" name="name" className={field} autoComplete="name" value={form.name} aria-invalid={Boolean(errors.name)} onChange={(e) => setForm({ ...form, name: e.target.value })} />
@@ -419,7 +412,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
 
       {step === "custom-done" ? (
         <section aria-labelledby="design-custom-done" data-testid="design-custom-done">
-          <h2 id="design-custom-done" className="font-heading text-3xl">Justin will call you</h2>
+          <h2 id="design-custom-done" tabIndex={-1} data-step-heading className="font-heading text-3xl">Justin will call you</h2>
           <p className="mt-3 text-base leading-7 text-muted-foreground">{designCopy.customThanks(chosen?.name ?? "")}</p>
           <SaveJustinContact className="mt-6" buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground" />
           <WindowsQuoteLine className="mt-4 text-muted-foreground" />
@@ -428,7 +421,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
 
       {step === "reveal" && reveal ? (
         <section aria-labelledby="design-reveal" data-testid="design-reveal">
-          <h2 id="design-reveal" className="font-heading text-3xl">Your new {reveal.style} bathroom</h2>
+          <h2 id="design-reveal" tabIndex={-1} data-step-heading className="font-heading text-3xl">Your new {reveal.style} bathroom</h2>
           <BeforeAfter before={reveal.before} after={reveal.after} />
           <div className="mt-4 grid grid-cols-2 gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
