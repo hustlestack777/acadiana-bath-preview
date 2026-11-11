@@ -126,7 +126,7 @@ export async function checkLimits(
     return {
       ok: false,
       code: "person",
-      message: `You've used your ${LOOKS_PER_PERSON} free looks. Request a free quote and Justin can walk you through more options.`,
+      message: `You've used your ${LOOKS_PER_PERSON} free looks. Request a free quote and we'll go over more options with you.`,
     };
   }
   return { ok: true };

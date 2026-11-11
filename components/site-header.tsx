@@ -11,9 +11,9 @@ import { ConsultLink } from "@/components/consult-link";
 import { DesignLink } from "@/components/design-link";
 
 const LINKS = [
-  { href: "/solid-surface", label: "Solid surface" },
-  { href: "/custom-tile", label: "Custom tile" },
-  { href: "/custom-tile#grout", label: "Grout colors" },
+  { href: "/solid-surface", label: "Solid surface", shortLabel: "Solid Surface" },
+  { href: "/custom-tile", label: "Custom tile", shortLabel: "Tile" },
+  { href: "/custom-tile#grout", label: "Grout colors", shortLabel: "Grout" },
   { href: "/#ideas", label: "Ideas" },
   { href: "/gallery", label: "Gallery" },
   { href: "/faq", label: "FAQ" },
@@ -65,7 +65,9 @@ export function SiteHeader() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-40 transition-colors duration-300",
-        overHero ? "bg-transparent text-[#f6f1e6]" : "border-b border-border bg-background/95 text-foreground backdrop-blur-md",
+        overHero
+          ? "bg-gradient-to-b from-black/80 via-black/55 to-transparent text-[#f6f1e6]"
+          : "border-b border-border bg-background/95 text-foreground backdrop-blur-md",
       )}
     >
       <a className="skip-link" href="#content">
@@ -75,14 +77,17 @@ export function SiteHeader() {
         <Link href="/" aria-label={brand.name} className={cn("min-w-0", overHero ? "text-[#f6f1e6]" : undefined)} onClick={goHome}>
           <MaisonLogo compact={!overHero} onDark={overHero} />
         </Link>
-        <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-4 lg:flex" aria-label="Primary">
           {LINKS.map((link) => (
             <Link
               key={link.href}
               href={hrefFor(link.href)}
-              className={cn("text-sm", overHero ? "text-white/85 hover:text-white" : "text-muted-foreground hover:text-foreground")}
+              className={cn(
+                "whitespace-nowrap text-[13px]",
+                overHero ? "text-white hover:text-white" : "text-muted-foreground hover:text-foreground",
+              )}
             >
-              {link.label}
+              {"shortLabel" in link ? link.shortLabel : link.label}
             </Link>
           ))}
         </nav>

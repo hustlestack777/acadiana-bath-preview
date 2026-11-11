@@ -7,7 +7,7 @@ const skip = new Set(["node_modules", ".next", "uploads"]);
 const extensions = new Set([".ts", ".tsx", ".css", ".md", ".svg", ".mjs", ".json"]);
 
 const APPROVED_RANGE =
-  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. Justin calls to discuss your project, your style and what you have in mind. He sets a time to take measurements, walk you through materials and design options, and give you your exact price on the spot. When you're ready to move forward, Justin manages your project from design to the finished bathroom.";
+  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";
 
 const APPROVED_HERO_QUOTE = "Starting at $5K · Free quote.";
 const APPROVED_PRICE_FROM = "Bathroom remodels starting at $5K.";
@@ -90,7 +90,7 @@ const BANNED_PHRASES = [
   { name: "free consult", re: /free consult/i },
   { name: "in-home consult", re: /in-home consult|in home consult/i },
   { name: "consultation", re: /consultation/i },
-  { name: "comes to your home", re: /comes to your home/i },
+  { name: "comes to your home", re: /comes to your home|come out to your home/i },
   { name: "talk it through", re: /talk it through/i },
   { name: "talk through", re: /talk through/i },
   { name: "Charpentier", re: /charpentier/i },

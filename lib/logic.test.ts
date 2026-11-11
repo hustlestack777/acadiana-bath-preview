@@ -152,7 +152,7 @@ test("assistant answers stay inside the published facts", () => {
   ];
   const outputs = [...probes.map((probe) => replyTo(probe)), ...Object.values(CHAT_ANSWERS)];
   for (const output of outputs) {
-    const withoutCardPhrase = output.replaceAll("Justin stands behind his work", "").replaceAll("Lifetime Guarantee", "");
+    const withoutCardPhrase = output.replaceAll("We stand behind our work", "").replaceAll("Lifetime Guarantee", "");
     assert.equal(withoutCardPhrase.toLowerCase().includes(pledge), false, output);
     assert.equal(output.toLowerCase().includes(quarriedPhrase), false, output);
     assert.equal(/bath fitter|re-bath|rebath/i.test(output), false, output);
@@ -161,15 +161,15 @@ test("assistant answers stay inside the published facts", () => {
     assert.equal(/\$\s?\d/.test(withoutRange), false, output);
     assert.equal(withoutRange.includes("5,000") || withoutRange.includes("5000"), false);
   }
-  assert.match(replyTo("What is the product warranty?"), /Justin stands behind his work/);
-  assert.match(replyTo(`what is your ${pledge}?`), /Justin stands behind his work/);
+  assert.match(replyTo("What is the product warranty?"), /We stand behind our work/);
+  assert.match(replyTo(`what is your ${pledge}?`), /We stand behind our work/);
   assert.match(replyTo("Is it natural stone?"), /solid surface/i);
   assert.match(replyTo("how much"), /Starting at \$5K/);
   assert.match(replyTo("how much"), /\$5K–\$30K\+/);
   assert.match(replyTo("are you a person"), /AI assistant/i);
   assert.match(replyTo("are you a person"), /Gigi/);
   assert.match(CHAT_ANSWERS.disclosure, /Hey! I’m Gigi\. I can give you a ballpark price/);
-  assert.match(CHAT_ANSWERS.disclosure, /from Justin/);
+  assert.match(CHAT_ANSWERS.disclosure, /from Acadiana Bathrooms/);
   assert.equal(/AI assistant/i.test(CHAT_ANSWERS.disclosure), false);
   assert.match(replyTo("What's a ballpark price?"), /Starting at \$5K/);
   assert.match(replyTo("What's a ballpark price?"), /What are you thinking about/);
@@ -257,8 +257,8 @@ test("Gigi walks through the quote flow with matching chips", () => {
 
   const done = respond("Weekday", dayQ.session);
   assert.match(done.text, /Thanks\. Here's the quote form\./);
-  assert.match(done.text, /Justin, the owner, will call you .+ between .+ and .+ CT to discuss your project/);
-  assert.match(done.text, /Save his number so you know it's him calling: \(337\) 522-0023/);
+  assert.match(done.text, /we'll call you .+ between .+ and .+ CT to discuss your project/);
+  assert.match(done.text, /Save Justin's number so you know it's him calling: \(337\) 522-0023/);
   const href = done.chips[0]?.href ?? "";
   assert.match(href, /\/estimate\?/);
   assert.match(href, /callTime=morning/);
@@ -293,13 +293,13 @@ test("Gigi explains the process the same way for free-typed questions", () => {
   const after = replyTo("what happens after I submit?");
   assert.equal(how, GIGI_PROCESS);
   assert.match(how, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.match(how, /give you your exact price/);
-  assert.match(how, /Justin manages your project from design to the finished bathroom/);
+  assert.match(how, /you'll get your exact price right then/);
+  assert.match(how, /we manage your project from design to the finished bathroom/);
   assert.match(house, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.equal(/comes to your home for|in-home consult|free consult/i.test(house), false);
   assert.match(after, /After you submit/);
   assert.match(after, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.match(after, /Justin manages your project from design to the finished bathroom/);
+  assert.match(after, /we manage your project from design to the finished bathroom/);
   assert.match(GIGI_SYSTEM_PROMPT, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(GIGI_SYSTEM_PROMPT, /trusted advisor/);
 });
@@ -311,7 +311,7 @@ test("Gigi's spoken answers avoid banned consult and claim wording", () => {
     assert.equal(banned.test(text), false, text);
   }
   assert.equal(replyTo("What is the product warranty?"), CHAT_ANSWERS.warranty);
-  assert.match(CHAT_ANSWERS.warranty, /Justin stands behind his work/);
+  assert.match(CHAT_ANSWERS.warranty, /We stand behind our work/);
 });
 
 test("Gigi reads FAQ answers and cleans phrasing she should not use", () => {

@@ -10,7 +10,7 @@ export const WINDOWS_CONSENT_TEXT =
   "By submitting, you agree Acadiana Bathrooms may call or text you about your quote, including automated texts. Msg & data rates may apply. Reply STOP to opt out.";
 
 export const BUTTON_SUB =
-  "Justin will call you to discuss your windows project and set a time to take measurements.";
+  "We'll call you to discuss your windows project and set a time to take measurements.";
 
 export const WINDOWS_SOURCE_PAGE = "/windows";
 
@@ -51,7 +51,7 @@ export const STYLES: { id: StyleId; name: string; blurb: string }[] = [
   { id: "bay-bow", name: "Bay or bow", blurb: "Projects from the wall and adds light and space. Priced as its own opening." },
   { id: "slider", name: "Slider", blurb: "Opens side to side. A good fit for wider, shorter openings." },
   { id: "casement", name: "Casement", blurb: "Cranks open from the side and seals tightly when closed." },
-  { id: "unsure", name: "Not sure — I'll decide with Justin", blurb: "Justin will confirm what fits each opening when he measures." },
+  { id: "unsure", name: "Not sure — I'll decide with your team", blurb: "We'll confirm what fits each opening when we measure." },
 ];
 
 export const MATERIALS: { id: MaterialId; name: string; blurb: string }[] = [
@@ -65,7 +65,7 @@ export const MATERIALS: { id: MaterialId; name: string; blurb: string }[] = [
     id: "impact",
     name: "Impact-resistant glass",
     blurb:
-      "Aimed at coastal and high-wind homes, including places from Lake Charles to Houma and Thibodaux. Justin will confirm whether this package is the right fit when he measures.",
+      "Aimed at coastal and high-wind homes, including places from Lake Charles to Houma and Thibodaux. We'll confirm whether this package is the right fit when we measure.",
   },
   {
     id: "premium",
@@ -75,7 +75,7 @@ export const MATERIALS: { id: MaterialId; name: string; blurb: string }[] = [
   {
     id: "unsure",
     name: "Not sure yet",
-    blurb: "We'll show a wider estimate. Justin will walk you through the differences at the measure.",
+    blurb: "We'll show a wider estimate. We'll go over the differences when we measure.",
   },
 ];
 
@@ -252,7 +252,7 @@ export function windowCustomerRecap(input: {
     .join(", ");
   const material = MATERIALS.find((item) => item.id === input.material)?.name ?? "";
   const rows = [
-    { label: "Windows", value: input.standardCount == null ? "Not sure yet. Justin will count when he measures." : String(input.standardCount) },
+    { label: "Windows", value: input.standardCount == null ? "Not sure yet. We'll count when we measure." : String(input.standardCount) },
     { label: "Bay or bow", value: input.bayBowCount > 0 ? String(input.bayBowCount) : "" },
     { label: "Material", value: material },
     { label: "Styles", value: styleNames },
@@ -263,8 +263,8 @@ export function windowCustomerRecap(input: {
   return {
     headline: input.estimate ? windowRecapHeadline(input.estimate) : undefined,
     note: input.estimate
-      ? "This is a ballpark range, not a quote. Justin gives you the final price after he measures."
-      : "Justin will count your windows and give you a real price after he measures.",
+      ? "This is a ballpark range, not a quote. When we measure, you'll get your exact price right then."
+      : "We'll count your windows when we measure, and you'll get your exact price right then.",
     rows,
   };
 }

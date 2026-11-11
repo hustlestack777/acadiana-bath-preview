@@ -29,25 +29,27 @@ export function greetingForPath(pathname: string, random = Math.random()) {
 
 /** The sentence every how-it-works reply must include. */
 export const GIGI_CALLS_FIRST =
-  "Justin calls you first to discuss your project, then sets a time to come out to your home to take measurements, go over your design options and give you your exact price.";
+  "We'll call you first to discuss your project and set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then.";
 
 /** How the work happens, in this order. Gigi uses this in process answers and as her system brief. */
 export const GIGI_PROCESS =
-  `${GIGI_CALLS_FIRST} When you're ready to move forward, Justin manages your project from design to the finished bathroom.`;
+  `${GIGI_CALLS_FIRST} When you're ready to move forward, we manage your project from design to the finished bathroom.`;
 
 /** Rules Gigi follows for every reply, including free-typed questions. There is no live model prompt beyond this. */
 export const GIGI_SYSTEM_PROMPT = `You are Gigi, the assistant for Acadiana Bathrooms. Be professional, warm, and local — a trusted advisor, never corny.
+
+Speak as the company: use "we", "our team", or "Acadiana Bathrooms". Do not sprinkle the owner's first name through answers. If asked who owns the company, say exactly: "Owned and run by Justin."
 
 How the work happens, always in this order:
 ${GIGI_PROCESS}
 
 Price framing: Starting at $5K only. Do not give other prices, timelines, or durations.
 
-Do not promise a first-step home visit or name how long work is covered. Do not make license or insurance claims, say Justin does every trade himself, or ask for a deposit. Do not mention payment plans.
+Do not promise a first-step home visit or name how long work is covered. Do not make license or insurance claims, say one person does every trade himself, or ask for a deposit. Do not mention payment plans.
 
-If asked about standing behind the work, say: "Justin stands behind his work. If anything comes up, he'll make it right. Ask Justin for the details when he calls."
+If asked about standing behind the work, say: "We stand behind our work. If anything comes up, we'll make it right. Ask us for the details when we call."
 
-Justin is first name only. Out of area, say exactly: "Outside our area? Ask for a quote." For granite, only: "We do not install granite." Phone: (337) 522-0023. No street address.`;
+Out of area, say exactly: "Outside our area? Ask for a quote." For granite, only: "We do not install granite." Phone: (337) 522-0023. No street address.`;
 
 const FAQ_WITH_PROCESS = new Set([
   "How much does a bathroom remodel cost in South Louisiana?",
@@ -55,7 +57,7 @@ const FAQ_WITH_PROCESS = new Set([
   "What areas do you serve?",
   "How do I get a quote?",
   "How does a quote work?",
-  "What happens when Justin calls?",
+  "What happens when we call?",
   "What does Acadiana Bathrooms do?",
   "Do you have an office in my town?",
   "Can I see a design before we start?",
@@ -96,22 +98,22 @@ export function speakFromFaq(text: string) {
 function withCallsFirst(text: string) {
   if (text.includes(GIGI_CALLS_FIRST)) return text;
   const similar =
-    /Justin calls(?: you)?(?: first)? to discuss your project[^.]*\.\s*(?:He (?:then )?sets a time to take measurements[^.]*\.)?/;
+    /(?:Justin(?:, the owner,)? (?:will )?calls?(?: you)?(?: first)?|We'll call you(?: first)?) to discuss your project[^.]*\.\s*(?:(?:He|Then he|Then we|We) (?:then )?sets? a time to take measurements[^.]*\.)?/;
   if (similar.test(text)) return text.replace(similar, GIGI_CALLS_FIRST);
   return text;
 }
 
 const answers = {
   disclosure:
-    "Hey! I’m Gigi. I can give you a ballpark price, show you your bathroom redesigned, or get you a free quote from Justin. What sounds good?",
+    "Hey! I’m Gigi. I can give you a ballpark price, show you your bathroom redesigned, or get you a free quote from Acadiana Bathrooms. What sounds good?",
   ballpark: "Starting at $5K. What are you thinking about?",
   project: "What are you thinking about?",
   look: "What’s the look?",
   location: "Where's the home?",
-  offer: "Want a free quote? Justin will call to discuss your project and set a time to take measurements.",
-  callTime: "When’s a good time for Justin to call and discuss your project?",
+  offer: "Want a free quote? We'll call to discuss your project and set a time to take measurements.",
+  callTime: "When’s a good time for us to call and discuss your project?",
   callDay: "Any day that’s best?",
-  handoff: "Thanks. Here’s the quote form. Justin will call first, then set a time to take measurements.",
+  handoff: "Thanks. Here’s the quote form. We'll call first, then set a time to take measurements.",
   windows: "I can help with windows on our windows page.",
   outside: OUTSIDE_AREA,
   locationRetry: "Tell me the town or ZIP, and I’ll take it from there.",
@@ -120,18 +122,18 @@ const answers = {
   afterSubmit: `After you submit, ${GIGI_PROCESS}`,
   material: gigiFaq("What materials do you use?"),
   care: care.body,
-  warranty: "Justin stands behind his work. If anything comes up, he’ll make it right. Ask Justin for the details when he calls.",
+  warranty: "We stand behind our work. If anything comes up, we’ll make it right. Ask us for the details when we call.",
   area: gigiFaq("What areas do you serve?"),
   quote: gigiFaq("How do I get a quote?"),
   cost: gigiFaq("How much does a bathroom remodel cost in South Louisiana?"),
   fit: `${hero.support} Tap Design My Bathroom to see your new bathroom before you spend a dime. ${GIGI_PROCESS}`,
   timing: `Every bathroom is different. ${GIGI_PROCESS}`,
   proof:
-    "The best way to see what Justin can do for your bathroom is a free quote. Want to start with a photo in Design My Bathroom?",
+    "The best way to see what we can do for your bathroom is a free quote. Want to start with a photo in Design My Bathroom?",
   compare:
-    "I stick to what Acadiana Bathrooms and Countertops offers. Justin will walk you through your options when he calls.",
-  human: `I’m Gigi, an AI assistant, not a person at ${brand.name} and not Justin. Tap Get My Free Quote or Design My Bathroom, and Justin will call you personally.`,
-  fallback: `I answer from what’s on this site, and I’m Gigi, an AI assistant, not Justin. For your own bathroom, tap Get My Free Quote or Design My Bathroom, and Justin will call you personally. This chat isn’t saved.`,
+    "I stick to what Acadiana Bathrooms and Countertops offers. We'll go over your options when we call.",
+  human: `I’m Gigi, an AI assistant, not a person at ${brand.name}. Tap Get My Free Quote or Design My Bathroom, and we'll call you.`,
+  fallback: `I answer from what’s on this site, and I’m Gigi, an AI assistant, not a person on our team. For your own bathroom, tap Get My Free Quote or Design My Bathroom, and we'll call you. This chat isn’t saved.`,
 } as const;
 
 export const CHAT_ANSWERS = answers;
@@ -406,7 +408,7 @@ function finishHandoff(session: GigiSession, callDay: NonNullable<GigiSession["c
   const next = { ...session, phase: "offer" as const, callDay };
   const window = callbackWindow(callDay, session.callTime || "");
   const text = window
-    ? `Thanks. Here's the quote form. After you submit, Justin, the owner, will call you ${window.phrase} to discuss your project. Save his number so you know it's him calling: (337) 522-0023.`
+    ? `Thanks. Here's the quote form. After you submit, we'll call you ${window.phrase} to discuss your project. Save Justin's number so you know it's him calling: (337) 522-0023.`
     : answers.handoff;
   return { text, chips: handoffChips(next), session: next };
 }

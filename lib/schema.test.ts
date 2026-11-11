@@ -83,7 +83,7 @@ test("service JSON-LD is present for both service paths and has no reviews", () 
   assert.equal(tile["@type"], "Service");
   assert.match(solid.url, /\/solid-surface$/);
   assert.match(tile.url, /\/custom-tile$/);
-  assert.match(solid.description, /Justin stands behind his work/);
+  assert.match(solid.description, /We stand behind our work/);
   assert.equal(tile.description.includes("warranty"), false);
   assert.deepEqual(assertSafeJsonLd(solid), []);
   assert.deepEqual(assertSafeJsonLd(tile), []);
@@ -112,7 +112,7 @@ test("FAQPage schema is built only from the visible questions passed in", () => 
   assert.ok(cost);
   assert.match(cost.a, /Starting at \$5K, with most projects \$5K–\$30K\+/);
   assert.match(cost.a, /See your new bathroom before you spend a dime/);
-  assert.match(cost.a, /exact price right there at that visit/);
+  assert.match(cost.a, /you'll get your exact price right then/);
   assert.equal(cost.link?.text, "See your new bathroom");
   assert.equal(cost.link?.href, "/design");
 });

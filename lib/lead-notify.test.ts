@@ -84,14 +84,14 @@ test("the customer confirmation is short, signed, and has no banned claims", () 
     now,
     test: true,
   });
-  assert.equal(email.subject, "TEST – Justin will call you Wednesday, Nov 11 between 9 AM and 10 AM CT");
+  assert.equal(email.subject, "TEST – We'll call you Wednesday, Nov 11 between 9 AM and 10 AM CT");
   assert.match(email.text, /Hi Adam,/);
   assert.match(email.text, /Thanks for reaching out to Acadiana Bathrooms\./);
-  assert.match(email.text, /Justin, the owner, will call you Wednesday, Nov 11 between 9 AM and 10 AM CT to discuss your project\./);
-  assert.match(email.text, /Save his number so you'll know it's him: \(337\) 522-0023\./);
+  assert.match(email.text, /We'll call you Wednesday, Nov 11 between 9 AM and 10 AM CT to discuss your project\./);
+  assert.match(email.text, /Save Justin's number so you'll know it's him: \(337\) 522-0023\./);
   assert.match(email.text, /You can call or text him there anytime\./);
   assert.match(email.text, /Save Justin's Contact: https:\/\/abclafayette\.com\/justin\.vcf/);
-  assert.match(email.text, /What happens next: Justin calls to discuss your project\. Then he sets a time to take measurements, walk you through materials and design options, and give you your exact price at that visit\./);
+  assert.match(email.text, /What happens next: We'll call you to discuss your project and set a time to take measurements\. When we measure, we'll go over design options with you, and you'll get your exact price right then\./);
   assert.match(email.text, /Talk soon,\nAcadiana Bathrooms · abclafayette\.com/);
   assert.match(email.html, /Save Justin(?:&#39;|')s Contact/);
   assert.match(email.html, /href="https:\/\/abclafayette\.com\/justin\.vcf"/);
@@ -114,7 +114,7 @@ test("the customer confirmation is short, signed, and has no banned claims", () 
       { filename: "after.jpg", contentType: "image/jpeg", bytes: Buffer.from("bbbb") },
     ],
   });
-  assert.equal(design.subject, "TEST – Justin will call you Wednesday, Nov 11 between 2 PM and 3 PM CT");
+  assert.equal(design.subject, "TEST – We'll call you Wednesday, Nov 11 between 2 PM and 3 PM CT");
   assert.match(design.html, /cid:design-before/);
   assert.match(design.html, /cid:design-after/);
   assert.match(design.html, /Your bathroom/);

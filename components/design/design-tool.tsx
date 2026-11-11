@@ -221,8 +221,8 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) next.email = "Enter a valid email.";
     if (!/\d/.test(form.street)) next.street = "Enter the street address with the house number.";
     if (!form.city.trim()) next.city = "Enter your town.";
-    if (!form.preferredCallDay) next.preferredCallDay = "Pick the best day for Justin to call.";
-    if (!form.preferredCallTime) next.preferredCallTime = "Pick the best time for Justin to call.";
+    if (!form.preferredCallDay) next.preferredCallDay = "Pick the best day for us to call.";
+    if (!form.preferredCallTime) next.preferredCallTime = "Pick the best time for us to call.";
     if (!form.smsConsent) next.consent = "Check the box so Acadiana Bathrooms and Countertops can contact you about this request.";
     setErrors(next);
     if (Object.keys(next).length) return;
@@ -368,7 +368,7 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
         <section aria-labelledby="design-budget">
           <StepKicker n={STEP_LABELS.budget.n} optional />
           <h2 id="design-budget" tabIndex={-1} data-step-heading className="mt-2 font-heading text-3xl">{budgetQuestion}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">This helps Justin, the owner, recommend the right path. You can skip this.</p>
+          <p className="mt-2 text-sm text-muted-foreground">This helps us recommend the right path. You can skip this.</p>
           <div className="mt-5 grid grid-cols-2 gap-3">
             {budgetOptions.map((option) => (
               <button

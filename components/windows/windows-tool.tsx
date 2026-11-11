@@ -167,8 +167,8 @@ export function WindowsTool() {
     if (!street.trim()) next.street = "Enter your street address.";
     if (!city.trim()) next.city = "Enter your town.";
     if (!consent) next.consent = "Please check the box to continue.";
-    if (!preferredCallDay) next.preferredCallDay = "Pick the best day for Justin to call.";
-    if (!preferredCallTime) next.preferredCallTime = "Pick the best time for Justin to call.";
+    if (!preferredCallDay) next.preferredCallDay = "Pick the best day for us to call.";
+    if (!preferredCallTime) next.preferredCallTime = "Pick the best time for us to call.";
     if (!material) next.material = "Pick a material, or choose not sure.";
     setErrors(next);
     setSubmitError("");
@@ -226,15 +226,15 @@ export function WindowsTool() {
         <section data-testid="windows-start">
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">Windows</p>
           <h1 tabIndex={-1} data-step-heading className="mt-3 font-heading text-[clamp(2.4rem,7vw,4.2rem)] leading-[0.98]">
-            Get a ballpark for new windows. Justin will call to discuss your windows, then set a time to take measurements for the real quote.
+            Get a ballpark for new windows. We&apos;ll call to discuss your windows, then set a time to take measurements for the real quote.
           </h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{SERVICE_AREA_WINDOWS}</p>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{OUTSIDE_AREA}</p>
           <p className="mt-4 text-base leading-7 text-foreground">
             Works for one window or a whole house. Enter your address and we&apos;ll look up a Street View photo so you can
             confirm or edit the count. Prefer to type the number yourself? You can do that too. Then pick a style and
-            material, leave your name and phone, and see a ballpark estimate. Justin will call you to discuss your
-            windows and set a time to take measurements, and he gives you the final price. There&apos;s no obligation.
+            material, leave your name and phone, and see a ballpark estimate. We&apos;ll call you to discuss your
+            windows and set a time to take measurements. When we measure, you&apos;ll get your exact price right then. There&apos;s no obligation.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <button type="button" className={primaryBtn} onClick={() => goCount(false)}>
@@ -341,7 +341,7 @@ export function WindowsTool() {
           ) : null}
           <p className="mt-4 text-base leading-7 text-muted-foreground">
             {lookupFailed || manualCount
-              ? "Enter how many windows you want replaced — one is fine — or choose “Not sure” and Justin will count them at the measure."
+              ? "Enter how many windows you want replaced — one is fine — or choose “Not sure” and we'll count them when we measure."
               : "Street View usually shows the front of the house, and sometimes a side. It often misses the back. Please confirm or edit the total you want replaced."}
           </p>
           <div className="mt-6">
@@ -414,7 +414,7 @@ export function WindowsTool() {
               setStandardInput("");
             }}
           >
-            Not sure — Justin can count them at the measure.
+            Not sure — we can count them when we measure.
           </button>
           <div className="mt-6 rounded-2xl border border-border bg-card p-4">
             <p className="text-sm font-medium">Add a bay or bow window?</p>
@@ -469,7 +469,7 @@ export function WindowsTool() {
         <section>
           <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Which rooms are we talking about?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
-            Tap every room that has windows you want replaced. If it&apos;s just one window, tap that room. This helps Justin
+            Tap every room that has windows you want replaced. If it&apos;s just one window, tap that room. This helps us
             plan. It doesn&apos;t change your options.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
@@ -505,8 +505,7 @@ export function WindowsTool() {
         <section>
           <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">What style are you thinking?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
-            You can pick more than one. Justin will confirm what fits each opening when he measures, and he gives you the
-            final price.
+            You can pick more than one. We&apos;ll confirm what fits each opening when we measure, and you&apos;ll get your exact price right then.
           </p>
           <div className="mt-6 grid gap-3">
             {STYLES.map((style) => {
@@ -551,8 +550,7 @@ export function WindowsTool() {
         <section>
           <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">What material feels right?</h1>
           <p className="mt-3 text-lg leading-8 text-muted-foreground">
-            This helps us build a ballpark range, not a quote. Justin gives you the final price after he measures every
-            window.
+            This helps us build a ballpark range, not a quote. When we measure, you&apos;ll get your exact price right then.
           </p>
           <div className="mt-6 grid gap-3">
             {MATERIALS.map((item) => (
@@ -701,12 +699,11 @@ export function WindowsTool() {
             <p className="mt-4 text-lg leading-8">{estimateHeadline(estimate)}</p>
           ) : (
             <p className="mt-4 text-lg leading-8">
-              We need a window count to show a dollar range. Justin will call you to discuss your windows project and set up a
-              time to measure, and he gives you the final price.
+              We need a window count to show a dollar range. We&apos;ll call you to discuss your windows project and set a time to take measurements. When we measure, you&apos;ll get your exact price right then.
             </p>
           )}
           <p className="mt-4 text-base leading-7 text-foreground">
-            This is a ballpark range, not a quote. Justin gives you the final price after he measures.
+            This is a ballpark range, not a quote. When we measure, you&apos;ll get your exact price right then.
           </p>
           <div className="mt-6 rounded-2xl border border-border bg-card p-5 text-sm leading-6">
             <p className="font-medium">Your recap</p>
@@ -736,7 +733,7 @@ export function WindowsTool() {
           >
             {estimate ? <p className="text-base leading-7">{estimateHeadline(estimate)}</p> : null}
             <p className="text-base leading-7 text-foreground">
-              This is a ballpark range, not a quote. Justin gives you the final price after he measures.
+              This is a ballpark range, not a quote. When we measure, you&apos;ll get your exact price right then.
             </p>
           </CallbackConfirmation>
         </section>

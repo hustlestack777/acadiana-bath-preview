@@ -40,7 +40,7 @@ const servicesCore = [
 ] as const;
 
 const QUOTE_LINE =
-  "Tell us about your project and the best day and time to reach you. Justin calls you first to discuss your project, then sets a time to come out to your home to take measurements, go over your design options and give you your exact price. When you're ready to move forward, Justin manages your project from design to the finished bathroom.";
+  "Tell us about your project and the best day and time to reach you. We'll call you first to discuss your project and set a time to take measurements. When we measure, we'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";
 
 function quoteSection(): TownSection {
   return {
@@ -59,12 +59,12 @@ function costFaq(question = "How much does a remodel cost?"): TownFaq {
 function officeFaq(question: string, town: string): TownFaq {
   return {
     q: question,
-    a: `There's no public showroom. Justin calls to discuss your project, then sets a time to take measurements at your home in ${town}.`,
+    a: `There's no public showroom. We'll call to discuss your project and set a time to take measurements in ${town}.`,
   };
 }
 
 function closeLine(name: string) {
-  return `Ready to talk about a ${name} bathroom? Use Design My Bathroom or the quote form, and Justin will call to discuss your project.`;
+  return `Ready to talk about a ${name} bathroom? Use Design My Bathroom or the quote form, and we'll call to discuss your project.`;
 }
 
 export const towns: TownPageContent[] = [
@@ -412,10 +412,10 @@ export const towns: TownPageContent[] = [
       },
       {
         title: "If you are in Prairieville or Gonzales",
-        body: "You're in our service area. Start with Design My Bathroom or the quote form, and Justin will call to discuss your project.",
+        body: "You're in our service area. Start with Design My Bathroom or the quote form, and we'll call to discuss your project.",
       },
     ],
-    close: "Upload a photo of your shower or use Design My Bathroom, and Justin will call to discuss your project.",
+    close: "Upload a photo of your shower or use Design My Bathroom, and we'll call to discuss your project.",
     faqs: [
       { q: "Do you serve Baton Rouge?", a: "Yes, along with Prairieville, Gonzales, and the rest of our South Louisiana area." },
       officeFaq("Do you have a Baton Rouge shop?", "Baton Rouge"),
@@ -445,7 +445,7 @@ export const towns: TownPageContent[] = [
     sections: [
       {
         title: "If you are in Prairieville",
-        body: "You're in our service area too. Start with Design My Bathroom or the quote form, and Justin will call to discuss your project.",
+        body: "You're in our service area too. Start with Design My Bathroom or the quote form, and we'll call to discuss your project.",
       },
       quoteSection(),
     ],
@@ -479,7 +479,7 @@ export const towns: TownPageContent[] = [
     sections: [
       {
         title: "If you are in Gonzales",
-        body: "You're in our service area too. Start with Design My Bathroom or the quote form, and Justin will call to discuss your project.",
+        body: "You're in our service area too. Start with Design My Bathroom or the quote form, and we'll call to discuss your project.",
       },
       quoteSection(),
     ],
@@ -532,7 +532,7 @@ export const towns: TownPageContent[] = [
       "Niches, edges, and finishing details",
     ],
     sections: [quoteSection()],
-    close: "If you are deciding between tile and solid surface, or between quartz and quartzite, bring that question when Justin calls. The right answer is the one that fits your house and how you use the room.",
+    close: "If you are deciding between tile and solid surface, or between quartz and quartzite, bring that question when we call. The right answer is the one that fits your house and how you use the room.",
     faqs: [
       { q: "Do you serve Houma and Thibodaux?", a: "Yes. Both are in our South Louisiana service area. Thibodaux is next door in Lafourche Parish, near Nicholls State." },
       officeFaq("Is there a Houma address?", "Houma"),

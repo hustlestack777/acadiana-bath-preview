@@ -99,8 +99,8 @@ export function QuickQuote({ path }: { path: Path }) {
     if (coverage.status === "empty") next.city = "Enter your town.";
     if (coverage.status === "invalid") next.city = "Keep the town under 80 characters.";
     if (!form.phone.trim() && !form.email.trim()) next.phone = "Enter a phone number or an email.";
-    if (!form.preferredCallDay) next.preferredCallDay = "Pick the best day for Justin to call.";
-    if (!form.preferredCallTime) next.preferredCallTime = "Pick the best time for Justin to call.";
+    if (!form.preferredCallDay) next.preferredCallDay = "Pick the best day for us to call.";
+    if (!form.preferredCallTime) next.preferredCallTime = "Pick the best time for us to call.";
     setErrors(next);
     if (Object.keys(next).length) {
       const first = Object.keys(next)[0];
@@ -415,7 +415,7 @@ export function QuickQuote({ path }: { path: Path }) {
         {status === "sending" ? "Sending…" : isTile ? "Get My Free Tile Quote" : "Get my solid surface quote"}
       </button>
       <p className="text-center text-xs text-muted-foreground">
-        Free quote. Nothing to pay today. Justin gives your exact price after he takes measurements.{" "}
+        Free quote. Nothing to pay today. When we measure, you&apos;ll get your exact price right then.{" "}
         <a href="/privacy" className="underline underline-offset-4">Privacy Policy</a>
       </p>
     </form>

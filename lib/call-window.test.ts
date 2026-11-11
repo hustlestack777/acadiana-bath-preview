@@ -74,11 +74,11 @@ test("the one-hour callback window is formatted for the thank-you and emails", (
   assert.equal(morning.phrase, "Wednesday, Nov 11 between 9 AM and 10 AM CT");
   assert.equal(
     customerCallbackSubject("weekday", "morning", wednesdayMorning),
-    "Justin will call you Wednesday, Nov 11 between 9 AM and 10 AM CT",
+    "We'll call you Wednesday, Nov 11 between 9 AM and 10 AM CT",
   );
   assert.match(
     callbackThanksPlain("Adam Bomb", "weekday", "morning", wednesdayMorning),
-    /You're all set, Adam\. Justin, the owner, will call you Wednesday, Nov 11 between 9 AM and 10 AM CT to discuss your project\. Save his number so you know it's him calling: \(337\) 522-0023\. Need to change the time\? Call or text Justin at that number\./,
+    /You're all set, Adam\. We'll call you Wednesday, Nov 11 between 9 AM and 10 AM CT to discuss your project\. Save Justin's number so you know it's him calling: \(337\) 522-0023\. We'll call you to discuss your project and set a time to take measurements\. When we measure, we'll go over design options with you, and you'll get your exact price right then\. Need to change the time\? Call or text Justin at that number\./,
   );
 
   const afterTwo = chicagoCivilToDate(2026, 11, 11, 15, 0);

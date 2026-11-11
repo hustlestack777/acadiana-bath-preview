@@ -214,17 +214,17 @@ export const designCopy = {
   headline: "Your new bathroom, before you spend a dime.",
   sub: "Pick a look, snap your shower, and see it come to life in your own space.",
   /** The only fine print in the tool (Shaun, 11/10/2026). */
-  finePrint: "Design preview. You get your exact price right there at the measurement visit.",
+  finePrint: "Design preview. When we measure, you'll get your exact price right then.",
   tips: "Stand in the doorway, phone at chest height, lights on, whole shower in frame.",
   steps: ["Scanning your bathroom…", "Clearing the clutter…", "Designing…", "Polishing…", "Checking every detail…"],
   /** Shown instead of an image when no render passes the automatic QA check. */
-  customTitle: "Justin will put together a custom design for you.",
+  customTitle: "We'll put together a custom design for you.",
   customBody: (look: string) =>
-    `Your bathroom deserves a closer look than our quick preview can give. Tell us where to send it, and Justin will design the ${look} look for your space himself.`,
+    `Your bathroom deserves a closer look than our quick preview can give. Tell us where to send it, and we'll design the ${look} look for your space.`,
   customThanks: (look: string) =>
-    `You're all set. Justin, the owner, will call you in the one-hour window you picked to discuss your project. He'll also put together a custom design for the ${look} look you picked.`,
+    `You're all set. We'll call you in the one-hour window you picked to discuss your project. We'll also put together a custom design for the ${look} look you picked.`,
   smsConsent:
     "Yes, Acadiana Bathrooms and Countertops may call or text me about my project at the number above, including automated texts. Consent isn't a condition of purchase. Msg & data rates may apply. Reply STOP to opt out.",
   privacy:
-    "What we collect: your name, contact info, address, photos and the look you picked. Your photos and design go to Acadiana Bathrooms and Countertops so Justin can prepare your estimate. We never sell your information.",
+    "What we collect: your name, contact info, address, photos and the look you picked. Your photos and design go to Acadiana Bathrooms and Countertops so our team can prepare your estimate. We never sell your information.",
 };

@@ -241,8 +241,8 @@ export function EstimateWizard() {
     for (const key of ["name", "phone", "email", "preferred", "consent"] as const) {
       if (next[key]) contactErrors[key] = next[key];
     }
-    if (!form.preferredCallDay) contactErrors.preferredCallDay = "Pick the best day for Justin to call.";
-    if (!form.preferredCallTime) contactErrors.preferredCallTime = "Pick the best time for Justin to call.";
+    if (!form.preferredCallDay) contactErrors.preferredCallDay = "Pick the best day for us to call.";
+    if (!form.preferredCallTime) contactErrors.preferredCallTime = "Pick the best time for us to call.";
     setErrors(contactErrors);
     if (Object.keys(contactErrors).length) {
       const first = Object.keys(contactErrors)[0];
@@ -618,7 +618,7 @@ export function EstimateWizard() {
               </div>
             ) : null}
             <fieldset className="grid gap-4">
-              <legend tabIndex={-1} data-step-heading className="text-xl font-heading">4. How can Justin reach you?</legend>
+              <legend tabIndex={-1} data-step-heading className="text-xl font-heading">4. How can we reach you?</legend>
               <Field id="name" label="Name" error={errors.name}>
                 <Input id="name" name="name" autoComplete="name" value={form.name} onChange={(event) => patch({ name: event.target.value })} className={fieldClass} aria-invalid={Boolean(errors.name)} />
               </Field>
