@@ -1,13 +1,20 @@
-import { area, brand, care, faqs, hero, priceRange, solidPath } from "./copy";
+import { brand, care, hero, solidPath } from "./copy";
+import { geoFaqs } from "./faq-page";
+
+function faqAnswer(question: string) {
+  const item = geoFaqs.find((faq) => faq.q === question);
+  if (!item) throw new Error(`Missing chat FAQ: ${question}`);
+  return item.a;
+}
 
 const answers = {
   disclosure: `I’m an AI assistant for ${brand.name}. I am not a person on the crew. I only use the facts published on this site. What you type in this chat stays in this browser and is not submitted or saved.`,
-  material: faqs[0].a,
+  material: `${hero.support} ${faqAnswer("What does Acadiana Bathrooms do?")}`,
   care: care.body,
   warranty: `${solidPath.warranty} This covers solid surface only, not tile.`,
-  area: area.faq,
-  quote: faqs[1].a,
-  cost: `${faqs[2].a} ${priceRange}`,
+  area: faqAnswer("What areas do you serve?"),
+  quote: faqAnswer("How do I get a quote?"),
+  cost: faqAnswer("How much does a bathroom remodel cost in South Louisiana?"),
   fit: `${hero.support} Justin confirms measurements and project scope, then you get a clear proposal.`,
   timing:
     "Installation times are not listed. Justin confirms measurements and project scope, then you get a clear proposal.",

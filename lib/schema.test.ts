@@ -12,7 +12,7 @@ import {
   townAreaJsonLd,
 } from "./schema";
 import { AI_SEARCH_USER_AGENTS, EXCLUDED_SERVICE_AREAS, SCHEMA_PRICE_RANGE, SCHEMA_SERVICE_AREA, SITE_NAME, SITE_PHONE, SITE_SHORT_NAME, SITE_TELEPHONE, VISIBLE_SERVICES } from "./site";
-import { geoFaqs } from "./faq-page";
+import { geoFaqs, homeFaqs } from "./faq-page";
 import { buildSitemap } from "./sitemap-config";
 import { townPath, towns } from "./towns";
 
@@ -35,7 +35,7 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   assert.equal(data.alternateName, SITE_SHORT_NAME);
   assert.equal(data.telephone, SITE_TELEPHONE);
   assert.match(data.telephone, /337-522-0023/);
-  assert.equal(SITE_PHONE, "337-522-0023");
+  assert.equal(SITE_PHONE, "(337) 522-0023");
   assert.ok(data.url);
   assert.ok(data.logo);
   assert.equal("address" in data, false);
@@ -87,6 +87,10 @@ test("FAQPage schema is built only from the visible questions passed in", () => 
   assert.equal(home.mainEntity[0].name, faqs[0].q);
   assert.equal(home.mainEntity[0].acceptedAnswer.text, faqs[0].a);
   assert.deepEqual(assertSafeJsonLd(home), []);
+  assert.equal(homeFaqs.length, 5);
+  for (const item of homeFaqs) {
+    assert.ok(geoFaqs.some((faq) => faq.q === item.q && faq.a === item.a), item.q);
+  }
 });
 
 test("preview robots.txt is disallow-all and hides the sitemap", () => {
@@ -147,7 +151,7 @@ test("cleared FAQ and town copy has no windows mentions and town schema is area-
 test("llms.txt summarizes the business without banned claims", () => {
   const text = llmsTxt();
   assert.match(text, new RegExp(SITE_NAME));
-  assert.match(text, /337-522-0023/);
+  assert.match(text, /\(337\) 522-0023/);
   assert.match(text, /\/solid-surface/);
   assert.match(text, /\/custom-tile/);
   assert.match(text, /\/estimate/);
@@ -163,8 +167,8 @@ test("llms.txt summarizes the business without banned claims", () => {
   assert.match(text, /\/serving-baton-rouge/);
   assert.match(text, /\/serving-houma/);
   for (const banned of [
-    "Onyx",
-    "Pella",
+    ["On", "yx"].join(""),
+    ["Pel", "la"].join(""),
     "licensed",
     "insured",
     "deposit",

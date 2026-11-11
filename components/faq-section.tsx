@@ -11,11 +11,15 @@ export function FaqSection({
   heading = "Questions",
   id = "questions",
   className,
+  moreHref,
+  moreLabel = "See all questions",
 }: {
   faqs: readonly FaqItem[];
   heading?: string;
   id?: string;
   className?: string;
+  moreHref?: string;
+  moreLabel?: string;
 }) {
   if (!faqs.length) return null;
 
@@ -39,6 +43,13 @@ export function FaqSection({
             </details>
           ))}
         </div>
+        {moreHref ? (
+          <p className="mt-8">
+            <a href={moreHref} className="font-medium underline underline-offset-4">
+              {moreLabel}
+            </a>
+          </p>
+        ) : null}
       </div>
     </section>
   );

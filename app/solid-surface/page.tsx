@@ -11,7 +11,7 @@ import { solidSurfaceServiceJsonLd } from "@/lib/schema";
 export const metadata: Metadata = {
   title: "Solid surface showers and tub walls",
   description:
-    "Tub-to-shower conversions and solid surface shower and tub walls across Acadiana and South Louisiana. Less grout. Free consult. Call 337-522-0023.",
+    "Tub-to-shower conversions and solid surface shower and tub walls across Acadiana and South Louisiana. Less grout. Free consult. Call (337) 522-0023.",
 };
 
 export default function SolidSurfacePage() {

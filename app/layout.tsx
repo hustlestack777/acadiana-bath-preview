@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: "%s · Acadiana Bathrooms and Countertops",
   },
   description:
-    "Bathroom remodels from Acadiana Bathrooms and Countertops. Based in Lafayette, serving Acadiana and South Louisiana. Many options, including solid surface. Free Consult. Call 337-522-0023.",
+    "Bathroom remodels from Acadiana Bathrooms and Countertops. Based in Lafayette, serving Acadiana and South Louisiana. Many options, including solid surface. Free Consult. Call (337) 522-0023.",
   robots: SITE_INDEXABLE ? { index: true, follow: true } : { index: false, follow: false },
   icons: {
     icon: [
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Acadiana Bathrooms and Countertops",
     description:
-      "Bathroom remodels from Acadiana Bathrooms and Countertops. Based in Lafayette, serving Acadiana and South Louisiana. Many options, including solid surface. Free Consult. Call 337-522-0023.",
+      "Bathroom remodels from Acadiana Bathrooms and Countertops. Based in Lafayette, serving Acadiana and South Louisiana. Many options, including solid surface. Free Consult. Call (337) 522-0023.",
     url: "/",
     siteName: "Acadiana Bathrooms and Countertops",
     images: [
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Acadiana Bathrooms and Countertops",
     description:
-      "Bathroom remodels from Acadiana Bathrooms and Countertops. Based in Lafayette, serving Acadiana and South Louisiana. Many options, including solid surface. Free Consult. Call 337-522-0023.",
+      "Bathroom remodels from Acadiana Bathrooms and Countertops. Based in Lafayette, serving Acadiana and South Louisiana. Many options, including solid surface. Free Consult. Call (337) 522-0023.",
     images: ["/brand/og-image.png"],
   },
 };

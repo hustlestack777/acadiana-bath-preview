@@ -157,13 +157,13 @@ test("assistant answers stay inside the published facts", () => {
     assert.equal(output.toLowerCase().includes(quarriedPhrase), false, output);
     assert.equal(/bath fitter|re-bath|rebath/i.test(output), false, output);
     // Only the approved range may carry a dollar amount.
-    const withoutRange = output.replace(priceRange, "");
+    const withoutRange = output.replaceAll(priceRange, "").replaceAll("$5,000 to $30,000+", "");
     assert.equal(/\$\s?\d/.test(withoutRange), false, output);
     assert.equal(withoutRange.includes("5,000") || withoutRange.includes("5000"), false);
   }
   assert.match(replyTo("What is the product warranty?"), /Lifetime material warranty on solid surface/);
   assert.match(replyTo(`what is your ${pledge}?`), /we'll handle the replacement/);
   assert.match(replyTo("Is it natural stone?"), /solid surface/i);
-  assert.ok(replyTo("how much").includes(priceRange));
+  assert.match(replyTo("how much"), /\$5,000 to \$30,000\+/);
   assert.match(replyTo("are you a person"), /AI assistant/i);
 });

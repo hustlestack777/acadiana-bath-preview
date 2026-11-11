@@ -5,6 +5,7 @@ import { ConsultLink } from "@/components/consult-link";
 import Link from "next/link";
 import { IdeasSection, PathChooser } from "@/components/path-sections";
 import { FaqSection } from "@/components/faq-section";
+import { homeFaqs } from "@/lib/faq-page";
 import {
   area,
   beforeAfter,
@@ -13,7 +14,6 @@ import {
   care,
   close,
   editorial,
-  faqs,
   gallery,
   hero,
   material,
@@ -181,7 +181,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <FaqSection faqs={faqs} />
+      <FaqSection faqs={homeFaqs} moreHref="/faq" moreLabel="See all questions" />
 
       <section id="talk" className="rise scroll-mt-28 mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 md:grid-cols-2 md:py-24">
         <div>

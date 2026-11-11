@@ -7,7 +7,7 @@ export const faqPageIntro =
 export const geoFaqs = [
   {
     q: "How much does a walk-in shower cost in Louisiana?",
-    a: "Bathroom remodels from Acadiana Bathrooms & Countertops range from $5,000 to $30,000+. The exact number is given at a free consult, after Justin looks at the space, the materials, and the work involved. A simple refresh and a fully custom walk-in with handmade tile or a quartzite vanity will not land in the same place. Call (337) 522-0023 or use Design My Bathroom and Justin will call to talk it through and set up a time to measure.",
+    a: "Bathroom remodels from Acadiana Bathrooms and Countertops range from $5,000 to $30,000+. The exact number is given at a free consult, after Justin looks at the space, the materials, and the work involved. A simple refresh and a fully custom walk-in with handmade tile or a quartzite vanity will not land in the same place. Call (337) 522-0023 or use Design My Bathroom and Justin will call to talk it through and set up a time to measure.",
   },
   {
     q: "How much does a bathroom remodel cost in South Louisiana?",
@@ -50,3 +50,17 @@ export const geoFaqs = [
     a: "Yes. Design My Bathroom lets you upload a photo of your shower and see a redesign idea. Those images are examples of what a remodel could look like. Justin still comes to the house to measure and give the actual quote. We will add real job photos, with the homeowner's permission, as they come in.",
   },
 ] as const;
+
+export const homeFaqQuestions = [
+  "How much does a bathroom remodel cost in South Louisiana?",
+  "What areas do you serve?",
+  "What does Acadiana Bathrooms do?",
+  "How do I get a quote?",
+  "Can I see a design before we start?",
+] as const;
+
+export const homeFaqs = homeFaqQuestions.map((question) => {
+  const item = geoFaqs.find((faq) => faq.q === question);
+  if (!item) throw new Error(`Missing home FAQ: ${question}`);
+  return item;
+});
