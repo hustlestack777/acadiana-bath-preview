@@ -5,6 +5,7 @@ export type LeadAttribution = {
   formPage: string;
   landingPage: string;
   referrer: string;
+  src: string;
   utmSource: string;
   utmMedium: string;
   utmCampaign: string;
@@ -15,6 +16,7 @@ export const EMPTY_ATTRIBUTION: LeadAttribution = {
   formPage: "",
   landingPage: "",
   referrer: "",
+  src: "",
   utmSource: "",
   utmMedium: "",
   utmCampaign: "",
@@ -53,10 +55,16 @@ export function sanitizeAttribution(
     formPage,
     landingPage,
     referrer: cleanReferrer(input.referrer || ""),
+    src: cleanUtm(input.src || ""),
     utmSource: cleanUtm(input.utmSource || ""),
     utmMedium: cleanUtm(input.utmMedium || ""),
     utmCampaign: cleanUtm(input.utmCampaign || ""),
   };
+}
+
+/** Line for Justin and Shaun: ?src= wins, then utm_source, otherwise "direct". */
+export function leadSourceLabel(src = "", utmSource = "") {
+  return (src || utmSource || "direct").trim() || "direct";
 }
 
 /** One line for Justin and Shaun: "/serving-houma (form /estimate)" or "/design". */

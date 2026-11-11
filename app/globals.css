@@ -2,6 +2,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+html {
+  scroll-padding-top: 7rem;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /* Live Oak colors live in the :root block below. */

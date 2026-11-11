@@ -13,7 +13,7 @@ export function SiteFooter() {
         <div>
           <MaisonLogo onDark className="text-secondary-foreground" />
           <p className="mt-4 text-sm leading-6 text-fig-muted">
-            Custom bathroom remodels, handled personally by Justin. {SERVICE_AREA} Start with Design My Bathroom or a free quote.
+            Custom bathroom remodels, managed by Justin from design to the finished bathroom. {SERVICE_AREA} Start with Design My Bathroom or a free quote.
           </p>
         </div>
         <div>
@@ -47,12 +47,16 @@ export function SiteFooter() {
             <a href="/custom-tile#grout" className="underline underline-offset-4">Grout colors</a>
             <a href="/gallery" className="underline underline-offset-4">Gallery</a>
             <a href="/faq" className="underline underline-offset-4">FAQ</a>
-            <a href="/areas" className="underline underline-offset-4">Areas we serve</a>
-            {towns.map((town) => (
-              <a key={town.slug} href={townPath(town.slug)} className="underline underline-offset-4">
-                {town.name}
-              </a>
-            ))}
+            <a href="/areas" className="underline underline-offset-4">See every town we serve</a>
+            {["lafayette", "youngsville", "broussard", "lake-charles", "baton-rouge", "houma"].map((slug) => {
+              const town = towns.find((item) => item.slug === slug);
+              if (!town) return null;
+              return (
+                <a key={town.slug} href={townPath(town.slug)} className="underline underline-offset-4">
+                  {town.name}
+                </a>
+              );
+            })}
           </p>
           <p className="mt-4 text-sm leading-6 text-fig-muted">
             {SERVICE_AREA}

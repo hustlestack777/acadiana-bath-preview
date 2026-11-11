@@ -12,7 +12,7 @@ export const HERO_SLIDES: readonly HeroSlide[] = [
   { n: "18", position: "55% center", headline: "See your new bathroom before you spend a dime." },
   { n: "34", position: "62% center", headline: "Bold floors, zero regrets." },
   { n: "24", position: "50% center", headline: "Your bathroom shouldn't be boring." },
-  { n: "35", position: "64% center", headline: "Handmade tiles, zero boring." },
+  { n: "35", position: "64% center", headline: "Handmade tile, made for your room." },
   { n: "19", position: "30% center", headline: "See your new bathroom before you spend a dime." },
   { n: "26", position: "58% center", headline: "The bathroom your friends will ask about." },
 ] as const;

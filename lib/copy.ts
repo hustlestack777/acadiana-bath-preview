@@ -44,31 +44,31 @@ export const heroHeadlines = [
   "Let's get stylish.",
   "The bathroom your friends will ask about.",
   "Color that makes mornings better.",
-  "Handmade tile. Zero boring.",
+  "Handmade tile, made for your room.",
 ] as const;
 
 export const heroHeadlineReduced = "Your bathroom shouldn't be boring.";
 
 export const heroSubhead =
-  `Custom showers, tile, quartz, quartzite and marble from people who sweat the details. ${SERVICE_AREA}`;
+  `Custom showers, tile, quartz, quartzite and marble, planned carefully for your space. ${SERVICE_AREA}`;
 
 export const heroDesignCta = "Design My Bathroom";
 
 export const quoteCta = "Get My Free Quote";
 
 export const trustLine =
-  "Free quote. No obligation. Justin, the owner, calls you personally with your price.";
+  "Free quote. Justin, the owner, calls to discuss your project, your style and what you have in mind, then sets a time to take measurements, walk you through materials and design options, and give you your exact price on the spot.";
 
 /** Later mentions on pages that already used trustLine or another first mention. */
 export const trustLineFollow =
-  "Free quote. No obligation. Justin calls you personally with your price.";
+  "Free quote. Justin calls to discuss your project, your style and what you have in mind, then sets a time to take measurements, walk you through materials and design options, and give you your exact price on the spot.";
 
 export const heroQuoteLine = "Starting at $5K · Free quote.";
 
 export const editorial = {
   eyebrow: "The room, considered",
   title: "Less stepping over. More stepping into.",
-  body: "A shower, a tub, a lavatory, the floor underfoot. Justin plans every detail with you and handles your project personally, so you have one point of contact from the first call to the finished room.",
+  body: "A shower, a tub, a lavatory, the floor underfoot. Justin plans every detail with you and manages your project from design to the finished bathroom, so you have one point of contact from the first call to the last day on site.",
 } as const;
 
 export const reasons = [
@@ -90,7 +90,7 @@ export const material = {
   title: "Tile or solid surface? Justin helps you choose.",
   body: "Solid surface gives you clean lines and almost no grout. Custom tile gives you color, texture and pattern. Justin lays out the look, the budget and the upkeep of each, so you choose with confidence.",
   close:
-    "Find the look that feels like home. Justin walks you through every detail at your free quote, so nothing about your bathroom is left to chance.",
+    "Find the look that feels like home. Justin walks you through materials and design options when he takes measurements.",
 } as const;
 
 export const care = {
@@ -98,21 +98,13 @@ export const care = {
   body: "A simple weekly cleaning is enough.",
 } as const;
 
-export const stepsTitle = "Three easy steps to a bathroom you love.";
+export const stepsTitle = "How a quote works.";
 
 export const steps = [
-  {
-    title: "Snap your shower.",
-    body: "Upload a photo and pick a look, or tell us what you want to change.",
-  },
-  {
-    title: "Justin comes to you.",
-    body: "Your free consult: he measures, talks finishes with you and shows you what fits your space and budget.",
-  },
-  {
-    title: "Get your exact price.",
-    body: "A clear proposal with the exact price before any work starts.",
-  },
+  { title: "Tell us about your project and the best day and time to reach you.", body: "" },
+  { title: "Justin calls to discuss your project, your style and what you have in mind.", body: "" },
+  { title: "He sets a time to take measurements, walk you through materials and design options, and give you your exact price on the spot.", body: "" },
+  { title: "When you're ready to move forward, Justin manages your project from design to the finished bathroom.", body: "" },
 ] as const;
 
 export const area = {
@@ -135,29 +127,29 @@ export const gallery = {
 export { homeFaqs as faqs } from "./faq-page";
 
 export const talk = {
-  title: "Rather talk it through?",
-  body: "Send a photo and a quick note, and Justin will call you personally. Prefer email? Write acadianabathandcounter@gmail.com.",
+  title: "Want to discuss your project?",
+  body: "Send a photo and a quick note, and Justin will call you. Prefer email? Write acadianabathandcounter@gmail.com.",
 } as const;
 
 export const close = {
   title: "Start with the bathroom you have.",
-  body: "Tell us what you want to change and share a few photos if you have them. Justin will call you personally, and you get your exact price once he sees the space.",
+  body: "Tell us what you want to change, the best day and time to reach you, and share a few photos if you have them. Justin will call to discuss your project, then set a time to take measurements, walk you through your design options and give you your exact price on the spot.",
 } as const;
 
 export const lead = {
-  title: "Free Consult",
+  title: "Free Quote",
   subhead:
-    "Four quick steps: where you are, what you want to change, and how to reach you. Justin, the owner, calls you personally and gives you an exact price once he sees the space.",
-  submit: "Request My Free Consult",
-  thanks: "Got it! Justin, the owner, will reach out to talk through your bathroom and set up a time to come see it.",
-  savedNote: "Nothing to pay today. Justin sets your exact price once he sees your bathroom.",
+    "Tell us about your project and the best day and time to reach you. Justin, the owner, will call to discuss your project, then set a time to take measurements, walk you through your design options and give you your exact price on the spot.",
+  submit: "Get My Free Quote",
+  thanks: "You're on Justin's list. He'll call around the time you picked to discuss your project.",
+  savedNote: "Nothing to pay today.",
   savedTitle: "Got it!",
   photosTitle: "Their photos",
   addressLabel: "Street address",
-  addressHint: "So we can find the house for the visit. Start typing and pick your address.",
+  addressHint: "So we know where the project is. Start typing and pick your address.",
   extrasTitle: "Want to help Justin prepare?",
   extrasBody:
-    "Optional: pick a good time to call, add rough measurements, and share up to 8 photos. Rough numbers are fine. Justin measures everything in person.",
+    "Optional: add rough measurements and share up to 8 photos. Rough numbers are fine. Justin will take measurements when he visits.",
   extrasSubmit: "Save extras for Justin",
   extrasSaved: "Extras saved. Justin will see them with your request.",
 } as const;
@@ -179,12 +171,11 @@ export const homeowners = [
 
 export const payments = [
   { id: "cash", label: "Cash / check / card" },
-  { id: "financing", label: "Interested in financing" },
   { id: "not-sure", label: "Not sure yet" },
 ] as const;
 
 export const paymentNote =
-  "Pick whatever fits today. Justin can walk you through financing at your consult, and nothing here checks your credit.";
+  "Pick whatever fits today. Nothing here checks your credit.";
 
 export const consentLabel =
   "I agree that Acadiana Bathrooms and Countertops may contact me about this project request by phone, text, or email.";
@@ -216,7 +207,7 @@ export const photoNote =
   "Optional photos: one wide bathroom view, the shower or tub, and any problem areas. Leave out people and personal documents. Up to 8 photos. They are resized in your browser before sending.";
 
 export const dimensionNote =
-  "Rough numbers are fine. Justin measures everything in person.";
+  "Rough numbers are fine. Justin will take measurements when he visits.";
 
 /** Two clear paths. No prices on either path until Justin sends his pricing. */
 
@@ -237,7 +228,7 @@ export const solidPath = {
   cardBody: "The affordable, low-grout route. Tub-to-shower conversions and fresh shower or tub walls that wipe clean.",
   title: "Clean lines. Less grout. Less to scrub.",
   support:
-    "Seamless walls, soft arches, and almost no grout to scrub, in a wide range of colors and finishes. Justin, the owner, helps you pick the one that fits your space and budget.",
+    "Seamless walls, soft arches, and almost no grout to scrub, in a wide range of colors and finishes. Justin helps you pick the one that fits your space and budget.",
   cta: "Get a solid surface quote",
   whyTitle: "Why most customers start here",
   why: [
@@ -251,10 +242,10 @@ export const solidPath = {
     { title: "Shower walls", body: "New walls for an existing shower, with niches and a seat if the space allows." },
     { title: "Tub walls and surrounds", body: "Keep the tub and refresh the walls around it." },
   ],
-  warranty: "Lifetime Guarantee. Ask Justin for the details at your free consult.",
+  warranty: "Justin stands behind his work. If anything comes up, he'll make it right. Ask Justin for the details when he calls.",
   care: "A simple weekly cleaning is enough.",
   formTitle: "Solid surface quote",
-  formBody: "A few quick questions, and Justin will call you personally to set up your free consult.",
+  formBody: "A few quick questions, and Justin will call to discuss your project and set a time to take measurements.",
 } as const;
 
 export const tilePath = {
@@ -265,7 +256,7 @@ export const tilePath = {
   title: "Tile with a point of view.",
   support:
     "Zellige walls, patterned cement-look floors, arched niches and grout colors that make the tile sing. Bring your inspiration and we'll plan it together.",
-  cta: "Request a free tile consult",
+  cta: "Get My Free Tile Quote",
   looksTitle: "Looks people ask for",
   looks: [
     { title: "Handmade zellige", body: "Glossy, irregular tile that catches the light. Stacked, offset or herringbone." },
@@ -276,16 +267,16 @@ export const tilePath = {
   groutTitle: "Pick a grout color",
   groutBody:
     "Colors from the Mapei grout and caulk palette. Tap a swatch to preview it and add it to your tile request.",
-  groutNote: "Screen colors are approximate. Justin brings real samples to compare in your light.",
-  formTitle: "Custom tile consult",
-  formBody: "Tell us the look you love. Justin will call you personally and bring real samples to your free consult.",
+  groutNote: "Screen colors are approximate.",
+  formTitle: "Custom tile quote",
+  formBody: "Tell us the look you love. Justin will call to discuss your project, then bring real samples when he takes measurements.",
 } as const;
 
 export const ideas = {
   eyebrow: "Finishing touches",
   title: "Ideas for the rest of the room",
-  body: "Save what you love and bring it to your free consult. Justin will show you how to pull it together in your space.",
-  note: "Ideas to spark your style. Bring your favorites to your free quote, and Justin will match the right materials to your space and budget.",
+  body: "Save what you love and bring it when Justin takes measurements. He'll show you how to pull it together in your space.",
+  note: "Ideas to spark your style. Bring your favorites when Justin takes measurements, and he'll match the right materials to your space and budget.",
   items: [
     {
       name: "Wallism",
@@ -352,4 +343,4 @@ export const ideas = {
 
 /** Approved price wording (Shaun, 11/11/2026). Used in chat and on the path pages. */
 export const priceRange =
-  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Your free consult gets you an exact number.";
+  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. Justin calls to discuss your project, your style and what you have in mind. He sets a time to take measurements, walk you through materials and design options, and give you your exact price on the spot. When you're ready to move forward, Justin manages your project from design to the finished bathroom.";

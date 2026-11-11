@@ -14,7 +14,8 @@ import {
   timingLabel,
 } from "./lead-display";
 import { mapsDirectionsUrl, mapsSearchUrl, openInMapsUrl } from "./street-view";
-import { campaignLine, sourceLine } from "./lead-attribution";
+import { campaignLine, leadSourceLabel, sourceLine } from "./lead-attribution";
+import { buildCallInvite, callWindowLabel } from "./call-window";
 import { finishes } from "./copy";
 import { FLOOD_ZONE_LABEL, type HouseFacts } from "./house-facts";
 import {
@@ -57,6 +58,7 @@ export type LeadEmailContent = {
   homeowner: string;
   payment: string;
   timing: string;
+  preferredCallDay?: string;
   preferredCallTime: string;
   finish?: string;
   photos: LeadEmailPhoto[];
@@ -73,6 +75,7 @@ export type LeadEmailContent = {
   sourcePage?: string;
   formPage?: string;
   referrer?: string;
+  src?: string;
   utmSource?: string;
   utmMedium?: string;
   utmCampaign?: string;
@@ -157,7 +160,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
   const mapsUrl = street ? mapsSearchUrl(address) : "";
   const streetViewUrl = street ? openInMapsUrl(address, input.latitude, input.longitude) : "";
   const directionsUrl = street ? mapsDirectionsUrl(address) : "";
-  const kicker = input.kind === "update" ? "Consult update" : "New consult";
+  const kicker = input.kind === "update" ? "Quote update" : "New quote";
   const isWindows = input.project.split(",").map((item) => item.trim()).includes("windows");
 
   const parsed = parseFeatures(input.features, Boolean(input.consent));
@@ -178,7 +181,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
     { label: "Home", value: homeownerLabel(input.homeowner) },
     { label: "Timing", value: timingLabel(input.timing) },
     { label: "Payment", value: paymentLabel(input.payment) },
-    { label: "Best time to call", value: input.preferredCallTime.trim() },
+    { label: "Call window", value: callWindowLabel(input.preferredCallDay || "", input.preferredCallTime.trim()) || input.preferredCallTime.trim() },
     ...(parsed.notes.length ? [{ label: "Their notes", value: parsed.notes.join("\n") }] : []),
   ].filter((row) => (row.value ?? "").trim());
 
@@ -186,6 +189,7 @@ export function buildLeadEmail(input: LeadEmailContent) {
   const consentRecord = (input.consentText || "").trim();
 
   const source = sourceLine(input.sourcePage || "", input.formPage || "");
+  const leadSource = leadSourceLabel(input.src || "", input.utmSource || "");
   const campaign = campaignLine(input.utmSource || "", input.utmMedium || "", input.utmCampaign || "");
   const referrer = (input.referrer || "").trim();
 
@@ -204,6 +208,22 @@ export function buildLeadEmail(input: LeadEmailContent) {
     attachments.push({ filename, content, contentType: photo.contentType, contentId: photoCid(index) });
     attachments.push({ filename, content, contentType: photo.contentType });
   });
+
+  const invite = buildCallInvite({
+    test,
+    name: input.name,
+    phone: input.phone,
+    email: input.email,
+    day: input.preferredCallDay || "",
+    time: input.preferredCallTime,
+  });
+  if (invite) {
+    attachments.push({
+      filename: invite.filename,
+      content: Buffer.from(invite.content).toString("base64"),
+      contentType: invite.contentType,
+    });
+  }
 
   const captions = input.photos.map((photo, index) => photoCaption(photo.filename, index, parsed.style));
   const links = input.photos.map((_, index) => input.photoLinks?.[index] ?? "");
@@ -251,7 +271,8 @@ export function buildLeadEmail(input: LeadEmailContent) {
       }
     }
     lines.push("", "---");
-    if (source) lines.push(`Source: ${source}`);
+    lines.push(`Source: ${leadSource}`);
+    if (source) lines.push(`Page: ${source}`);
     if (referrer) lines.push(`Referrer: ${referrer}`);
     if (campaign) lines.push(`Campaign (UTM): ${campaign}`);
     lines.push(`Internal lead email only — not sent to the homeowner. Lead ${input.id.slice(0, 8)}.`);
@@ -352,7 +373,8 @@ export function buildLeadEmail(input: LeadEmailContent) {
     : "";
 
   const footerBits = [
-    source ? `Source: ${esc(source)}` : "",
+    `Source: ${esc(leadSource)}`,
+    source ? `Page: ${esc(source)}` : "",
     referrer ? `Referrer: ${esc(referrer)}` : "",
     campaign ? `Campaign (UTM): ${esc(campaign)}` : "",
     `Internal lead email only — not sent to the homeowner. Lead ${esc(input.id.slice(0, 8))}.`,
@@ -418,8 +440,8 @@ function emailButton(email: string, given: string) {
 
 function updateSentence(newPhotoCount: number) {
   if (newPhotoCount > 0) {
-    return newPhotoCount === 1 ? "Added 1 photo to this consult." : `Added ${newPhotoCount} photos to this consult.`;
+    return newPhotoCount === 1 ? "Added 1 photo to this quote." : `Added ${newPhotoCount} photos to this quote.`;
   }
-  return "Updated details for this consult.";
+  return "Updated details for this quote.";
 }
 

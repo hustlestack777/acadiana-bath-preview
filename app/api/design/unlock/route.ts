@@ -12,6 +12,7 @@ import {
   phoneDigits,
 } from "@/lib/design-sessions";
 import { isTeamTestLead, withTestSubject } from "@/lib/lead-notify";
+import { consentLabel } from "@/lib/copy";
 import { consentRecord } from "@/lib/lead-consent";
 import { formatChicago } from "@/lib/lead-display";
 import { budgetTag, findBudget } from "@/lib/budget";
@@ -87,12 +88,13 @@ export async function POST(request: Request) {
   const street = text(form, "street", 200);
   const city = text(form, "city", 80);
   const zip = text(form, "zip", 10);
-  const smsConsent = text(form, "smsConsent") === "true";
+  const smsConsent = text(form, "smsConsent") === "true" || text(form, "consent") === "true" || text(form, "consent") === "on";
   const homeowner = ["own", "rent"].includes(text(form, "homeowner")) ? text(form, "homeowner") : "";
 
   const errors: Record<string, string> = {};
   if (phoneDigits(phone).length !== 10) errors.phone = "Enter a 10-digit mobile number.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) errors.email = "Enter a valid email.";
+  if (!smsConsent) errors.consent = "Check the box so Acadiana Bathrooms and Countertops can contact you about this request.";
 
   const full = session.after;
   const before = session.before;
@@ -116,7 +118,7 @@ export async function POST(request: Request) {
     ...(picks ? leadFeatureLines(picks, related, lookLine) : lookLine),
     pendingNote,
     smsConsent
-      ? `SMS consent: YES at ${formatChicago(now)} from IP ${ip} (checkbox text v1 on /design: "${designCopy.smsConsent.slice(0, 60)}…")`
+      ? `SMS consent: YES at ${formatChicago(now)} from IP ${ip} (checkbox on /design: "${consentLabel.slice(0, 60)}…")`
       : "SMS consent: no (call or email only).",
   ].filter(Boolean).join("\n");
 
@@ -125,6 +127,7 @@ export async function POST(request: Request) {
     formPage: text(form, "formPage", 80) || "/design",
     landingPage: text(form, "landingPage", 80),
     referrer: text(form, "referrer", 500),
+    src: text(form, "src", 200),
     utmSource: text(form, "utmSource", 200),
     utmMedium: text(form, "utmMedium", 200),
     utmCampaign: text(form, "utmCampaign", 200),
@@ -152,8 +155,9 @@ export async function POST(request: Request) {
     payment: "not-sure",
     consent: smsConsent,
     consentAt: smsConsent ? now : null,
-    consentText: smsConsent ? consentRecord(designCopy.smsConsent, text(form, "formPage", 80) || "/design") : "",
-    preferredCallTime: "",
+    consentText: smsConsent ? consentRecord(consentLabel, text(form, "formPage", 80) || "/design") : "",
+    preferredCallDay: text(form, "preferredCallDay"),
+    preferredCallTime: text(form, "preferredCallTime"),
     photos,
   };
   const validation = validateLead(input);

@@ -120,6 +120,8 @@ export function formatChicago(date: Date) {
   return formatted.replace(/\u202f/g, " ");
 }
 
+const TEST_PREFIX = "TEST – ";
+
 export function isTestLead(name: string) {
   return name.trim().toUpperCase().startsWith("TEST");
 }
@@ -129,7 +131,7 @@ export function leadSubject(name: string, town: string, kind: "new" | "update") 
   const where = town.trim();
   const core =
     kind === "update"
-      ? `Consult update \u00b7 ${who}${where ? ` \u00b7 ${where}` : ""}`
-      : `New consult \u00b7 ${who}${where ? ` \u00b7 ${where}` : ""}`;
-  return isTestLead(name) ? `[TEST] ${core}` : core;
+      ? `Quote update \u00b7 ${who}${where ? ` \u00b7 ${where}` : ""}`
+      : `New quote \u00b7 ${who}${where ? ` \u00b7 ${where}` : ""}`;
+  return isTestLead(name) ? `${TEST_PREFIX}${core}` : core;
 }

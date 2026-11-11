@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { campaignLine, cleanPath, isSitePath, sanitizeAttribution, sourceLine } from "./lead-attribution";
+import { campaignLine, cleanPath, isSitePath, leadSourceLabel, sanitizeAttribution, sourceLine } from "./lead-attribution";
 
 test("site paths include town and product pages", () => {
   assert.equal(isSitePath("/custom-tile"), true);
@@ -22,6 +22,7 @@ test("sanitize keeps source, referrer, and UTM fields", () => {
     formPage: "/estimate",
     landingPage: "/serving-houma",
     referrer: "https://www.google.com/",
+    src: "test",
     utmSource: "google",
     utmMedium: "cpc",
     utmCampaign: "spring",
@@ -29,7 +30,11 @@ test("sanitize keeps source, referrer, and UTM fields", () => {
   assert.equal(attr.sourcePage, "/serving-houma");
   assert.equal(attr.formPage, "/estimate");
   assert.equal(attr.referrer, "https://www.google.com/");
+  assert.equal(attr.src, "test");
   assert.equal(attr.utmSource, "google");
+  assert.equal(leadSourceLabel(attr.src, attr.utmSource), "test");
+  assert.equal(leadSourceLabel("", "google"), "google");
+  assert.equal(leadSourceLabel("", ""), "direct");
   assert.equal(sourceLine(attr.sourcePage, attr.formPage), "/serving-houma (form /estimate)");
   assert.equal(sourceLine("/design", "/design"), "/design");
   assert.equal(campaignLine("google", "cpc", "spring"), "google / cpc / spring");

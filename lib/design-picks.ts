@@ -756,7 +756,7 @@ export function talkingPoints(picks: ResolvedPicks): TalkingPoints {
   if (picks.layout.key === "curbless") {
     betterBits.push("a long niche and a teak or tiled bench");
   }
-  const better = `Upgrade to talk through: ${unique(betterBits).slice(0, 3).join(", ")}.`;
+  const better = `Upgrade to discuss: ${unique(betterBits).slice(0, 3).join(", ")}.`;
 
   const bestBits: string[] = [];
   if (picks.layout.key !== "curbless" && picks.layout.family === "shower") {

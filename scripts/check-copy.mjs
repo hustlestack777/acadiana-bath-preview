@@ -7,7 +7,7 @@ const skip = new Set(["node_modules", ".next", "uploads"]);
 const extensions = new Set([".ts", ".tsx", ".css", ".md", ".svg", ".mjs", ".json"]);
 
 const APPROVED_RANGE =
-  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Your free consult gets you an exact number.";
+  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. Justin calls to discuss your project, your style and what you have in mind. He sets a time to take measurements, walk you through materials and design options, and give you your exact price on the spot. When you're ready to move forward, Justin manages your project from design to the finished bathroom.";
 
 const APPROVED_HERO_QUOTE = "Starting at $5K · Free quote.";
 const APPROVED_PRICE_FROM = "Bathroom remodels starting at $5K.";
@@ -76,6 +76,50 @@ for (const file of files) {
     if (rule.re.test(text)) {
       failed += 1;
       console.error(`${rule.name}: ${path.relative(root, file)}`);
+    }
+  }
+}
+
+
+const BANNED_PHRASES = [
+  { name: "lifetime", re: /lifetime/i },
+  { name: "financing", re: /financ/i },
+  { name: "licensed", re: /licensed/i },
+  { name: "insured", re: /insured/i },
+  { name: "handles everything", re: /handles everything/i },
+  { name: "free consult", re: /free consult/i },
+  { name: "in-home consult", re: /in-home consult|in home consult/i },
+  { name: "consultation", re: /consultation/i },
+  { name: "comes to your home", re: /comes to your home/i },
+  { name: "talk it through", re: /talk it through/i },
+  { name: "talk through", re: /talk through/i },
+  { name: "Charpentier", re: /charpentier/i },
+  { name: "after that visit", re: /after that visit/i },
+  { name: "after the visit", re: /after the visit/i },
+];
+
+function publicCopy(text) {
+  // "walk you through" is approved and is not "talk through".
+  return text.replaceAll("walk you through", "");
+}
+
+const skipBannedName = new Set([
+  path.join(root, "scripts", "check-copy.mjs"),
+]);
+
+for (const file of files) {
+  if (skipBannedName.has(file)) continue;
+  const rel = path.relative(root, file);
+  // Identifier-only files / tests that assert the ban may mention a phrase; still scan
+  // public copy modules, pages, chat, llms, schema, and markdown.
+  const scan = /^(app|components|lib|public)\/|README\.md$/.test(rel);
+  if (!scan) continue;
+  if (rel.endsWith(".test.ts") || rel.endsWith(".test.tsx")) continue;
+  const text = publicCopy(await readFile(file, "utf8"));
+  for (const rule of BANNED_PHRASES) {
+    if (rule.re.test(text)) {
+      failed += 1;
+      console.error(`${rule.name}: ${rel}`);
     }
   }
 }

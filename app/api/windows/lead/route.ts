@@ -97,6 +97,7 @@ export async function POST(request: Request) {
     formPage: text(form, "formPage", 80) || WINDOWS_SOURCE_PAGE,
     landingPage: text(form, "landingPage", 80),
     referrer: text(form, "referrer", 500),
+    src: text(form, "src", 200),
     utmSource: text(form, "utmSource", 200),
     utmMedium: text(form, "utmMedium", 200),
     utmCampaign: text(form, "utmCampaign", 200),
@@ -125,7 +126,8 @@ export async function POST(request: Request) {
     consent: true,
     consentAt,
     consentText: consentRecord(WINDOWS_CONSENT_TEXT, text(form, "formPage", 80) || WINDOWS_SOURCE_PAGE),
-    preferredCallTime: "",
+    preferredCallDay: text(form, "preferredCallDay"),
+    preferredCallTime: text(form, "preferredCallTime"),
     photos: [],
   };
 

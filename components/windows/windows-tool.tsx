@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AddressAutocomplete, type AddressSelection } from "@/components/address-autocomplete";
+import { CallWindowFields } from "@/components/call-window-fields";
 import { SaveJustinContact } from "@/components/save-justin-contact";
 import { appendAttribution } from "@/components/lead-attribution";
-import { Checkbox } from "@/components/ui/checkbox";
 import { brand } from "@/lib/copy";
 import { cn } from "cn";
 import { useScrollToStep } from "@/lib/scroll-to-step";
@@ -64,6 +64,8 @@ export function WindowsTool() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
+  const [preferredCallDay, setPreferredCallDay] = useState("");
+  const [preferredCallTime, setPreferredCallTime] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -165,6 +167,8 @@ export function WindowsTool() {
     if (!street.trim()) next.street = "Enter your street address.";
     if (!city.trim()) next.city = "Enter your town.";
     if (!consent) next.consent = "Please check the box to continue.";
+    if (!preferredCallDay) next.preferredCallDay = "Pick the best day for Justin to call.";
+    if (!preferredCallTime) next.preferredCallTime = "Pick the best time for Justin to call.";
     if (!material) next.material = "Pick a material, or choose not sure.";
     setErrors(next);
     setSubmitError("");
@@ -188,6 +192,8 @@ export function WindowsTool() {
       body.set("rooms", rooms.join(","));
       body.set("replaceAll", replaceAll);
       body.set("consent", "true");
+      body.set("preferredCallDay", preferredCallDay);
+      body.set("preferredCallTime", preferredCallTime);
       body.set("company_fax", fax);
       appendAttribution(body, "/windows");
       const response = await fetch("/api/windows/lead", { method: "POST", body });
@@ -220,15 +226,15 @@ export function WindowsTool() {
         <section data-testid="windows-start">
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">Windows</p>
           <h1 tabIndex={-1} data-step-heading className="mt-3 font-heading text-[clamp(2.4rem,7vw,4.2rem)] leading-[0.98]">
-            Get a ballpark for new windows. Justin, the owner, measures for the real quote.
+            Get a ballpark for new windows. Justin will call to discuss your windows, then set a time to take measurements for the real quote.
           </h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{SERVICE_AREA_WINDOWS}</p>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{OUTSIDE_AREA}</p>
           <p className="mt-4 text-base leading-7 text-foreground">
             Works for one window or a whole house. Enter your address and we&apos;ll look up a Street View photo so you can
             confirm or edit the count. Prefer to type the number yourself? You can do that too. Then pick a style and
-            material, leave your name and phone, and see a ballpark estimate. Justin will call you to talk through your
-            windows and set up a time to measure, and he gives you the final price. There&apos;s no obligation.
+            material, leave your name and phone, and see a ballpark estimate. Justin will call you to discuss your
+            windows and set a time to take measurements, and he gives you the final price. There&apos;s no obligation.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <button type="button" className={primaryBtn} onClick={() => goCount(false)}>
@@ -650,11 +656,25 @@ export function WindowsTool() {
               <input id="windows-email" name="email" className={field} type="email" autoComplete="email" value={email} aria-invalid={Boolean(errors.email)} onChange={(event) => setEmail(event.target.value)} />
               {errors.email ? <p className="mt-1.5 text-sm text-destructive">{errors.email}</p> : null}
             </div>
-            <label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground">
-              <Checkbox
+            <CallWindowFields
+              day={preferredCallDay}
+              time={preferredCallTime}
+              onDay={setPreferredCallDay}
+              onTime={setPreferredCallTime}
+              dayError={errors.preferredCallDay}
+              timeError={errors.preferredCallTime}
+              idPrefix="windows-call"
+            />
+            <label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground" htmlFor="windows-consent">
+              <input
+                id="windows-consent"
+                name="consent"
+                type="checkbox"
+                required
+                aria-required="true"
+                className="mt-0.5 size-5 shrink-0 accent-[var(--primary)]"
                 checked={consent}
-                onCheckedChange={(value) => setConsent(value === true)}
-                className="mt-0.5"
+                onChange={(event) => setConsent(event.target.checked)}
                 aria-invalid={Boolean(errors.consent)}
               />
               <span>{WINDOWS_CONSENT_TEXT}</span>
@@ -681,7 +701,7 @@ export function WindowsTool() {
             <p className="mt-4 text-lg leading-8">{estimateHeadline(estimate)}</p>
           ) : (
             <p className="mt-4 text-lg leading-8">
-              We need a window count to show a dollar range. Justin will call you to talk through your windows and set up a
+              We need a window count to show a dollar range. Justin will call you to discuss your windows project and set up a
               time to measure, and he gives you the final price.
             </p>
           )}
@@ -710,7 +730,7 @@ export function WindowsTool() {
         <section data-testid="windows-thanks">
           <h1 tabIndex={-1} data-step-heading className="font-heading text-[clamp(2rem,6vw,3.2rem)] leading-[1.02]">Justin will call you</h1>
           <p className="mt-4 text-lg leading-8">
-            Thanks. Justin has your request and will call you to talk through your windows and set up a time to measure. He
+            Thanks. Justin has your request and will call you to discuss your windows project and set a time to take measurements. He
             gives you the final price.
           </p>
           {estimate ? <p className="mt-4 text-base leading-7">{estimateHeadline(estimate)}</p> : null}

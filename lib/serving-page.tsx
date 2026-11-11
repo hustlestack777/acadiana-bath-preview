@@ -9,8 +9,8 @@ export function townMetadata(slug: string): Metadata {
   const town = getTown(slug);
   if (!town) return {};
   return {
-    title: { absolute: town.description },
-    description: town.intro[0],
+    title: { absolute: `${town.title} | Acadiana Bathrooms` },
+    description: town.description,
     alternates: { canonical: pageCanonical(`/serving-${slug}`) },
   };
 }

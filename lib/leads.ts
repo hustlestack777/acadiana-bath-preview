@@ -56,10 +56,12 @@ export type LeadInput = {
   consent: boolean;
   consentAt?: Date | null;
   consentText?: string;
+  preferredCallDay?: string;
   preferredCallTime: string;
   formPage?: string;
   landingPage?: string;
   referrer?: string;
+  src?: string;
   utmSource?: string;
   utmMedium?: string;
   utmCampaign?: string;
@@ -147,6 +149,9 @@ async function ensureSchema(db: Pool) {
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_source text NOT NULL DEFAULT '';
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_medium text NOT NULL DEFAULT '';
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_campaign text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS src text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS preferred_call_day text NOT NULL DEFAULT '';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS test boolean NOT NULL DEFAULT false;
         ALTER TABLE lead_photos ADD COLUMN IF NOT EXISTS size_bytes integer NOT NULL DEFAULT 0;
       `)
       .then(() => undefined)
@@ -172,6 +177,7 @@ export function validateLead(input: LeadInput) {
     formPage: input.formPage,
     landingPage: input.landingPage,
     referrer: input.referrer,
+    src: input.src,
     utmSource: input.utmSource,
     utmMedium: input.utmMedium,
     utmCampaign: input.utmCampaign,
@@ -180,10 +186,9 @@ export function validateLead(input: LeadInput) {
     errors.sourcePage = "Unknown source page.";
   }
   // Design My Bathroom asks only name, phone, address and email; own/rent is optional there.
-  // SMS consent is optional there too (the design is still emailed and Justin may call back about the request).
+  // Consent is required on every form, including Design My Bathroom.
   if (input.sourcePage === "/design") {
     if (!input.homeowner) delete errors.homeowner;
-    delete errors.consent;
   }
   if (input.sourcePage === "/windows") {
     delete errors.project;
@@ -232,7 +237,7 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
   // counted in that cap so QA can run without being locked out, and they never email Justin.
   if (!testLead) {
     const recent = await db.query<{ count: string }>(
-      `SELECT count(*)::text AS count FROM leads WHERE ip = $1 AND created_at > now() - interval '1 hour'`,
+      `SELECT count(*)::text AS count FROM leads WHERE ip = $1 AND created_at > now() - interval '1 hour' AND test IS NOT TRUE`,
       [ip || "unknown"],
     );
     if (Number(recent.rows[0]?.count ?? 0) >= RATE_LIMIT) {
@@ -247,6 +252,7 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
     formPage: input.formPage,
     landingPage: input.landingPage,
     referrer: input.referrer,
+    src: input.src,
     utmSource: input.utmSource,
     utmMedium: input.utmMedium,
     utmCampaign: input.utmCampaign,
@@ -261,9 +267,9 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
         not_sure, width, depth, finish, features, timing, budget, marketing, ip, email_status,
         height, measurements, homeowner, payment, consent, preferred_call_time,
         street, latitude, longitude, consent_at, consent_text,
-        form_page, landing_page, referrer, utm_source, utm_medium, utm_campaign
+        form_page, landing_page, referrer, utm_source, utm_medium, utm_campaign, src, preferred_call_day, test
       ) VALUES (
-        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39
       )`,
       [
         id,
@@ -302,6 +308,9 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
         stored.utmSource,
         stored.utmMedium,
         stored.utmCampaign,
+        stored.src,
+        (input.preferredCallDay || "").trim(),
+        testLead,
       ],
     );
     for (const photo of input.photos) {
@@ -577,6 +586,7 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
     homeowner: input.homeowner,
     payment: input.payment,
     timing: input.timing,
+    preferredCallDay: input.preferredCallDay || "",
     preferredCallTime: input.preferredCallTime,
     finish: input.finish,
     photos: leadPhotos,
@@ -590,6 +600,7 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
     sourcePage: input.sourcePage,
     formPage: input.formPage || "",
     referrer: input.referrer || "",
+    src: input.src || "",
     utmSource: input.utmSource || "",
     utmMedium: input.utmMedium || "",
     utmCampaign: input.utmCampaign || "",
@@ -631,7 +642,8 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
           features: input.features,
           budget: input.budget,
           timing: input.timing,
-          preferredCallTime: input.preferredCallTime,
+          preferredCallDay: input.preferredCallDay || "",
+    preferredCallTime: input.preferredCallTime,
           street: input.street,
           city: input.city,
           zip: input.zip,
@@ -731,6 +743,7 @@ async function notifyLeadExtras(
     homeowner: input.homeowner,
     payment: input.payment,
     timing: input.timing,
+    preferredCallDay: input.preferredCallDay || "",
     preferredCallTime: input.preferredCallTime,
     photos: input.photos,
     photoLinks: input.photos.map((_, index) => leadPhotoUrl(id, index)),

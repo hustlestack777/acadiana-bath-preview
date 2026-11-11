@@ -47,6 +47,39 @@ export const VISIBLE_SERVICES = [
   { name: "Custom tile", serviceType: "Custom tile bathroom remodeling", url: `${SITE_URL}/custom-tile` },
   { name: "Quartz and quartzite countertops", serviceType: "Quartz and quartzite bathroom countertops", url: SITE_URL },
   { name: "Solid surface showers and tub walls", serviceType: "Solid surface bathroom remodeling", url: `${SITE_URL}/solid-surface` },
+  { name: "Window replacement", serviceType: "Window replacement and installation", url: `${SITE_URL}/windows` },
+] as const;
+
+/** Official profiles for schema.org sameAs. */
+export const SITE_SAME_AS = ["https://www.facebook.com/profile.php?id=61596069587015"] as const;
+
+/**
+ * Parishes highlighted on Boogie's service map, plus any parish that contains
+ * one of the 20 town pages. Used as AdministrativeArea nodes in areaServed.
+ * Do not add St. Tammany, Tangipahoa, Orleans, Jefferson, or Beauregard.
+ */
+export const SCHEMA_PARISHES = [
+  "Lafayette",
+  "Iberia",
+  "St. Martin",
+  "Vermilion",
+  "Acadia",
+  "St. Landry",
+  "Calcasieu",
+  "Jefferson Davis",
+  "Evangeline",
+  "Rapides",
+  "East Baton Rouge",
+  "West Baton Rouge",
+  "Iberville",
+  "Ascension",
+  "Assumption",
+  "St. Mary",
+  "Terrebonne",
+  "Lafourche",
+  "Cameron",
+  "Avoyelles",
+  "Pointe Coupee",
 ] as const;
 
 /** Exact service-area sentence for schema descriptions and llms.txt. Do not use in visible marketing copy. */
@@ -96,54 +129,53 @@ export type SchemaPlace = {
 };
 
 const louisiana: SchemaPlace = { "@type": "State", name: "Louisiana" };
-const calcasieu: SchemaPlace = {
-  "@type": "AdministrativeArea",
-  name: "Calcasieu Parish",
-  containedInPlace: louisiana,
+
+function parishPlace(name: string): SchemaPlace {
+  return { "@type": "AdministrativeArea", name: `${name} Parish`, containedInPlace: louisiana };
+}
+
+const PARISH_BY_TOWN: Record<string, (typeof SCHEMA_PARISHES)[number]> = {
+  Lafayette: "Lafayette",
+  Youngsville: "Lafayette",
+  Broussard: "Lafayette",
+  Carencro: "Lafayette",
+  Opelousas: "St. Landry",
+  "New Iberia": "Iberia",
+  Crowley: "Acadia",
+  Jennings: "Jefferson Davis",
+  "Lake Charles": "Calcasieu",
+  Sulphur: "Calcasieu",
+  Westlake: "Calcasieu",
+  "Moss Bluff": "Calcasieu",
+  Alexandria: "Rapides",
+  Pineville: "Rapides",
+  "Baton Rouge": "East Baton Rouge",
+  Gonzales: "Ascension",
+  Prairieville: "Ascension",
+  Plaquemine: "Iberville",
+  Houma: "Terrebonne",
+  Thibodaux: "Lafourche",
 };
 
 function city(name: string, containedInPlace: SchemaPlace = louisiana): SchemaPlace {
   return { "@type": "City", name, containedInPlace };
 }
 
-/** City node for schema areaServed. Lake Charles-area towns stay in Calcasieu Parish. */
+/** City node for schema areaServed, nested in its parish when known. */
 export function cityPlace(name: string): SchemaPlace {
-  if (name === "Lake Charles" || name === "Sulphur" || name === "Westlake" || name === "Moss Bluff") {
-    return city(name, calcasieu);
-  }
-  return city(name);
+  const parish = PARISH_BY_TOWN[name];
+  return parish ? city(name, parishPlace(parish)) : city(name);
 }
 
 /**
- * areaServed for schema: Lafayette/Acadiana core, the I-10 corridor from
- * Calcasieu Parish (Lake Charles, Sulphur, Westlake, Moss Bluff) east to
- * Baton Rouge, Gonzales, Prairieville and Plaquemine, plus Alexandria,
- * Houma and Thibodaux, then other towns already shown on the home page.
- * Do not add North Shore, New Orleans, or DeRidder/Beauregard.
+ * areaServed for schema: every mapped parish as an AdministrativeArea, plus
+ * the 20 town pages as City nodes. Do not add North Shore, New Orleans,
+ * or DeRidder/Beauregard.
  */
 export const SCHEMA_AREA_SERVED: SchemaPlace[] = [
-  city("Lafayette"),
   { "@type": "AdministrativeArea", name: "Acadiana", containedInPlace: louisiana },
-  city("Lake Charles", calcasieu),
-  city("Alexandria"),
-  city("Baton Rouge"),
-  city("Prairieville"),
-  city("Gonzales"),
-  city("Houma"),
-  city("Thibodaux"),
-  ...MAIN_TOWNS.filter(
-    (name) =>
-      ![
-        "Lafayette",
-        "Lake Charles",
-        "Alexandria",
-        "Baton Rouge",
-        "Prairieville",
-        "Gonzales",
-        "Houma",
-        "Thibodaux",
-      ].includes(name),
-  ).map((name) => city(name)),
+  ...SCHEMA_PARISHES.map((name) => parishPlace(name)),
+  ...MAIN_TOWNS.map((name) => cityPlace(name)),
 ];
 
 export const INDEXABLE_PATHS = [

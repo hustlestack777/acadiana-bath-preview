@@ -1,3 +1,5 @@
+import { CallWindowFields } from "@/components/call-window-fields";
+import { consentLabel } from "@/lib/copy";
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ChangeEvent, type Dispatch, type FormEvent, type SetStateAction } from "react";
@@ -83,7 +85,7 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
   const [progress, setProgress] = useState(0);
   const [design, setDesign] = useState<{ id: string; teaser: string | null; capped?: boolean } | null>(null);
   const [reveal, setReveal] = useState<{ before: string; after: string; style: string } | null>(null);
-  const [form, setForm] = useState({ name: "", phone: "", email: "", street: "", city: "", state: "LA", zip: "", latitude: "", longitude: "", smsConsent: false, company_fax: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", street: "", city: "", state: "LA", zip: "", latitude: "", longitude: "", smsConsent: false, preferredCallDay: "", preferredCallTime: "", company_fax: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sending, setSending] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
@@ -219,6 +221,9 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) next.email = "Enter a valid email.";
     if (!/\d/.test(form.street)) next.street = "Enter the street address with the house number.";
     if (!form.city.trim()) next.city = "Enter your town.";
+    if (!form.preferredCallDay) next.preferredCallDay = "Pick the best day for Justin to call.";
+    if (!form.preferredCallTime) next.preferredCallTime = "Pick the best time for Justin to call.";
+    if (!form.smsConsent) next.consent = "Check the box so Acadiana Bathrooms and Countertops can contact you about this request.";
     setErrors(next);
     if (Object.keys(next).length) return;
     setSending(true);
@@ -531,7 +536,7 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
           </div>
           <div className="mt-6 rounded-[1.4rem] border border-border bg-card p-5" data-testid="design-quote">
             <h3 className="font-heading text-2xl">Justin will call you</h3>
-            <p className="mt-2 text-base leading-7 text-muted-foreground">Thanks! Justin has your photos and the look you picked, and will reach out about your free quote.</p>
+            <p className="mt-2 text-base leading-7 text-muted-foreground">You're on Justin's list. He'll call around the time you picked to discuss your project.</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <a href={reveal.after} download="acadiana-bathroom-design.jpg" className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground">
                 Download
@@ -660,9 +665,9 @@ function UnlockForm({
   finePrint,
   submitLabel,
 }: {
-  form: { name: string; phone: string; email: string; street: string; city: string; state: string; zip: string; latitude: string; longitude: string; smsConsent: boolean; company_fax: string };
+  form: { name: string; phone: string; email: string; street: string; city: string; state: string; zip: string; latitude: string; longitude: string; smsConsent: boolean; preferredCallDay: string; preferredCallTime: string; company_fax: string };
   setForm: Dispatch<SetStateAction<{
-    name: string; phone: string; email: string; street: string; city: string; state: string; zip: string; latitude: string; longitude: string; smsConsent: boolean; company_fax: string;
+    name: string; phone: string; email: string; street: string; city: string; state: string; zip: string; latitude: string; longitude: string; smsConsent: boolean; preferredCallDay: string; preferredCallTime: string; company_fax: string;
   }>>;
   errors: Record<string, string>;
   sending: boolean;
@@ -711,10 +716,30 @@ function UnlockForm({
       <Field id="d-email" label="Email" error={errors.email}>
         <input id="d-email" name="email" className={field} type="email" autoComplete="email" value={form.email} aria-invalid={Boolean(errors.email)} onChange={(e) => setForm({ ...form, email: e.target.value })} />
       </Field>
-      <label className="flex items-start gap-3 text-sm leading-6" htmlFor="d-sms">
-        <input id="d-sms" type="checkbox" className="mt-1 size-5 shrink-0" checked={form.smsConsent} onChange={(e) => setForm({ ...form, smsConsent: e.target.checked })} />
-        <span>{designCopy.smsConsent} (Optional)</span>
+      <CallWindowFields
+        day={form.preferredCallDay}
+        time={form.preferredCallTime}
+        onDay={(value) => setForm({ ...form, preferredCallDay: value })}
+        onTime={(value) => setForm({ ...form, preferredCallTime: value })}
+        dayError={errors.preferredCallDay}
+        timeError={errors.preferredCallTime}
+        idPrefix="design-call"
+      />
+      <label className="flex items-start gap-3 text-sm leading-6" htmlFor="d-consent">
+        <input
+          id="d-consent"
+          name="consent"
+          type="checkbox"
+          required
+          aria-required="true"
+          className="mt-1 size-5 shrink-0"
+          checked={form.smsConsent}
+          onChange={(e) => setForm({ ...form, smsConsent: e.target.checked })}
+          aria-invalid={Boolean(errors.consent)}
+        />
+        <span>{consentLabel}</span>
       </label>
+      {errors.consent ? <p className="text-sm text-destructive" role="alert">{errors.consent}</p> : null}
       <button type="submit" disabled={sending} className="h-14 rounded-full bg-primary text-base font-semibold text-primary-foreground disabled:opacity-50" data-testid="design-unlock">
         {submitLabel}
       </button>

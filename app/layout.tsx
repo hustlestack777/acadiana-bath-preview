@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 import "./globals.css";
 import { JsonLd } from "@/components/json-ld";
 import { LeadAttributionTracker } from "@/components/lead-attribution";
 import { businessJsonLd } from "@/lib/schema";
+import { isIndexableHost } from "@/lib/indexable-host";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
 
 
@@ -22,7 +24,7 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-export const metadata: Metadata = {
+const siteMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: "Acadiana Bathrooms and Countertops",
@@ -62,6 +64,15 @@ export const metadata: Metadata = {
     images: ["/brand/og-image.png"],
   },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const host = (await headers()).get("host");
+  const indexable = SITE_INDEXABLE && isIndexableHost(host);
+  return {
+    ...siteMetadata,
+    robots: indexable ? { index: true, follow: true } : { index: false, follow: false },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#f3efe4",

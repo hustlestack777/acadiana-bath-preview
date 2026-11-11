@@ -10,7 +10,7 @@ import { pageCanonical } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Gallery",
   description:
-    "Bathroom remodel looks we can build across Acadiana and South Louisiana, from custom tile to solid surface. Free consult. See your new bathroom with Design My Bathroom.",
+    "Bathroom remodel looks we can build across Acadiana and South Louisiana, from custom tile to solid surface. Free quote. See your new bathroom with Design My Bathroom.",
   alternates: { canonical: pageCanonical("/gallery") },
 };
 

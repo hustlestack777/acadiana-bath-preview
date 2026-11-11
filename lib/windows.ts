@@ -10,7 +10,7 @@ export const WINDOWS_CONSENT_TEXT =
   "By submitting, you agree Acadiana Bathrooms may call or text you about your quote, including automated texts. Msg & data rates may apply. Reply STOP to opt out.";
 
 export const BUTTON_SUB =
-  "Justin will call you to talk through your windows and set up a time to measure.";
+  "Justin will call you to discuss your windows project and set a time to take measurements.";
 
 export const WINDOWS_SOURCE_PAGE = "/windows";
 

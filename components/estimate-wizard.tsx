@@ -13,11 +13,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { appendAttribution } from "@/components/lead-attribution";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
+import { CallWindowFields } from "@/components/call-window-fields";
 import { SaveJustinContact } from "@/components/save-justin-contact";
 import { checkCity, MAIN_TOWNS } from "@/lib/coverage";
 import {
   brand,
-  callTimeNote,
   consentLabel,
   dimensionNote,
   hero,
@@ -70,6 +70,7 @@ const empty = {
   homeowner: "",
   payment: "",
   consent: false,
+  preferredCallDay: "",
   preferredCallTime: "",
 };
 
@@ -153,7 +154,7 @@ export function EstimateWizard() {
       return;
     }
     if (coverage.status !== "supported") return;
-    setCoverageNote(`Thanks. Justin confirms the visit for ${coverage.name}.`);
+    setCoverageNote(`Thanks. We serve ${coverage.name}.`);
     patch({ town: coverage.name });
     go("project");
   }
@@ -240,6 +241,8 @@ export function EstimateWizard() {
     for (const key of ["name", "phone", "email", "preferred", "consent"] as const) {
       if (next[key]) contactErrors[key] = next[key];
     }
+    if (!form.preferredCallDay) contactErrors.preferredCallDay = "Pick the best day for Justin to call.";
+    if (!form.preferredCallTime) contactErrors.preferredCallTime = "Pick the best time for Justin to call.";
     setErrors(contactErrors);
     if (Object.keys(contactErrors).length) {
       const first = Object.keys(contactErrors)[0];
@@ -273,7 +276,8 @@ export function EstimateWizard() {
     body.set("homeowner", form.homeowner);
     body.set("payment", form.payment);
     body.set("consent", String(form.consent));
-    body.set("preferredCallTime", "");
+    body.set("preferredCallDay", form.preferredCallDay);
+    body.set("preferredCallTime", form.preferredCallTime);
     body.set("company_fax", "");
     try {
       const response = await fetch("/api/leads", { method: "POST", body });
@@ -380,7 +384,7 @@ export function EstimateWizard() {
             Prefer a shorter form?{" "}
             <a href="/solid-surface#solid-quote" className="underline underline-offset-4">Solid surface quote</a>
             {" · "}
-            <a href="/custom-tile#tile-quote" className="underline underline-offset-4">Custom tile consult</a>
+            <a href="/custom-tile#tile-quote" className="underline underline-offset-4">Custom tile quote</a>
           </p>
         </div>
       </section>
@@ -397,7 +401,7 @@ export function EstimateWizard() {
 
         {step === "town" ? (
           <form className="mt-8 grid gap-5" onSubmit={checkTown} noValidate>
-            <p tabIndex={-1} data-step-heading className="text-sm font-semibold text-muted-foreground outline-none">1. Where should we visit?</p>
+            <p tabIndex={-1} data-step-heading className="text-sm font-semibold text-muted-foreground outline-none">1. Where's the home?</p>
             <Field id="street" label={lead.addressLabel} error={errors.street} hint={lead.addressHint} hintFirst>
               <AddressAutocomplete
                 id="street"
@@ -639,13 +643,26 @@ export function EstimateWizard() {
                 </RadioGroup>
                 {errors.preferred ? <p className="text-sm text-destructive" role="alert">{errors.preferred}</p> : null}
               </div>
+              <CallWindowFields
+                day={form.preferredCallDay}
+                time={form.preferredCallTime}
+                onDay={(value) => patch({ preferredCallDay: value })}
+                onTime={(value) => patch({ preferredCallTime: value })}
+                dayError={errors.preferredCallDay}
+                timeError={errors.preferredCallTime}
+                idPrefix="estimate-call"
+              />
               <div id="consent" tabIndex={-1} className="rounded-2xl border border-border bg-card p-4 outline-none">
                 <label htmlFor="consent-check" className="flex items-start gap-3 text-sm leading-6">
-                  <Checkbox
+                  <input
                     id="consent-check"
+                    name="consent"
+                    type="checkbox"
+                    required
+                    aria-required="true"
+                    className="mt-1 size-5 shrink-0 accent-[var(--primary)]"
                     checked={form.consent}
-                    onCheckedChange={(checked) => patch({ consent: Boolean(checked) })}
-                    className="mt-1 size-5"
+                    onChange={(event) => patch({ consent: event.target.checked })}
                     aria-invalid={Boolean(errors.consent)}
                   />
                   <span>{consentLabel}</span>
@@ -740,16 +757,6 @@ export function EstimateWizard() {
                 </p>
               ) : (
                 <form className="mt-5 grid gap-6" onSubmit={submitExtras} noValidate>
-                  <Field id="preferredCallTime" label="Pick a good time to call" hint={callTimeNote} error={errors.preferredCallTime}>
-                    <Input
-                      id="preferredCallTime"
-                      value={form.preferredCallTime}
-                      placeholder="Weekday mornings, after 5 PM, Saturday…"
-                      onChange={(event) => patch({ preferredCallTime: event.target.value })}
-                      className={fieldClass}
-                    />
-                  </Field>
-
                   <fieldset className="grid gap-3 outline-none" id="dimensions" tabIndex={-1}>
                     <legend className="text-lg font-heading">Rough size (optional)</legend>
                     <p id="dimensions-hint" className="text-sm leading-6 text-muted-foreground">{dimensionNote}</p>

@@ -12,7 +12,7 @@ import {
   townAreaJsonLd,
 } from "./schema";
 import { MAIN_TOWNS, OUTSIDE_AREA } from "./coverage";
-import { AI_SEARCH_USER_AGENTS, EXCLUDED_SERVICE_AREAS, SCHEMA_PRICE_RANGE, SCHEMA_SERVICE_AREA, SITE_NAME, SITE_PHONE, SITE_SHORT_NAME, SITE_TELEPHONE, VISIBLE_SERVICES } from "./site";
+import { AI_SEARCH_USER_AGENTS, EXCLUDED_SERVICE_AREAS, SCHEMA_PARISHES, SCHEMA_PRICE_RANGE, SCHEMA_SERVICE_AREA, SITE_NAME, SITE_PHONE, SITE_SAME_AS, SITE_SHORT_NAME, SITE_TELEPHONE, VISIBLE_SERVICES } from "./site";
 import { geoFaqs, homeFaqs } from "./faq-page";
 import { buildSitemap } from "./sitemap-config";
 import { townPath, towns } from "./towns";
@@ -50,7 +50,8 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   for (const service of VISIBLE_SERVICES) {
     assert.ok(serviceNames.includes(service.name), service.name);
   }
-  assert.equal(serviceNames.some((name: string) => /window/i.test(name)), false);
+  assert.ok(serviceNames.includes("Window replacement"));
+  assert.deepEqual(data.sameAs, [...SITE_SAME_AS]);
   assert.deepEqual(assertSafeJsonLd(data), []);
   const names = JSON.stringify(data.areaServed);
   for (const city of requiredCities) {
@@ -60,11 +61,19 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
     assert.match(names, new RegExp(city));
   }
   assert.match(names, /Acadiana/);
-  assert.match(names, /Calcasieu Parish/);
+  for (const parish of SCHEMA_PARISHES) {
+    assert.match(names, new RegExp(`${parish} Parish`));
+  }
+  assert.match(names, /Cameron Parish/);
+  assert.match(names, /Avoyelles Parish/);
+  assert.match(names, /Pointe Coupee Parish/);
   assert.equal(data.description.includes(SCHEMA_SERVICE_AREA), true);
   for (const excluded of EXCLUDED_SERVICE_AREAS) {
-    assert.equal(names.includes(excluded), false, excluded);
-    assert.equal(data.description.includes(excluded), false, excluded);
+    // "Jefferson" is Jefferson Parish, not Jefferson Davis Parish on the map.
+    const hit = excluded === "Jefferson" ? names.includes("Jefferson Parish") : names.includes(excluded);
+    assert.equal(hit, false, excluded);
+    const descHit = excluded === "Jefferson" ? data.description.includes("Jefferson Parish") : data.description.includes(excluded);
+    assert.equal(descHit, false, excluded);
   }
 });
 
@@ -75,7 +84,7 @@ test("service JSON-LD is present for both service paths and has no reviews", () 
   assert.equal(tile["@type"], "Service");
   assert.match(solid.url, /\/solid-surface$/);
   assert.match(tile.url, /\/custom-tile$/);
-  assert.match(solid.description, /Lifetime Guarantee/);
+  assert.match(solid.description, /Justin stands behind his work/);
   assert.equal(tile.description.includes("warranty"), false);
   assert.deepEqual(assertSafeJsonLd(solid), []);
   assert.deepEqual(assertSafeJsonLd(tile), []);
@@ -95,15 +104,16 @@ test("FAQPage schema is built only from the visible questions passed in", () => 
   assert.equal(home.mainEntity[0].acceptedAnswer.text, faqs[0].a);
   assert.deepEqual(assertSafeJsonLd(home), []);
   assert.equal(homeFaqs.length, 6);
-  assert.equal(homeFaqs[5].q, "What materials do you use?");
-  assert.match(homeFaqs[5].a, /Onyx is a preferred material/);
+  assert.equal(homeFaqs[5].q, "Do you work outside your service area?");
+  assert.match(homeFaqs[5].a, /Outside our area\? Ask for a quote\./);
   for (const item of homeFaqs) {
     assert.ok(geoFaqs.some((faq) => faq.q === item.q && faq.a === item.a), item.q);
   }
   const cost = geoFaqs.find((faq) => faq.q === "How much does a bathroom remodel cost in South Louisiana?");
   assert.ok(cost);
   assert.match(cost.a, /Starting at \$5K, with most projects \$5K–\$30K\+/);
-  assert.match(cost.a, /See your new bathroom before you spend a dime\. Justin calls you personally and gives your exact price at a free consult\./);
+  assert.match(cost.a, /See your new bathroom before you spend a dime/);
+  assert.match(cost.a, /exact price right there at that visit/);
   assert.equal(cost.link?.text, "See your new bathroom");
   assert.equal(cost.link?.href, "/design");
 });
@@ -158,7 +168,7 @@ test("cleared FAQ and town copy has no windows mentions and town schema is area-
   for (const excluded of EXCLUDED_SERVICE_AREAS) {
     assert.equal(blob.includes(excluded), false, excluded);
   }
-  assert.equal(geoFaqs.length, 12);
+  assert.equal(geoFaqs.length, 16);
   for (const town of towns) {
     const data = townAreaJsonLd(town);
     assert.equal(data["@type"], "WebPage");
@@ -176,6 +186,7 @@ test("llms.txt summarizes the business without banned claims", () => {
   assert.match(text, /\/solid-surface/);
   assert.match(text, /\/custom-tile/);
   assert.match(text, /\/estimate/);
+  assert.match(text, /\/windows/);
   assert.match(text, /Lagniappe Realm Labs LLC/);
   assert.equal(text.includes(SCHEMA_SERVICE_AREA), true);
   for (const excluded of EXCLUDED_SERVICE_AREAS) {
@@ -207,8 +218,23 @@ test("llms.txt summarizes the business without banned claims", () => {
     "weeks",
     "days to complete",
     "aggregateRating",
-    "window",
   ]) {
     assert.equal(text.toLowerCase().includes(banned.toLowerCase()), false, banned);
+  }
+});
+
+test("JSON-LD has no consult or in-home wording, and town meta descriptions are short and unique", () => {
+  const business = JSON.stringify(businessJsonLd());
+  const faqsSchema = JSON.stringify(faqPageJsonLd(geoFaqs));
+  const townSchema = towns.map((town) => JSON.stringify(townAreaJsonLd(town))).join("\n");
+  const blob = [business, faqsSchema, townSchema, JSON.stringify(geoFaqs)].join("\n");
+  assert.equal(/consult/i.test(blob), false);
+  assert.equal(/in your home|in-home|comes to your home/i.test(blob), false);
+  const descriptions = towns.map((town) => town.description);
+  assert.equal(new Set(descriptions).size, towns.length);
+  for (const town of towns) {
+    assert.ok(town.description.length <= 180, town.slug);
+    assert.match(town.description, new RegExp(town.name));
+    assert.equal(/consult|in your home|older home/i.test(town.description), false, town.slug);
   }
 });

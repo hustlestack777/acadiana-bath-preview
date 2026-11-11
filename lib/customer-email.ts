@@ -11,6 +11,7 @@ import {
 import { withTestSubject } from "./lead-notify";
 import { parseFeatures, type LeadEmailAttachment, type LeadEmailPhoto } from "./lead-email";
 import { EMAIL, esc, eyebrow, panel, para, pillButton, rowsTable, sectionTitle, shell, testBanner, type Row } from "./email-layout";
+import { callWindowLabel } from "./call-window";
 import { SITE_URL } from "./site";
 
 /** What the customer told us, shown back to them so they have it saved. */
@@ -34,7 +35,7 @@ export type CustomerConfirmationInput = {
   test?: boolean;
 };
 
-const DESIGN_FINE_PRINT = "Design preview. Final pricing at your free consult.";
+const DESIGN_FINE_PRINT = "Design preview. You get your exact price right there at the measurement visit.";
 
 /** Default recap for /estimate and the quick-quote path forms, built from the saved lead. */
 export function recapFromLead(input: {
@@ -47,6 +48,7 @@ export function recapFromLead(input: {
   features: string;
   budget: string;
   timing: string;
+  preferredCallDay?: string;
   preferredCallTime: string;
   street: string;
   city: string;
@@ -66,7 +68,7 @@ export function recapFromLead(input: {
     ...parsed.rows.filter(keep),
     ...budget.rows.filter((row) => !/skipped/i.test(row.value ?? "")),
     { label: "Timing", value: timingLabel(input.timing) },
-    { label: "Best time to call", value: input.preferredCallTime.trim() },
+    { label: "Call window", value: callWindowLabel(input.preferredCallDay || "", input.preferredCallTime.trim()) || input.preferredCallTime.trim() },
     { label: "Address", value: place },
     { label: "Photos", value: input.photoCount ? `${input.photoCount} sent` : "" },
     ...(parsed.notes.length ? [{ label: "Your notes", value: parsed.notes.join("\n") }] : []),
@@ -92,7 +94,7 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
     : isWindows
       ? "Thanks for requesting a window quote. Here’s your ballpark and what you told us, so you have it saved."
       : "Thanks for reaching out about your bathroom. Here’s a recap of what you sent, so you have it saved.";
-  const next = `Justin will call you soon${callAt} to talk through it${isWindows ? " and set up a time to measure" : ""}.`;
+  const next = "You're on Justin's list. He'll call around the time you picked to discuss your project.";
   const nextText = next;
 
   const before = isDesign ? input.photos?.[0] : undefined;

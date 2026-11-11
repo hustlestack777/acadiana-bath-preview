@@ -14,7 +14,7 @@ const LINKS = [
   { href: "/solid-surface", label: "Solid surface" },
   { href: "/custom-tile", label: "Custom tile" },
   { href: "/custom-tile#grout", label: "Grout colors" },
-  { href: "#ideas", label: "Ideas" },
+  { href: "/#ideas", label: "Ideas" },
   { href: "/gallery", label: "Gallery" },
   { href: "/faq", label: "FAQ" },
 ];
@@ -52,6 +52,15 @@ export function SiteHeader() {
     return pathname === "/" ? hash : `/${hash}`;
   }
 
+  function goHome(event: { preventDefault: () => void }) {
+    if (pathname !== "/") return;
+    event.preventDefault();
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    if (window.location.hash || window.location.search || window.location.pathname !== "/") {
+      window.history.replaceState(null, "", "/");
+    }
+  }
+
   return (
     <header
       className={cn(
@@ -63,7 +72,7 @@ export function SiteHeader() {
         Skip to content
       </a>
       <div className={cn("mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-5 sm:gap-4", scrolled ? "py-2" : "py-3 sm:py-3.5")}>
-        <Link href="/" aria-label={brand.name} className={cn("min-w-0", overHero ? "text-[#f6f1e6]" : undefined)}>
+        <Link href="/" aria-label={brand.name} className={cn("min-w-0", overHero ? "text-[#f6f1e6]" : undefined)} onClick={goHome}>
           <MaisonLogo compact={!overHero} onDark={overHero} />
         </Link>
         <nav className="hidden items-center gap-5 lg:flex" aria-label="Primary">
@@ -122,7 +131,9 @@ export function SiteHeader() {
       {open ? (
         <div id="mobile-nav" className="fixed inset-0 z-50 overflow-y-auto bg-background px-5 py-4 text-foreground md:hidden">
           <div className="flex items-center justify-between">
-            <MaisonLogo />
+            <Link href="/" aria-label={brand.name} onClick={(event) => { goHome(event); setOpen(false); }}>
+              <MaisonLogo />
+            </Link>
             <button
               type="button"
               className="inline-flex size-11 items-center justify-center rounded-full border border-border"

@@ -161,15 +161,15 @@ test("assistant answers stay inside the published facts", () => {
     assert.equal(/\$\s?\d/.test(withoutRange), false, output);
     assert.equal(withoutRange.includes("5,000") || withoutRange.includes("5000"), false);
   }
-  assert.match(replyTo("What is the product warranty?"), /Justin stands behind his work|Lifetime Guarantee/);
-  assert.match(replyTo(`what is your ${pledge}?`), /Justin stands behind his work|Ask Justin for the details at your free consult/);
+  assert.match(replyTo("What is the product warranty?"), /Justin stands behind his work/);
+  assert.match(replyTo(`what is your ${pledge}?`), /Justin stands behind his work/);
   assert.match(replyTo("Is it natural stone?"), /solid surface/i);
   assert.match(replyTo("how much"), /Starting at \$5K/);
   assert.match(replyTo("how much"), /\$5K–\$30K\+/);
   assert.match(replyTo("are you a person"), /AI assistant/i);
   assert.match(replyTo("are you a person"), /Gigi/);
   assert.match(CHAT_ANSWERS.disclosure, /Hey! I’m Gigi\. I can give you a ballpark price/);
-  assert.match(CHAT_ANSWERS.disclosure, /Justin, the owner/);
+  assert.match(CHAT_ANSWERS.disclosure, /from Justin/);
   assert.equal(/AI assistant/i.test(CHAT_ANSWERS.disclosure), false);
   assert.match(replyTo("What's a ballpark price?"), /Starting at \$5K/);
   assert.match(replyTo("What's a ballpark price?"), /What are you thinking about/);
@@ -291,20 +291,15 @@ test("Gigi explains the process the same way for free-typed questions", () => {
   const house = replyTo("do you come to my house?");
   const after = replyTo("what happens after I submit?");
   assert.equal(how, GIGI_PROCESS);
-  assert.match(how, /Justin calls you first to discuss your project, then sets a time to take measurements\./);
-  assert.match(how, /He walks you through materials and design options/);
-  assert.match(how, /You choose what you like and get your exact price/);
+  assert.match(how, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(how, /give you your exact price/);
   assert.match(how, /Justin manages your project from design to the finished bathroom/);
-  assert.match(house, /Justin calls you first to discuss your project, then sets a time to take measurements\./);
-  assert.match(house, /He walks you through materials and design options/);
-  assert.match(house, /You choose what you like and get your exact price/);
+  assert.match(house, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.equal(/comes to your home for|in-home consult|free consult/i.test(house), false);
   assert.match(after, /After you submit/);
-  assert.match(after, /Justin calls you first to discuss your project, then sets a time to take measurements\./);
-  assert.match(after, /He walks you through materials and design options/);
-  assert.match(after, /You choose what you like and get your exact price/);
+  assert.match(after, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(after, /Justin manages your project from design to the finished bathroom/);
-  assert.match(GIGI_SYSTEM_PROMPT, /Justin calls you first to discuss your project, then sets a time to take measurements\./);
+  assert.match(GIGI_SYSTEM_PROMPT, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(GIGI_SYSTEM_PROMPT, /trusted advisor/);
 });
 
@@ -323,7 +318,7 @@ test("Gigi reads FAQ answers and cleans phrasing she should not use", () => {
   const dirty = `Starting at $5K. Justin comes to your home for the ${word}. He will talk it through and give you a lifetime guarantee.`;
   const clean = speakFromFaq(dirty);
   assert.match(clean, /Starting at \$5K/);
-  assert.match(clean, /Justin calls you first to discuss your project, then sets a time to take measurements\./);
+  assert.match(clean, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.equal(new RegExp(word, "i").test(clean), false, clean);
   assert.equal(/talk through|lifetime/i.test(clean), false, clean);
   assert.match(CHAT_ANSWERS.cost, /Starting at \$5K/);

@@ -2,13 +2,11 @@ import type { Metadata } from "next";
 import { SiteShell } from "@/components/site-shell";
 import { DesignTool } from "@/components/design/design-tool";
 import { designCopy } from "@/lib/design-styles";
-import { pageCanonical, siteRobots } from "@/lib/site";
+import { pageCanonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Design My Bathroom",
-  description: "Pick a look, snap your shower, and see your new bathroom in your own space before you spend a dime. Free consult across Acadiana and South Louisiana.",
-  robots: siteRobots,
-
+  description: "Pick a look, snap your shower, and see your new bathroom in your own space before you spend a dime. Free quote across Acadiana and South Louisiana.",
   alternates: { canonical: pageCanonical("/design") },
 };
 

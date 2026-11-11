@@ -214,7 +214,7 @@ export const designCopy = {
   headline: "Your new bathroom, before you spend a dime.",
   sub: "Pick a look, snap your shower, and see it come to life in your own space.",
   /** The only fine print in the tool (Shaun, 11/10/2026). */
-  finePrint: "Design preview. Final pricing at your free consult.",
+  finePrint: "Design preview. You get your exact price right there at the measurement visit.",
   tips: "Stand in the doorway, phone at chest height, lights on, whole shower in frame.",
   steps: ["Scanning your bathroom…", "Clearing the clutter…", "Designing…", "Polishing…", "Checking every detail…"],
   /** Shown instead of an image when no render passes the automatic QA check. */
@@ -222,7 +222,7 @@ export const designCopy = {
   customBody: (look: string) =>
     `Your bathroom deserves a closer look than our quick preview can give. Tell us where to send it, and Justin will design the ${look} look for your space himself.`,
   customThanks: (look: string) =>
-    `Justin has your photos and the ${look} look you picked. He'll put together a custom design for your bathroom and reach out about your free quote.`,
+    `You're on Justin's list. He'll call around the time you picked to discuss your project. He'll also put together a custom design for the ${look} look you picked.`,
   smsConsent:
     "Yes, Acadiana Bathrooms and Countertops may call or text me about my project at the number above, including automated texts. Consent isn't a condition of purchase. Msg & data rates may apply. Reply STOP to opt out.",
   privacy:

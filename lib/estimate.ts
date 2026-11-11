@@ -54,7 +54,7 @@ export function validateZip(zip: string) {
   return "";
 }
 
-/** Validate the 4-step consult form (before extras). Dimensions stay optional. */
+/** Validate the 4-step quote form (before extras). Dimensions stay optional. */
 export function validateDetails(input: DetailInput) {
   const errors: Record<string, string> = {};
 
@@ -119,9 +119,9 @@ export function validateDetails(input: DetailInput) {
   if (input.preferred !== "phone" && input.preferred !== "email") {
     errors.preferred = "Choose phone or email as the way to reach you.";
   } else if (input.preferred === "phone" && phoneDigits.length < 7) {
-    errors.phone = "Enter the phone number you want used for this consult.";
+    errors.phone = "Enter the phone number you want used for this quote.";
   } else if (input.preferred === "email" && !emailOk(input.email)) {
-    errors.email = "Enter the email you want used for this consult.";
+    errors.email = "Enter the email you want used for this quote.";
   }
 
   if (!input.consent) {

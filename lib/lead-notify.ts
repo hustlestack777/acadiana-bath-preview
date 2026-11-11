@@ -44,10 +44,13 @@ export function shouldTextLead(phone: string, email: string) {
   return !isTeamTestLead(phone, email);
 }
 
+export const TEST_SUBJECT_PREFIX = "TEST – ";
+
 export function withTestSubject(subject: string, test: boolean) {
   const trimmed = subject.trim();
   if (!test) return trimmed;
-  return /^\s*\[TEST\b/i.test(trimmed) ? trimmed : `[TEST] ${trimmed}`;
+  const without = trimmed.replace(/^\s*(?:\[TEST[^\]]*\]|TEST)\s*[–-]?\s*/i, "");
+  return `${TEST_SUBJECT_PREFIX}${without}`;
 }
 
 function uniqueAddresses(addresses: string[]) {

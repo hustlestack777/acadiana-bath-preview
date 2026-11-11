@@ -23,9 +23,10 @@ ${SITE_NAME} is a bathroom remodeling company based in Lafayette, Louisiana. Own
 - Solid surface showers and tub walls, including tub-to-shower conversions (${SITE_URL}/solid-surface). ${solidPath.warranty}
 - Custom tile showers and bathrooms, including zellige, patterned floors and grout colors you choose (${SITE_URL}/custom-tile)
 - Bathroom design previews from your own photos (${SITE_URL}/design)
-- Free Consult (${SITE_URL}/estimate)
+- Free Quote (${SITE_URL}/estimate)
+- Window estimates (${SITE_URL}/windows)
 
-${heroQuoteLine} Most projects $5K–$30K+. Your free consult gets you an exact number.
+${heroQuoteLine} Most projects $5K–$30K+. Tell us about your project and the best day and time to reach you. Justin calls you first to discuss your project, then sets a time to come out to your home to take measurements, go over your design options and give you your exact price. When you're ready to move forward, Justin manages your project from design to the finished bathroom.
 
 ## Service area
 ${SCHEMA_SERVICE_AREA}
@@ -38,7 +39,8 @@ ${page("/solid-surface", "Solid surface showers and tub walls")}
 ${page("/custom-tile", "Custom tile showers and bathrooms")}
 ${page("/gallery", "Gallery")}
 ${page("/design", "Design My Bathroom")}
-${page("/estimate", "Free Consult")}
+${page("/estimate", "Free Quote")}
+${page("/windows", "Window estimate")}
 ${page("/faq", "FAQ")}
 ${page("/areas", "Areas we serve")}
 ${page("/privacy", "Privacy Policy")}

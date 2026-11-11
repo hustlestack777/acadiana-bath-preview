@@ -12,7 +12,7 @@ import { pageCanonical } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Custom tile showers and bathrooms",
   description:
-    "Custom tile showers and bathrooms across Acadiana and South Louisiana: zellige, patterned floors and grout colors you choose. Free consult. See your new bathroom with Design My Bathroom.",
+    "Custom tile showers and bathrooms across Acadiana and South Louisiana: zellige, patterned floors and grout colors you choose. Free quote. See your new bathroom with Design My Bathroom.",
 
   alternates: { canonical: pageCanonical("/custom-tile") },
 };
@@ -60,11 +60,11 @@ export default function CustomTilePage() {
 
         <section id="tile-quote" className="scroll-mt-24 mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 md:grid-cols-12 md:py-28">
           <div className="md:col-span-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Free consult</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Free quote</p>
             <h2 className="mt-3 text-4xl md:text-5xl">{tilePath.formTitle}</h2>
             <p className="mt-4 leading-7 text-muted-foreground">{tilePath.formBody}</p>
             <p className="mt-6 text-sm">
-              Rather talk? <a className="font-medium underline underline-offset-4" href={brand.phoneHref}>{brand.phone}</a>
+              Rather discuss your project? <a className="font-medium underline underline-offset-4" href={brand.phoneHref}>{brand.phone}</a>
               {" · "}
               <a className="underline underline-offset-4" href={brand.emailHref}>{brand.email}</a>
             </p>

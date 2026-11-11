@@ -1,5 +1,6 @@
 import { ConsultLink } from "@/components/consult-link";
 import { DesignLink } from "@/components/design-link";
+import { CoverageMap } from "@/components/coverage-map";
 import { brand, hero, heroDesignCta } from "@/lib/copy";
 import { MAIN_TOWNS, OUTSIDE_AREA, SERVICE_AREA } from "@/lib/coverage";
 import { townPath, towns } from "@/lib/towns";
@@ -12,6 +13,7 @@ export function AreasPage() {
         <h1 className="mt-3 max-w-4xl font-heading text-4xl leading-[1.05] md:text-6xl">Areas we serve</h1>
         <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">{SERVICE_AREA}</p>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-muted-foreground">{OUTSIDE_AREA}</p>
+        <CoverageMap size="full" />
       </section>
       <section className="mx-auto w-full max-w-6xl px-5 pb-16">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brass">Towns we serve include</p>

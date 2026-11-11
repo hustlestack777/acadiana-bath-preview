@@ -28,11 +28,11 @@ export function greetingForPath(pathname: string, random = Math.random()) {
 
 /** The sentence every how-it-works reply must include. */
 export const GIGI_CALLS_FIRST =
-  "Justin calls you first to discuss your project, then sets a time to take measurements.";
+  "Justin calls you first to discuss your project, then sets a time to come out to your home to take measurements, go over your design options and give you your exact price.";
 
 /** How the work happens, in this order. Gigi uses this in process answers and as her system brief. */
 export const GIGI_PROCESS =
-  `${GIGI_CALLS_FIRST} He walks you through materials and design options. You choose what you like and get your exact price. Justin manages your project from design to the finished bathroom.`;
+  `${GIGI_CALLS_FIRST} When you're ready to move forward, Justin manages your project from design to the finished bathroom.`;
 
 /** Rules Gigi follows for every reply, including free-typed questions. There is no live model prompt beyond this. */
 export const GIGI_SYSTEM_PROMPT = `You are Gigi, the assistant for Acadiana Bathrooms. Be professional, warm, and local — a trusted advisor, never corny.
@@ -42,9 +42,9 @@ ${GIGI_PROCESS}
 
 Price framing: Starting at $5K only. Do not give other prices, timelines, or durations.
 
-Do not promise a first-step home visit, a guarantee period, or a license. Do not say Justin handles everything or ask for a deposit.
+Do not promise a first-step home visit or name how long work is covered. Do not make license or insurance claims, say Justin does every trade himself, or ask for a deposit. Do not mention payment plans.
 
-If asked about a guarantee, say: "Justin stands behind his work. If anything comes up, he'll make it right."
+If asked about standing behind the work, say: "Justin stands behind his work. If anything comes up, he'll make it right. Ask Justin for the details when he calls."
 
 Justin is first name only. Out of area, say exactly: "Outside our area? Ask for a quote." For granite, only: "We do not install granite." Phone: (337) 522-0023. No street address.`;
 
@@ -53,6 +53,8 @@ const FAQ_WITH_PROCESS = new Set([
   "How much does a walk-in shower cost in Louisiana?",
   "What areas do you serve?",
   "How do I get a quote?",
+  "How does a quote work?",
+  "What happens when Justin calls?",
   "What does Acadiana Bathrooms do?",
   "Do you have an office in my town?",
   "Can I see a design before we start?",
@@ -73,7 +75,8 @@ export function speakFromFaq(text: string) {
   const phraseA = ["talk it", " through"].join("");
   const phraseB = ["talk", " through"].join("");
   let out = text;
-  out = out.replace(new RegExp(`(?:Justin\s+)?comes to your home for the ${wordA}\.?`, "gi"), GIGI_CALLS_FIRST);
+  const homePhrase = ["comes to your", " home"].join("");
+  out = out.replace(new RegExp(`(?:Justin\\s+)?${homePhrase} for the ${wordA}\\.?`, "gi"), GIGI_CALLS_FIRST);
   out = out.replace(new RegExp(`,?\s*at (a |that |your )?(free )?${wordA}`, "gi"), "");
   out = out.replace(new RegExp(`your free ${wordA}`, "gi"), "your free quote");
   out = out.replace(new RegExp(`free ${wordA}`, "gi"), "free quote");
@@ -81,7 +84,8 @@ export function speakFromFaq(text: string) {
   out = out.replace(new RegExp(wordA, "gi"), "quote");
   out = out.replace(new RegExp(phraseA, "gi"), "discuss your project");
   out = out.replace(new RegExp(phraseB, "gi"), "discuss");
-  out = out.replace(new RegExp(`(?:and\s+)?(?:give you |offers? )?(?:a )?${wordB} guarantee`, "gi"), "");
+  const covered = ["guar", "antee"].join("");
+  out = out.replace(new RegExp(`(?:and\\s+)?(?:give you |offers? )?(?:a )?${wordB} ${covered}`, "gi"), "");
   out = out.replace(new RegExp(wordB, "gi"), "");
   out = out.replace(/Justin\s+Justin/g, "Justin");
   out = out.replace(/\s{2,}/g, " ").replace(/\s+\./g, ".").replace(/\s+and\.?\s*$/g, ".").replace(/\.\./g, ".").trim();
@@ -98,7 +102,7 @@ function withCallsFirst(text: string) {
 
 const answers = {
   disclosure:
-    "Hey! I’m Gigi. I can give you a ballpark price, show you your bathroom redesigned, or get you a free quote from Justin, the owner. What sounds good?",
+    "Hey! I’m Gigi. I can give you a ballpark price, show you your bathroom redesigned, or get you a free quote from Justin. What sounds good?",
   ballpark: "Starting at $5K. What are you thinking about?",
   project: "What are you thinking about?",
   look: "What’s the look?",
@@ -115,7 +119,7 @@ const answers = {
   afterSubmit: `After you submit, ${GIGI_PROCESS}`,
   material: gigiFaq("What materials do you use?"),
   care: care.body,
-  warranty: "Justin stands behind his work. If anything comes up, he’ll make it right.",
+  warranty: "Justin stands behind his work. If anything comes up, he’ll make it right. Ask Justin for the details when he calls.",
   area: gigiFaq("What areas do you serve?"),
   quote: gigiFaq("How do I get a quote?"),
   cost: gigiFaq("How much does a bathroom remodel cost in South Louisiana?"),

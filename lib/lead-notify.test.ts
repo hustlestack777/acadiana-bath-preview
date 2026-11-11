@@ -68,17 +68,17 @@ test("real leads go To Justin and CC Shaun; test leads go to Shaun only", () => 
 });
 
 test("test subjects get a single [TEST] prefix", () => {
-  assert.equal(withTestSubject("New consult · Ada · Lafayette", true), "[TEST] New consult · Ada · Lafayette");
-  assert.equal(withTestSubject("[TEST] New consult · Ada · Lafayette", true), "[TEST] New consult · Ada · Lafayette");
-  assert.equal(withTestSubject("[TEST v2] New consult · Ada · Lafayette", true), "[TEST v2] New consult · Ada · Lafayette");
+  assert.equal(withTestSubject("New consult · Ada · Lafayette", true), "TEST – New consult · Ada · Lafayette");
+  assert.equal(withTestSubject("TEST – New consult · Ada · Lafayette", true), "TEST – New consult · Ada · Lafayette");
+  assert.equal(withTestSubject("[TEST v2] New consult · Ada · Lafayette", true), "TEST – New consult · Ada · Lafayette");
   assert.equal(withTestSubject("New consult · Ada · Lafayette", false), "New consult · Ada · Lafayette");
 });
 
 test("the customer confirmation is short, signed, and has no banned claims", () => {
   const email = buildCustomerConfirmation({ name: "Adam Bomb", sourcePage: "/estimate", test: true });
-  assert.equal(email.subject, "[TEST] We got your request");
+  assert.equal(email.subject, "TEST – We got your request");
   assert.match(email.text, /Hi Adam/);
-  assert.match(email.text, /Justin will call you soon/);
+  assert.match(email.text, /You're on Justin's list/);
   assert.match(email.text, /Acadiana Bathrooms and Countertops/);
   assert.match(email.text, /\(337\) 522-0023/);
   assert.match(email.html, /tel:\+13375220023/);
@@ -96,7 +96,7 @@ test("the customer confirmation is short, signed, and has no banned claims", () 
       { filename: "after.jpg", contentType: "image/jpeg", bytes: Buffer.from("bbbb") },
     ],
   });
-  assert.equal(design.subject, "[TEST] We got your bathroom design");
+  assert.equal(design.subject, "TEST – We got your bathroom design");
   assert.match(design.html, /cid:design-before/);
   assert.match(design.html, /cid:design-after/);
   assert.match(design.html, /Your bathroom/);

@@ -1,30 +1,21 @@
-import Image from "next/image";
 import { PhotoGallery } from "@/components/photo-gallery";
 import { Hero } from "@/components/hero";
 import { ConsultLink } from "@/components/consult-link";
-import Link from "next/link";
 import { IdeasSection, PathChooser } from "@/components/path-sections";
 import { DesignLink } from "@/components/design-link";
 import { InspiringRow, ShopLooks } from "@/components/look-strips";
-import { FaqSection } from "@/components/faq-section";
-import { homeFaqs } from "@/lib/faq-page";
+import { CoverageMap } from "@/components/coverage-map";
 import {
   area,
   brand,
-  care,
   close,
-  editorial,
   gallery,
   hero,
   heroDesignCta,
-  material,
-  reasons,
   steps,
   stepsTitle,
   talk,
 } from "@/lib/copy";
-import { MAIN_TOWNS } from "@/lib/coverage";
-import { townPath, towns } from "@/lib/towns";
 import { homeGalleryPhotos } from "@/lib/images";
 
 export function HomePage() {
@@ -38,68 +29,20 @@ export function HomePage() {
 
       <InspiringRow />
 
-      <section id="intro" className="rise scroll-mt-28 mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-20 md:grid-cols-12 md:py-28">
-        <div className="md:col-span-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">{editorial.eyebrow}</p>
-          <h2 className="mt-4 text-4xl leading-[1.05] md:text-6xl">{editorial.title}</h2>
-          <p className="mt-6 max-w-md text-lg leading-8 text-muted-foreground">{editorial.body}</p>
-          <p className="mt-6 text-sm">
-            <a href={brand.websiteHref} className="underline underline-offset-4">
-              {brand.website}
-            </a>
-          </p>
-        </div>
-        <div className="relative md:col-span-6">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem]">
-            <Image
-              src="/images/home/curbless.webp"
-              alt="Curbless walk-in shower with limestone-look tile running level into the shower, a linear drain, and a teak bench."
-              fill
-              sizes="(min-width: 768px) 40vw, 100vw"
-              loading="lazy"
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="rise mx-auto w-full max-w-6xl px-5 pb-8" aria-label="Why these showers">
-        <div className="grid gap-4 md:grid-cols-3">
-          {reasons.map((reason, index) => (
-            <article key={reason.title} className="rounded-[1.4rem] border border-border bg-card p-6">
-              <p className="font-heading text-3xl text-primary">0{index + 1}</p>
-              <h2 className="mt-3 text-2xl">{reason.title}</h2>
-              <p className="mt-3 leading-7 text-muted-foreground">{reason.body}</p>
-            </article>
+      <section id="process" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">How it works</p>
+        <h2 className="mt-3 text-4xl md:text-5xl">{stepsTitle}</h2>
+        <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map((step, index) => (
+            <li key={step.title} className="rounded-[1.4rem] border border-border bg-card p-6">
+              <span className="inline-flex size-12 items-center justify-center rounded-full bg-primary font-heading text-xl text-primary-foreground">
+                {index + 1}
+              </span>
+              <h3 className="mt-5 text-2xl">{step.title}</h3>
+              {step.body ? <p className="mt-3 leading-7 text-muted-foreground">{step.body}</p> : null}
+            </li>
           ))}
-        </div>
-      </section>
-
-      <section id="surface" className="rise scroll-mt-28 mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 md:grid-cols-12 md:py-24">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem] md:col-span-5">
-          <Image
-            src="/images/shower-niche.webp"
-            alt="Speckled shower with a tall niche, bench, and handheld shower."
-            fill
-            sizes="(min-width: 768px) 40vw, 100vw"
-              loading="lazy"
-            className="object-cover"
-          />
-        </div>
-        <div className="md:col-span-7">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">The surface</p>
-          <h2 className="mt-3 text-4xl md:text-5xl">{material.title}</h2>
-          <p className="mt-5 text-lg leading-8">{material.body}</p>
-          <p className="mt-4 leading-7 text-muted-foreground">{material.close}</p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/solid-surface" className="inline-flex h-12 items-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground">
-              Solid surface path →
-            </Link>
-            <Link href="/custom-tile" className="inline-flex h-12 items-center rounded-full border border-border bg-card px-6 text-sm font-semibold">
-              Custom tile path →
-            </Link>
-          </div>
-        </div>
+        </ol>
       </section>
 
       <section id="gallery" className="rise scroll-mt-28 bg-[#eae6d8]">
@@ -112,134 +55,45 @@ export function HomePage() {
 
       <IdeasSection />
 
-      <section id="process" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">How it works</p>
-        <h2 className="mt-3 text-4xl md:text-5xl">{stepsTitle}</h2>
-        <ol className="mt-10 grid gap-4 md:grid-cols-3">
-          {steps.map((step, index) => (
-            <li key={step.title} className="rounded-[1.4rem] border border-border bg-card p-6">
-              <span className="inline-flex size-12 items-center justify-center rounded-full bg-primary font-heading text-xl text-primary-foreground">
-                {index + 1}
-              </span>
-              <h3 className="mt-5 text-2xl">{step.title}</h3>
-              <p className="mt-3 leading-7 text-muted-foreground">{step.body}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section id="care" className="rise scroll-mt-28 bg-sage-wash">
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-8 px-5 py-16 md:grid-cols-2 md:py-24">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Care</p>
-            <h2 className="mt-3 text-4xl md:text-5xl">{care.title}</h2>
-            <p className="mt-5 text-lg leading-8">{care.body}</p>
-          </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[1.6rem]">
-            <Image
-              src="/images/finish-shiplap.webp"
-              alt="Shiplap-style shower panels with recessed niches."
-              fill
-              sizes="(min-width: 768px) 45vw, 100vw"
-              loading="lazy"
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </section>
-
       <section id="area" className="rise scroll-mt-28 bg-secondary text-secondary-foreground">
         <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass-soft">Service area</p>
           <h2 className="mt-3 max-w-2xl text-4xl md:text-5xl">{area.title}</h2>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-fig-muted">{area.intro}</p>
-          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-brass-soft">{area.townsLabel}</p>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {MAIN_TOWNS.map((town) => {
-              const page = towns.find((item) => item.name === town);
-              const className = "rounded-full border border-white/20 px-3 py-1.5 text-sm";
-              return (
-                <li key={town}>
-                  {page ? (
-                    <a href={townPath(page.slug)} className={`${className} underline-offset-4 hover:underline`}>
-                      {town}
-                    </a>
-                  ) : (
-                    <span className={className}>{town}</span>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+          <CoverageMap size="compact" />
+          <p className="mt-8">
+            <a href="/areas" className="font-medium underline underline-offset-4">
+              See every town we serve
+            </a>
+          </p>
           <p className="mt-4 max-w-2xl text-sm leading-6 text-fig-muted">{area.outside}</p>
         </div>
       </section>
 
-      <FaqSection faqs={homeFaqs} moreHref="/faq" moreLabel="See all questions" />
-
-      <section id="talk" className="rise scroll-mt-28 mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 md:grid-cols-2 md:py-24">
-        <div>
-          <h2 className="text-4xl md:text-5xl">{talk.title}</h2>
-          <p className="mt-4 max-w-md leading-7 text-muted-foreground">{talk.body}</p>
-        </div>
-        <div className="rounded-[1.6rem] border border-border bg-card p-7">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brass">Prefer to write or call?</p>
-          <ConsultLink
-            className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-medium text-primary-foreground"
-          >
-            {hero.primary}
-          </ConsultLink>
-          <DesignLink
-            className="mt-3 inline-flex h-12 items-center justify-center rounded-full border border-border bg-background px-6 text-base font-semibold"
-          >
-            {heroDesignCta}
-          </DesignLink>
-          <p className="mt-4">
-            <a href={brand.phoneHref} className="text-sm font-semibold underline underline-offset-4">{brand.phone}</a>
-          </p>
-          <p className="mt-2">
-            <a href={brand.emailHref} className="underline underline-offset-4">
-              {brand.email}
-            </a>
-          </p>
-          <p className="mt-2">
-            <a href={brand.websiteHref} className="underline underline-offset-4">
-              {brand.website}
-            </a>
-          </p>
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden bg-[#14261f] text-[#f6f1e6]">
-        <Image
-          src="/images/home/twin-arch.webp"
-          alt=""
-          fill
-          sizes="100vw"
-              loading="lazy"
-          className="object-cover opacity-40"
-        />
-        <div className="absolute inset-0 bg-[#14261f]/55" />
+      <section id="talk" className="relative overflow-hidden bg-[#14261f] text-[#f6f1e6]">
         <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 py-20 md:flex-row md:items-end md:justify-between md:py-28">
           <div>
             <h2 className="max-w-xl text-4xl md:text-6xl">{close.title}</h2>
             <p className="mt-4 max-w-xl text-lg leading-8 text-white/85">{close.body}</p>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-white/75">
+              {talk.title} {talk.body}{" "}
+              <a href="/faq" className="font-medium underline underline-offset-4">
+                Questions? See the FAQ
+              </a>
+              .
+            </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <ConsultLink
-              className="inline-flex h-12 items-center justify-center rounded-full bg-[#f6f1e6] px-6 text-base font-medium text-[#1c241c]"
-            >
+            <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-[#f6f1e6] px-6 text-base font-medium text-[#1c241c]">
               {hero.primary}
             </ConsultLink>
-            <DesignLink
-              className="inline-flex h-12 items-center justify-center rounded-full border border-white/70 px-6 text-base font-medium"
-            >
+            <DesignLink className="inline-flex h-12 items-center justify-center rounded-full border border-white/70 px-6 text-base font-medium">
               {heroDesignCta}
             </DesignLink>
+            <a href={brand.phoneHref} className="text-sm font-semibold text-white underline underline-offset-4">
+              {brand.phone}
+            </a>
           </div>
-          <a href={brand.phoneHref} className="mt-3 text-sm font-semibold text-white underline underline-offset-4 sm:mt-0">
-            {brand.phone}
-          </a>
         </div>
       </section>
     </main>

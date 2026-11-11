@@ -70,6 +70,7 @@ export async function POST(request: Request) {
     formPage: text(form, "formPage") || text(form, "sourcePage") || "/estimate",
     landingPage: text(form, "landingPage"),
     referrer: text(form, "referrer"),
+    src: text(form, "src"),
     utmSource: text(form, "utmSource"),
     utmMedium: text(form, "utmMedium"),
     utmCampaign: text(form, "utmCampaign"),
@@ -96,6 +97,7 @@ export async function POST(request: Request) {
     homeowner: text(form, "homeowner"),
     payment: text(form, "payment"),
     consent: text(form, "consent") === "true",
+    preferredCallDay: text(form, "preferredCallDay"),
     preferredCallTime: text(form, "preferredCallTime"),
     photos,
   };

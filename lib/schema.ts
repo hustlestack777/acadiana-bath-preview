@@ -15,6 +15,7 @@ import {
   SITE_PHONE,
   SITE_SHORT_NAME,
   SITE_TELEPHONE,
+  SITE_SAME_AS,
   SITE_URL,
   VISIBLE_SERVICES,
   cityPlace,
@@ -45,8 +46,9 @@ export function businessJsonLd() {
       name: "Justin",
       jobTitle: "Owner",
     },
+    sameAs: [...SITE_SAME_AS],
     // No address: Justin has no public storefront yet (a Broussard warehouse is pending).
-    // TODO(Justin): add the confirmed public address, GBP URL (sameAs), and hours when ready.
+    // TODO(Justin): add the confirmed public address and hours when ready.
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Bathroom remodeling services",

@@ -12,7 +12,7 @@ import { pageCanonical } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Solid surface showers and tub walls",
   description:
-    "Tub-to-shower conversions and solid surface shower and tub walls across Acadiana and South Louisiana. Less grout. Free consult. See your new bathroom with Design My Bathroom.",
+    "Tub-to-shower conversions and solid surface shower and tub walls across Acadiana and South Louisiana. Less grout. Free quote. See your new bathroom with Design My Bathroom.",
 
   alternates: { canonical: pageCanonical("/solid-surface") },
 };
@@ -48,8 +48,8 @@ export default function SolidSurfacePage() {
           </div>
 
           <div className="mt-8 grid items-stretch gap-4 md:grid-cols-12">
-            <div className="rounded-[1.6rem] bg-secondary p-7 text-secondary-foreground md:col-span-7 md:p-10" data-section="solid-surface-warranty">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass-soft">Solid surface warranty</p>
+            <div className="rounded-[1.6rem] bg-secondary p-7 text-secondary-foreground md:col-span-7 md:p-10" data-section="solid-surface-promise">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass-soft">We stand behind the work</p>
               <p className="mt-4 font-heading text-3xl leading-tight md:text-4xl">{solidPath.warranty}</p>
             </div>
             <div className="rounded-[1.6rem] border border-border bg-sage-wash p-7 md:col-span-5 md:p-10">
@@ -88,11 +88,11 @@ export default function SolidSurfacePage() {
 
         <section id="solid-quote" className="scroll-mt-24 mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 md:grid-cols-12 md:py-28">
           <div className="md:col-span-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Free consult</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Free quote</p>
             <h2 className="mt-3 text-4xl md:text-5xl">{solidPath.formTitle}</h2>
             <p className="mt-4 leading-7 text-muted-foreground">{solidPath.formBody}</p>
             <p className="mt-6 text-sm">
-              Rather talk? <a className="font-medium underline underline-offset-4" href={brand.phoneHref}>{brand.phone}</a>
+              Rather discuss your project? <a className="font-medium underline underline-offset-4" href={brand.phoneHref}>{brand.phone}</a>
               {" · "}
               <a className="underline underline-offset-4" href={brand.emailHref}>{brand.email}</a>
             </p>

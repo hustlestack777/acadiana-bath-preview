@@ -6,9 +6,10 @@ import { LinkedCopy } from "@/components/linked-copy";
 import { brand, hero } from "@/lib/copy";
 import { OUTSIDE_AREA } from "@/lib/coverage";
 import { townAreaJsonLd } from "@/lib/schema";
-import type { TownPageContent } from "@/lib/towns";
+import { nearbyTowns, townPath, type TownPageContent } from "@/lib/towns";
 
 export function TownPage({ town }: { town: TownPageContent }) {
+  const nearby = nearbyTowns(town.slug);
   return (
     <main id="content" tabIndex={-1}>
       <JsonLd data={townAreaJsonLd(town)} />
@@ -19,6 +20,28 @@ export function TownPage({ town }: { town: TownPageContent }) {
           {town.intro.map((paragraph) => (
             <LinkedCopy key={paragraph.slice(0, 48)} text={paragraph} />
           ))}
+          <p>Justin, the owner, will call to discuss your project, then set a time to take measurements, walk you through your design options and give you your exact price on the spot.</p>
+          <p>
+            Part of our South Louisiana service area.{" "}
+            <a href="/areas" className="underline underline-offset-4">
+              See every town we serve
+            </a>
+            .
+          </p>
+          {nearby.length ? (
+            <p>
+              Nearby:{" "}
+              {nearby.map((item, index) => (
+                <span key={item.slug}>
+                  {index > 0 ? ", " : ""}
+                  <a href={townPath(item.slug)} className="underline underline-offset-4">
+                    {item.name}
+                  </a>
+                </span>
+              ))}
+              .
+            </p>
+          ) : null}
           <p>{OUTSIDE_AREA}</p>
         </div>
       </section>

@@ -8,6 +8,7 @@ import { validateDetails, validateStreet } from "@/lib/estimate";
 import { GROUT_COLORS, GROUT_PICK_EVENT, groutLabel } from "@/lib/grout";
 import { cn } from "cn";
 import { AddressAutocomplete } from "@/components/address-autocomplete";
+import { CallWindowFields } from "@/components/call-window-fields";
 import { appendAttribution } from "@/components/lead-attribution";
 
 type Path = "solid" | "tile";
@@ -37,6 +38,8 @@ export function QuickQuote({ path }: { path: Path }) {
     notes: "",
     grout: "",
     consent: false,
+    preferredCallDay: "",
+    preferredCallTime: "",
     company_fax: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -95,6 +98,8 @@ export function QuickQuote({ path }: { path: Path }) {
     if (coverage.status === "empty") next.city = "Enter your town.";
     if (coverage.status === "invalid") next.city = "Keep the town under 80 characters.";
     if (!form.phone.trim() && !form.email.trim()) next.phone = "Enter a phone number or an email.";
+    if (!form.preferredCallDay) next.preferredCallDay = "Pick the best day for Justin to call.";
+    if (!form.preferredCallTime) next.preferredCallTime = "Pick the best time for Justin to call.";
     setErrors(next);
     if (Object.keys(next).length) {
       const first = Object.keys(next)[0];
@@ -129,7 +134,8 @@ export function QuickQuote({ path }: { path: Path }) {
       homeowner: form.homeowner,
       payment: form.payment,
       consent: String(form.consent),
-      preferredCallTime: "",
+      preferredCallDay: form.preferredCallDay,
+      preferredCallTime: form.preferredCallTime,
       company_fax: form.company_fax,
     };
     for (const [key, value] of Object.entries(values)) body.set(key, value);
@@ -162,7 +168,7 @@ export function QuickQuote({ path }: { path: Path }) {
           Thanks. Justin has your request.
         </h3>
         <p className="mt-3 leading-7 text-muted-foreground">
-          He&apos;ll call you personally to talk through your space and set up your free consult. Nothing to pay today.
+          He'll call around the time you picked to discuss your project. Nothing to pay today.
         </p>
         <p className="mt-4">
           <a className="font-medium underline underline-offset-4" href={brand.phoneHref}>
@@ -371,10 +377,22 @@ export function QuickQuote({ path }: { path: Path }) {
         <input id={`${path}-fax`} tabIndex={-1} autoComplete="off" value={form.company_fax} onChange={(e) => set("company_fax", e.target.value)} />
       </div>
 
+      <CallWindowFields
+        day={form.preferredCallDay}
+        time={form.preferredCallTime}
+        onDay={(value) => set("preferredCallDay", value)}
+        onTime={(value) => set("preferredCallTime", value)}
+        dayError={errors.preferredCallDay}
+        timeError={errors.preferredCallTime}
+        idPrefix={`${path}-call`}
+      />
       <label className="flex items-start gap-3 text-sm leading-6" htmlFor={`${path}-consent`}>
         <input
           id={`${path}-consent`}
+          name="consent"
           type="checkbox"
+          required
+          aria-required="true"
           className="mt-1 size-5 shrink-0 accent-[var(--primary)]"
           checked={form.consent}
           onChange={(e) => set("consent", e.target.checked)}
@@ -395,10 +413,10 @@ export function QuickQuote({ path }: { path: Path }) {
         disabled={status === "sending"}
         className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:-translate-y-0.5 disabled:opacity-60"
       >
-        {status === "sending" ? "Sending…" : isTile ? "Request my free tile consult" : "Get my solid surface quote"}
+        {status === "sending" ? "Sending…" : isTile ? "Get My Free Tile Quote" : "Get my solid surface quote"}
       </button>
       <p className="text-center text-xs text-muted-foreground">
-        Free consult. Nothing to pay today. Justin gives your exact price once he sees the space.{" "}
+        Free quote. Nothing to pay today. Justin gives your exact price after he takes measurements.{" "}
         <a href="/privacy" className="underline underline-offset-4">Privacy Policy</a>
       </p>
     </form>

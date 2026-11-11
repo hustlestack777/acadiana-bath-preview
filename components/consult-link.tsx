@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ComponentProps, MouseEvent } from "react";
 import { rememberFromPage } from "@/components/lead-attribution";
 
-/** Every Free Consult button goes here. On /estimate it scrolls to the form instead of reloading. */
+/** Every Free Quote button goes here. On /estimate it scrolls to the form instead of reloading. */
 export const CONSULT_HREF = "/estimate#start";
 export const OPEN_FORM_EVENT = "ab:open-form";
 

@@ -103,7 +103,7 @@ export async function checkLimits(
     return {
       ok: false,
       code: "busy",
-      message: "Our designer is booked up for today. Leave your info with a free consult request and we'll follow up.",
+      message: "Our designer is booked up for today. Leave your info with a free quote request and we'll follow up.",
     };
   }
   if (!input.skipIp) {
@@ -126,7 +126,7 @@ export async function checkLimits(
     return {
       ok: false,
       code: "person",
-      message: `You've used your ${LOOKS_PER_PERSON} free looks. Book a free consult and Justin can walk you through more options.`,
+      message: `You've used your ${LOOKS_PER_PERSON} free looks. Request a free quote and Justin can walk you through more options.`,
     };
   }
   return { ok: true };

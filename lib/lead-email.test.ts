@@ -39,9 +39,9 @@ function sample(overrides: Partial<Parameters<typeof buildLeadEmail>[0]> = {}) {
 }
 
 test("lead subject matches the phone-readable pattern and keeps the TEST prefix", () => {
-  assert.equal(leadSubject("Jane Comeaux", "Lafayette", "new"), "New consult · Jane Comeaux · Lafayette");
-  assert.equal(leadSubject("test Ada", "Houma", "new"), "[TEST] New consult · test Ada · Houma");
-  assert.equal(leadSubject("TEST Ada", "Houma", "update"), "[TEST] Consult update · TEST Ada · Houma");
+  assert.equal(leadSubject("Jane Comeaux", "Lafayette", "new"), "New quote · Jane Comeaux · Lafayette");
+  assert.equal(leadSubject("test Ada", "Houma", "new"), "TEST – New quote · test Ada · Houma");
+  assert.equal(leadSubject("TEST Ada", "Houma", "update"), "TEST – Quote update · TEST Ada · Houma");
 });
 
 test("chicago time is used instead of an ISO timestamp", () => {
@@ -61,8 +61,8 @@ test("size lines are plain English and empty fields stay blank", () => {
 
 test("the lead email is a card with real labels, inline photos, and no empty none-lines", () => {
   const email = sample();
-  assert.equal(email.subject, "New consult · Jane Comeaux · Lafayette");
-  assert.match(email.html, /NEW CONSULT|New consult/);
+  assert.equal(email.subject, "New quote · Jane Comeaux · Lafayette");
+  assert.match(email.html, /NEW QUOTE|New quote/);
   assert.match(email.html, /Jane Comeaux/);
   assert.match(email.html, /tel:\+13375550142/);
   assert.match(email.html, />\(337\) 555-0142</);
@@ -124,8 +124,8 @@ test("empty notes, payment, and photos are left out, and a street view image is 
 
 test("an update email uses the same card and a consult-update subject", () => {
   const email = sample({ kind: "update", newPhotoCount: 2, name: "TEST Jane" });
-  assert.equal(email.subject, "[TEST] Consult update · TEST Jane · Lafayette");
-  assert.match(email.html, /Consult update/);
+  assert.equal(email.subject, "TEST – Quote update · TEST Jane · Lafayette");
+  assert.match(email.html, /Quote update/);
   assert.match(email.html, /Added 2 photos/);
 });
 
@@ -225,7 +225,7 @@ test("the lead email includes the source page, referrer, and campaign when prese
   assert.match(email.html, /google\.com/);
   assert.match(email.html, /Campaign/);
   assert.match(email.html, /google \/ cpc \/ spring/);
-  assert.match(email.text, /Source: \/serving-houma \(form \/estimate\)/);
+  assert.match(email.text, /Source: google/);
 });
 
 test("the lead email records the exact consent checkbox, page path, and timestamp", () => {
@@ -255,7 +255,7 @@ test("design picks, talking points, and related looks show clearly in Justin's l
       "Floor: Hex",
       "Fixture finish: Brass",
       "Talking point (Good): They picked a tub-to-shower (walk-in) with green zellige walls, a hex floor, and brass fixtures. Starting at $5K.",
-      "Talking point (Better): Upgrade to talk through: a marble-lined niche, frameless clear glass.",
+      "Talking point (Better): Upgrade to discuss: a marble-lined niche, frameless clear glass.",
       "Talking point (Best): If they want the full treatment: going curbless with a linear drain.",
       "Related looks shown: Green zellige, Green zellige + hex floor, Emerald zellige",
     ].join("\n"),

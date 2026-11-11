@@ -41,6 +41,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     depth: text(form, "depth"),
     height: text(form, "height"),
     measurements: text(form, "measurements"),
+    preferredCallDay: text(form, "preferredCallDay"),
     preferredCallTime: text(form, "preferredCallTime"),
     photos,
   };
