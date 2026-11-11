@@ -5,6 +5,8 @@ import { ExampleGrid, PathHero } from "@/components/path-sections";
 import { QuickQuote } from "@/components/quick-quote";
 import { brand, solidPath } from "@/lib/copy";
 import { solidPhotos } from "@/lib/images";
+import { JsonLd } from "@/components/json-ld";
+import { solidSurfaceServiceJsonLd } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: "Solid surface showers and tub walls",
@@ -16,6 +18,7 @@ export default function SolidSurfacePage() {
   return (
     <SiteShell sticky bleed>
       <main id="content" tabIndex={-1}>
+        <JsonLd data={solidSurfaceServiceJsonLd()} />
         <PathHero
           image="/images/ai/ss-walkin.webp"
           alt="Warm-white solid surface walk-in shower with frameless glass, a niche and brass fixtures."

@@ -5,6 +5,8 @@ import { GroutPicker } from "@/components/grout-picker";
 import { QuickQuote } from "@/components/quick-quote";
 import { brand, tilePath } from "@/lib/copy";
 import { tileHero, tilePhotos } from "@/lib/images";
+import { JsonLd } from "@/components/json-ld";
+import { customTileServiceJsonLd } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: "Custom tile showers and bathrooms",
@@ -16,6 +18,7 @@ export default function CustomTilePage() {
   return (
     <SiteShell sticky bleed>
       <main id="content" tabIndex={-1}>
+        <JsonLd data={customTileServiceJsonLd()} />
         <PathHero
           image={tileHero.src}
           alt={tileHero.alt}

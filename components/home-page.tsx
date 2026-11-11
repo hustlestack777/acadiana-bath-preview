@@ -4,6 +4,7 @@ import { Hero } from "@/components/hero";
 import { ConsultLink } from "@/components/consult-link";
 import Link from "next/link";
 import { IdeasSection, PathChooser } from "@/components/path-sections";
+import { FaqSection } from "@/components/faq-section";
 import {
   area,
   beforeAfter,
@@ -169,24 +170,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section id="questions" className="rise scroll-mt-28 bg-brass-soft">
-        <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
-          <h2 className="text-4xl md:text-5xl">Questions</h2>
-          <div className="mt-8 divide-y divide-foreground/15">
-            {faqs.map((item) => (
-              <details key={item.q} className="group py-1">
-                <summary className="flex min-h-14 cursor-pointer items-center justify-between gap-4 py-3 text-lg font-medium">
-                  {item.q}
-                  <span className="text-2xl leading-none group-open:rotate-45" aria-hidden="true">
-                    +
-                  </span>
-                </summary>
-                <p className="max-w-3xl pb-4 leading-7">{item.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FaqSection faqs={faqs} />
 
       <section id="talk" className="rise scroll-mt-28 mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 md:grid-cols-2 md:py-24">
         <div>

@@ -1,0 +1,48 @@
+import { heroQuoteLine, services, solidPath } from "./copy";
+import { MAIN_TOWNS } from "./coverage";
+import { towns } from "./towns";
+import { SCHEMA_SERVICE_AREA, SITE_EMAIL, SITE_NAME, SITE_PHONE, SITE_URL } from "./site";
+
+export function llmsTxt(): string {
+  const page = (path: string, label: string) => `- ${label}: ${SITE_URL}${path}`;
+  const townLines = towns.length
+    ? towns.map((town) => `- ${town.name}: ${SITE_URL}/areas/${town.slug}`).join("\n")
+    : "- Town pages will be published under /areas/ when they are written.";
+
+  return `# ${SITE_NAME}
+
+${SITE_NAME} is a bathroom remodeling company based in Lafayette, Louisiana. ${SCHEMA_SERVICE_AREA}
+
+## Contact
+- Phone: ${SITE_PHONE}
+- Email: ${SITE_EMAIL}
+- Website: ${SITE_URL}
+
+## Services
+- ${services.join(", ")}
+- Solid surface showers and tub walls, including tub-to-shower conversions (${SITE_URL}/solid-surface). ${solidPath.warranty}
+- Custom tile showers and bathrooms, including zellige, patterned floors and grout colors you choose (${SITE_URL}/custom-tile)
+- Bathroom design previews from your own photos (${SITE_URL}/design)
+- Free Consult (${SITE_URL}/estimate)
+
+${heroQuoteLine} Final pricing is set after Justin reviews the space in person.
+
+## Service area
+${SCHEMA_SERVICE_AREA}
+Towns people often ask about: ${MAIN_TOWNS.join(", ")}.
+Don't see your town? Ask anyway. Justin confirms every visit.
+
+## Key pages
+${page("/", "Home")}
+${page("/solid-surface", "Solid surface showers and tub walls")}
+${page("/custom-tile", "Custom tile showers and bathrooms")}
+${page("/design", "Design My Bathroom")}
+${page("/estimate", "Free Consult")}
+${page("/privacy", "Privacy Policy")}
+
+## Town pages
+${townLines}
+
+Marketing partner: Lagniappe Realm Labs LLC, which helps run this website and follow up.
+`.trimEnd() + "\n";
+}

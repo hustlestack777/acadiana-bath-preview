@@ -36,6 +36,35 @@ The home hero is a looping muted background video in `public/video`. Shot source
 
 Photographs in `public/images` are used with permission. Sources are listed in `docs/image-sources.md`.
 
+
+## Search indexing (go-live)
+
+The preview stays out of search indexes until Shaun says go-live.
+
+`SITE_INDEXABLE` defaults to unset or `false`. While it is not exactly `true`:
+
+- Every public page sends `noindex, nofollow`
+- `robots.txt` is `User-agent: *` / `Disallow: /`
+- `/sitemap.xml` is generated but not advertised in `robots.txt`
+
+AI-search and SEO groundwork is already in the build:
+
+- JSON-LD `HomeAndConstructionBusiness` on every page (service-area business, no street address)
+- `Service` schema on `/solid-surface` and `/custom-tile`
+- `FAQPage` schema only where a visible FAQ is rendered (`FaqSection`)
+- `/llms.txt` and a dynamic `/sitemap.xml`
+- Town pages can be added in `lib/towns.ts` and use the `/areas/[slug]` template
+
+To go live, only after Shaun OKs it:
+
+1. Set `SITE_INDEXABLE` to `true` on the Render service `srv-dboqbjnf3r2c73c0d0n0` (and in `render.yaml` if you want the blueprint to match).
+2. Redeploy so metadata, `robots.txt` and HTML are rebuilt.
+3. Confirm `https://acadiana-bathrooms.onrender.com/robots.txt` allows crawlers, lists `/sitemap.xml`, and that the home page no longer has `noindex`.
+
+`/windows` stays noindex and is disallowed even after go-live. `/api/` is also disallowed.
+
+Optional: `SITE_URL` overrides the canonical origin. It defaults to `https://acadiana-bathrooms.onrender.com`.
+
 ## Render
 
 `render.yaml` describes a free web service in Virginia and the free `acadiana-leads` Postgres database. Do not point a custom domain at this preview.
