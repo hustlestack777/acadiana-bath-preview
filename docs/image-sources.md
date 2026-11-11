@@ -42,3 +42,5 @@ All are AI-generated design examples, not photos of completed jobs and not copie
 - `tile-01.webp` … `tile-08.webp` — custom tile inspiration set from Boogie (`/workspace/abc_brand/ai_inspiration`, 11/10/2026). Used on `/custom-tile`, the home path card and the Ideas section.
 
 Grout swatches in `lib/grout.ts` are approximate colors sampled from the Mapei 2023 grout and caulk palette PDF; the site says screen colors are approximate.
+- `tile-09`, `tile-10`, `tile-14`, `tile-15` — Boogie's trend set (arched travertine opening, arched niches, Neo Deco burgundy marble look, sage checkerboard floor), 11/10/2026. Used in the `/custom-tile` gallery.
+- `ss-arch.webp` — Boogie's solid surface arched walk-in shower (boogie_13), 11/10/2026. Used in the `/solid-surface` gallery.

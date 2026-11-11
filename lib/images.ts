@@ -124,6 +124,13 @@ export const solidPhotos: Photo[] = [
     caption: "Walk-in shower",
   },
   {
+    src: "/images/ai/ss-arch.webp",
+    width: 1280,
+    height: 720,
+    alt: "Arched walk-in shower with seamless warm-white solid surface walls, a bench, a linear drain and brass fixtures.",
+    caption: "Arched walk-in shower",
+  },
+  {
     src: "/images/ai/ss-tub-walls.webp",
     width: 864,
     height: 1152,
@@ -164,4 +171,8 @@ export const tilePhotos: Photo[] = [
   tile("05", "Herringbone floor tile with a furniture-style vintage vanity and an oval brass mirror.", "Herringbone floor"),
   tile("04", "Curbless walk-in shower with a linear drain, bench, niche and a matte-black grab bar.", "Curbless shower"),
   tile("03", "Marble-look large-format wall tile behind a floating walnut double vanity.", "Marble-look walls"),
+  tile("09", "Arched travertine-look shower opening with large stone-look wall tile and brass fixtures.", "Arched shower opening"),
+  tile("10", "Glossy sand-colored handmade tile with two arched niches and an aged-brass valve.", "Arched niches"),
+  tile("14", "Walk-in shower with dramatic burgundy marble-look walls, a lit arched niche and brass fixtures.", "Neo Deco marble look"),
+  tile("15", "Muted sage and cream checkerboard floor tile under a freestanding tub with an arched doorway.", "Checkerboard floor"),
 ];
