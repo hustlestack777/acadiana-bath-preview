@@ -24,7 +24,7 @@ export const geoFaqs = [
   },
   {
     q: "What does Acadiana Bathrooms do?",
-    a: "We remodel bathrooms: custom walk-in showers, tile (including handmade zellige), quartz and quartzite countertops, and solid-surface walls and showers. We do not install granite. Justin does the in-home quote and walks you through the design.",
+    a: "We remodel bathrooms: custom walk-in showers, tile (including handmade zellige), quartz and quartzite countertops, and solid-surface walls and showers. We do not install granite. Justin follows up with a free quote and walks you through the design.",
   },
   {
     q: "What materials do you use?",

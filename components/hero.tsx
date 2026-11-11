@@ -171,7 +171,7 @@ export function Hero() {
         <p className="hero-copy mt-2 max-w-xl text-sm font-semibold tracking-wide text-[#e4d8b4]" data-testid="hero-quote-line">
           {heroQuoteLine}
         </p>
-        <div className="mt-3 flex flex-wrap items-end justify-between gap-4 border-t border-white/20 pe-16 pt-3 md:pe-0">
+        <div className="mt-3 flex flex-wrap items-end justify-between gap-4 border-t border-white/20 pe-36 pt-3 md:pe-0">
           <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/80">
             {services.map((service) => (
               <li key={service}>{service}</li>

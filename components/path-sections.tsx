@@ -94,24 +94,27 @@ export function PathChooser() {
       <h2 className="mt-3 max-w-3xl text-4xl leading-[1.05] md:text-6xl">Two ways to a bathroom you love.</h2>
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {cards.map((card) => (
-          <Link
+          <article
             key={card.slug}
-            href={card.slug}
-            className="group relative block overflow-hidden rounded-[1.8rem] bg-[#14261f] text-[#f6f1e6] shadow-[0_40px_90px_-50px_rgba(28,36,28,0.8)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+            className="group relative overflow-hidden rounded-[1.8rem] bg-[#14261f] text-[#f6f1e6] shadow-[0_40px_90px_-50px_rgba(28,36,28,0.8)]"
           >
-            <div className="relative aspect-[4/5] sm:aspect-[5/4]">
+            <Link
+              href={card.slug}
+              className="relative block aspect-[4/5] sm:aspect-[5/4] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+            >
               <Image src={card.image} alt={card.alt} fill sizes="(min-width: 768px) 50vw, 100vw" loading="lazy" className="object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#14261f]/95 via-[#14261f]/35 to-transparent" aria-hidden="true" />
-            </div>
-            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+              <span className="sr-only">{card.cardTitle}</span>
+            </Link>
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6 sm:p-8">
               <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[#e4d8b4]">{card.tag}</p>
               <h3 className="mt-2 font-heading text-4xl leading-none sm:text-5xl">{card.cardTitle}</h3>
               <p className="mt-3 max-w-md text-[0.95rem] leading-7 text-white/85">{card.cardBody}</p>
-              <span className="mt-5 inline-flex h-12 items-center rounded-full bg-[#f6f1e6] px-6 text-sm font-semibold text-[#1c241c] transition-transform group-hover:translate-x-1">
-                {card.cta} →
-              </span>
+              <ConsultLink className="pointer-events-auto mt-5 inline-flex h-12 items-center rounded-full bg-[#f6f1e6] px-6 text-sm font-semibold text-[#1c241c] transition-transform hover:translate-x-1">
+                {hero.primary} →
+              </ConsultLink>
             </div>
-          </Link>
+          </article>
         ))}
       </div>
     </section>

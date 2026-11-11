@@ -69,7 +69,7 @@ export const towns: TownPageContent[] = [
     title: "Bathroom Remodels Serving Baton Rouge",
     description: "Bathroom Remodels Serving Baton Rouge | Acadiana Bathrooms",
     intro: [
-      "We serve Baton Rouge with custom showers, tile, quartz and quartzite, and solid surface. We work across Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux. Bathroom remodels starting at $5K. The exact price is set at a free in-home consult.",
+      "We serve Baton Rouge with custom showers, tile, quartz and quartzite, and solid surface. We work across Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Prairieville and Gonzales, and from Alexandria down to Houma and Thibodaux. Bathroom remodels starting at $5K. The exact price is set at a free consult, and Justin follows up with your price.",
       "People in the capital region often want a bathroom that feels designed, not just replaced: a walk-in instead of a tub surround, a quartzite vanity with real veining, or a handmade tile wall with color. We also serve nearby Prairieville and Gonzales as part of the same area, so one conversation can cover a house in any of those communities.",
       "We will not put a Baton Rouge street address on this page, and we do not claim a branch office there. Justin travels to your home to look at the room, talk through the design, and measure.",
     ],

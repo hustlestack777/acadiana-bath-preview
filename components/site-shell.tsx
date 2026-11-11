@@ -21,7 +21,7 @@ export function SiteShell({
   return (
     <>
       <SiteHeader />
-      <div className={cn(!bleed && "pt-24", sticky ? "pb-28 md:pb-0" : undefined)}>
+      <div className={cn(!bleed && "pt-24", sticky && chat && "pb-40 md:pb-24", sticky && !chat && "pb-28 md:pb-0", !sticky && chat && "pb-24 md:pb-24")}>
         {children}
         <SiteFooter />
       </div>

@@ -128,10 +128,9 @@ test("sitemap lists public pages, includes lastmod, and omits town pages until g
   const urls = preview.map((entry) => entry.url);
   assert.ok(preview.every((entry) => entry.lastModified));
   assert.ok(urls.some((url) => url.endsWith("onrender.com") || url.endsWith("onrender.com/")));
-  for (const path of ["/solid-surface", "/custom-tile", "/design", "/estimate", "/faq", "/privacy"]) {
+  for (const path of ["/solid-surface", "/custom-tile", "/design", "/estimate", "/faq", "/privacy", "/windows"]) {
     assert.ok(urls.some((url) => url.endsWith(path)), path);
   }
-  assert.equal(urls.some((url) => url.includes("/windows")), false);
   assert.equal(urls.some((url) => url.includes("/api/")), false);
   assert.equal(urls.some((url) => url.includes("/serving-")), false);
 
@@ -140,7 +139,7 @@ test("sitemap lists public pages, includes lastmod, and omits town pages until g
   for (const town of towns) {
     assert.ok(live.some((url) => url.endsWith(townPath(town.slug))), town.slug);
   }
-  assert.equal(live.some((url) => url.includes("/windows")), false);
+  assert.ok(live.some((url) => url.endsWith("/windows")));
 });
 
 test("cleared FAQ and town copy has no windows mentions and town schema is area-only", () => {

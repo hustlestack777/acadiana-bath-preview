@@ -155,4 +155,5 @@ export const INDEXABLE_PATHS = [
   "/estimate",
   "/faq",
   "/privacy",
+  "/windows",
 ] as const;
