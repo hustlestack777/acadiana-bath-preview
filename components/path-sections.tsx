@@ -85,7 +85,7 @@ export function ExampleGrid({ photos, className, title }: { photos: Photo[]; cla
 export function PathChooser() {
   const cards = [
     { ...solidPath, image: "/images/ai/ss-walkin.webp", alt: "Warm-white solid surface walk-in shower with frameless glass and brass fixtures.", tag: "Affordable · Fewer grout lines" },
-    { ...tilePath, image: "/images/ai/tile-08.webp", alt: "Wide view of a luxury bathroom with a freestanding tub, glass shower and double vanity.", tag: "Designer · Fully custom" },
+    { ...tilePath, image: "/images/home/tile-card.webp", alt: "Tiled walk-in shower through an arched opening, with two arched niches, a bench, and brass fixtures.", tag: "Designer · Fully custom" },
   ];
   return (
     <section id="paths" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-20 md:py-28">

@@ -114,6 +114,28 @@ export const galleryPhotos: Photo[] = [
   },
 ];
 
+const home = (name: string, width: number, height: number, alt: string, caption: string): Photo => ({
+  src: `/images/home/${name}.webp`,
+  width,
+  height,
+  alt,
+  caption,
+});
+
+/** Home "Looks we can build" gallery: about 30% solid surface, the rest tile and architectural looks. AI examples, never presented as completed jobs. */
+export const homeGalleryPhotos: Photo[] = [
+  home("travertine-arch", 1600, 1200, "Walk-in shower behind a plastered arched opening, travertine-look tile, a bench, an arched niche and a frameless glass door.", "Arched shower opening"),
+  heroSlides[3],
+  home("marble-glass", 1200, 1600, "Shower with a marble-look back wall, white subway-style side walls, a long niche and a frameless glass door.", "Marble-look shower"),
+  home("zellige-arch-niche", 1200, 1600, "Arched entry into a white zellige shower with an arched niche, a rain head and a marble-look bench.", "Zellige shower"),
+  home("penny-drain", 1200, 1600, "Brass square decorative drain set flush in white penny round tile.", "Penny tile and drain"),
+  home("sage-tile-tub", 1200, 1600, "Sage handmade tile shower with a frameless glass door beside a freestanding tub.", "Sage tile shower"),
+  heroSlides[0],
+  home("bookmatch-stone", 1200, 1600, "Curbless shower with book-matched stone-look walls, a lit niche, a floating bench and brass fixtures.", "Stone-look shower"),
+  home("blush-tile", 1200, 1600, "Blush handmade tile shower with a cross-handle valve, a niche and a frameless glass door.", "Blush tile shower"),
+  home("arch-shower-vanity", 1600, 900, "Arched zellige shower with a bench and niche beside a white-oak double vanity with arched mirrors.", "Arched shower and vanity"),
+];
+
 /** AI-generated example images (docs/image-sources.md). Never presented as completed jobs. */
 export const solidPhotos: Photo[] = [
   {

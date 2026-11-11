@@ -8,7 +8,6 @@ import { FaqSection } from "@/components/faq-section";
 import { homeFaqs } from "@/lib/faq-page";
 import {
   area,
-  beforeAfter,
   brand,
   cardClaims,
   care,
@@ -23,7 +22,7 @@ import {
 } from "@/lib/copy";
 import { MAIN_TOWNS } from "@/lib/coverage";
 import { townPath, towns } from "@/lib/towns";
-import { beforeAfterPhotos, galleryPhotos } from "@/lib/images";
+import { homeGalleryPhotos } from "@/lib/images";
 
 export function HomePage() {
   return (
@@ -46,8 +45,8 @@ export function HomePage() {
         <div className="relative md:col-span-6">
           <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem]">
             <Image
-              src="/images/shower-warm.webp"
-              alt="Warm speckled walk-in shower with black hardware and a bronze-toned half wall."
+              src="/images/home/curbless.webp"
+              alt="Curbless walk-in shower with limestone-look tile running level into the shower, a linear drain, and a teak bench."
               fill
               sizes="(min-width: 768px) 40vw, 100vw"
               className="object-cover"
@@ -94,25 +93,11 @@ export function HomePage() {
         </div>
       </section>
 
-      <section id="changes" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Before and after</p>
-        <h2 className="mt-3 max-w-3xl text-4xl md:text-5xl">{beforeAfter.title}</h2>
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {beforeAfterPhotos.map((photo) => (
-            <figure key={photo.src} className="overflow-hidden rounded-[1.4rem] border border-border bg-card">
-              <div className="relative aspect-[2/1]">
-                <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 768px) 45vw, 100vw" className="object-cover" />
-              </div>
-            </figure>
-          ))}
-        </div>
-      </section>
-
       <section id="gallery" className="rise scroll-mt-28 bg-[#eae6d8]">
         <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Gallery</p>
           <h2 className="mt-3 max-w-3xl text-4xl md:text-5xl">{gallery.title}</h2>
-          <PhotoGallery photos={galleryPhotos} />
+          <PhotoGallery photos={homeGalleryPhotos} />
         </div>
       </section>
 
@@ -215,7 +200,7 @@ export function HomePage() {
 
       <section className="relative overflow-hidden bg-[#14261f] text-[#f6f1e6]">
         <Image
-          src="/images/hero-rain.webp"
+          src="/images/home/twin-arch.webp"
           alt=""
           fill
           sizes="100vw"
