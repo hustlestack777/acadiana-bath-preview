@@ -50,6 +50,8 @@ for (const file of files) {
     if (rule.name === "dollar amount" && file.endsWith(`${path.sep}lib${path.sep}leads.ts`)) continue;
     // Visitor budget ranges (their answer, not our prices). Shaun asked for them 11/10/2026.
     if (rule.name === "dollar amount" && file.endsWith(`${path.sep}lib${path.sep}budget.ts`)) continue;
+    // Window quote planning ranges (Shaun approved building with range guesses, 11/10/2026).
+    if (rule.name === "dollar amount" && /windows/.test(path.relative(root, file))) continue;
     if (rule.re.test(text)) {
       failed += 1;
       console.error(`${rule.name}: ${path.relative(root, file)}`);

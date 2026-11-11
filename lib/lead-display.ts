@@ -13,7 +13,9 @@ export function projectLabels(value: string) {
     .map((item) => item.trim())
     .filter(Boolean);
   if (!selected.length) return "";
-  return selected.map((id) => choiceLabel(id, [...projects, ...pathProjects])).join(", ");
+  return selected
+    .map((id) => (id === "windows" ? "Window replacement" : choiceLabel(id, [...projects, ...pathProjects])))
+    .join(", ");
 }
 
 export function homeownerLabel(id: string) {

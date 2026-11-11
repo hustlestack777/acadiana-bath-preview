@@ -45,6 +45,8 @@ export type LeadInput = {
   homeowner: string;
   payment: string;
   consent: boolean;
+  consentAt?: Date | null;
+  consentText?: string;
   preferredCallTime: string;
   photos: LeadPhoto[];
 };
@@ -122,6 +124,8 @@ async function ensureSchema(db: Pool) {
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS street text NOT NULL DEFAULT '';
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS latitude double precision;
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS longitude double precision;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS consent_at timestamptz;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS consent_text text NOT NULL DEFAULT '';
         ALTER TABLE lead_photos ADD COLUMN IF NOT EXISTS size_bytes integer NOT NULL DEFAULT 0;
       `)
       .then(() => undefined)
@@ -142,7 +146,7 @@ export function validateLead(input: LeadInput) {
   const coverage = checkCity(input.city);
   if (coverage.status === "empty") errors.city = "Enter your town or ZIP.";
   if (coverage.status === "invalid") errors.city = "Keep the town under 80 characters.";
-  if (!["/", "/estimate", "/solid-surface", "/custom-tile", "/design"].includes(input.sourcePage)) {
+  if (!["/", "/estimate", "/solid-surface", "/custom-tile", "/design", "/windows"].includes(input.sourcePage)) {
     errors.sourcePage = "Unknown source page.";
   }
   // Design My Bathroom asks only name, phone, address and email; own/rent is optional there.
@@ -150,6 +154,17 @@ export function validateLead(input: LeadInput) {
   if (input.sourcePage === "/design") {
     if (!input.homeowner) delete errors.homeowner;
     delete errors.consent;
+  }
+  if (input.sourcePage === "/windows") {
+    delete errors.project;
+    delete errors.payment;
+    delete errors.timing;
+    delete errors.finish;
+    delete errors.features;
+    delete errors.measurements;
+    if (!input.homeowner) delete errors.homeowner;
+    if (!input.email.trim()) errors.email = "Enter a valid email.";
+    if (!input.consent) errors.consent = "Please check the box to continue.";
   }
   if (input.photos.length > MAX_PHOTOS) {
     errors.photos = `Send up to ${MAX_PHOTOS} photos.`;
@@ -196,9 +211,9 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
         id, created_at, source_page, name, phone, email, preferred, city, zip, project,
         not_sure, width, depth, finish, features, timing, budget, marketing, ip, email_status,
         height, measurements, homeowner, payment, consent, preferred_call_time,
-        street, latitude, longitude
+        street, latitude, longitude, consent_at, consent_text
       ) VALUES (
-        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21,$22,$23,$24,$25,$26,$27,$28
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'pending',$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30
       )`,
       [
         id,
@@ -229,6 +244,8 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
         input.street.trim(),
         input.latitude,
         input.longitude,
+        input.consentAt ? new Date(input.consentAt).toISOString() : input.consent ? new Date().toISOString() : null,
+        (input.consentText || "").trim(),
       ],
     );
     for (const photo of input.photos) {
@@ -465,6 +482,9 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
     preferredCallTime: input.preferredCallTime,
     photos: input.photos,
     houseImage,
+    consent: input.consent,
+    consentAt: input.consentAt ?? (input.consent ? createdAt : null),
+    consentText: input.consentText || "",
   });
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send(

@@ -47,6 +47,9 @@ export type LeadEmailContent = {
   photos: LeadEmailPhoto[];
   newPhotoCount?: number;
   houseImage?: { bytes: Buffer; contentType: string } | null;
+  consent?: boolean;
+  consentAt?: Date | string | null;
+  consentText?: string;
 };
 
 export type LeadEmailAttachment = {
@@ -117,6 +120,12 @@ export function buildLeadEmail(input: LeadEmailContent) {
     payment ? ["Payment", payment] : null,
     callTime ? ["Call time", callTime] : null,
     notes ? ["Notes", notes] : null,
+    input.consent
+      ? [
+          "Consent",
+          `Yes${input.consentAt ? `, ${formatChicago(new Date(input.consentAt))}` : ""}${input.consentText ? `\n${input.consentText}` : ""}`,
+        ]
+      : null,
   ].filter((row): row is [string, string] => Boolean(row));
 
   const attachments: LeadEmailAttachment[] = [];
