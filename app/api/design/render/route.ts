@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { findStyle } from "@/lib/design-styles";
+import { findBudget } from "@/lib/budget";
 import { normalizePhoto, renderDesign, RenderError, teaser } from "@/lib/design-render";
 import {
   checkLimits,
@@ -59,6 +60,7 @@ export async function POST(request: Request) {
   }
   if (!before) return fail("Add a photo of your shower or bathroom.", 400);
 
+  const budget = findBudget(String(form.get("budget") || ""))?.id ?? "";
   const test = isTestRequest(request);
   const ipHash = hashIp(clientIp(request));
   const existingDevice = readCookie(request, DEVICE_COOKIE);
@@ -82,9 +84,9 @@ export async function POST(request: Request) {
 
   const id = crypto.randomUUID();
   await db.query(
-    `INSERT INTO design_sessions (id, ip_hash, device_id, style_key, status, is_test, before, extra, phone_digits)
-     VALUES ($1,$2,$3,$4,'rendering',$5,$6,$7,$8)`,
-    [id, ipHash, deviceId, style.key, test, before, extra, phone],
+    `INSERT INTO design_sessions (id, ip_hash, device_id, style_key, status, is_test, before, extra, phone_digits, budget)
+     VALUES ($1,$2,$3,$4,'rendering',$5,$6,$7,$8,$9)`,
+    [id, ipHash, deviceId, style.key, test, before, extra, phone, budget],
   );
 
   try {

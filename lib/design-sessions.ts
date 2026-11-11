@@ -38,6 +38,7 @@ export async function ensureDesignSchema(db: Pool) {
           unlock_token text NOT NULL DEFAULT '',
           unlocked_at timestamptz
         );
+        ALTER TABLE design_sessions ADD COLUMN IF NOT EXISTS budget text NOT NULL DEFAULT '';
         CREATE INDEX IF NOT EXISTS design_sessions_created_idx ON design_sessions (created_at);
         CREATE INDEX IF NOT EXISTS design_sessions_ip_idx ON design_sessions (ip_hash, created_at);
         CREATE INDEX IF NOT EXISTS design_sessions_phone_idx ON design_sessions (phone_digits);

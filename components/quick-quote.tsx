@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { MAIN_TOWNS, checkCity } from "@/lib/coverage";
 import { brand, consentLabel, homeowners, pathProjects, payments, timings } from "@/lib/copy";
+import { budgetOptions, budgetQuestion, budgetTag } from "@/lib/budget";
 import { validateDetails, validateStreet } from "@/lib/estimate";
 import { GROUT_COLORS, GROUT_PICK_EVENT, groutLabel } from "@/lib/grout";
 import { cn } from "cn";
@@ -29,6 +30,7 @@ export function QuickQuote({ path }: { path: Path }) {
     timing: "",
     homeowner: "",
     payment: "not-sure",
+    budget: "",
     notes: "",
     grout: "",
     consent: false,
@@ -120,7 +122,7 @@ export function QuickQuote({ path }: { path: Path }) {
       preferred,
       marketing: "false",
       timing: form.timing,
-      budget: "",
+      budget: budgetTag(form.budget),
       homeowner: form.homeowner,
       payment: form.payment,
       consent: String(form.consent),
@@ -293,6 +295,17 @@ export function QuickQuote({ path }: { path: Path }) {
             ))}
           </select>
           {err("homeowner")}
+        </div>
+        <div className="sm:col-span-2">
+          <label className={label} htmlFor={`${path}-budget`}>
+            {budgetQuestion} <span className="font-normal text-muted-foreground">(optional)</span>
+          </label>
+          <select id={`${path}-budget`} className={cn(field, "mt-1")} value={form.budget} onChange={(e) => set("budget", e.target.value)} data-testid={`${path}-budget`}>
+            <option value="">Prefer not to say</option>
+            {budgetOptions.map((item) => (
+              <option key={item.id} value={item.id}>{item.label}</option>
+            ))}
+          </select>
         </div>
         <div className="sm:col-span-2">
           <label className={label} htmlFor={`${path}-payment`}>Payment preference</label>

@@ -5,9 +5,10 @@ import { AddressAutocomplete } from "@/components/address-autocomplete";
 import { designCopy, designStyles, findStyle } from "@/lib/design-styles";
 import { resizePhoto } from "@/lib/photo-resize";
 import { brand } from "@/lib/copy";
+import { budgetOptions, budgetQuestion, orderByBudget } from "@/lib/budget";
 import { cn } from "cn";
 
-type Step = "photos" | "style" | "rendering" | "teaser" | "reveal";
+type Step = "photos" | "budget" | "style" | "rendering" | "teaser" | "reveal";
 type Shot = { file: File; url: string };
 
 const MAX_TRIES = 3; // first try + up to 2 retries
@@ -20,6 +21,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
   const [step, setStep] = useState<Step>("photos");
   const [shots, setShots] = useState<Shot[]>([]);
   const [style, setStyle] = useState(findStyle(initialStyle)?.key ?? "");
+  const [budget, setBudget] = useState("");
   const [error, setError] = useState("");
   const [busyMsg, setBusyMsg] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -93,6 +95,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
       body.set("photo", shots[0].file);
       if (shots[1]) body.set("photo2", shots[1].file);
       body.set("style", style);
+      body.set("budget", budget);
       body.set("company_fax", form.company_fax);
       body.set("token", window.localStorage.getItem(TOKEN_KEY) || "");
       try {
@@ -117,7 +120,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
         }
       }
     }
-  }, [shots, style, form.company_fax]);
+  }, [shots, style, budget, form.company_fax]);
 
   async function unlock(event: FormEvent) {
     event.preventDefault();
@@ -203,11 +206,49 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           <button
             type="button"
             disabled={!shots.length}
-            onClick={() => setStep("style")}
+            onClick={() => setStep("budget")}
             className="mt-6 h-14 w-full rounded-full bg-[#1c1014] text-base font-semibold text-white disabled:opacity-40"
             data-testid="design-next"
           >
             Next: pick a look
+          </button>
+        </section>
+      ) : null}
+
+      {step === "budget" ? (
+        <section aria-labelledby="design-budget">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">Optional</p>
+          <h2 id="design-budget" className="mt-2 font-heading text-3xl">{budgetQuestion}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">We&apos;ll show the looks that fit best first. You&apos;ll still see every look.</p>
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            {budgetOptions.map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                data-testid={`budget-${option.id}`}
+                onClick={() => {
+                  setBudget(option.id);
+                  setStep("style");
+                }}
+                className={cn(
+                  "h-14 rounded-2xl border bg-card px-3 text-base font-semibold",
+                  budget === option.id ? "border-primary ring-3 ring-primary/40" : "border-border",
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            data-testid="budget-skip"
+            onClick={() => {
+              setBudget("");
+              setStep("style");
+            }}
+            className="mt-4 text-sm font-semibold underline underline-offset-4"
+          >
+            Skip
           </button>
         </section>
       ) : null}
@@ -218,7 +259,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
           <h2 id="design-step-2" className="mt-2 font-heading text-3xl">Pick a look</h2>
           <p className="mt-2 text-xs text-muted-foreground">{designCopy.examples}</p>
           <div className="mt-4 -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-3 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0" role="radiogroup" aria-label="Looks">
-            {designStyles.map((item) => (
+            {orderByBudget(designStyles, budget).map((item) => (
               <button
                 key={item.key}
                 type="button"
@@ -252,7 +293,7 @@ export function DesignTool({ initialStyle = "" }: { initialStyle?: string }) {
             className="absolute -left-[9999px] h-0 w-0 opacity-0"
           />
           <div className="mt-5 flex gap-3">
-            <button type="button" onClick={() => setStep("photos")} className="h-14 rounded-full border border-border px-6 font-semibold">
+            <button type="button" onClick={() => setStep("budget")} className="h-14 rounded-full border border-border px-6 font-semibold">
               Back
             </button>
             <button

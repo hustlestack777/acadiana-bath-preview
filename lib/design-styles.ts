@@ -94,6 +94,16 @@ export const designStyles: DesignStyle[] = [
     project: "tile-shower",
     spec: "bold burgundy marble-look large porcelain slab walls with cream veining, a lit arched niche, brushed brass fixtures, cream stone-look floor tile, frameless clear glass",
   },
+  {
+    key: "slab-vanity",
+    name: "Quartzite-look slab vanity",
+    blurb: "Bright slab-look walls and a wide stone-look vanity top.",
+    image: "/images/design/slab-vanity.webp",
+    alt: "Bright bathroom with white quartzite-look slab walls and a double vanity.",
+    path: "custom-tile",
+    project: "tile-bathroom",
+    spec: "white quartzite-look large slab walls with soft grey veining in the shower, a matching quartzite-look vanity top if a vanity is visible in the photo, frameless clear glass, brushed nickel fixtures",
+  },
 ];
 
 export function findStyle(key: string) {

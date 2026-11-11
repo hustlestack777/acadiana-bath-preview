@@ -12,6 +12,7 @@ import {
   testRecipients,
 } from "@/lib/design-sessions";
 import { formatChicago } from "@/lib/lead-display";
+import { budgetTag } from "@/lib/budget";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -56,7 +57,8 @@ export async function POST(request: Request) {
     lead_id: string | null;
     unlock_token: string;
     is_test: boolean;
-  }>(`SELECT style_key, status, before, extra, after, lead_id, unlock_token, is_test FROM design_sessions WHERE id = $1`, [id]);
+    budget: string;
+  }>(`SELECT style_key, status, before, extra, after, lead_id, unlock_token, is_test, budget FROM design_sessions WHERE id = $1`, [id]);
   const session = found.rows[0];
   if (!session || session.status !== "done" || !session.after || !session.before) {
     return fail("That design was not found. Start a new one.", 404);
@@ -117,7 +119,7 @@ export async function POST(request: Request) {
     preferred: "phone",
     marketing: false,
     timing: "exploring",
-    budget: "",
+    budget: budgetTag(session.budget) || "Budget: skipped",
     homeowner,
     payment: "not-sure",
     consent: smsConsent,
