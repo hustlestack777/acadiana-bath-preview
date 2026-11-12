@@ -296,7 +296,8 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
     if (chip.message) ask(chip.message);
   }
 
-  const showDock = open || dockClear;
+  // Always show the cutout; padding keeps it off the hero CTAs and phone line.
+  const showDock = true;
   const showBubble = !open && allowBubble && !bubbleHidden && bubbleReady && dockClear;
   const chipClassName = "rounded-full border border-border bg-background px-3 py-1.5 text-left text-xs";
   const placeholder =
