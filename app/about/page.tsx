@@ -18,7 +18,7 @@ export default function AboutPage() {
   return (
     <SiteShell sticky>
       <main id="content" tabIndex={-1} className="mx-auto w-full max-w-3xl px-5 py-12 md:py-16">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">About</p>
+        <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">About</p>
         <h1 className="mt-3 font-heading text-4xl leading-[1.05] md:text-6xl">{brand.name}</h1>
 
         <div className="mt-10 grid gap-8 text-lg leading-8 [&_h2]:text-3xl">
@@ -53,7 +53,7 @@ export default function AboutPage() {
               mind.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-5 text-center text-sm font-semibold text-primary-foreground">
+              <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-bronze px-5 text-center text-sm font-semibold text-bronze-foreground hover:bg-bronze-hover">
                 {quoteCta}
               </ConsultLink>
               <DesignLink className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card px-5 text-center text-sm font-semibold">

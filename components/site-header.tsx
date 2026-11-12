@@ -112,7 +112,7 @@ export function SiteHeader() {
             {heroDesignCta}
           </DesignLink>
           <ConsultLink
-            className="hidden h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground md:inline-flex"
+            className="hidden h-11 items-center justify-center rounded-full bg-bronze px-4 text-sm font-medium text-bronze-foreground hover:bg-bronze-hover md:inline-flex"
           >
             {hero.primary}
           </ConsultLink>
@@ -164,7 +164,7 @@ export function SiteHeader() {
           <div className="mt-6 grid gap-3 border-t border-border pt-6 text-base">
             <ConsultLink
               onClick={() => setOpen(false)}
-              className="inline-flex h-12 items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-bronze text-base font-medium text-bronze-foreground hover:bg-bronze-hover"
             >
               {hero.primary}
             </ConsultLink>

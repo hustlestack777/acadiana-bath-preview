@@ -33,7 +33,7 @@ export default function CustomTilePage() {
         />
 
         <section id="looks" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-20 md:py-28" aria-labelledby="tile-looks">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Custom tile</p>
+          <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Custom tile</p>
           <h2 id="tile-looks" className="mt-3 max-w-3xl text-4xl leading-[1.05] md:text-6xl">{tilePath.looksTitle}</h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {tilePath.looks.map((item, index) => (
@@ -49,7 +49,7 @@ export default function CustomTilePage() {
 
         <section id="grout" className="rise scroll-mt-28 bg-card" aria-labelledby="grout-title">
           <div className="mx-auto w-full max-w-6xl px-5 py-20 md:py-28">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Grout colors</p>
+            <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Grout colors</p>
             <h2 id="grout-title" className="mt-3 text-4xl md:text-6xl">{tilePath.groutTitle}</h2>
             <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">{tilePath.groutBody}</p>
             <GroutPicker />
@@ -60,7 +60,7 @@ export default function CustomTilePage() {
 
         <section id="tile-quote" className="scroll-mt-24 mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 md:grid-cols-12 md:py-28">
           <div className="md:col-span-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Free quote</p>
+            <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Free quote</p>
             <h2 className="mt-3 text-4xl md:text-5xl">{tilePath.formTitle}</h2>
             <p className="mt-4 leading-7 text-muted-foreground">{tilePath.formBody}</p>
             <p className="mt-6 text-sm">

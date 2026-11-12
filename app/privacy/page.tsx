@@ -16,7 +16,7 @@ export default function PrivacyPage() {
   return (
     <SiteShell>
       <main id="content" tabIndex={-1} className="mx-auto w-full max-w-3xl px-5 py-12 md:py-16">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Privacy</p>
+        <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Privacy</p>
         <h1 className="mt-3 text-5xl md:text-6xl">Privacy Policy</h1>
         <p className="mt-3 text-sm text-muted-foreground">Last updated: {LAST_UPDATED}</p>
 

@@ -83,7 +83,7 @@ export function ShopLooks() {
     <section aria-labelledby="shop-looks-heading" className="rise scroll-mt-28 bg-[#fffaf3] py-14 md:py-20">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-end justify-between gap-4 px-5">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Shop by look</p>
+          <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Shop by look</p>
           <h2 id="shop-looks-heading" className="mt-3 text-3xl leading-[1.1] md:text-5xl">
             Find a starting point.
           </h2>
@@ -151,7 +151,7 @@ export function ShopLooks() {
 
 export function InspiringRow() {
   return (
-    <section aria-labelledby="inspiring-heading" className="rise scroll-mt-28 bg-[#eae6d8] py-14 md:py-20">
+    <section aria-labelledby="inspiring-heading" className="rise scroll-mt-28 bg-band py-14 md:py-20">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-end justify-between gap-4 px-5">
         <h2 id="inspiring-heading" className="text-3xl leading-[1.1] md:text-5xl">
           New & inspiring
