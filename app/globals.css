@@ -528,7 +528,7 @@ section[aria-label="Introduction"] .design-idea-tag {
   .camille-stage { width: 168px; height: 290px; }
   .camille-cutout { height: 300px; }
   section[aria-label="Introduction"] {
-    padding-bottom: 6.5rem;
+    padding-bottom: 18rem;
   }
   body { padding-bottom: 2rem; }
 }
