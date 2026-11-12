@@ -77,7 +77,7 @@ export function SiteFooter() {
           </a>
         </p>
         <a
-          href="https://lrl-site-preview.onrender.com/"
+          href="https://lagniapperealmlabs.com/"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-3 inline-block max-w-[17rem] text-fig-muted no-underline sm:max-w-none"
