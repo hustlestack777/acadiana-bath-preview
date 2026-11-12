@@ -1,14 +1,14 @@
 /** LRL credit-form inquiries. These are not client leads and must never reach a client inbox. */
 
-export const SHAUN_INQUIRY_EMAILS = [
+export const SHAUN_INQUIRY_EMAILS: readonly string[] = [
   "shaun.brasher@gmail.com",
   "shaun@lagniapperealmlabs.com",
-] as const;
+];
 
 /** Client or vendor inboxes that must never receive an LRL inquiry, even if listed in env. */
-export const BLOCKED_INQUIRY_EMAILS = [
+export const BLOCKED_INQUIRY_EMAILS: readonly string[] = [
   "acadianabathandcounter@gmail.com",
-] as const;
+];
 
 export const LRL_TOPICS = [
   { value: "website", label: "Website" },
