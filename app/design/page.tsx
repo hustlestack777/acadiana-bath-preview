@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: "Design My Bathroom",
   description: "Pick a look, snap your shower, and see your new bathroom in your own space before you spend a dime. Free quote across Acadiana and South Louisiana.",
   alternates: { canonical: pageCanonical("/design") },
+  openGraph: {
+    url: "/design",
+    title: "Design My Bathroom",
+    description: "Pick a look, snap your shower, and see your new bathroom in your own space before you spend a dime. Free quote across Acadiana and South Louisiana.",
+  },
 };
 
 export default async function DesignPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {

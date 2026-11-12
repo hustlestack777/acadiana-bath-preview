@@ -45,14 +45,14 @@ const QUOTE_LINE =
 function quoteSection(): TownSection {
   return {
     title: "How a quote works",
-    body: `Start with Design My Bathroom or the quote form, or send a photo. ${QUOTE_LINE} Starting at $5K, with most projects $5K–$30K+.`,
+    body: `Start with Design My Bathroom or the quote form, or send a photo. ${QUOTE_LINE} Starting at $7K, with most projects $7,000 to $30,000+.`,
   };
 }
 
 function costFaq(question = "How much does a remodel cost?"): TownFaq {
   return {
     q: question,
-    a: `Starting at $5K, with most projects $5K–$30K+. ${QUOTE_LINE}`,
+    a: `Starting at $7K, with most projects $7,000 to $30,000+. ${QUOTE_LINE}`,
   };
 }
 
@@ -94,7 +94,7 @@ export const towns: TownPageContent[] = [
     name: "Youngsville",
     title: "Bathroom Remodels Serving Youngsville",
     description:
-      "Bathroom remodels for Youngsville neighborhoods including Sugar Mill Pond, Southlake Plantation, Highland Plantation, Copperfield, and Laurel Grove. Starting at $5K.",
+      "Bathroom remodels for Youngsville neighborhoods including Sugar Mill Pond, Southlake Plantation, Highland Plantation, Copperfield, and Laurel Grove. Starting at $7K.",
     intro: [
       "We serve Youngsville with custom walk-in showers, tile, quartz and quartzite countertops, and solid surface.",
       "Youngsville has grown quickly in recent years. We work with homeowners in Sugar Mill Pond, Southlake Plantation, Highland Plantation, Copperfield, and Laurel Grove.",
@@ -136,7 +136,7 @@ export const towns: TownPageContent[] = [
     name: "Carencro",
     title: "Bathroom Remodels Serving Carencro",
     description:
-      "Bathroom remodels serving Carencro, including Barrington Place, Couret Farms, Oak Path, La Bon Vie, and downtown. Starting at $5K. Free quote.",
+      "Bathroom remodels serving Carencro, including Barrington Place, Couret Farms, Oak Path, La Bon Vie, and downtown. Starting at $7K. Free quote.",
     intro: [
       "We serve Carencro with custom walk-in showers, tile, quartz and quartzite countertops, and solid surface.",
       "We work with homeowners in Barrington Place, Couret Farms, Oak Path, La Bon Vie, and downtown Carencro.",
@@ -178,7 +178,7 @@ export const towns: TownPageContent[] = [
     name: "New Iberia",
     title: "Bathroom Remodels Serving New Iberia",
     description:
-      "Bathroom remodels in New Iberia along Bayou Teche, downtown, East Main Street, and West End. Starting at $5K. Free quote.",
+      "Bathroom remodels in New Iberia along Bayou Teche, downtown, East Main Street, and West End. Starting at $7K. Free quote.",
     intro: [
       "We serve New Iberia with custom walk-in showers, tile, quartz and quartzite countertops, and solid surface.",
       "New Iberia sits along Bayou Teche. We work with homeowners downtown, along East Main Street, and in the West End. It is close to Lafayette, Youngsville and Broussard.",
@@ -220,7 +220,7 @@ export const towns: TownPageContent[] = [
     name: "Jennings",
     title: "Bathroom Remodels Serving Jennings",
     description:
-      "Bathroom remodels serving Jennings, from downtown Main Street and Cary Avenue across Jeff Davis Parish. Starting at $5K. Free quote.",
+      "Bathroom remodels serving Jennings, from downtown Main Street and Cary Avenue across Jeff Davis Parish. Starting at $7K. Free quote.",
     intro: [
       "We serve Jennings with custom walk-in showers, tile, quartz and quartzite countertops, and solid surface.",
       "We work with homeowners downtown along Main Street and Cary Avenue. Louisiana's first oil well was brought in near Jennings in 1901.",
@@ -275,7 +275,7 @@ export const towns: TownPageContent[] = [
     name: "Sulphur",
     title: "Bathroom Remodels Serving Sulphur",
     description:
-      "Bathroom remodels for Sulphur, including Maplewood and downtown, just west of Lake Charles. Starting at $5K. Free quote.",
+      "Bathroom remodels for Sulphur, including Maplewood and downtown, just west of Lake Charles. Starting at $7K. Free quote.",
     intro: [
       "We serve Sulphur with custom walk-in showers, tile, quartz and quartzite countertops, and solid surface.",
       "We work with homeowners in Maplewood and downtown Sulphur, just west of Lake Charles.",
@@ -319,7 +319,7 @@ export const towns: TownPageContent[] = [
     name: "Moss Bluff",
     title: "Bathroom Remodels Serving Moss Bluff",
     description:
-      "Bathroom remodels serving Moss Bluff, just north of Lake Charles, including wooded lots and nearby Gillis. Starting at $5K. Free quote.",
+      "Bathroom remodels serving Moss Bluff, just north of Lake Charles, including wooded lots and nearby Gillis. Starting at $7K. Free quote.",
     intro: [
       "We serve Moss Bluff with custom walk-in showers, tile, quartz and quartzite countertops, and solid surface.",
       "Moss Bluff sits just north of Lake Charles, with wooded lots and newer subdivisions, and Gillis just to the north. We work with homeowners throughout Moss Bluff and the surrounding north Calcasieu area.",
@@ -408,7 +408,7 @@ export const towns: TownPageContent[] = [
     sections: [
       {
         title: "Cost, plainly",
-        body: "There is no single Baton Rouge price, because the room and the materials decide it. Starting at $5K, with most projects $5K–$30K+. A tighter refresh and a full custom shower with stone and handmade tile are priced differently. " + QUOTE_LINE,
+        body: "There is no single Baton Rouge price, because the room and the materials decide it. Starting at $7K, with most projects $7,000 to $30,000+. A tighter refresh and a full custom shower with stone and handmade tile are priced differently. " + QUOTE_LINE,
       },
       {
         title: "If you are in Prairieville or Gonzales",
@@ -428,7 +428,7 @@ export const towns: TownPageContent[] = [
     name: "Gonzales",
     title: "Bathroom Remodels Serving Gonzales",
     description:
-      "Bathroom remodels in Gonzales, the Jambalaya Capital of the World, plus nearby Dutchtown and Prairieville. Starting at $5K. Free quote.",
+      "Bathroom remodels in Gonzales, the Jambalaya Capital of the World, plus nearby Dutchtown and Prairieville. Starting at $7K. Free quote.",
     intro: [
       "We serve Gonzales with custom walk-in showers, tile, quartz and quartzite countertops, and solid surface.",
       "Gonzales is in Ascension Parish and is known as the Jambalaya Capital of the World. We work with homeowners in downtown Gonzales and nearby Dutchtown, just south of Baton Rouge. We also serve Prairieville.",
@@ -496,7 +496,7 @@ export const towns: TownPageContent[] = [
     name: "Plaquemine",
     title: "Bathroom Remodels Serving Plaquemine",
     description:
-      "Bathroom remodels serving Plaquemine, the Iberville Parish seat, including downtown and the area around the Plaquemine Lock. Starting at $5K.",
+      "Bathroom remodels serving Plaquemine, the Iberville Parish seat, including downtown and the area around the Plaquemine Lock. Starting at $7K.",
     intro: [
       "We serve Plaquemine with custom walk-in showers, tile, quartz and quartzite countertops, and solid surface.",
       "Plaquemine is the seat of Iberville Parish. We work with homeowners downtown and around the Plaquemine Lock.",

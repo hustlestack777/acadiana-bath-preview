@@ -254,7 +254,7 @@ test("design picks, talking points, and related looks show clearly in Justin's l
       "Walls: Green zellige (Custom tile)",
       "Floor: Hex",
       "Fixture finish: Brass",
-      "Talking point (Good): They picked a tub-to-shower (walk-in) with green zellige walls, a hex floor, and brass fixtures. Starting at $5K.",
+      "Talking point (Good): They picked a tub-to-shower (walk-in) with green zellige walls, a hex floor, and brass fixtures. Starting at $7K.",
       "Talking point (Better): Upgrade to discuss: a marble-lined niche, frameless clear glass.",
       "Talking point (Best): If they want the full treatment: going curbless with a linear drain.",
       "Related looks shown: Green zellige, Green zellige + hex floor, Emerald zellige",
@@ -264,7 +264,7 @@ test("design picks, talking points, and related looks show clearly in Justin's l
   assert.match(email.text, /Floor: Hex/);
   assert.match(email.text, /Fixture finish: Brass/);
   assert.match(email.text, /Talking point \(Good\):/);
-  assert.match(email.text, /Starting at \$5K/);
+  assert.match(email.text, /Starting at \$7K/);
   assert.match(email.text, /Related looks shown: Green zellige/);
   assert.match(email.html, /Tub-to-shower \(walk-in\)/);
   assert.match(email.html, /marble-lined niche/);
