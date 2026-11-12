@@ -398,7 +398,13 @@ section[aria-label="Introduction"] .hero-copy {
   }
 }
 
-/* ===== Gigi full-torso chat launcher (Nov 12) ===== */
+/* ===== Gigi full-torso chat launcher (Nov 12) =====
+   Shared widget contract (Gigi, Camille, Remy):
+   - Resting launcher: 300x480 desktop, 108x148 phones (frameless upper-torso).
+   - If the cutout must yield a control, peek 64px — never a thin sliver.
+   - Open panel: 380x560 on desktop; full-width bottom sheet below 480px.
+   - Close control: 44px tap target, a clear X, no decorative ring/badge.
+   - Sit above sticky bars with safe-area padding. Chat starts closed. */
 .gigi-widget { pointer-events: none; }
 .gigi-widget > * { pointer-events: auto; }
 .gigi-stage {
@@ -436,6 +442,57 @@ section[aria-label="Introduction"] .hero-copy {
   user-select: none;
   pointer-events: none;
 }
+.gigi-panel {
+  width: 380px;
+  height: 560px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  margin-bottom: 0.75rem;
+  margin-right: 0.25rem;
+}
+.gigi-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.gigi-close svg {
+  width: 22px;
+  height: 22px;
+}
+.gigi-talk-dismiss {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Desktop: keep the panel clear of the standing 300px torso. */
+@media (min-width: 768px) {
+  .gigi-panel {
+    margin-bottom: 5rem;
+    margin-right: 0.5rem;
+  }
+}
+
 /* Phones: small frameless upper-torso cutout (no circle border or
    background) so the sticky quote bar and hero CTAs stay clear.
    Full torso stays on desktop. No extra motion on phones. */
@@ -444,6 +501,7 @@ section[aria-label="Introduction"] .hero-copy {
     right: 8px !important;
     flex-direction: column;
     align-items: flex-end;
+    bottom: calc(var(--gigi-bottom, 8px) + env(safe-area-inset-bottom, 0px));
   }
   .gigi-stage {
     width: 108px;
@@ -475,11 +533,36 @@ section[aria-label="Introduction"] .hero-copy {
   .gigi-talk { margin-bottom: 8px !important; }
   .gigi-panel {
     margin-bottom: 8px !important;
-    width: min(22rem, calc(100vw - 1.5rem)) !important;
-    max-height: min(32rem, calc(100dvh - var(--gigi-bottom, 0px) - 14rem)) !important;
+    width: 380px;
+    max-width: calc(100vw - 1.5rem);
+    height: auto;
+    max-height: min(560px, calc(100dvh - var(--gigi-bottom, 0px) - env(safe-area-inset-bottom, 0px) - 10rem));
   }
   section[aria-label="Introduction"] {
     padding-bottom: 13.5rem;
+  }
+}
+
+/* Open chat on small phones: full-width bottom sheet, launcher collapses. */
+@media (max-width: 479px) {
+  .gigi-widget.is-open {
+    left: 0;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100%;
+    align-items: stretch;
+  }
+  .gigi-widget.is-open .gigi-stage {
+    display: none;
+  }
+  .gigi-widget.is-open .gigi-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: min(560px, calc(100dvh - env(safe-area-inset-bottom, 0px))) !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border-radius: 16px 16px 0 0 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
 

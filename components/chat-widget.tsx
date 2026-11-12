@@ -204,7 +204,7 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
     function compute() {
       const root = widgetRef.current;
       const desktop = isDesktop();
-      const offset = desktop ? (raised ? 96 : 0) : measureStickyOffset(root) || 16;
+      const offset = desktop ? (raised ? 96 : 0) : measureStickyOffset(root) || 8;
 
       if (desktop) {
         setBottomPx(null);
@@ -355,15 +355,14 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
         formPage && "max-[1439px]:hidden",
         open && "is-open",
         typing && "is-typing",
-        !mapClear && !open && "translate-x-[calc(100%-12px)] md:translate-x-[calc(100%-2.75rem)]",
+        !mapClear && !open && "translate-x-[calc(100%-64px)]",
         bottomPx == null && (raised ? "bottom-24" : "bottom-0"),
-        bottomPx != null && "max-md:bottom-[var(--gigi-bottom)]",
       )}
       style={bottomPx != null ? ({ "--gigi-bottom": `${bottomPx}px` } as CSSProperties) : undefined}
     >
       {open ? (
         <section
-          className="gigi-panel mb-3 mr-1 flex max-h-[min(32rem,70vh)] w-[min(22rem,calc(100vw-7.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl md:mb-40 md:w-[min(22rem,calc(100vw-22rem))]"
+          className="gigi-panel flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl"
           aria-label={`Chat with ${CHAT_AGENT_NAME}`}
           data-testid="ai-chat"
         >
@@ -375,9 +374,9 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
                 <p className="mt-0.5 text-xs leading-4 text-fig-muted">{GIGI_HEADER_SUBLINE}</p>
               </div>
             </div>
-            <button type="button" className="inline-flex size-10 items-center justify-center rounded-xl" onClick={() => setOpen(false)}>
+            <button type="button" className="gigi-close" onClick={() => setOpen(false)}>
               <span className="sr-only">Close chat with {CHAT_AGENT_NAME}</span>
-              <X />
+              <X aria-hidden="true" />
             </button>
           </header>
           <div className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
@@ -458,14 +457,14 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
             </button>
             <button
               type="button"
-              className="absolute right-1 top-1 inline-flex size-6 items-center justify-center rounded-full text-muted-foreground"
+              className="gigi-talk-dismiss text-muted-foreground"
               onClick={(event) => {
                 event.stopPropagation();
                 hideBubble();
               }}
             >
               <span className="sr-only">Dismiss greeting</span>
-              <X className="size-3.5" />
+              <X aria-hidden="true" className="size-5" />
             </button>
             <span
               aria-hidden="true"
