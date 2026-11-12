@@ -146,7 +146,7 @@ function reservedDockRect(bottomOffset: number, withBubble: boolean) {
   return new DOMRect(vw - right - width, bottom - height, width, height);
 }
 
-export function ChatWidget({ raised = false }: { raised?: boolean }) {
+export function ChatWidget({ raised = false, formPage = false }: { raised?: boolean; formPage?: boolean }) {
   const pathname = usePathname() || "/";
   const allowBubble = shouldShowGreeting(pathname);
   const [open, setOpen] = useState(false);
@@ -351,6 +351,8 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       className={cn(
         "gigi-widget fixed right-0 z-40 flex flex-row items-end justify-end md:right-4 md:bottom-0",
         "transition-transform duration-300 ease-out motion-reduce:transition-none",
+        // Form pages: only show Gigi when the screen is wide enough that she sits beside the form, never on top of it.
+        formPage && "max-[1439px]:hidden",
         open && "is-open",
         typing && "is-typing",
         !mapClear && !open && "translate-x-[calc(100%-12px)] md:translate-x-[calc(100%-2.75rem)]",

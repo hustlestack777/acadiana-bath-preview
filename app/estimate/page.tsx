@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function EstimatePage() {
   return (
-    <SiteShell sticky bleed>
+    <SiteShell bleed formPage>
       <EstimateWizard />
     </SiteShell>
   );

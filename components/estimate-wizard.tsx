@@ -16,6 +16,7 @@ import { WindowsQuoteLine } from "@/components/windows-quote-line";
 import { CallWindowFields } from "@/components/call-window-fields";
 import { CallbackConfirmation } from "@/components/callback-confirmation";
 import { checkCity, MAIN_TOWNS } from "@/lib/coverage";
+import { CALL_DAYS, CALL_TIMES } from "@/lib/call-window";
 import {
   brand,
   consentLabel,
@@ -100,6 +101,11 @@ export function EstimateWizard() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     window.setTimeout(() => {
+      // On phones, focusing a text field pops the keyboard over the form. Focus the step heading instead.
+      if (window.matchMedia("(pointer: coarse)").matches) {
+        target.querySelector<HTMLElement>("[data-step-heading]")?.focus({ preventScroll: true });
+        return;
+      }
       const field =
         target.querySelector<HTMLElement>("#street") ??
         target.querySelector<HTMLElement>("#city") ??
@@ -108,6 +114,14 @@ export function EstimateWizard() {
         target.querySelector<HTMLElement>("#name");
       field?.focus({ preventScroll: true });
     }, reduce ? 0 : 450);
+  }, []);
+
+  // Gigi's "Get my free quote" link carries what the visitor already told her. Prefill it so they don't retype.
+  useEffect(() => {
+    const prefill = prefillFromQuery(window.location.search);
+    if (!Object.keys(prefill).length) return;
+    const frame = requestAnimationFrame(() => setForm((current) => ({ ...current, ...prefill })));
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
@@ -397,6 +411,12 @@ export function EstimateWizard() {
           step === "result" ? "max-w-[420px] pb-16 pt-24" : "max-w-3xl py-8 md:py-12",
         )}
       >
+        {step === "result" ? null : (
+          <div className="mb-6">
+            <h2 className="font-heading text-3xl leading-tight md:text-4xl">Get your free quote</h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">4 quick steps. We&apos;ll call you to set up measurements.</p>
+          </div>
+        )}
         {step === "result" ? null : <Stepper step={step} />}
 
         {step === "town" ? (
@@ -958,4 +978,30 @@ function RecapRow({ label, value }: { label: string; value: string }) {
       <dd className="font-medium">{value}</dd>
     </div>
   );
+}
+
+const GIGI_PROJECTS: Record<string, string> = {
+  "shower remodel": "showers",
+  "tub to shower": "tub-to-shower",
+  "full bathroom": "showers,tubs,lavatories,flooring,toilets",
+  "vanity or countertops": "lavatories",
+};
+
+/** Read Gigi's handoff params (project, city, callDay, callTime). Unknown values are ignored. */
+function prefillFromQuery(search: string): Partial<typeof empty> {
+  const params = new URLSearchParams(search);
+  const out: Partial<typeof empty> = {};
+  const rawProject = (params.get("project") || "").trim();
+  if (rawProject) {
+    const mapped = GIGI_PROJECTS[rawProject.toLowerCase()];
+    const ids = (mapped ?? rawProject).split(",").filter((id) => projects.some((item) => item.id === id));
+    if (ids.length) out.project = ids.join(",");
+  }
+  const city = (params.get("city") || "").trim().slice(0, 80);
+  if (city) out.city = city;
+  const day = params.get("callDay") || "";
+  if (CALL_DAYS.some((item) => item.id === day)) out.preferredCallDay = day;
+  const time = params.get("callTime") || "";
+  if (CALL_TIMES.some((item) => item.id === time)) out.preferredCallTime = time;
+  return out;
 }
