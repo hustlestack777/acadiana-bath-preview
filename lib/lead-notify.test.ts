@@ -88,12 +88,12 @@ test("the customer confirmation is short, signed, and has no banned claims", () 
   assert.match(email.text, /Hi Adam,/);
   assert.match(email.text, /Thanks for reaching out to Acadiana Bathrooms\./);
   assert.match(email.text, /We'll call you Wednesday, Nov 11 between 9 AM and 10 AM CT to discuss your project\./);
-  assert.match(email.text, /Save Justin's number so you'll know it's him: \(337\) 522-0023\./);
-  assert.match(email.text, /You can call or text him there anytime\./);
-  assert.match(email.text, /Save Justin's Contact: https:\/\/abclafayette\.com\/justin\.vcf/);
+  assert.match(email.text, /Save the Acadiana Bathrooms and Countertops number so you'll know it's us: \(337\) 522-0023\./);
+  assert.match(email.text, /You can call us there anytime\./);
+  assert.match(email.text, /Save our contact: https:\/\/abclafayette\.com\/justin\.vcf/);
   assert.match(email.text, /What happens next: We'll call you to discuss your project and set a time to take measurements\. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then\./);
   assert.match(email.text, /Talk soon,\nAcadiana Bathrooms · abclafayette\.com/);
-  assert.match(email.html, /Save Justin(?:&#39;|')s Contact/);
+  assert.match(email.html, /Save Acadiana Bathrooms and Countertops/);
   assert.match(email.html, /href="https:\/\/abclafayette\.com\/justin\.vcf"/);
   assert.match(email.html, /tel:\+13375220023/);
   assert.equal(email.attachments.some((item) => item.filename === "justin-acadiana-bathrooms.vcf" && item.contentType === "text/vcard"), true);

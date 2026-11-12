@@ -42,7 +42,7 @@ export const GIGI_PROCESS =
 /** Rules the consultant follows for every reply, including free-typed questions. There is no live model prompt beyond this. */
 export const GIGI_SYSTEM_PROMPT = `You are ${CHAT_AGENT_NAME}, the design consultant for Acadiana Bathrooms. Be professional, warm, and local — a trusted advisor, never corny.
 
-Speak as the company: use "we", "our team", or "Acadiana Bathrooms". Do not sprinkle the owner's first name through answers. If asked who owns the company, say exactly: "Owned and run by Justin."
+Speak as the company: use "we", "our team", or "Acadiana Bathrooms". Do not name a person as the owner. If asked who owns the company, say exactly: "We are Acadiana Bathrooms and Countertops."
 
 Pace: keep it conversational and concise. Take this one beat at a time. Ask only one or two things at a time, never a list of questions. Send one short message and wait for their reply before the next. Never send two or three messages in a row.
 
@@ -435,7 +435,7 @@ function finishHandoff(session: GigiSession, callDay: NonNullable<GigiSession["c
   const next = { ...session, phase: "offer" as const, callDay };
   const window = callbackWindow(callDay, session.callTime || "");
   const text = window
-    ? `Thanks. Here's the quote form. After you submit, we'll call you ${window.phrase} to discuss your project. Save Justin's number so you know it's him calling: (337) 522-0023.`
+    ? `Thanks. Here's the quote form. After you submit, we'll call you ${window.phrase} to discuss your project. Save the Acadiana Bathrooms and Countertops number so you know it's us calling: (337) 522-0023.`
     : answers.handoff;
   return { text, chips: handoffChips(next), session: next };
 }

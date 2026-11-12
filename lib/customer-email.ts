@@ -95,8 +95,8 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
   const vcfUrl = "https://abclafayette.com/justin.vcf";
 
   const thanks = hasWindow
-    ? `Thanks for reaching out to Acadiana Bathrooms. We'll call you ${dayBit} to discuss your project. Save Justin's number so you'll know it's him: (337) 522-0023. You can call or text him there anytime.`
-    : "Thanks for reaching out to Acadiana Bathrooms. We'll call you to discuss your project. Save Justin's number so you'll know it's him: (337) 522-0023. You can call or text him there anytime.";
+    ? `Thanks for reaching out to Acadiana Bathrooms. We'll call you ${dayBit} to discuss your project. Save the Acadiana Bathrooms and Countertops number so you'll know it's us: (337) 522-0023. You can call us there anytime.`
+    : "Thanks for reaching out to Acadiana Bathrooms. We'll call you to discuss your project. Save the Acadiana Bathrooms and Countertops number so you'll know it's us: (337) 522-0023. You can call us there anytime.";
   const nextSteps =
     "What happens next: We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.";
   const signoff = "Talk soon,\nAcadiana Bathrooms · abclafayette.com";
@@ -134,7 +134,7 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
     "",
     thanks,
     "",
-    `Save Justin's Contact: ${vcfUrl}`,
+    `Save our contact: ${vcfUrl}`,
     "",
     nextSteps,
     "",
@@ -196,7 +196,7 @@ export function buildCustomerConfirmation(input: CustomerConfirmationInput) {
 
   const body = `<p style="margin:0 0 14px;font-family:${EMAIL.serif};font-size:26px;line-height:1.2;color:${EMAIL.ink};">Hi ${esc(given)},</p>
     ${para(thanksHtml)}
-    <p style="margin:6px 0 22px;">${pillButton(vcfUrl, "Save Justin's Contact")}</p>
+    <p style="margin:6px 0 22px;">${pillButton(vcfUrl, "Save Acadiana Bathrooms and Countertops")}</p>
     ${para(esc(nextSteps))}
     <p style="margin:0 0 22px;font-family:${EMAIL.font};font-size:16px;line-height:1.55;color:${EMAIL.ink};">Talk soon,<br />Acadiana Bathrooms · <a href="https://abclafayette.com" style="color:${EMAIL.green};text-decoration:none;">abclafayette.com</a></p>
     ${designHtml}

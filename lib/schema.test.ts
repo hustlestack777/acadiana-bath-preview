@@ -43,9 +43,7 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   assert.equal("address" in data, false);
   assert.equal("aggregateRating" in data, false);
   assert.equal(data.priceRange, SCHEMA_PRICE_RANGE);
-  assert.equal(data.founder["@type"], "Person");
-  assert.equal(data.founder.name, "Justin");
-  assert.equal(data.founder.jobTitle, "Owner");
+  assert.equal("founder" in data, false);
   assert.equal(data.hasOfferCatalog["@type"], "OfferCatalog");
   const serviceNames = data.hasOfferCatalog.itemListElement.map((item: { name: string }) => item.name);
   for (const service of VISIBLE_SERVICES) {
@@ -197,7 +195,8 @@ test("llms.txt summarizes the business without banned claims", () => {
   assert.match(text, new RegExp(warrantyPlainText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(text, /\/faq/);
   assert.match(text, /\/areas/);
-  assert.match(text, /Owned and run by Justin\./);
+  assert.match(text, /\/about/);
+  assert.equal(text.includes("Owned and run by Justin"), false);
   for (const town of towns) {
     assert.match(text, new RegExp(`/serving-${town.slug}`));
   }

@@ -185,6 +185,7 @@ export const INDEXABLE_PATHS = [
   "/gallery",
   "/design",
   "/estimate",
+  "/about",
   "/faq",
   "/areas",
   "/privacy",

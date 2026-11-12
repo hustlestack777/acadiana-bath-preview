@@ -205,16 +205,16 @@ export function callbackThanksText(name: string, day: string, time: string, now 
       first,
       window: null,
       heading: `You're all set, ${first}.`,
-      body: "We'll call you to discuss your project. Save Justin's number so you know it's him calling: (337) 522-0023.",
-      after: "We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. Need to change the time? Call or text Justin at that number.",
+      body: "We'll call you to discuss your project. Save the Acadiana Bathrooms and Countertops number so you know it's us calling: (337) 522-0023.",
+      after: "We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. Need to change the time? Call Acadiana Bathrooms and Countertops at that number.",
     };
   }
   return {
     first,
     window,
     heading: `You're all set, ${first}.`,
-    body: `We'll call you ${window.dayLabel} between ${window.startLabel} and ${window.endLabel} CT to discuss your project. Save Justin's number so you know it's him calling: (337) 522-0023.`,
-    after: "We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. Need to change the time? Call or text Justin at that number.",
+    body: `We'll call you ${window.dayLabel} between ${window.startLabel} and ${window.endLabel} CT to discuss your project. Save the Acadiana Bathrooms and Countertops number so you know it's us calling: (337) 522-0023.`,
+    after: "We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. Need to change the time? Call Acadiana Bathrooms and Countertops at that number.",
   };
 }
 

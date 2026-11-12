@@ -265,7 +265,7 @@ test("Gigi walks through the quote flow with matching chips", () => {
   const done = respond("Weekday", dayQ.session);
   assert.match(done.text, /Thanks\. Here's the quote form\./);
   assert.match(done.text, /we'll call you .+ between .+ and .+ CT to discuss your project/);
-  assert.match(done.text, /Save Justin's number so you know it's him calling: \(337\) 522-0023/);
+  assert.match(done.text, /Save the Acadiana Bathrooms and Countertops number so you know it's us calling: \(337\) 522-0023/);
   const href = done.chips[0]?.href ?? "";
   assert.match(href, /\/estimate\?/);
   assert.match(href, /callTime=morning/);

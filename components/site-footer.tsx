@@ -13,7 +13,7 @@ export function SiteFooter() {
         <div>
           <MaisonLogo onDark className="text-secondary-foreground" />
           <p className="mt-4 text-sm leading-6 text-fig-muted">
-            Custom bathroom remodels, from design to the finished bathroom. Owned and run by Justin. {SERVICE_AREA} Start with Design My Bathroom or a free quote.
+            Custom bathroom remodels, from design to the finished bathroom. {SERVICE_AREA} Start with Design My Bathroom or a free quote.
           </p>
         </div>
         <div>
@@ -46,6 +46,7 @@ export function SiteFooter() {
             <a href="/custom-tile" className="underline underline-offset-4">Custom tile</a>
             <a href="/custom-tile#grout" className="underline underline-offset-4">Grout colors</a>
             <a href="/gallery" className="underline underline-offset-4">Gallery</a>
+            <a href="/about" className="underline underline-offset-4">About</a>
             <a href="/faq" className="underline underline-offset-4">FAQ</a>
             <a href="/areas" className="underline underline-offset-4">See every town we serve</a>
             {["lafayette", "youngsville", "broussard", "lake-charles", "baton-rouge", "houma"].map((slug) => {
@@ -66,6 +67,10 @@ export function SiteFooter() {
       </div>
       <p className="border-t border-white/15 px-5 py-4 pe-36 text-center text-xs leading-5 text-fig-muted md:pe-5">
         {brand.name} ·{" "}
+        <a href="/about" className="underline underline-offset-4">
+          About
+        </a>{" "}
+        ·{" "}
         <a href="/privacy" className="underline underline-offset-4">
           Privacy Policy
         </a>{" "}

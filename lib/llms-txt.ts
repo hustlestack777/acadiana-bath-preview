@@ -12,7 +12,7 @@ export function llmsTxt(): string {
 
   return `# ${SITE_NAME}
 
-${SITE_NAME} is a bathroom remodeling company based in Lafayette, Louisiana. Owned and run by Justin. ${SCHEMA_SERVICE_AREA}
+${SITE_NAME} is a bathroom remodeling company based in Lafayette, Louisiana. ${SCHEMA_SERVICE_AREA}
 
 ## Contact
 - Phone: ${SITE_PHONE}
@@ -42,6 +42,7 @@ ${page("/gallery", "Gallery")}
 ${page("/design", "Design My Bathroom")}
 ${page("/estimate", "Free Quote")}
 ${page("/windows", "Window estimate")}
+${page("/about", "About")}
 ${page("/faq", "FAQ")}
 ${page("/areas", "Areas we serve")}
 ${page("/privacy", "Privacy Policy")}
