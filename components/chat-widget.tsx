@@ -447,15 +447,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
           data-testid="gigi-launcher"
         >
           <span className="camille-ground" aria-hidden="true" />
-          <span className="camille-parallax">
-            <span className="camille-sway">
-              <span className="camille-breathe">
-                <span className="camille-react">
-                  <CamilleCutout loadFull={open} />
-                </span>
-              </span>
-            </span>
-          </span>
+          <CamilleCutout loadFull={open} />
         </button>
       ) : null}
     </div>
