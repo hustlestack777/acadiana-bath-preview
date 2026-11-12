@@ -447,6 +447,11 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
             aria-hidden="true"
             className="absolute -left-[9999px] h-0 w-0 opacity-0"
           />
+          {!shots.length ? (
+            <p className="mt-5 text-sm font-semibold text-bronze" data-testid="design-photo-hint">
+              Add a photo to continue.
+            </p>
+          ) : null}
           <div className="sticky bottom-0 z-30 -mx-5 mt-6 border-t border-border bg-background/95 px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:static md:mx-0 md:mt-6 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none flex gap-3">
             <button type="button" onClick={() => setStep("budget")} className="h-14 rounded-full border border-border px-6 font-semibold">
               Back
@@ -570,7 +575,7 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
 function StepKicker({ n, optional = false }: { n: number; optional?: boolean }) {
   return (
     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-      {optional ? "Optional" : `Step ${n} of ${STEP_TOTAL}`}
+      {`Step ${n} of ${STEP_TOTAL}`}{optional ? " · Optional" : ""}
     </p>
   );
 }
