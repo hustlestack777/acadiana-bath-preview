@@ -38,7 +38,7 @@ test("QA may remove a tub only when the picked layout says so", () => {
   assert.equal(layoutAllowsFixtureChange(findLayout("curbless")!, "the curb was removed for a curbless linear drain"), true);
 });
 
-test("talking points list the conversion, stay inside Starting at $5K, and never mention granite or AI", () => {
+test("talking points list the conversion, stay inside Starting at $7K, and never mention granite or AI", () => {
   const tile = talkingPoints(sample()!);
   assert.match(tile.good, /tub-to-shower/i);
   assert.match(tile.good, /green zellige/i);

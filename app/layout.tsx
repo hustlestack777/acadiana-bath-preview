@@ -47,6 +47,7 @@ const siteMetadata: Metadata = {
       "Custom showers, tile and solid surface remodels from Acadiana Bathrooms and Countertops. Based in Lafayette, serving Acadiana and South Louisiana. Free quote, and see your new bathroom free with Design My Bathroom.",
     url: "/",
     siteName: "Acadiana Bathrooms and Countertops",
+    type: "website",
     images: [
       {
         url: "/brand/og-image.png",

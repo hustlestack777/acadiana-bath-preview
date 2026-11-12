@@ -7,17 +7,17 @@ const skip = new Set(["node_modules", ".next", "uploads"]);
 const extensions = new Set([".ts", ".tsx", ".css", ".md", ".svg", ".mjs", ".json"]);
 
 const APPROVED_RANGE =
-  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";
+  "Starting at $7K, with most projects $7,000 to $30,000+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";
 
-const APPROVED_HERO_QUOTE = "Starting at $5K · Free quote.";
-const APPROVED_PRICE_FROM = "Bathroom remodels starting at $5K.";
-const APPROVED_PRICE_SHORT = "most projects $5K–$30K+";
-const APPROVED_PRICE_SHORT_CAP = "Most projects $5K–$30K+";
-const APPROVED_SCHEMA_PRICE_RANGE = "$5,000+";
-const APPROVED_JOBS_START = "Jobs start at $5K, with most projects $5K–$30K+";
-const APPROVED_STARTING_RANGE = "Starting at $5K, with most projects $5K–$30K+";
-const APPROVED_STARTING = "Starting at $5K";
-const APPROVED_JOBS_START_SHORT = "Jobs start at $5K";
+const APPROVED_HERO_QUOTE = "Starting at $7K · Free quote.";
+const APPROVED_PRICE_FROM = "Bathroom remodels starting at $7K.";
+const APPROVED_PRICE_SHORT = "most projects $7,000 to $30,000+";
+const APPROVED_PRICE_SHORT_CAP = "Most projects $7,000 to $30,000+";
+const APPROVED_SCHEMA_PRICE_RANGE = "$7,000 to $30,000+";
+const APPROVED_JOBS_START = "Jobs start at $7K, with most projects $7,000 to $30,000+";
+const APPROVED_STARTING_RANGE = "Starting at $7K, with most projects $7,000 to $30,000+";
+const APPROVED_STARTING = "Starting at $7K";
+const APPROVED_JOBS_START_SHORT = "Jobs start at $7K";
 
 const rules = [
   { name: "guarantee", re: /guarantee/i },
@@ -68,7 +68,7 @@ let failed = 0;
 for (const file of files) {
   if (file.endsWith(`${path.sep}scripts${path.sep}check-copy.mjs`)) continue;
   if (file.endsWith(`${path.sep}lib${path.sep}logic.test.ts`)) continue;
-  // The one approved price range (Shaun, 11/10/2026) is allowed; any other dollar amount still fails.
+  // The one approved price range (Shaun, 11/12/2026) is allowed; any other dollar amount still fails.
   let text = (await readFile(file, "utf8"))
     .replaceAll("Lifetime Guarantee", "")
     .replaceAll(APPROVED_RANGE, "")

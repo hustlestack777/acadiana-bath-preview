@@ -64,7 +64,7 @@ export const trustLine =
 export const trustLineFollow =
   "Free quote. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.";
 
-export const heroQuoteLine = "Starting at $5K · Free quote.";
+export const heroQuoteLine = "Starting at $7K · Free quote.";
 
 export const editorial = {
   eyebrow: "The room, considered",
@@ -342,6 +342,6 @@ export const ideas = {
   ],
 } as const;
 
-/** Approved price wording (Shaun, 11/11/2026). Used in chat and on the path pages. */
+/** Approved price wording (Shaun, 11/12/2026). Used in chat and on the path pages. */
 export const priceRange =
-  "Starting at $5K, with most projects $5K–$30K+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";
+  "Starting at $7K, with most projects $7,000 to $30,000+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";

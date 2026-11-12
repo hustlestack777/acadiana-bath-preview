@@ -158,22 +158,22 @@ test("assistant answers stay inside the published facts", () => {
     assert.equal(output.toLowerCase().includes(quarriedPhrase), false, output);
     assert.equal(/bath fitter|re-bath|rebath/i.test(output), false, output);
     // Only the approved range may carry a dollar amount.
-    const withoutRange = output.replaceAll(priceRange, "").replaceAll("Starting at $5K, with most projects $5K–$30K+", "").replaceAll("Starting at $5K", "").replaceAll("$5K–$30K+", "");
+    const withoutRange = output.replaceAll(priceRange, "").replaceAll("Starting at $7K, with most projects $7,000 to $30,000+", "").replaceAll("Starting at $7K", "").replaceAll("$7,000 to $30,000+", "");
     assert.equal(/\$\s?\d/.test(withoutRange), false, output);
     assert.equal(withoutRange.includes("5,000") || withoutRange.includes("5000"), false);
   }
   assert.match(replyTo("What is the product warranty?"), /We stand behind our work/);
   assert.match(replyTo(`what is your ${pledge}?`), /We stand behind our work/);
   assert.match(replyTo("Is it natural stone?"), /solid surface/i);
-  assert.match(replyTo("how much"), /Starting at \$5K/);
-  assert.match(replyTo("how much"), /\$5K–\$30K\+/);
+  assert.match(replyTo("how much"), /Starting at \$7K/);
+  assert.match(replyTo("how much"), /\$7,000 to \$30,000\+/);
   assert.match(replyTo("are you a person"), /AI assistant/i);
   assert.match(replyTo("are you a person"), new RegExp(CHAT_AGENT_NAME));
   assert.match(CHAT_ANSWERS.disclosure, new RegExp(`Hey! I’m ${CHAT_AGENT_NAME}, the design consultant for Acadiana Bathrooms`));
   assert.match(CHAT_ANSWERS.disclosure, /What can I help you with/);
   assert.doesNotMatch(CHAT_ANSWERS.disclosure, /ballpark price, show you your bathroom redesigned, or get you a free quote/);
   assert.equal(/AI assistant/i.test(CHAT_ANSWERS.disclosure), false);
-  assert.match(replyTo("What's a ballpark price?"), /Starting at \$5K/);
+  assert.match(replyTo("What's a ballpark price?"), /Starting at \$7K/);
   assert.match(replyTo("What's a ballpark price?"), /What are you thinking about/);
 });
 
@@ -199,7 +199,7 @@ test("Gigi walks through the quote flow with matching chips", () => {
   assert.deepEqual(intro.chips.map((chip) => chip.label), INTRO_CHIPS.map((chip) => chip.label));
 
   const start = respond("What's a ballpark price?", intro.session);
-  assert.match(start.text, /Starting at \$5K/);
+  assert.match(start.text, /Starting at \$7K/);
   assert.match(start.text, /What are you thinking about/);
   assert.deepEqual(start.chips.map((chip) => chip.label), [
     "Shower remodel",
@@ -325,13 +325,13 @@ test("Gigi's spoken answers avoid banned consult and claim wording", () => {
 
 test("Gigi reads FAQ answers and cleans phrasing she should not use", () => {
   const word = ["con", "sult"].join("");
-  const dirty = `Starting at $5K. Justin comes to your home for the ${word}. He will talk it through and give you a lifetime guarantee.`;
+  const dirty = `Starting at $7K. Justin comes to your home for the ${word}. He will talk it through and give you a lifetime guarantee.`;
   const clean = speakFromFaq(dirty);
-  assert.match(clean, /Starting at \$5K/);
+  assert.match(clean, /Starting at \$7K/);
   assert.match(clean, new RegExp(GIGI_CALLS_FIRST.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.equal(new RegExp(`${word}(?!ant)`, "i").test(clean), false, clean);
   assert.equal(/talk through|lifetime/i.test(clean), false, clean);
-  assert.match(CHAT_ANSWERS.cost, /Starting at \$5K/);
+  assert.match(CHAT_ANSWERS.cost, /Starting at \$7K/);
   assert.match(CHAT_ANSWERS.quote, /\(337\) 522-0023|Design My Bathroom/);
   assert.match(CHAT_ANSWERS.area, /Acadiana|South Louisiana|Outside our area/);
   assert.equal(/talk through|lifetime/i.test(CHAT_ANSWERS.cost + CHAT_ANSWERS.quote + CHAT_ANSWERS.area), false);
