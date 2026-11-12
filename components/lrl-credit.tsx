@@ -139,7 +139,7 @@ export function LrlCredit() {
                 <p id="lrl-inquiry-title" className="text-2xl">
                   Got it. Shaun will reach out personally.
                 </p>
-                <button type="button" className="mt-6 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground" onClick={close}>
+                <button type="button" className="mt-6 inline-flex rounded-lg bg-bronze text-bronze-foreground hover:bg-bronze-hover px-4 py-2 text-sm font-medium" onClick={close}>
                   Close
                 </button>
               </div>
@@ -223,7 +223,7 @@ export function LrlCredit() {
 
                 <button
                   type="submit"
-                  className="inline-flex h-11 items-center justify-center rounded-xl bg-primary px-4 text-base font-medium text-primary-foreground disabled:opacity-60"
+                  className="inline-flex h-11 items-center justify-center rounded-xl bg-bronze text-bronze-foreground hover:bg-bronze-hover px-4 text-base font-medium disabled:opacity-60"
                   disabled={status === "sending"}
                 >
                   {status === "sending" ? "Sending…" : "Send to Shaun"}

@@ -133,7 +133,7 @@ export function Hero() {
       </div>
 
       {isDesignIdeaHero(SLIDES[visibleIndex].n) ? (
-        <DesignIdeaTag className="left-4 top-24 z-20 sm:left-6 sm:top-28" />
+        <DesignIdeaTag className="right-3 top-[4.1rem] z-20 md:right-6 md:top-[6.5rem]" />
       ) : null}
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-6xl flex-col justify-end px-5 pb-28 pt-24 md:pb-12 md:pt-28">
@@ -158,13 +158,13 @@ export function Hero() {
         <p className="hero-copy mt-3 max-w-xl text-base leading-7 text-[#f6f1e6] sm:mt-6 sm:text-lg sm:leading-8">{heroSubhead}</p>
         <div className="mt-5 flex flex-col gap-3 sm:mt-8 sm:flex-row">
           <ConsultLink
-            className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 text-base font-semibold text-primary-foreground shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 sm:h-14"
+            className="inline-flex h-12 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-8 text-base font-semibold shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 sm:h-14"
             data-testid="hero-cta"
           >
             {hero.primary}
           </ConsultLink>
           <DesignLink
-            className="inline-flex h-12 items-center justify-center rounded-full border border-white/75 bg-black/15 px-8 text-base font-medium text-white backdrop-blur-sm hover:bg-white/10 sm:h-14"
+            className="inline-flex h-12 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-8 text-base font-semibold shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 sm:h-14"
           >
             {heroDesignCta}
           </DesignLink>

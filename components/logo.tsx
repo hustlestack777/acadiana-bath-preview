@@ -31,7 +31,7 @@ export function MaisonLogo({ className, compact = false, onDark = false }: LogoP
           className={cn(
             "mt-1 font-sans font-semibold",
             compact ? "text-[0.78rem] leading-none sm:text-[0.82rem]" : "text-[0.84rem] leading-none sm:text-[0.92rem]",
-            onDark ? "text-[#e4d8b4] [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]" : "text-[#6b5a2a]",
+            onDark ? "text-[#e4d8b4] [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]" : "text-bronze",
           )}
         >
           Bathrooms & Countertops

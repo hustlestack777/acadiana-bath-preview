@@ -18,7 +18,7 @@ export default function FaqPage() {
     <SiteShell sticky>
       <main id="content" tabIndex={-1}>
         <section className="mx-auto w-full max-w-6xl px-5 pb-4 pt-6 md:pt-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">FAQ</p>
+          <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">FAQ</p>
           <h1 className="mt-3 max-w-4xl font-heading text-4xl leading-[1.05] md:text-6xl">{faqPageTitle}</h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">{faqPageIntro}</p>
           <CoverageMap size="compact" />

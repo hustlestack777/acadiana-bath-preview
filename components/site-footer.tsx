@@ -9,7 +9,7 @@ import { townPath, towns } from "@/lib/towns";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-secondary pb-36 text-secondary-foreground md:pb-0">
+    <footer className="border-t-2 border-bronze-tint/70 bg-secondary pb-36 text-secondary-foreground md:pb-0">
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 pe-36 md:grid-cols-3 md:pe-5">
         <div>
           <MaisonLogo onDark className="text-secondary-foreground" />
@@ -18,10 +18,10 @@ export function SiteFooter() {
           </p>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Call or email</p>
+          <p className="accent-rule-on-dark text-sm font-semibold uppercase tracking-[0.14em] text-bronze-tint">Call or email</p>
           <p className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-            <ConsultLink className="underline underline-offset-4">{cardClaims.consult}</ConsultLink>
-            <DesignLink className="underline underline-offset-4">{heroDesignCta}</DesignLink>
+            <ConsultLink className="text-bronze-tint underline underline-offset-4">{cardClaims.consult}</ConsultLink>
+            <DesignLink className="text-bronze-tint underline underline-offset-4">{heroDesignCta}</DesignLink>
           </p>
           <p className="mt-3">
             <a href={brand.phoneHref} className="text-base font-medium">
@@ -40,7 +40,7 @@ export function SiteFooter() {
           </p>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Services</p>
+          <p className="accent-rule-on-dark text-sm font-semibold uppercase tracking-[0.14em] text-bronze-tint">Services</p>
           <p className="mt-3 text-sm leading-6">{services.join(" · ")}</p>
           <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
             <a href="/solid-surface" className="underline underline-offset-4">Solid surface</a>

@@ -19,17 +19,17 @@ export default function GalleryPage() {
     <SiteShell sticky>
       <main id="content" tabIndex={-1}>
         <section className="mx-auto w-full max-w-6xl px-5 pb-8 pt-6 md:pt-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">{gallery.eyebrow}</p>
+          <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">{gallery.eyebrow}</p>
           <h1 className="mt-3 max-w-4xl font-heading text-4xl leading-[1.05] md:text-6xl">{gallery.title}</h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
             Custom tile, stone, and solid surface looks to start from. Pick a direction, then get a free quote.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <ConsultLink className="inline-flex h-12 items-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground">
+            <ConsultLink className="inline-flex h-12 items-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-6 text-sm font-semibold">
               {hero.primary}
             </ConsultLink>
             <DesignLink
-              className="inline-flex h-12 items-center rounded-full border border-border bg-card px-6 text-sm font-semibold"
+              className="inline-flex h-12 items-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-6 text-sm font-semibold"
             >
               {heroDesignCta} →
             </DesignLink>

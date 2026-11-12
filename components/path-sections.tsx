@@ -44,11 +44,11 @@ export function PathHero({
         <h1 className="hero-copy mt-3 max-w-4xl font-heading text-[clamp(2.15rem,7vw,6.6rem)] leading-[0.95] font-medium">{title}</h1>
         <p className="hero-copy mt-3 max-w-xl text-base leading-7 sm:mt-5 sm:text-lg sm:leading-8">{support}</p>
         <div className="mt-5 flex flex-col gap-3 sm:mt-8 sm:flex-row">
-          <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 text-base font-semibold text-primary-foreground shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 sm:h-14">
+          <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-8 text-base font-semibold shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 sm:h-14">
             {hero.primary}
           </ConsultLink>
           <DesignLink
-            className="inline-flex h-12 items-center justify-center rounded-full border border-white/75 bg-black/15 px-8 text-base font-medium text-white backdrop-blur-sm hover:bg-white/10 sm:h-14"
+            className="inline-flex h-12 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-8 text-base font-semibold shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 sm:h-14"
             data-testid="path-design-cta"
           >
             {heroDesignCta}
@@ -69,7 +69,7 @@ export function PathHero({
 export function ExampleGrid({ photos, className, title }: { photos: Photo[]; className?: string; title?: string }) {
   return (
     <figure className={className}>
-      {title ? <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-brass">{title}</p> : null}
+      {title ? <p className="accent-rule mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-brass">{title}</p> : null}
       <ul className="grid grid-cols-2 gap-3 md:grid-cols-12">
         {photos.map((photo, index) => (
           <li
@@ -114,7 +114,7 @@ export function PathChooser() {
   ];
   return (
     <section id="paths" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-20 md:py-28">
-      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Choose your path</p>
+      <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Choose your path</p>
       <h2 className="mt-3 max-w-3xl text-4xl leading-[1.05] md:text-6xl">Two ways to a bathroom you love.</h2>
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {cards.map((card) => (
@@ -134,7 +134,7 @@ export function PathChooser() {
               <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[#e4d8b4]">{card.tag}</p>
               <h3 className="mt-2 font-heading text-4xl leading-none sm:text-5xl">{card.cardTitle}</h3>
               <p className="mt-3 max-w-md text-[0.95rem] leading-7 text-white/85">{card.cardBody}</p>
-              <ConsultLink className="pointer-events-auto mt-5 inline-flex h-12 items-center rounded-full bg-[#f6f1e6] px-6 text-sm font-semibold text-[#1c241c] transition-transform hover:translate-x-1">
+              <ConsultLink className="pointer-events-auto mt-5 inline-flex h-12 items-center rounded-full bg-bronze px-6 text-sm font-semibold text-bronze-foreground transition-transform hover:translate-x-1 hover:bg-bronze-hover">
                 {hero.primary} →
               </ConsultLink>
             </div>
@@ -149,9 +149,9 @@ export function PathChooser() {
 export function IdeasSection({ only }: { only?: string[] }) {
   const items = only ? ideas.items.filter((item) => only.includes(item.name)) : ideas.items;
   return (
-    <section id="ideas" className="rise scroll-mt-28 bg-[#eae6d8]">
+    <section id="ideas" className="rise scroll-mt-28 bg-band">
       <div className="mx-auto w-full max-w-6xl px-5 py-20 md:py-28">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">{ideas.eyebrow}</p>
+        <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">{ideas.eyebrow}</p>
         <h2 className="mt-3 max-w-3xl text-4xl md:text-6xl">{ideas.title}</h2>
         <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">{ideas.body}</p>
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">

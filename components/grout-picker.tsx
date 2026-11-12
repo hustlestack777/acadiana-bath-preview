@@ -62,7 +62,7 @@ export function GroutPicker() {
           </div>
         </div>
         <p className="mt-2 text-sm text-muted-foreground">{tilePath.groutNote}</p>
-        <a href="#tile-quote" onClick={() => choose(code)} className="mt-4 inline-flex h-12 items-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground">
+        <a href="#tile-quote" onClick={() => choose(code)} className="mt-4 inline-flex h-12 items-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-6 text-sm font-semibold">
           Use this color in my tile request
         </a>
       </div>

@@ -172,7 +172,7 @@ export function QuickQuote({ path }: { path: Path }) {
           as="h3"
           headingId={`${path}-done`}
           headingClassName="text-3xl outline-none"
-          buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground"
+          buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-6 text-base font-semibold"
         />
       </div>
     );
@@ -410,7 +410,7 @@ export function QuickQuote({ path }: { path: Path }) {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+        className="inline-flex h-14 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-8 text-base font-semibold shadow-lg shadow-bronze/25 transition-transform hover:-translate-y-0.5 disabled:opacity-60"
       >
         {status === "sending" ? "Sending…" : isTile ? "Get My Free Tile Quote" : "Get my solid surface quote"}
       </button>

@@ -688,7 +688,7 @@ export function EstimateWizard() {
 
         {step === "result" ? (
           <section className="text-[#1c241c]" aria-live="polite">
-            <div className="flex size-14 items-center justify-center rounded-full bg-[#103830] text-[26px] text-white" aria-hidden="true">
+            <div className="flex size-14 items-center justify-center rounded-full bg-bronze text-[26px] text-bronze-foreground" aria-hidden="true">
               ✓
             </div>
             <CallbackConfirmation
@@ -697,7 +697,7 @@ export function EstimateWizard() {
               time={form.preferredCallTime}
               headingId="result-title"
               headingClassName="mt-4 font-heading text-[40px] font-medium leading-[0.95] outline-none"
-              buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-[#103830] px-6 text-base font-semibold text-white"
+              buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-6 text-base font-semibold"
             />
             <WindowsQuoteLine className="mb-5 text-[#55574c]" />
             <section className="rounded-[24px] border border-[#d8d3c4] bg-[#fffaf3] px-5 py-[22px]">

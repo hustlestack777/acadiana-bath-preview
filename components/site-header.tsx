@@ -103,15 +103,12 @@ export function SiteHeader() {
             {brand.phone}
           </a>
           <DesignLink
-            className={cn(
-              "hidden h-11 items-center justify-center rounded-full border px-4 text-sm font-medium md:inline-flex",
-              overHero ? "border-white/70 text-white hover:bg-white/10" : "border-border bg-card",
-            )}
+            className="hidden h-11 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-4 text-sm font-medium md:inline-flex"
           >
             {heroDesignCta}
           </DesignLink>
           <ConsultLink
-            className="hidden h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground md:inline-flex"
+            className="hidden h-11 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover px-4 text-sm font-medium md:inline-flex"
           >
             {hero.primary}
           </ConsultLink>
@@ -163,13 +160,13 @@ export function SiteHeader() {
           <div className="mt-6 grid gap-3 border-t border-border pt-6 text-base">
             <ConsultLink
               onClick={() => setOpen(false)}
-              className="inline-flex h-12 items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover text-base font-medium"
             >
               {hero.primary}
             </ConsultLink>
             <DesignLink
               onClick={() => setOpen(false)}
-              className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card text-base font-medium"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-bronze text-bronze-foreground hover:bg-bronze-hover text-base font-medium"
             >
               {heroDesignCta}
             </DesignLink>
