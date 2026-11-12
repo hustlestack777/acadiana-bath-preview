@@ -17,7 +17,7 @@ export type AddressSelection = {
 const MIN_CHARS = 3;
 const DEBOUNCE_MS = 300;
 
-/** As-you-type house-number picker. Enter selects a suggestion and does not submit the form. */
+/** As-you-type house-number picker. The field is filled only when the user taps (or highlights and confirms) a suggestion — never by defaulting to the first match. Enter does not submit the form. */
 export function AddressAutocomplete({
   id,
   value,
@@ -36,7 +36,7 @@ export function AddressAutocomplete({
   const listId = useId();
   const [suggestions, setSuggestions] = useState<AddressHit[]>([]);
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(-1);
   const [status, setStatus] = useState("Suggestions appear as you type.");
   const requestId = useRef(0);
   const selectedStreet = useRef("");
@@ -58,7 +58,7 @@ export function AddressAutocomplete({
           if (seq !== requestId.current) return;
           const list = data?.suggestions ?? [];
           setSuggestions(list);
-          setActive(0);
+          setActive(-1);
           setOpen(list.length > 0);
           setStatus(list.length ? "Select your address from the list." : "No matches yet — keep typing the street and city.");
         } catch {
@@ -133,7 +133,11 @@ export function AddressAutocomplete({
     if (event.key === "Enter") {
       event.preventDefault();
       event.stopPropagation();
-      if (suggestions.length) void selectIndex(Math.max(0, Math.min(active, suggestions.length - 1)));
+      // Never auto-pick the first match. Only fill when the user has highlighted a suggestion
+      // (arrow keys or hover) and then confirmed it.
+      if (suggestions.length && active >= 0 && active < suggestions.length) {
+        void selectIndex(active);
+      }
       return;
     }
     if (event.key === "Escape") {
@@ -141,7 +145,7 @@ export function AddressAutocomplete({
     }
   }
 
-  const activeId = open && suggestions.length ? `${listId}-opt-${active}` : undefined;
+  const activeId = open && suggestions.length && active >= 0 ? `${listId}-opt-${active}` : undefined;
 
   return (
     <div className="relative">
@@ -198,11 +202,12 @@ export function AddressAutocomplete({
               key={suggestion.id}
               id={`${listId}-opt-${index}`}
               role="option"
-              aria-selected={index === active}
+              aria-selected={active >= 0 && index === active}
               className={cn(
                 "cursor-pointer rounded-lg px-3 py-3 text-sm leading-5",
-                index === active ? "bg-[#f3efe4]" : "",
+                active >= 0 && index === active ? "bg-[#f3efe4]" : "",
               )}
+              onMouseEnter={() => setActive(index)}
               onMouseDown={(event) => {
                 event.preventDefault();
                 void selectIndex(index);

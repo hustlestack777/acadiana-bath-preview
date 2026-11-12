@@ -48,10 +48,10 @@ export function StickyCtaBar() {
       className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur md:hidden"
     >
       <div className="grid grid-cols-2 gap-2">
-        <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-bronze px-3 text-center text-sm font-semibold text-bronze-foreground hover:bg-bronze-hover">
+        <ConsultLink className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-full bg-bronze px-2 text-center text-[13px] font-semibold text-bronze-foreground hover:bg-bronze-hover">
           {hero.primary}
         </ConsultLink>
-        <DesignLink className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card px-3 text-center text-sm font-semibold">
+        <DesignLink className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-full border border-border bg-card px-2 text-center text-[13px] font-semibold">
           {heroDesignCta}
         </DesignLink>
       </div>

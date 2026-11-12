@@ -24,8 +24,11 @@ export function CallWindowFields({
 }: CallWindowFieldsProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <fieldset id={`${idPrefix}-day`} className="grid gap-2 outline-none" tabIndex={-1}>
-        <legend className="text-sm font-medium">Best day</legend>
+      <p className="sm:col-span-2 text-sm text-muted-foreground">
+        Required — pick a day and a time so we can call you.
+      </p>
+      <fieldset id={`${idPrefix}-day`} className={cn("grid scroll-mt-24 gap-2 rounded-xl outline-none", dayError && "ring-1 ring-destructive p-2")} tabIndex={-1} aria-required="true">
+        <legend className="text-sm font-medium">Best day <span className="font-normal text-muted-foreground">(required)</span></legend>
         <div className="grid gap-2">
           {CALL_DAYS.map((item) => {
             const id = `${idPrefix}-day-${item.id}`;
@@ -56,8 +59,8 @@ export function CallWindowFields({
         </div>
         {dayError ? <p className="text-sm text-destructive" role="alert">{dayError}</p> : null}
       </fieldset>
-      <fieldset id={`${idPrefix}-time`} className="grid gap-2 outline-none" tabIndex={-1}>
-        <legend className="text-sm font-medium">Best time to call</legend>
+      <fieldset id={`${idPrefix}-time`} className={cn("grid scroll-mt-24 gap-2 rounded-xl outline-none", timeError && "ring-1 ring-destructive p-2")} tabIndex={-1} aria-required="true">
+        <legend className="text-sm font-medium">Best time to call <span className="font-normal text-muted-foreground">(required)</span></legend>
         <div className="grid gap-2">
           {CALL_TIMES.map((item) => {
             const id = `${idPrefix}-time-${item.id}`;

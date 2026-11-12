@@ -122,7 +122,7 @@ export function SiteHeader() {
           </a>
           <DesignLink
             className={cn(
-              "hidden h-11 items-center justify-center rounded-full border px-4 text-sm font-medium md:inline-flex",
+              "hidden h-11 items-center justify-center whitespace-nowrap rounded-full border px-4 text-sm font-medium md:inline-flex",
               overHero ? "border-white/70 text-white hover:bg-white/10" : "border-border bg-card",
             )}
           >
@@ -188,7 +188,7 @@ export function SiteHeader() {
             </ConsultLink>
             <DesignLink
               onClick={() => setOpen(false)}
-              className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-card text-base font-medium"
+              className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-full border border-border bg-card text-base font-medium"
             >
               {heroDesignCta}
             </DesignLink>

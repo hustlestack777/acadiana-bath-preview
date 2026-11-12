@@ -225,7 +225,10 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
     if (!form.preferredCallTime) next.preferredCallTime = "Pick the best time for us to call.";
     if (!form.smsConsent) next.consent = "Check the box so Acadiana Bathrooms and Countertops can contact you about this request.";
     setErrors(next);
-    if (Object.keys(next).length) return;
+    if (Object.keys(next).length) {
+      requestAnimationFrame(() => focusUnlockError(next));
+      return;
+    }
     setSending(true);
     const body = new FormData();
     body.set("id", design.id);
@@ -673,6 +676,32 @@ function RelatedLooks({ items }: { items: RelatedLook[] }) {
   );
 }
 
+
+const UNLOCK_ERROR_IDS: Record<string, string> = {
+  name: "d-name",
+  phone: "d-phone",
+  street: "d-street",
+  city: "d-city",
+  email: "d-email",
+  preferredCallDay: "design-call-day",
+  preferredCallTime: "design-call-time",
+  consent: "d-consent",
+};
+
+const UNLOCK_ERROR_ORDER = ["name", "phone", "street", "city", "email", "preferredCallDay", "preferredCallTime", "consent"];
+
+function focusUnlockError(errors: Record<string, string>) {
+  const key = UNLOCK_ERROR_ORDER.find((item) => errors[item]);
+  if (!key) return;
+  const el = document.getElementById(UNLOCK_ERROR_IDS[key] ?? key);
+  if (!el) return;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  window.setTimeout(() => {
+    el.focus({ preventScroll: true });
+  }, reduce ? 0 : 350);
+}
+
 function UnlockForm({
   form,
   setForm,
@@ -757,6 +786,11 @@ function UnlockForm({
         <span>{consentLabel}</span>
       </label>
       {errors.consent ? <p className="text-sm text-destructive" role="alert">{errors.consent}</p> : null}
+      {(errors.preferredCallDay || errors.preferredCallTime) ? (
+        <p className="text-sm text-destructive" role="alert">
+          {errors.preferredCallDay || errors.preferredCallTime}
+        </p>
+      ) : null}
       <button type="submit" disabled={sending} className="h-14 rounded-full bg-bronze text-base font-semibold text-bronze-foreground hover:bg-bronze-hover disabled:opacity-50" data-testid="design-unlock">
         {submitLabel}
       </button>

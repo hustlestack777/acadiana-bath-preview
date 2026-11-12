@@ -39,9 +39,9 @@ function sample(overrides: Partial<Parameters<typeof buildLeadEmail>[0]> = {}) {
 }
 
 test("lead subject matches the phone-readable pattern and keeps the TEST prefix", () => {
-  assert.equal(leadSubject("Jane Comeaux", "Lafayette", "new"), "New quote · Jane Comeaux · Lafayette");
-  assert.equal(leadSubject("test Ada", "Houma", "new"), "TEST – New quote · test Ada · Houma");
-  assert.equal(leadSubject("TEST Ada", "Houma", "update"), "TEST – Quote update · TEST Ada · Houma");
+  assert.equal(leadSubject("Jane Comeaux", "Lafayette", "new"), "New lead: Jane Comeaux – Lafayette");
+  assert.equal(leadSubject("test Ada", "Houma", "new"), "TEST – New lead: test Ada – Houma");
+  assert.equal(leadSubject("TEST Ada", "Houma", "update"), "TEST – Lead update: TEST Ada – Houma");
 });
 
 test("chicago time is used instead of an ISO timestamp", () => {
@@ -59,23 +59,23 @@ test("size lines are plain English and empty fields stay blank", () => {
   assert.equal(formatEmailSize("", "", ""), "");
 });
 
-test("the lead email is a card with real labels, inline photos, and no empty none-lines", () => {
+test("the lead email is a plain transactional message with real labels, attached photos, and no empty none-lines", () => {
   const email = sample();
-  assert.equal(email.subject, "New quote · Jane Comeaux · Lafayette");
-  assert.match(email.html, /NEW QUOTE|New quote/);
+  assert.equal(email.subject, "New lead: Jane Comeaux – Lafayette");
+  assert.match(email.html, /New lead/);
   assert.match(email.html, /Jane Comeaux/);
   assert.match(email.html, /tel:\+13375550142/);
   assert.match(email.html, />\(337\) 555-0142</);
-  assert.match(email.html, />Call now</);
+  assert.equal(email.html.includes("Call now"), false);
   assert.match(email.html, /mailto:jane\.comeaux@email\.com/);
-  assert.match(email.html, /Email Jane/);
+  assert.equal(email.html.includes("Email Jane"), false);
   assert.match(email.html, /412 Sample Street/);
   assert.match(email.html, /Lafayette, LA 70508/);
   assert.match(email.html, /map_action=pano/);
-  assert.match(email.html, /Open Street View/);
-  assert.match(email.html, /Open in Google Maps/);
+  assert.match(email.html, /Street View/);
+  assert.match(email.html, /Google Maps/);
   assert.match(email.html, /google\.com\/maps\/search\/\?api=1&amp;query=/);
-  assert.match(email.html, /Get directions/);
+  assert.match(email.html, /Directions/);
   assert.match(email.html, /google\.com\/maps\/dir\/\?api=1&amp;destination=/);
   assert.match(email.text, /Street View: https:\/\/www\.google\.com\/maps\/@\?api=1&map_action=pano/);
   assert.match(email.text, /Directions from your location: https:\/\/www\.google\.com\/maps\/dir\/\?api=1&destination=/);
@@ -86,8 +86,8 @@ test("the lead email is a card with real labels, inline photos, and no empty non
   assert.match(email.html, /Ready to review options/);
   assert.match(email.html, /Not sure yet/);
   assert.match(email.html, /alcove/);
-  assert.match(email.html, /cid:photo-1/);
-  assert.match(email.html, /cid:photo-2/);
+  assert.equal(email.html.includes("cid:photo-1"), false);
+  assert.equal(email.html.includes("cid:photo-2"), false);
   assert.match(email.html, /Their photos/);
   assert.match(email.html, /Internal lead email only/);
   assert.equal(email.html.includes("(none)"), false);
@@ -96,12 +96,13 @@ test("the lead email is a card with real labels, inline photos, and no empty non
   assert.equal(email.text.includes("2026-11-09T"), false);
   const inline = email.attachments.filter((item) => item.contentId);
   const files = email.attachments.filter((item) => !item.contentId);
-  assert.equal(inline.length, 2);
+  assert.equal(inline.length, 0);
   assert.equal(files.length, 2);
-  assert.equal(files[0]?.filename, inline[0]?.filename);
+  assert.equal(files[0]?.filename, "01-tub.jpg");
+  assert.equal(files[1]?.filename, "02-bath.jpg");
 });
 
-test("empty notes, payment, and photos are left out, and a street view image is embedded when provided", () => {
+test("empty notes, payment, and photos are left out, and a street view image is attached when provided", () => {
   const email = sample({
     payment: "",
     measurements: "",
@@ -115,17 +116,18 @@ test("empty notes, payment, and photos are left out, and a street view image is 
   assert.equal(email.html.includes("Payment"), false);
   assert.match(email.html, /No photos uploaded\./);
   assert.equal(email.html.includes("cid:photo-1"), false);
-  assert.match(email.html, /cid:house-street-view/);
-  assert.match(email.html, /Open Street View/);
-  assert.match(email.html, /Open in Google Maps/);
+  assert.equal(email.html.includes("cid:house-street-view"), false);
+  assert.match(email.html, /Street view photo attached/);
+  assert.match(email.html, /Street View/);
+  assert.match(email.html, /Google Maps/);
   assert.equal(email.html.includes(">Open in Maps<"), false);
-  assert.equal(email.attachments.some((item) => item.contentId === "house-street-view"), true);
+  assert.equal(email.attachments.some((item) => item.filename === "street-view.jpg" && !item.contentId), true);
 });
 
-test("an update email uses the same card and a consult-update subject", () => {
+test("an update email uses the same plain layout and a lead-update subject", () => {
   const email = sample({ kind: "update", newPhotoCount: 2, name: "TEST Jane" });
-  assert.equal(email.subject, "TEST – Quote update · TEST Jane · Lafayette");
-  assert.match(email.html, /Quote update/);
+  assert.equal(email.subject, "TEST – Lead update: TEST Jane – Lafayette");
+  assert.match(email.html, /Lead update/);
   assert.match(email.html, /Added 2 photos/);
 });
 
@@ -204,8 +206,8 @@ test("geocoding fills a street view pin, and a missing result falls back to a ma
 
 test("an email without a pin still includes a street view fallback and a google maps link", () => {
   const email = sample({ latitude: null, longitude: null, photos: [] });
-  assert.match(email.html, /Open Street View/);
-  assert.match(email.html, /Open in Google Maps/);
+  assert.match(email.html, /Street View/);
+  assert.match(email.html, /Google Maps/);
   assert.match(email.html, /google\.com\/maps\/search\/\?api=1&amp;query=/);
   assert.equal(email.html.includes("map_action=pano"), false);
 });
@@ -277,7 +279,7 @@ test("the lead email puts the one-hour callback window in the subject and the to
     preferredCallTime: "morning",
   });
   // sample createdAt is Mon Nov 9, 2026 5:14 PM CT, so weekday morning is Tue Nov 10, 9–10 AM CT
-  assert.match(email.subject, /New quote · Jane Comeaux · Lafayette · Tuesday, Nov 10, 9–10 AM CT/);
+  assert.match(email.subject, /New lead: Jane Comeaux – Lafayette – Tuesday, Nov 10, 9–10 AM CT/);
   assert.match(email.text, /Justin will call Tuesday, Nov 10 between 9 AM and 10 AM CT\./);
   assert.match(email.html, /Justin will call Tuesday, Nov 10 between 9 AM and 10 AM CT\./);
   assert.equal(email.attachments.some((item) => item.filename === "justin-callback.ics"), true);
