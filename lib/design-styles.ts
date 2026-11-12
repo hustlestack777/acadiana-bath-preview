@@ -224,7 +224,7 @@ export const designCopy = {
   customThanks: (look: string) =>
     `You're all set. We'll call you in the one-hour window you picked to discuss your project. We'll also put together a custom design for the ${look} look you picked.`,
   smsConsent:
-    "Yes, Acadiana Bathrooms and Countertops may call or text me about my project at the number above, including automated texts. Consent isn't a condition of purchase. Msg & data rates may apply. Reply STOP to opt out.",
+    "Yes, Acadiana Bathrooms and Countertops may contact me about my project by phone or email. Consent isn't a condition of purchase.",
   privacy:
     "What we collect: your name, contact info, address, photos and the look you picked. Your photos and design go to Acadiana Bathrooms and Countertops so our team can prepare your estimate. We never sell your information.",
 };
