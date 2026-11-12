@@ -233,7 +233,7 @@ export async function saveLead(input: LeadInput, ip: string, options: LeadNotify
     return { ok: false as const, status: 503, error: "Lead storage is not configured. DATABASE_URL is missing." };
   }
   await ensureSchema(db);
-  const testLead = isTeamTestLead(input.phone, input.email) || Boolean(options.test);
+  const testLead = isTeamTestLead(input.phone, input.email, input.name) || Boolean(options.test);
   // Real leads stay at 5/hour per IP. Team test leads (555 / Grok Bot inbox) are not
   // counted in that cap so QA can run without being locked out, and they never email Justin.
   if (!testLead) {
@@ -370,8 +370,9 @@ export async function updateLeadExtras(id: string, extras: LeadExtras) {
     features: string;
     budget: string;
     photo_count: string;
+    test: boolean | null;
   }>(
-    `SELECT l.id, l.name, l.city, l.zip, l.street, l.latitude, l.longitude, l.phone, l.email, l.project,
+    `SELECT l.id, l.test, l.name, l.city, l.zip, l.street, l.latitude, l.longitude, l.phone, l.email, l.project,
             l.homeowner, l.payment, l.timing, l.features, l.budget,
             (SELECT count(*)::text FROM lead_photos p WHERE p.lead_id = l.id) AS photo_count
      FROM leads l WHERE l.id = $1`,
@@ -453,6 +454,7 @@ export async function updateLeadExtras(id: string, extras: LeadExtras) {
   );
 
   const notification = await notifyLeadExtras(id, {
+    test: row.test === true,
     name: row.name,
     city: row.city,
     zip: row.zip,
@@ -543,6 +545,7 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
   const route = leadNotificationRoute({
     phone: input.phone,
     email: input.email,
+    name: input.name,
     notifyList: leadNotifyRecipients(),
     forceTest: options.test,
   });
@@ -625,7 +628,8 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
   if (error) return { sent: false, error: error.message };
 
   const customer = input.email.trim();
-  if (customer) {
+  // TEST-name leads never email the homeowner address.
+  if (customer && route.customerConfirmation) {
     const confirmation = buildCustomerConfirmation({
       name: input.name,
       phone: input.phone,
@@ -704,6 +708,7 @@ async function notifyLeadExtras(
     preferredCallDay?: string;
     photos: LeadPhoto[];
     newPhotoCount: number;
+    test?: boolean;
   },
 ) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -711,7 +716,9 @@ async function notifyLeadExtras(
   const route = leadNotificationRoute({
     phone: input.phone,
     email: input.email,
+    name: input.name,
     notifyList: leadNotifyRecipients(),
+    forceTest: input.test,
   });
   const to = route.to;
   const cc = route.cc;

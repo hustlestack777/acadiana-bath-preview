@@ -35,13 +35,24 @@ export function isTestInboxEmail(email: string) {
  * (for example 337-555-xxxx) or the email is at a Grok Bot inbox domain
  * (mail.grokbot.com or grokbot.com).
  */
-export function isTeamTestLead(phone: string, email: string) {
-  return is555TestPhone(phone) || isTestInboxEmail(email);
+export function isTeamTestLead(phone: string, email: string, name = "") {
+  return is555TestPhone(phone) || isTestInboxEmail(email) || isTestName(name);
+}
+
+/**
+ * Shaun's test switch (11/12/2026): a name that starts with "TEST" in any case
+ * ("TEST", "Test Lead", "test-2", "TEST123") marks a test lead. Names like
+ * "Testa" or "Tester" are real surnames and do not count.
+ * A TEST-name lead alerts Shaun only, never Justin, skips the homeowner
+ * confirmation, and is saved with test = true.
+ */
+export function isTestName(name: string) {
+  return /^\s*test(?![a-z])/i.test(name || "");
 }
 
 /** Never text a test lead. There is no SMS send today; this is the guard for one. */
-export function shouldTextLead(phone: string, email: string) {
-  return !isTeamTestLead(phone, email);
+export function shouldTextLead(phone: string, email: string, name = "") {
+  return !isTeamTestLead(phone, email, name);
 }
 
 export const TEST_SUBJECT_PREFIX = "TEST – ";
@@ -71,6 +82,8 @@ export type LeadNotificationRoute = {
   test: boolean;
   to: string[];
   cc: string[];
+  /** False for TEST-name leads: no homeowner confirmation email at all. */
+  customerConfirmation: boolean;
 };
 
 /**
@@ -80,18 +93,20 @@ export type LeadNotificationRoute = {
 export function leadNotificationRoute(input: {
   phone: string;
   email: string;
+  name?: string;
   notifyList?: string[];
   forceTest?: boolean;
 }): LeadNotificationRoute {
-  const test = Boolean(input.forceTest) || isTeamTestLead(input.phone, input.email);
+  const test = Boolean(input.forceTest) || isTeamTestLead(input.phone, input.email, input.name);
   if (test) {
-    return { test: true, to: [SHAUN_CC_EMAIL], cc: [] };
+    return { test: true, to: [SHAUN_CC_EMAIL], cc: [], customerConfirmation: !isTestName(input.name ?? "") };
   }
   const extras = (input.notifyList ?? []).filter(
     (address) => address.trim().toLowerCase() !== JUSTIN_LEAD_EMAIL.toLowerCase(),
   );
   return {
     test: false,
+    customerConfirmation: true,
     to: [JUSTIN_LEAD_EMAIL],
     cc: uniqueAddresses([SHAUN_CC_EMAIL, ...extras]),
   };

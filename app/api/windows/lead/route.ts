@@ -54,7 +54,7 @@ export async function POST(request: Request) {
   const name = text(form, "name", 120);
   const phone = text(form, "phone", 40);
   const email = text(form, "email", 200);
-  const test = isTestRequest(request) || isTeamTestLead(phone, email);
+  const test = isTestRequest(request) || isTeamTestLead(phone, email, name);
   const street = text(form, "street", 200);
   const city = text(form, "city", 80);
   const zip = text(form, "zip", 10);
