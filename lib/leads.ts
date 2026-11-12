@@ -6,9 +6,9 @@ import { buildCustomerConfirmation, recapFromLead, type CustomerRecap } from "./
 import { leadPhotoUrl, sortPhotosByFilename } from "./lead-photo-link";
 import { buildLeadEmail } from "./lead-email";
 import {
+  customerConfirmationRoute,
   isTeamTestLead,
   leadNotificationRoute,
-  SHAUN_CC_EMAIL,
   withTestSubject,
 } from "./lead-notify";
 import { fetchStreetViewImage, resolveHouseMapLinks } from "./street-view";
@@ -654,13 +654,15 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
         }),
       test: route.test,
     });
+    const confirmRoute = customerConfirmationRoute(customer);
     const confirmResult = await sendWithRetry("customer confirmation", () =>
       resend.emails.send(
         {
           from,
           to: [customer],
+          replyTo: confirmRoute.replyTo,
           // Shaun is blind-copied on every customer confirmation.
-          bcc: customer.toLowerCase() === SHAUN_CC_EMAIL.toLowerCase() ? undefined : [SHAUN_CC_EMAIL],
+          bcc: confirmRoute.bcc,
           subject: confirmation.subject,
           text: confirmation.text,
           html: confirmation.html,

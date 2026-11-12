@@ -4,6 +4,7 @@ import { buildCustomerConfirmation } from "./customer-email";
 import {
   JUSTIN_LEAD_EMAIL,
   SHAUN_CC_EMAIL,
+  customerConfirmationRoute,
   is555TestPhone,
   isTeamTestLead,
   isTestInboxEmail,
@@ -123,3 +124,22 @@ test("the customer confirmation is short, signed, and has no banned claims", () 
   assert.equal(design.attachments[2]?.filename, "justin-acadiana-bathrooms.vcf");
 });
 
+
+test("homeowner confirmation replies go to Justin and BCC Shaun", () => {
+  const real = customerConfirmationRoute("jane@gmail.com");
+  assert.equal(real.replyTo, JUSTIN_LEAD_EMAIL);
+  assert.deepEqual(real.bcc, [SHAUN_CC_EMAIL]);
+
+  const padded = customerConfirmationRoute("  jane@gmail.com  ");
+  assert.equal(padded.replyTo, JUSTIN_LEAD_EMAIL);
+  assert.deepEqual(padded.bcc, [SHAUN_CC_EMAIL]);
+
+  // If Shaun is the To address (test confirmations), skip BCC so he is not To and BCC.
+  const shaun = customerConfirmationRoute(SHAUN_CC_EMAIL);
+  assert.equal(shaun.replyTo, JUSTIN_LEAD_EMAIL);
+  assert.equal(shaun.bcc, undefined);
+
+  const shaunCase = customerConfirmationRoute("Shaun.Brasher@gmail.com");
+  assert.equal(shaunCase.replyTo, JUSTIN_LEAD_EMAIL);
+  assert.equal(shaunCase.bcc, undefined);
+});

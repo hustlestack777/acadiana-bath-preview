@@ -96,3 +96,21 @@ export function leadNotificationRoute(input: {
     cc: uniqueAddresses([SHAUN_CC_EMAIL, ...extras]),
   };
 }
+
+export type CustomerConfirmationRoute = {
+  replyTo: string;
+  bcc?: string[];
+};
+
+/**
+ * Homeowner confirmation routing. Replies go to Justin's lead inbox.
+ * Shaun is BCC'd unless the homeowner address is already Shaun, so we
+ * don't To and BCC the same inbox. Test mode does not change this:
+ * nothing is sent To Justin, but replyTo may still be his address.
+ */
+export function customerConfirmationRoute(customerEmail: string): CustomerConfirmationRoute {
+  const customer = customerEmail.trim();
+  const bcc =
+    customer.toLowerCase() === SHAUN_CC_EMAIL.toLowerCase() ? undefined : [SHAUN_CC_EMAIL];
+  return { replyTo: JUSTIN_LEAD_EMAIL, bcc };
+}
