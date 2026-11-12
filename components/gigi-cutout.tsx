@@ -1,9 +1,9 @@
 import { cn } from "cn";
 
-/** Full-torso Camille cutout for the chat launcher. Desktop uses the
+/** Full-torso Gigi cutout for the chat launcher. Desktop uses the
  *  larger WebP; the small source is eager. The larger file is lazy-loaded
  *  when the chat opens on small screens. */
-export function CamilleCutout({
+export function GigiCutout({
   className,
   loadFull = false,
 }: {
@@ -12,15 +12,15 @@ export function CamilleCutout({
 }) {
   return (
     <picture className={cn("pointer-events-none", className)}>
-      {loadFull ? <source type="image/webp" srcSet="/images/camille/camille-tiles.webp" /> : null}
+      {loadFull ? <source type="image/webp" srcSet="/images/gigi/gigi-tiles.webp" /> : null}
       <source
         type="image/webp"
         media="(min-width: 768px)"
-        srcSet="/images/camille/camille-tiles.webp"
+        srcSet="/images/gigi/gigi-tiles.webp"
       />
       <img
-        className="camille-cutout"
-        src="/images/camille/camille-tiles-sm.webp"
+        className="gigi-cutout"
+        src="/images/gigi/gigi-tiles-sm.webp"
         alt=""
         width={298}
         height={520}
@@ -33,7 +33,7 @@ export function CamilleCutout({
 
 /** Small frameless upper-torso cutout for the open-chat header and
  *  message rows. No circle, border, or background. */
-export function CamilleFace({
+export function GigiFace({
   size = 40,
   className,
   alt = "",
@@ -49,7 +49,7 @@ export function CamilleFace({
       style={{ width: size, height }}
     >
       <img
-        src="/images/camille/camille-tiles-sm.webp"
+        src="/images/gigi/gigi-tiles-sm.webp"
         alt={alt}
         width={size}
         height={height}
