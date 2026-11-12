@@ -381,3 +381,86 @@ section[aria-label="Introduction"] .hero-copy {
     animation-play-state: paused;
   }
 }
+
+/* ===== Camille full-torso chat launcher (Nov 12) ===== */
+.camille-widget { pointer-events: none; }
+.camille-widget > * { pointer-events: auto; }
+.camille-stage {
+  width: 300px;
+  height: 480px;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.camille-ground {
+  position: absolute;
+  left: 40px;
+  right: 24px;
+  bottom: 4px;
+  height: 16px;
+  background: radial-gradient(ellipse at center, rgba(15,12,8,.35), transparent 70%);
+  filter: blur(4px);
+  pointer-events: none;
+}
+.camille-parallax,
+.camille-sway,
+.camille-breathe,
+.camille-react {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+.camille-cutout {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: auto;
+  height: 500px;
+  max-width: none;
+  transform: translateX(-50%) translateZ(0);
+  filter: drop-shadow(0 18px 24px rgba(15,12,8,.4));
+  -webkit-mask-image: linear-gradient(to bottom, #000 86%, rgba(0,0,0,.45) 95%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 86%, rgba(0,0,0,.45) 95%, transparent 100%);
+  user-select: none;
+  pointer-events: none;
+}
+@keyframes camille-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.018); }
+}
+@keyframes camille-sway {
+  0%, 100% { transform: rotate(-0.6deg); }
+  50% { transform: rotate(0.6deg); }
+}
+@keyframes camille-wave {
+  0% { transform: rotate(0) scale(1); }
+  30% { transform: rotate(-6deg) scale(1.03); }
+  60% { transform: rotate(3deg) scale(1.01); }
+  100% { transform: rotate(0) scale(1); }
+}
+@keyframes camille-nod {
+  0%, 100% { transform: rotate(0) translateY(0); }
+  40% { transform: rotate(3deg) translateY(4px); }
+  70% { transform: rotate(-0.5deg) translateY(0); }
+}
+.camille-breathe { animation: camille-breathe 4.8s ease-in-out infinite; }
+.camille-sway { animation: camille-sway 6.8s ease-in-out infinite; }
+.camille-widget.is-open .camille-react { animation: camille-wave .75s ease-out; }
+.camille-widget.is-typing .camille-react { animation: camille-nod .9s ease-in-out infinite; transform-origin: 50% 18%; }
+@media (prefers-reduced-motion: reduce) {
+  .camille-breathe, .camille-sway, .camille-react, .camille-parallax {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+/* Leave room on phones so the torso does not cover hero CTAs or the footer. */
+@media (max-width: 767px) {
+  .camille-stage { width: 168px; height: 290px; }
+  .camille-cutout { height: 300px; }
+  section[aria-label="Introduction"] {
+    padding-bottom: 6.5rem;
+  }
+  body { padding-bottom: 2rem; }
+}
