@@ -151,7 +151,7 @@ export function Hero() {
             {hero.primary}
           </ConsultLink>
           <DesignLink
-            className="inline-flex h-12 items-center justify-center rounded-full border border-white/75 bg-black/15 px-8 text-base font-medium text-white backdrop-blur-sm hover:bg-white/10 sm:h-14"
+            className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-full border border-white/75 bg-black/15 px-5 text-sm font-medium text-white backdrop-blur-sm hover:bg-white/10 sm:h-14 sm:px-8 sm:text-base"
           >
             {heroDesignCta}
           </DesignLink>
@@ -169,7 +169,7 @@ export function Hero() {
               <li key={service}>{service}</li>
             ))}
           </ul>
-          <a href="#paths" className="hidden items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/75 md:inline-flex">
+          <a href="#paths" data-testid="hero-scroll" className="inline-flex items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/90">
             <span className="scroll-line block h-8 w-px bg-white/80" aria-hidden="true" />
             Scroll
           </a>

@@ -48,7 +48,7 @@ export function PathHero({
             {hero.primary}
           </ConsultLink>
           <DesignLink
-            className="inline-flex h-12 items-center justify-center rounded-full border border-white/75 bg-black/15 px-8 text-base font-medium text-white backdrop-blur-sm hover:bg-white/10 sm:h-14"
+            className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-full border border-white/75 bg-black/15 px-5 text-sm font-medium text-white backdrop-blur-sm hover:bg-white/10 sm:h-14 sm:px-8 sm:text-base"
             data-testid="path-design-cta"
           >
             {heroDesignCta}

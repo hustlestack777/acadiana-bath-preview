@@ -130,9 +130,7 @@ export function leadSubject(name: string, town: string, kind: "new" | "update", 
   const who = name.trim() || "New lead";
   const where = town.trim();
   const slot = (window || "").trim();
-  const core =
-    kind === "update"
-      ? `Quote update \u00b7 ${who}${where ? ` \u00b7 ${where}` : ""}${slot ? ` \u00b7 ${slot}` : ""}`
-      : `New quote \u00b7 ${who}${where ? ` \u00b7 ${where}` : ""}${slot ? ` \u00b7 ${slot}` : ""}`;
+  const prefix = kind === "update" ? "Lead update: " : "New lead: ";
+  const core = `${prefix}${who}${where ? ` – ${where}` : ""}${slot ? ` – ${slot}` : ""}`;
   return isTestLead(name) ? `${TEST_PREFIX}${core}` : core;
 }
