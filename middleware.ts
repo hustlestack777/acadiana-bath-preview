@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { aboutRedirectPath } from "@/lib/about-redirect";
 import { isIndexableHost } from "@/lib/indexable-host";
 
 /**
@@ -8,6 +9,16 @@ import { isIndexableHost } from "@/lib/indexable-host";
  */
 export function middleware(request: NextRequest) {
   const indexable = isIndexableHost(request.headers.get("host"));
+  const aboutTo = aboutRedirectPath(request.nextUrl.pathname);
+  if (aboutTo) {
+    const url = request.nextUrl.clone();
+    url.pathname = aboutTo;
+    const redirect = NextResponse.redirect(url, 308);
+    if (!indexable) {
+      redirect.headers.set("X-Robots-Tag", "noindex, nofollow");
+    }
+    return redirect;
+  }
   if (!indexable && request.nextUrl.pathname === "/robots.txt") {
     return new NextResponse("User-agent: *\nDisallow: /\n", {
       status: 200,
