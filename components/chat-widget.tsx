@@ -92,6 +92,22 @@ function collectPageCtas(widgetRoot: Element | null): HTMLElement[] {
   );
 }
 
+function collectCoverageMaps(): Element[] {
+  return [...document.querySelectorAll('img[src*="acadiana_service_map"]')];
+}
+
+/** Resting launcher box, ignoring any slide-away transform so tuck cannot oscillate. */
+function restingLauncherRect(bottomOffset: number) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const desktop = isDesktop();
+  const width = desktop ? 300 : 108;
+  const height = desktop ? 480 : 148;
+  const right = desktop ? 16 : 8;
+  const bottom = desktop ? 0 : bottomOffset;
+  return new DOMRect(vw - right - width, vh - bottom - height, width, height);
+}
+
 function inViewport(el: Element) {
   const r = el.getBoundingClientRect();
   return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth;
@@ -144,6 +160,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
   const [bubbleReady, setBubbleReady] = useState(false);
   const [bubbleHidden, setBubbleHidden] = useState(true);
   const [dockClear, setDockClear] = useState(true);
+  const [mapClear, setMapClear] = useState(true);
   const [bottomPx, setBottomPx] = useState<number | null>(null);
   const greetingRef = useRef<GreetingState>({ line: GIGI_GREETING_LEAD, status: "pending" });
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -186,31 +203,46 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
 
     function compute() {
       const root = widgetRef.current;
-      if (isDesktop()) {
+      const desktop = isDesktop();
+      const offset = desktop ? (raised ? 96 : 0) : measureStickyOffset(root) || 16;
+
+      if (desktop) {
         setBottomPx(null);
         setDockClear(true);
-        return;
+      } else {
+        // Use the real sticky-bar height when it is on screen; otherwise sit in the corner.
+        setBottomPx(offset);
+        if (openRef.current) {
+          setDockClear(true);
+        } else {
+          // Keep the consultant visible on the hero; page padding clears the CTAs.
+          const wouldShowBubble = allowBubble && !bubbleHiddenRef.current && bubbleReadyRef.current;
+          const box = root && root.getBoundingClientRect().height > 0
+            ? root.getBoundingClientRect()
+            : reservedDockRect(offset, wouldShowBubble);
+          const overlap = collectPageCtas(root).some((el) => {
+            const r = el.getBoundingClientRect();
+            if (r.width === 0 || r.height === 0) return false;
+            // Already cleared by raising the dock above a sticky/fixed bottom bar.
+            if (offset && r.top >= window.innerHeight - offset) return false;
+            return rectsOverlap(box, r);
+          });
+          setDockClear(!overlap);
+        }
       }
-      // Use the real sticky-bar height when it is on screen; otherwise sit in the corner.
-      const offset = measureStickyOffset(root) || 16;
-      setBottomPx(offset);
+
+      // Slide the dock off the map using the resting box, not the transformed one.
       if (openRef.current) {
-        setDockClear(true);
+        setMapClear(true);
         return;
       }
-      // Keep the consultant visible on the hero; page padding clears the CTAs.
-      const wouldShowBubble = allowBubble && !bubbleHiddenRef.current && bubbleReadyRef.current;
-      const box = root && root.getBoundingClientRect().height > 0
-        ? root.getBoundingClientRect()
-        : reservedDockRect(offset, wouldShowBubble);
-      const overlap = collectPageCtas(root).some((el) => {
+      const dock = restingLauncherRect(offset);
+      const coversMap = collectCoverageMaps().some((el) => {
         const r = el.getBoundingClientRect();
-        if (r.width === 0 || r.height === 0) return false;
-        // Already cleared by raising the dock above a sticky/fixed bottom bar.
-        if (offset && r.top >= window.innerHeight - offset) return false;
-        return rectsOverlap(box, r);
+        if (r.width === 0 || r.height === 0 || !inViewport(el)) return false;
+        return rectsOverlap(dock, r, 12);
       });
-      setDockClear(!overlap);
+      setMapClear(!coversMap);
     }
 
     function schedule() {
@@ -221,15 +253,16 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       });
     }
 
-    function watchHero() {
+    function watchTargets() {
       io?.disconnect();
       io = new IntersectionObserver(() => schedule(), { threshold: 0 });
       for (const el of collectHeroCtas()) io.observe(el);
+      for (const el of collectCoverageMaps()) io.observe(el);
     }
 
-    watchHero();
+    watchTargets();
     const mo = new MutationObserver(() => {
-      watchHero();
+      watchTargets();
       schedule();
     });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-sticky-cta"] });
@@ -247,16 +280,16 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       window.removeEventListener("resize", schedule);
       mq.removeEventListener("change", schedule);
     };
-  }, [allowBubble, open, bubbleReady, bubbleHidden]);
+  }, [allowBubble, open, bubbleReady, bubbleHidden, raised]);
 
   useEffect(() => {
-    if (!allowBubble || bubbleHidden || !bubbleReady || !dockClear || open) return;
+    if (!allowBubble || bubbleHidden || !bubbleReady || !dockClear || !mapClear || open) return;
     if (greetingRef.current.status === "pending") {
       const next = { line: greetingRef.current.line, status: "shown" as const };
       greetingRef.current = next;
       writeGreeting(next);
     }
-  }, [allowBubble, bubbleHidden, bubbleReady, dockClear, open]);
+  }, [allowBubble, bubbleHidden, bubbleReady, dockClear, mapClear, open]);
 
   function hideBubble() {
     const next = { line: greetingRef.current.line, status: "hidden" as const };
@@ -299,7 +332,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
 
   // Always show the cutout; padding keeps it off the hero CTAs and phone line.
   const showDock = true;
-  const showBubble = !open && allowBubble && !bubbleHidden && bubbleReady && dockClear;
+  const showBubble = !open && allowBubble && !bubbleHidden && bubbleReady && dockClear && mapClear;
   const chipClassName = "rounded-full border border-border bg-background px-3 py-1.5 text-left text-xs";
   const placeholder =
     session.phase === "location"
@@ -315,10 +348,13 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       ref={widgetRef}
       data-gigi-widget=""
       data-camille-widget=""
+      data-map-tuck={mapClear || open ? undefined : "1"}
       className={cn(
         "camille-widget fixed right-0 z-40 flex flex-row items-end justify-end md:right-4 md:bottom-0",
+        "transition-transform duration-300 ease-out motion-reduce:transition-none",
         open && "is-open",
         typing && "is-typing",
+        !mapClear && !open && "translate-x-[calc(100%-12px)] md:translate-x-[calc(100%-2.75rem)]",
         bottomPx == null && (raised ? "bottom-24" : "bottom-0"),
         bottomPx != null && "max-md:bottom-[var(--gigi-bottom)]",
       )}
