@@ -8,6 +8,7 @@ import { buildLeadEmail } from "./lead-email";
 import {
   isTeamTestLead,
   leadNotificationRoute,
+  SHAUN_CC_EMAIL,
   withTestSubject,
 } from "./lead-notify";
 import { fetchStreetViewImage, resolveHouseMapLinks } from "./street-view";
@@ -658,6 +659,8 @@ async function notifyLead(id: string, createdAt: Date, input: LeadInput, options
         {
           from,
           to: [customer],
+          // Shaun is blind-copied on every customer confirmation.
+          bcc: customer.toLowerCase() === SHAUN_CC_EMAIL.toLowerCase() ? undefined : [SHAUN_CC_EMAIL],
           subject: confirmation.subject,
           text: confirmation.text,
           html: confirmation.html,
