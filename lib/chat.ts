@@ -11,10 +11,13 @@ function faqAnswer(question: string) {
   return item.a;
 }
 
-export const GIGI_GREETING_LEAD = "Hey, I’m Gigi 👋 Need help with your bathroom?";
+/** Display name for the Acadiana chat consultant. Change only this constant if Shaun picks a different name. */
+export const CHAT_AGENT_NAME = "Camille";
+
+export const GIGI_GREETING_LEAD = `Hey, I’m ${CHAT_AGENT_NAME} 👋 Need help with your bathroom?`;
 export const GIGI_GREETING_RARE = "Thinking about a remodel? I can help 😊";
 export const GIGI_GREETING_DESIGN = "Want to see your new bathroom first? Ask me!";
-export const GIGI_HEADER_SUBLINE = "Here to help";
+export const GIGI_HEADER_SUBLINE = "Design consultant";
 export const GIGI_GREETING_DELAY_MS = 12_000;
 
 export function shouldShowGreeting(pathname: string) {
@@ -32,12 +35,12 @@ export function greetingForPath(pathname: string, random = Math.random()) {
 export const GIGI_CALLS_FIRST =
   "We'll call you first to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.";
 
-/** How the work happens, in this order. Gigi uses this in process answers and as her system brief. */
+/** How the work happens, in this order. The consultant uses this in process answers and as her system brief. */
 export const GIGI_PROCESS =
   `${GIGI_CALLS_FIRST} When you're ready to move forward, we manage your project from design to the finished bathroom.`;
 
-/** Rules Gigi follows for every reply, including free-typed questions. There is no live model prompt beyond this. */
-export const GIGI_SYSTEM_PROMPT = `You are Gigi, the assistant for Acadiana Bathrooms. Be professional, warm, and local — a trusted advisor, never corny.
+/** Rules the consultant follows for every reply, including free-typed questions. There is no live model prompt beyond this. */
+export const GIGI_SYSTEM_PROMPT = `You are ${CHAT_AGENT_NAME}, the design consultant for Acadiana Bathrooms. Be professional, warm, and local — a trusted advisor, never corny.
 
 Speak as the company: use "we", "our team", or "Acadiana Bathrooms". Do not sprinkle the owner's first name through answers. If asked who owns the company, say exactly: "Owned and run by Justin."
 
@@ -54,7 +57,11 @@ Do not promise a first-step home visit or name how long work is covered. Do not 
 
 If asked about standing behind the work, say exactly: "${warrantyPlainText}"
 
-Out of area, say exactly: "Outside our area? Ask for a quote." For granite, only: "We do not install granite." Phone: (337) 522-0023. No street address.`;
+Out of area, say exactly: "Outside our area? Ask for a quote." For granite, only: "We do not install granite." Phone: (337) 522-0023. No street address.
+
+You know tile, quartz, quartzite and marble, and layouts. Never recommend or offer granite. Never make a license or insurance claim, and never describe coverage as lasting for life. Never offer to text or ask anyone to text.
+
+When it is natural — someone asking about counters, stone, tile or a layout — suggest the upgraded stone (quartzite or marble over basic quartz) and a better layout, with one honest line on why (more depth and a more natural look), then close with setting a time to take measurements. No pressure, no fake urgency, no fake scarcity, and do not invent facts. Make the next step easy: Get My Free Quote, Design My Bathroom, or set a time to take measurements.`;
 
 const FAQ_WITH_PROCESS = new Set([
   "How much does a bathroom remodel cost in South Louisiana?",
@@ -76,7 +83,7 @@ function gigiFaq(question: string) {
   return text;
 }
 
-/** Keep Gigi on the site FAQ, but never repeat phrasing she is not allowed to use. */
+/** Keep the consultant on the site FAQ, but never repeat phrasing she is not allowed to use. */
 export function speakFromFaq(text: string) {
   const wordA = ["con", "sult"].join("");
   const wordB = ["life", "time"].join("");
@@ -110,7 +117,7 @@ function withCallsFirst(text: string) {
 
 const answers = {
   disclosure:
-    "Hey! I’m Gigi, from Acadiana Bathrooms. What can I help you with?",
+    `Hey! I’m ${CHAT_AGENT_NAME}, the design consultant for Acadiana Bathrooms. What can I help you with?`,
   ballpark: "Starting at $5K. What are you thinking about?",
   project: "What are you thinking about?",
   look: "What’s the look?",
@@ -126,6 +133,10 @@ const answers = {
   visit: GIGI_PROCESS,
   afterSubmit: `After you submit, ${GIGI_PROCESS}`,
   material: gigiFaq("What materials do you use?"),
+  stone:
+    "Quartz is a solid everyday choice. Quartzite or marble can give the room more depth and a more natural look. We do not install granite. We can set a time to take measurements and go over the stone and a layout that fits your room.",
+  layout:
+    "A clearer layout — fewer tight corners, a shower that actually fits how you move — makes the room easier to live in. We'll go over options when we set a time to take measurements.",
   care: care.body,
   warranty: warrantyPlainText,
   area: gigiFaq("What areas do you serve?"),
@@ -137,8 +148,8 @@ const answers = {
     "The best way to see what we can do for your bathroom is a free quote. Want to start with a photo in Design My Bathroom?",
   compare:
     "I stick to what Acadiana Bathrooms and Countertops offers. We'll go over your options when we call.",
-  human: `I’m Gigi, an AI assistant, not a person at ${brand.name}. Tap Get My Free Quote or Design My Bathroom, and we'll call you.`,
-  fallback: `I answer from what’s on this site, and I’m Gigi, an AI assistant, not a person on our team. For your own bathroom, tap Get My Free Quote or Design My Bathroom, and we'll call you. This chat isn’t saved.`,
+  human: `I’m ${CHAT_AGENT_NAME}, an AI assistant and the design consultant for ${brand.name}. Tap Get My Free Quote or Design My Bathroom, and we'll call you.`,
+  fallback: `I answer from what’s on this site, and I’m ${CHAT_AGENT_NAME}, an AI assistant, not a person on our team. For your own bathroom, tap Get My Free Quote or Design My Bathroom, and we'll call you. This chat isn’t saved.`,
 } as const;
 
 export const CHAT_ANSWERS = answers;
@@ -328,6 +339,8 @@ function looksLikePlace(text: string) {
 
 function factReply(text: string) {
   if (asksAboutOtherBrands(text)) return answers.compare;
+  if (/granite|quartzite|\bquartz\b|marble|countertop|counter tops|stone (?:for|option)|which stone/.test(text)) return answers.stone;
+  if (/\blayout\b|floor plan|better (?:layout|flow)|how (?:it|the room) (?:flows?|is laid out)/.test(text)) return answers.layout;
   if (asksAboutPhrase(text) || /natural stone|quarried|natural onyx/.test(text)) return answers.material;
   if (/how (does|do) (it|this|the process|things) work|what(?:'s| is) the process|how does (?:a |the )?project (?:work|go)/.test(text)) {
     return answers.process;

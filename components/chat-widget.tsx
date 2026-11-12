@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { DesignLink } from "@/components/design-link";
-import { GigiAvatar } from "@/components/gigi-avatar";
+import { CamilleCutout, CamilleFace } from "@/components/camille-avatar";
 import {
+  CHAT_AGENT_NAME,
   CHAT_ANSWERS,
   GIGI_GREETING_DELAY_MS,
   GIGI_GREETING_LEAD,
@@ -122,8 +123,8 @@ function measureStickyOffset(widgetRoot: Element | null) {
 function reservedDockRect(bottomOffset: number, withBubble: boolean) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-  const width = withBubble ? Math.min(15.5 * 16, vw - 24) : 108;
-  const height = withBubble ? 120 : 52;
+  const width = withBubble ? Math.min(24 * 16, vw - 8) : 180;
+  const height = withBubble ? 320 : 280;
   const right = 16;
   const bottom = vh - bottomOffset;
   return new DOMRect(vw - right - width, bottom - height, width, height);
@@ -133,6 +134,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
   const pathname = usePathname() || "/";
   const allowBubble = shouldShowGreeting(pathname);
   const [open, setOpen] = useState(false);
+  const [typing, setTyping] = useState(false);
   const [draft, setDraft] = useState("");
   const [turns, setTurns] = useState<Turn[]>([{ role: "assistant", text: CHAT_ANSWERS.disclosure }]);
   const [session, setSession] = useState<GigiSession>({ phase: "intro" });
@@ -195,10 +197,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
         setDockClear(true);
         return;
       }
-      if (collectHeroCtas().some(inViewport)) {
-        setDockClear(false);
-        return;
-      }
+      // Keep the consultant visible on the hero; page padding clears the CTAs.
       const wouldShowBubble = allowBubble && !bubbleHiddenRef.current && bubbleReadyRef.current;
       const box = root && root.getBoundingClientRect().height > 0
         ? root.getBoundingClientRect()
@@ -274,15 +273,19 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
   function ask(message: string) {
     const trimmed = message.trim();
     if (!trimmed) return;
-    const result = respond(trimmed, session);
-    setTurns((current) => [
-      ...current,
-      { role: "you", text: trimmed },
-      { role: "assistant", text: result.text },
-    ]);
-    setSession(result.session);
-    setChips(result.chips);
+    const currentSession = session;
+    setTurns((current) => [...current, { role: "you", text: trimmed }]);
     setDraft("");
+    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wait = reduce ? 0 : 420;
+    setTyping(true);
+    window.setTimeout(() => {
+      const result = respond(trimmed, currentSession);
+      setTurns((current) => [...current, { role: "assistant", text: result.text }]);
+      setSession(result.session);
+      setChips(result.chips);
+      setTyping(false);
+    }, wait);
   }
 
   function onChip(chip: GigiChip) {
@@ -309,29 +312,32 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
     <div
       ref={widgetRef}
       data-gigi-widget=""
+      data-camille-widget=""
       className={cn(
-        "fixed right-4 z-40 flex flex-col items-end md:bottom-6",
-        bottomPx == null && (raised ? "bottom-24" : "bottom-4"),
+        "camille-widget fixed right-0 z-40 flex flex-row items-end justify-end md:right-4 md:bottom-0",
+        open && "is-open",
+        typing && "is-typing",
+        bottomPx == null && (raised ? "bottom-24" : "bottom-0"),
         bottomPx != null && "max-md:bottom-[var(--gigi-bottom)]",
       )}
       style={bottomPx != null ? ({ "--gigi-bottom": `${bottomPx}px` } as CSSProperties) : undefined}
     >
       {open ? (
         <section
-          className="mb-3 flex max-h-[min(32rem,70vh)] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl"
-          aria-label="Chat with Gigi"
+          className="camille-panel mb-3 mr-1 flex max-h-[min(32rem,70vh)] w-[min(22rem,calc(100vw-7.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl md:mb-40 md:w-[min(22rem,calc(100vw-22rem))]"
+          aria-label={`Chat with ${CHAT_AGENT_NAME}`}
           data-testid="ai-chat"
         >
           <header className="flex items-start justify-between gap-3 border-b border-border bg-fig px-4 py-3 text-fig-foreground">
             <div className="flex items-start gap-3">
-              <GigiAvatar size={48} alt="" className="size-12 shrink-0 border border-white/20" />
+              <CamilleFace size={48} alt="" className="size-12 shrink-0 border border-white/20" />
               <div>
-                <p className="text-base font-semibold leading-5">Gigi</p>
+                <p className="text-base font-semibold leading-5">{CHAT_AGENT_NAME}</p>
                 <p className="mt-0.5 text-xs leading-4 text-fig-muted">{GIGI_HEADER_SUBLINE}</p>
               </div>
             </div>
             <button type="button" className="inline-flex size-10 items-center justify-center rounded-xl" onClick={() => setOpen(false)}>
-              <span className="sr-only">Close chat with Gigi</span>
+              <span className="sr-only">Close chat with {CHAT_AGENT_NAME}</span>
               <X />
             </button>
           </header>
@@ -342,7 +348,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
                 className={cn("flex items-end gap-2", turn.role === "you" ? "justify-end" : "justify-start")}
               >
                 {turn.role === "assistant" ? (
-                  <GigiAvatar size={28} alt="" className="mb-0.5 size-7 shrink-0" />
+                  <CamilleFace size={28} alt="" className="mb-0.5 size-7 shrink-0" />
                 ) : null}
                 <p
                   className={cn(
@@ -384,7 +390,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
             }}
           >
             <label className="sr-only" htmlFor="ai-question">
-              Ask Gigi
+              Ask {CHAT_AGENT_NAME}
             </label>
             <Input
               id="ai-question"
@@ -403,10 +409,11 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       ) : null}
       {showBubble ? (
         <div
-          className="mb-2 max-w-[min(15.5rem,calc(100vw-5.5rem))] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-200"
+          className="camille-talk mb-2 max-w-[min(15.5rem,calc(100vw-8rem))] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-200 md:mb-44"
           data-testid="gigi-greeting"
         >
           <div className="relative rounded-2xl rounded-br-md border border-border bg-card px-3 py-2 pr-8 text-card-foreground shadow-lg">
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#8A6230]">{CHAT_AGENT_NAME} · Design consultant</p>
             <button type="button" className="block text-left text-xs leading-5 sm:text-sm" onClick={openChat}>
               {bubbleLine}
             </button>
@@ -432,13 +439,21 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
         <button
           type="button"
           onClick={() => (open ? setOpen(false) : openChat())}
-          className="ml-auto flex items-center gap-2 rounded-full bg-fig px-3 py-2 pr-4 text-sm font-semibold text-fig-foreground shadow-lg"
+          className="camille-stage relative shrink-0 bg-transparent"
           aria-expanded={open}
-          aria-label="Chat with Gigi"
+          aria-label={`Chat with ${CHAT_AGENT_NAME}`}
           data-testid="gigi-launcher"
         >
-          <GigiAvatar size={32} alt="" className="size-8 border border-white/20" />
-          Gigi
+          <span className="camille-ground" aria-hidden="true" />
+          <span className="camille-parallax">
+            <span className="camille-sway">
+              <span className="camille-breathe">
+                <span className="camille-react">
+                  <CamilleCutout loadFull={open} />
+                </span>
+              </span>
+            </span>
+          </span>
         </button>
       ) : null}
     </div>
