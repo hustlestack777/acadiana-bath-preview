@@ -29,7 +29,7 @@ export function HomePage() {
 
       <InspiringRow />
 
-      <section id="process" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
+      <section id="process" className="rise mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
         <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">How it works</p>
         <h2 className="mt-3 text-4xl md:text-5xl">{stepsTitle}</h2>
         <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -45,7 +45,7 @@ export function HomePage() {
         </ol>
       </section>
 
-      <section id="gallery" className="rise scroll-mt-28 bg-band">
+      <section id="gallery" className="rise bg-band">
         <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
           <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Gallery</p>
           <h2 className="mt-3 max-w-3xl text-4xl md:text-5xl">{gallery.title}</h2>
@@ -55,7 +55,7 @@ export function HomePage() {
 
       <IdeasSection />
 
-      <section id="area" className="rise scroll-mt-28 bg-secondary text-secondary-foreground">
+      <section id="area" className="rise bg-secondary text-secondary-foreground">
         <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass-soft">Service area</p>
           <h2 className="mt-3 max-w-2xl text-4xl md:text-5xl">{area.title}</h2>

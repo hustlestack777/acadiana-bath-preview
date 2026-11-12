@@ -113,7 +113,7 @@ export function PathChooser() {
     { ...tilePath, image: "/images/home/tile-card.webp", alt: "Tiled walk-in shower through an arched opening, with two arched niches, a bench, and brass fixtures.", tag: "Designer · Fully custom" },
   ];
   return (
-    <section id="paths" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-20 md:py-28">
+    <section id="paths" className="rise mx-auto w-full max-w-6xl px-5 py-20 md:py-28">
       <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Choose your path</p>
       <h2 className="mt-3 max-w-3xl text-4xl leading-[1.05] md:text-6xl">Two ways to a bathroom you love.</h2>
       <div className="mt-10 grid gap-5 md:grid-cols-2">
@@ -149,10 +149,12 @@ export function PathChooser() {
 export function IdeasSection({ only }: { only?: string[] }) {
   const items = only ? ideas.items.filter((item) => only.includes(item.name)) : ideas.items;
   return (
-    <section id="ideas" className="rise scroll-mt-28 bg-band">
+    <section className="rise bg-band">
       <div className="mx-auto w-full max-w-6xl px-5 py-20 md:py-28">
-        <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">{ideas.eyebrow}</p>
-        <h2 className="mt-3 max-w-3xl text-4xl md:text-6xl">{ideas.title}</h2>
+        <div id="ideas">
+          <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">{ideas.eyebrow}</p>
+          <h2 className="mt-3 max-w-3xl text-4xl md:text-6xl">{ideas.title}</h2>
+        </div>
         <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">{ideas.body}</p>
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {items.map((item) => (

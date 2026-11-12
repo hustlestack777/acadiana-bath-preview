@@ -63,7 +63,7 @@ export function FaqSection({
   const schemaItems = moreFaqs?.length ? [...faqs, ...moreFaqs] : [...faqs];
 
   return (
-    <section id={id} className={cn("rise scroll-mt-28 bg-brass-soft", className)} aria-labelledby={`${id}-heading`}>
+    <section id={id} className={cn("rise bg-brass-soft", className)} aria-labelledby={`${id}-heading`}>
       <JsonLd data={faqPageJsonLd(schemaItems)} />
       <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
         <h2 id={`${id}-heading`} className="text-4xl md:text-5xl">

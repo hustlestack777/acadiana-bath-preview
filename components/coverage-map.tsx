@@ -7,7 +7,13 @@ type CoverageMapProps = {
 export function CoverageMap({ size = "full" }: CoverageMapProps) {
   const compact = size === "compact";
   return (
-    <figure className={compact ? "mx-auto mt-8 w-full max-w-lg" : "mx-auto mt-8 w-full max-w-4xl"}>
+    <figure
+      className={
+        compact
+          ? "mx-auto mt-8 w-full max-w-5xl max-md:max-w-none max-md:-me-[var(--chat-gutter,0px)] max-md:w-[calc(100%+var(--chat-gutter,0px))]"
+          : "mx-auto mt-8 w-full max-w-6xl max-md:max-w-none max-md:-me-[var(--chat-gutter,0px)] max-md:w-[calc(100%+var(--chat-gutter,0px))]"
+      }
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/maps/acadiana_service_map.svg"

@@ -65,25 +65,29 @@ export function SiteFooter() {
           <WindowsQuoteLine className="mt-4 text-fig-muted" />
         </div>
       </div>
-      <p className="border-t border-white/15 px-5 py-4 pe-36 text-center text-xs leading-5 text-fig-muted md:pe-5">
-        {brand.name} ·{" "}
-        <a href="/about" className="underline underline-offset-4">
-          About
-        </a>{" "}
-        ·{" "}
-        <a href="/privacy" className="underline underline-offset-4">
-          Privacy Policy
-        </a>{" "}
-        ·{" "}
+      <div className="border-t border-white/15 px-5 py-4 pe-36 text-center text-fig-muted md:pe-5">
+        <p className="text-xs leading-5">
+          {brand.name} ·{" "}
+          <a href="/about" className="underline underline-offset-4">
+            About
+          </a>{" "}
+          ·{" "}
+          <a href="/privacy" className="underline underline-offset-4">
+            Privacy Policy
+          </a>
+        </p>
         <a
-          href="https://lagniapperealmlabs.com/"
+          href="https://lrl-site-preview.onrender.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="underline underline-offset-4"
+          className="mt-3 inline-block max-w-[17rem] text-fig-muted no-underline sm:max-w-none"
         >
-          Website &amp; marketing by Lagniappe Realm Labs
+          <span className="block text-[11px] leading-4 tracking-wide">Powered by Lagniappe Realm Labs</span>
+          <span className="mt-0.5 block text-[10px] leading-4 text-fig-muted/80">
+            Custom sites · Marketing · Design · Leads · Automation
+          </span>
         </a>
-      </p>
+      </div>
     </footer>
   );
 }

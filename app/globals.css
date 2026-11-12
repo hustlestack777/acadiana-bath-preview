@@ -3,7 +3,9 @@
 @import "shadcn/tailwind.css";
 
 html {
-  scroll-padding-top: 7rem;
+  /* Fixed header is ~3.75–4.5rem after scroll. This is the only offset.
+     Do not also put a large scroll-margin-top on section targets — the two add. */
+  scroll-padding-top: 5rem;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -317,7 +319,7 @@ html {
 }
 
 #start {
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: 0;
 }
 
 /* Design My Bathroom scanner line */
