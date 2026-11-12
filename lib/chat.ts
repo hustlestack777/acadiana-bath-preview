@@ -12,7 +12,7 @@ function faqAnswer(question: string) {
 }
 
 /** Display name for the Acadiana chat consultant. Change only this constant if Shaun picks a different name. */
-export const CHAT_AGENT_NAME = "Camille";
+export const CHAT_AGENT_NAME = "Gigi";
 
 export const GIGI_GREETING_LEAD = `Hey, I’m ${CHAT_AGENT_NAME} 👋 Need help with your bathroom?`;
 export const GIGI_GREETING_RARE = "Thinking about a remodel? I can help 😊";
