@@ -460,7 +460,6 @@ section[aria-label="Introduction"] .hero-copy {
 @media (max-width: 767px) {
   .camille-widget {
     right: 12px !important;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
     flex-direction: column;
     align-items: flex-end;
   }
