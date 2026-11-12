@@ -51,7 +51,7 @@ export function WarrantySection({
 }) {
   const headingId = `${id}-heading`;
   return (
-    <section id={id} className={cn("rise scroll-mt-28", className)} aria-labelledby={headingId}>
+    <section id={id} className={cn("rise", className)} aria-labelledby={headingId}>
       <div className="mx-auto w-full max-w-6xl px-5 py-8 md:py-12">
         <WarrantyCard headingId={headingId} />
       </div>

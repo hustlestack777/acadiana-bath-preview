@@ -35,7 +35,7 @@ export default function SolidSurfacePage() {
           position="72% center"
         />
 
-        <section id="solid-surface" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-20 md:py-28" aria-labelledby="ss-why">
+        <section id="solid-surface" className="rise mx-auto w-full max-w-6xl px-5 py-20 md:py-28" aria-labelledby="ss-why">
           <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Solid surface</p>
           <h2 id="ss-why" className="mt-3 max-w-3xl text-4xl leading-[1.05] md:text-6xl">{solidPath.whyTitle}</h2>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -84,7 +84,7 @@ export default function SolidSurfacePage() {
           </div>
         </section>
 
-        <section id="solid-quote" className="scroll-mt-24 mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 md:grid-cols-12 md:py-28">
+        <section id="solid-quote" className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 md:grid-cols-12 md:py-28">
           <div className="md:col-span-5">
             <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Free quote</p>
             <h2 className="mt-3 text-4xl md:text-5xl">{solidPath.formTitle}</h2>

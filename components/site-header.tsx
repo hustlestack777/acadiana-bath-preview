@@ -9,6 +9,7 @@ import { brand, hero, heroDesignCta } from "@/lib/copy";
 import { cn } from "cn";
 import { ConsultLink } from "@/components/consult-link";
 import { DesignLink } from "@/components/design-link";
+import { scheduleHashScroll } from "@/components/hash-scroll";
 
 const LINKS = [
   { href: "/solid-surface", label: "Solid surface", shortLabel: "Solid Surface" },
@@ -62,6 +63,20 @@ export function SiteHeader() {
     }
   }
 
+  function onNavClick(event: { preventDefault: () => void }, href: string) {
+    setOpen(false);
+    const hashAt = href.indexOf("#");
+    if (hashAt === -1) return;
+    const path = href.slice(0, hashAt) || "/";
+    const id = href.slice(hashAt + 1);
+    if (path !== pathname) return;
+    event.preventDefault();
+    if (window.location.hash !== `#${id}`) {
+      window.history.pushState(null, "", href);
+    }
+    scheduleHashScroll(id);
+  }
+
   return (
     <header
       className={cn(
@@ -83,6 +98,8 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={hrefFor(link.href)}
+              scroll={!link.href.includes("#")}
+              onClick={(event) => onNavClick(event, hrefFor(link.href))}
               className={cn(
                 "whitespace-nowrap text-[13px]",
                 overHero ? "text-white hover:text-white" : "text-muted-foreground hover:text-foreground",
@@ -154,7 +171,8 @@ export function SiteHeader() {
               <Link
                 key={link.href}
                 href={hrefFor(link.href)}
-                onClick={() => setOpen(false)}
+                scroll={!link.href.includes("#")}
+                onClick={(event) => onNavClick(event, hrefFor(link.href))}
                 className="rounded-xl px-2 py-3 text-lg"
               >
                 {link.label}
