@@ -4,6 +4,7 @@ import { brand, cardClaims, heroDesignCta, services } from "@/lib/copy";
 import { SERVICE_AREA } from "@/lib/coverage";
 import { ConsultLink } from "@/components/consult-link";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
+import { LrlCredit } from "@/components/lrl-credit";
 import { townPath, towns } from "@/lib/towns";
 
 export function SiteFooter() {
@@ -69,7 +70,7 @@ export function SiteFooter() {
         <a href="/privacy" className="underline underline-offset-4">
           Privacy Policy
         </a>{" "}
-        · Designed &amp; marketed by Lagniappe Realm Labs
+        · <LrlCredit />
       </p>
     </footer>
   );
