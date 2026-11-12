@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { CALL_DAY_CHIPS, CALL_TIME_CHIPS, CHAT_ANSWERS, GIGI_CALLS_FIRST, GIGI_GREETING_DESIGN, GIGI_GREETING_LEAD, GIGI_GREETING_RARE, GIGI_PROCESS, GIGI_SYSTEM_PROMPT, INTRO_CHIPS, LOOK_CHIPS, LOOK_IDS, PROJECT_CHIPS, estimateHrefForSession, greetingForPath, replyTo, respond, shouldShowGreeting, speakFromFaq } from "./chat";
+import { CALL_DAY_CHIPS, CALL_TIME_CHIPS, CHAT_AGENT_NAME, CHAT_ANSWERS, GIGI_CALLS_FIRST, GIGI_GREETING_DESIGN, GIGI_GREETING_LEAD, GIGI_GREETING_RARE, GIGI_PROCESS, GIGI_SYSTEM_PROMPT, INTRO_CHIPS, LOOK_CHIPS, LOOK_IDS, PROJECT_CHIPS, estimateHrefForSession, greetingForPath, replyTo, respond, shouldShowGreeting, speakFromFaq } from "./chat";
 import { checkCity } from "./coverage";
 import { validateDetails, validateExtras, validateStreet, validateZip } from "./estimate";
 import { leadNotifyRecipients, validateLead } from "./leads";
@@ -168,8 +168,8 @@ test("assistant answers stay inside the published facts", () => {
   assert.match(replyTo("how much"), /Starting at \$5K/);
   assert.match(replyTo("how much"), /\$5K–\$30K\+/);
   assert.match(replyTo("are you a person"), /AI assistant/i);
-  assert.match(replyTo("are you a person"), /Gigi/);
-  assert.match(CHAT_ANSWERS.disclosure, /Hey! I’m Gigi, from Acadiana Bathrooms/);
+  assert.match(replyTo("are you a person"), new RegExp(CHAT_AGENT_NAME));
+  assert.match(CHAT_ANSWERS.disclosure, new RegExp(`Hey! I’m ${CHAT_AGENT_NAME}, the design consultant for Acadiana Bathrooms`));
   assert.match(CHAT_ANSWERS.disclosure, /What can I help you with/);
   assert.doesNotMatch(CHAT_ANSWERS.disclosure, /ballpark price, show you your bathroom redesigned, or get you a free quote/);
   assert.equal(/AI assistant/i.test(CHAT_ANSWERS.disclosure), false);
@@ -335,4 +335,12 @@ test("Gigi reads FAQ answers and cleans phrasing she should not use", () => {
   assert.match(CHAT_ANSWERS.quote, /\(337\) 522-0023|Design My Bathroom/);
   assert.match(CHAT_ANSWERS.area, /Acadiana|South Louisiana|Outside our area/);
   assert.equal(/talk through|lifetime/i.test(CHAT_ANSWERS.cost + CHAT_ANSWERS.quote + CHAT_ANSWERS.area), false);
+});
+
+test("the consultant upsells upgraded stone honestly and never offers granite", () => {
+  const stone = replyTo("do you do granite countertops?");
+  assert.match(stone, /do not install granite/i);
+  assert.match(stone, /quartzite or marble/i);
+  assert.match(stone, /set a time to take measurements/i);
+  assert.equal(/licensed|insured|lifetime|hurry|limited time|text me|sms/i.test(stone), false, stone);
 });
