@@ -8,6 +8,7 @@ import {
   is555TestPhone,
   isTeamTestLead,
   isTestInboxEmail,
+  isTestName,
   leadNotificationRoute,
   shouldTextLead,
   withTestSubject,
@@ -142,4 +143,24 @@ test("homeowner confirmation replies go to Justin and BCC Shaun", () => {
   const shaunCase = customerConfirmationRoute("Shaun.Brasher@gmail.com");
   assert.equal(shaunCase.replyTo, JUSTIN_LEAD_EMAIL);
   assert.equal(shaunCase.bcc, undefined);
+});
+
+test("TEST-name leads go to Shaun only and skip the homeowner confirmation", () => {
+  for (const name of ["TEST", "Test Lead", "test-2", "TEST123", "  test precious"]) {
+    assert.equal(isTestName(name), true, name);
+    const route = leadNotificationRoute({ phone: "3375220023", email: "someone@example.com", name, notifyList: [JUSTIN_LEAD_EMAIL] });
+    assert.equal(route.test, true);
+    assert.deepEqual(route.to, [SHAUN_CC_EMAIL]);
+    assert.deepEqual(route.cc, []);
+    assert.equal(route.customerConfirmation, false);
+  }
+  for (const name of ["Testa", "Tester Smith", "Justin", "Mattest"]) {
+    assert.equal(isTestName(name), false, name);
+    const route = leadNotificationRoute({ phone: "3375220023", email: "someone@example.com", name, notifyList: [JUSTIN_LEAD_EMAIL] });
+    assert.equal(route.test, false);
+    assert.deepEqual(route.to, [JUSTIN_LEAD_EMAIL]);
+    assert.equal(route.customerConfirmation, true);
+  }
+  // 555 / Grok Bot inbox tests keep their homeowner confirmation, as before.
+  assert.equal(leadNotificationRoute({ phone: "3375550100", email: "a@example.com", name: "Real Name" }).customerConfirmation, true);
 });

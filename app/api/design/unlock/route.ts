@@ -165,7 +165,7 @@ export async function POST(request: Request) {
   delete errors.features;
   if (Object.keys(errors).length) return fail("Check the highlighted fields.", 400, errors);
 
-  const test = isTestRequest(request) || isTeamTestLead(phone, email);
+  const test = isTestRequest(request) || isTeamTestLead(phone, email, name);
   const subject = withTestSubject(
     `${capHit ? "[Design pending (cap hit)] " : qaFailed ? "[qa_failed: custom design needed] " : ""}New Design My Bathroom lead: ${name.trim()}, ${city.trim()}: ${styleName}`,
     test || /^test/i.test(name.trim()),
