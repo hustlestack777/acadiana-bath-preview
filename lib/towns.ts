@@ -1,6 +1,6 @@
 /**
  * Town / service-area pages. Schema is areaServed only — no storefront address.
- * Justin has no public storefront yet (a Broussard warehouse is pending).
+ * There is no public storefront yet (a Broussard warehouse is pending).
  * Local landmarks, neighborhoods and subdivisions are place references only.
  * Do not pitch remodeling older or historic homes, and do not claim past jobs.
  */

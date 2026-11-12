@@ -189,7 +189,7 @@ export const finishes = [
   { id: "lighter", label: "Lighter finishes" },
   { id: "warmer", label: "Warmer finishes" },
   { id: "deeper", label: "Deeper finishes" },
-  { id: "with-justin", label: "I’ll decide with your team" },
+  { id: "with-owner", label: "I’ll decide with your team" },
 ] as const;
 
 export const timings = [
@@ -210,7 +210,7 @@ export const photoNote =
 export const dimensionNote =
   "Rough numbers are fine. We'll call you to discuss your project and set a time to take measurements.";
 
-/** Two clear paths. No prices on either path until Justin sends his pricing. */
+/** Two clear paths. No prices on either path until pricing is supplied. */
 
 export const pathProjects = [
   { id: "ss-tub-to-shower", label: "Solid surface: tub-to-shower conversion", short: "Tub-to-shower conversion" },

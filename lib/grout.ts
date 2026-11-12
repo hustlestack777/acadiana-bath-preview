@@ -1,5 +1,5 @@
 /**
- * Mapei grout and caulk color names (2023 palette, supplier PDF from Justin).
+ * Mapei grout and caulk color names (2023 palette, supplier PDF from the shop).
  * Swatch hex values were sampled from the PDF and are approximate. Screen colors are not exact.
  */
 

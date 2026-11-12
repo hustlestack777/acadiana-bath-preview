@@ -1,4 +1,4 @@
-import { SaveJustinContact } from "@/components/save-justin-contact";
+import { SaveAcadianaContact } from "@/components/save-acadiana-contact";
 import { callbackThanksText } from "@/lib/call-window";
 import { type ReactNode } from "react";
 import { cn } from "cn";
@@ -46,7 +46,7 @@ export function CallbackConfirmation({
         </a>
         {after}
       </p>
-      <SaveJustinContact hideHint buttonClassName={buttonClassName} />
+      <SaveAcadianaContact hideHint buttonClassName={buttonClassName} />
       <p className="text-base leading-7 text-muted-foreground">{parts.after}</p>
       {children}
     </div>

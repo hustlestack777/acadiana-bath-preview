@@ -16,5 +16,6 @@ test("static asset paths skip middleware, pages and justin.vcf do not", () => {
   assert.equal(isStaticAssetPath("/windows"), false);
   assert.equal(isStaticAssetPath("/robots.txt"), false);
   assert.equal(isStaticAssetPath("/justin.vcf"), false);
+  assert.equal(isStaticAssetPath("/contact.vcf"), false);
   assert.equal(isStaticAssetPath("/api/leads"), false);
 });
