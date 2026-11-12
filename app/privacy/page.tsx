@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: pageCanonical("/privacy") },
 };
 
-const LAST_UPDATED = "November 10, 2026";
+const LAST_UPDATED = "November 12, 2026";
 
 export default function PrivacyPage() {
   return (
@@ -68,9 +68,10 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2>Calls and texts</h2>
+            <h2>Text messages</h2>
             <p>
-              We call or text you only if you ask for a quote or opt in. You can tell us to stop at any time.
+              We don&apos;t send text messages right now. We reply by phone or email. If we add texting later,
+              we&apos;ll ask for your consent first and update this policy.
             </p>
           </section>
 
