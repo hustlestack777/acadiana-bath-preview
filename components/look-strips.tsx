@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { DesignIdeaTag } from "@/components/design-idea-tag";
 import { DesignLink } from "@/components/design-link";
 import { LookImage } from "@/components/look-image";
 import { LookLink } from "@/components/look-link";
 import { inspiringLooks, shopLooks } from "@/lib/images";
-import { isDesignIdeaHero } from "@/lib/hero-slides";
 import { findStartingLookBySrc } from "@/lib/starting-looks";
 
 export function ShopLooks() {
@@ -176,7 +174,6 @@ export function InspiringRow() {
                 loading="lazy"
                 className="object-cover transition-transform duration-700 hover:scale-[1.03]"
               />
-              {isDesignIdeaHero(photo.src) ? <DesignIdeaTag className="left-3 top-3" /> : null}
             </>
           );
           if (starting) {

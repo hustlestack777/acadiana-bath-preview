@@ -191,7 +191,8 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
         setDockClear(true);
         return;
       }
-      const offset = measureStickyOffset(root) || (raised ? 96 : 16);
+      // Use the real sticky-bar height when it is on screen; otherwise sit in the corner.
+      const offset = measureStickyOffset(root) || 16;
       setBottomPx(offset);
       if (openRef.current) {
         setDockClear(true);
@@ -246,7 +247,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       window.removeEventListener("resize", schedule);
       mq.removeEventListener("change", schedule);
     };
-  }, [raised, allowBubble, open, bubbleReady, bubbleHidden]);
+  }, [allowBubble, open, bubbleReady, bubbleHidden]);
 
   useEffect(() => {
     if (!allowBubble || bubbleHidden || !bubbleReady || !dockClear || open) return;
