@@ -31,7 +31,8 @@ export function CamilleCutout({
   );
 }
 
-/** Small circular crop of Camille for chat-message rows. */
+/** Small frameless upper-torso cutout for the open-chat header and
+ *  message rows. No circle, border, or background. */
 export function CamilleFace({
   size = 40,
   className,
@@ -41,15 +42,20 @@ export function CamilleFace({
   className?: string;
   alt?: string;
 }) {
+  const height = Math.round(size * 1.55);
   return (
-    <span className={cn("inline-flex shrink-0 overflow-hidden rounded-full", className)}>
+    <span
+      className={cn("inline-flex shrink-0 items-end justify-center overflow-hidden bg-transparent", className)}
+      style={{ width: size, height }}
+    >
       <img
         src="/images/camille/camille-tiles-sm.webp"
         alt={alt}
         width={size}
-        height={size}
+        height={height}
         decoding="async"
-        className="size-full object-cover object-[50%_12%]"
+        draggable={false}
+        className="h-full w-auto max-w-none bg-transparent object-cover object-[50%_8%]"
       />
     </span>
   );
