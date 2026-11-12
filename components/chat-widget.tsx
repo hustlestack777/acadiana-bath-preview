@@ -332,7 +332,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
         >
           <header className="flex items-start justify-between gap-3 border-b border-border bg-fig px-4 py-3 text-fig-foreground">
             <div className="flex items-start gap-3">
-              <CamilleFace size={48} alt="" className="size-12 shrink-0 border border-white/20" />
+              <CamilleFace size={48} alt="" className="shrink-0" />
               <div>
                 <p className="text-base font-semibold leading-5">{CHAT_AGENT_NAME}</p>
                 <p className="mt-0.5 text-xs leading-4 text-fig-muted">{GIGI_HEADER_SUBLINE}</p>
@@ -350,7 +350,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
                 className={cn("flex items-end gap-2", turn.role === "you" ? "justify-end" : "justify-start")}
               >
                 {turn.role === "assistant" ? (
-                  <CamilleFace size={28} alt="" className="mb-0.5 size-7 shrink-0" />
+                  <CamilleFace size={28} alt="" className="mb-0.5 shrink-0" />
                 ) : null}
                 <p
                   className={cn(
