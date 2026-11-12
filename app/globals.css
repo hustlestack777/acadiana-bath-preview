@@ -55,6 +55,11 @@ html {
   --color-fig-muted: var(--fig-muted);
   --color-sage: var(--sage);
   --color-sage-wash: var(--sage-wash);
+  --color-bronze: var(--bronze);
+  --color-bronze-hover: var(--bronze-hover);
+  --color-bronze-foreground: var(--bronze-foreground);
+  --color-bronze-tint: var(--bronze-tint);
+  --color-band: var(--band);
   --color-tint-clay: var(--tint-clay);
   --color-tint-lagoon: var(--tint-lagoon);
   --color-tint-brass: var(--tint-brass);
@@ -71,7 +76,9 @@ html {
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Live Oak: warm cream and forest pine, matching the Acadiana wordmark. */
+/* Live Oak: warm cream and forest pine, with antique bronze as a metal accent.
+   Forest green stays the primary brand color. Antique bronze is for CTAs,
+   eyebrows, badges, and small rules — not large fields or dark panels. */
 :root {
   --background: #f3efe4;
   --foreground: #1c241c;
@@ -95,8 +102,15 @@ html {
   --hero: #f3efe4;
   --hero-foreground: #1c241c;
   --hero-muted: #55574c;
-  --brass: #103830;
-  --brass-soft: #e8e6d8;
+  /* Antique bronze accent (was aliased to forest green). */
+  --bronze: #8a6230;
+  --bronze-hover: #6b4423;
+  --bronze-foreground: #f7f3ea;
+  --bronze-tint: #e6dece;
+  --brass: #8a6230;
+  --brass-soft: #e6dece;
+  /* Slightly lighter than the old #eae6d8 band so bronze type meets WCAG AA. */
+  --band: #f1ede3;
   --fig: #14261f;
   --fig-foreground: #f6f1e6;
   --fig-muted: #d5e2d8;
@@ -104,10 +118,10 @@ html {
   --sage-wash: #e8e6d8;
   --tint-clay: #e8e6d8;
   --tint-lagoon: #e8e6d8;
-  --tint-brass: #e8e6d8;
+  --tint-brass: #e6dece;
   --swatch-clay: #103830;
   --swatch-lagoon: #14261f;
-  --swatch-brass: #103830;
+  --swatch-brass: #8a6230;
   --swatch-fig: #14261f;
   --chart-1: #103830;
   --chart-2: #14261f;
@@ -506,4 +520,19 @@ section[aria-label="Introduction"] .hero-copy {
   section[aria-label="Introduction"] {
     padding-bottom: 13.5rem;
   }
+}
+
+/* Antique bronze accent helpers. Forest green (--primary) stays the brand color. */
+.accent-rule::after {
+  content: "";
+  display: block;
+  width: 2.25rem;
+  height: 2px;
+  margin-top: 0.5rem;
+  background: var(--bronze);
+}
+
+/* Logo tagline on cream (the on-dark gold #e4d8b4 is left alone). */
+.text-\[\#6b5a2a\] {
+  color: var(--bronze);
 }

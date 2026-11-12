@@ -30,12 +30,12 @@ export function HomePage() {
       <InspiringRow />
 
       <section id="process" className="rise scroll-mt-28 mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">How it works</p>
+        <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">How it works</p>
         <h2 className="mt-3 text-4xl md:text-5xl">{stepsTitle}</h2>
         <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((step, index) => (
             <li key={step.title} className="rounded-[1.4rem] border border-border bg-card p-6">
-              <span className="inline-flex size-12 items-center justify-center rounded-full bg-primary font-heading text-xl text-primary-foreground">
+              <span className="inline-flex size-12 items-center justify-center rounded-full bg-bronze font-heading text-xl text-bronze-foreground">
                 {index + 1}
               </span>
               <h3 className="mt-5 text-2xl">{step.title}</h3>
@@ -45,9 +45,9 @@ export function HomePage() {
         </ol>
       </section>
 
-      <section id="gallery" className="rise scroll-mt-28 bg-[#eae6d8]">
+      <section id="gallery" className="rise scroll-mt-28 bg-band">
         <div className="mx-auto w-full max-w-6xl px-5 py-16 md:py-24">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brass">Gallery</p>
+          <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Gallery</p>
           <h2 className="mt-3 max-w-3xl text-4xl md:text-5xl">{gallery.title}</h2>
           <PhotoGallery photos={homeGalleryPhotos} />
         </div>
@@ -84,7 +84,7 @@ export function HomePage() {
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-[#f6f1e6] px-6 text-base font-medium text-[#1c241c]">
+            <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-bronze px-6 text-base font-medium text-bronze-foreground hover:bg-bronze-hover">
               {hero.primary}
             </ConsultLink>
             <DesignLink className="inline-flex h-12 items-center justify-center rounded-full border border-white/70 px-6 text-base font-medium">

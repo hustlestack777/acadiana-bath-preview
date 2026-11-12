@@ -414,7 +414,7 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
           <p className="mt-2 text-sm leading-6 text-muted-foreground">{designCopy.tips} Add 1 or 2 photos. We design from the first one.</p>
           {picks ? <p className="mt-3 text-sm font-semibold" data-testid="design-picks-summary">{picks.layout.name} · {picks.wall.name} · {picks.floor.name} · {picks.finish.name}</p> : null}
           <div className="mt-5 grid grid-cols-2 gap-3">
-            <label className="flex h-14 cursor-pointer items-center justify-center rounded-full bg-primary px-5 text-base font-semibold text-primary-foreground">
+            <label className="flex h-14 cursor-pointer items-center justify-center rounded-full bg-bronze px-5 text-base font-semibold text-bronze-foreground hover:bg-bronze-hover">
               Take photo
               <input type="file" accept="image/*" capture="environment" className="sr-only" onChange={addPhotos} disabled={shots.length >= 2} />
             </label>
@@ -455,7 +455,7 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
               type="button"
               disabled={!shots.length || !picks}
               onClick={render}
-              className="h-14 min-w-0 flex-1 rounded-full bg-primary px-4 text-base font-semibold text-primary-foreground disabled:opacity-40"
+              className="h-14 min-w-0 flex-1 rounded-full bg-bronze px-4 text-base font-semibold text-bronze-foreground hover:bg-bronze-hover disabled:opacity-40"
               data-testid="design-render"
             >
               Design my bathroom
@@ -523,7 +523,7 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
             as="h2"
             headingId="design-custom-done"
             headingClassName="font-heading text-3xl outline-none"
-            buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground"
+            buttonClassName="inline-flex h-12 items-center justify-center rounded-full bg-bronze px-6 text-base font-semibold text-bronze-foreground hover:bg-bronze-hover"
           >
             <p className="text-base leading-7 text-muted-foreground">He'll also put together a custom design for the {lookName} look you picked.</p>
           </CallbackConfirmation>
@@ -551,7 +551,7 @@ export function DesignTool({ initialStyle = "", initialLook = "" }: { initialSty
               headingClassName="font-heading text-2xl outline-none"
             />
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <a href={reveal.after} download="acadiana-bathroom-design.jpg" className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground">
+              <a href={reveal.after} download="acadiana-bathroom-design.jpg" className="inline-flex h-14 items-center justify-center rounded-full bg-bronze px-6 text-base font-semibold text-bronze-foreground hover:bg-bronze-hover">
                 Download
               </a>
               <button type="button" onClick={tryAnother} className="h-14 rounded-full border border-border px-6 text-base font-semibold">
@@ -615,7 +615,7 @@ function PickStep<T extends { key: string; name: string; blurb: string; image: s
           >
             {value === item.key ? (
               <span
-                className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground"
+                className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded-full bg-bronze px-2 py-0.5 text-[11px] font-semibold text-bronze-foreground"
                 data-testid="your-pick"
               >
                 <span aria-hidden="true">✓</span> Your pick
@@ -638,7 +638,7 @@ function PickStep<T extends { key: string; name: string; blurb: string; image: s
           <button
             type="button"
             onClick={() => onPick(value)}
-            className="inline-flex h-12 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground"
+            className="inline-flex h-12 items-center rounded-full bg-bronze px-5 text-sm font-semibold text-bronze-foreground hover:bg-bronze-hover"
             data-testid={`${testId}-continue`}
           >
             Continue
@@ -752,7 +752,7 @@ function UnlockForm({
         <span>{consentLabel}</span>
       </label>
       {errors.consent ? <p className="text-sm text-destructive" role="alert">{errors.consent}</p> : null}
-      <button type="submit" disabled={sending} className="h-14 rounded-full bg-primary text-base font-semibold text-primary-foreground disabled:opacity-50" data-testid="design-unlock">
+      <button type="submit" disabled={sending} className="h-14 rounded-full bg-bronze text-base font-semibold text-bronze-foreground hover:bg-bronze-hover disabled:opacity-50" data-testid="design-unlock">
         {submitLabel}
       </button>
       {finePrint ? <p className="-mt-2 text-center text-[0.7rem] text-muted-foreground/80" data-testid="design-fine-print">{finePrint}</p> : null}

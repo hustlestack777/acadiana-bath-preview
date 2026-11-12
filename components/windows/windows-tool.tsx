@@ -29,7 +29,7 @@ import { OUTSIDE_AREA } from "@/lib/coverage";
 const field =
   "mt-1.5 h-12 w-full rounded-xl border border-input bg-card px-3 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 const primaryBtn =
-  "inline-flex h-12 w-full items-center justify-center rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground disabled:opacity-40";
+  "inline-flex h-12 w-full items-center justify-center rounded-full bg-bronze px-6 text-base font-semibold text-bronze-foreground hover:bg-bronze-hover disabled:opacity-40";
 const secondaryBtn =
   "inline-flex h-12 w-full items-center justify-center rounded-full border border-border bg-card px-6 text-base font-semibold";
 
