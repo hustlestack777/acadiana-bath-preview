@@ -523,12 +523,50 @@ section[aria-label="Introduction"] .design-idea-tag {
     transform: none !important;
   }
 }
-/* Leave room on phones so the torso does not cover hero CTAs or the footer. */
+/* Phones: compact head-and-shoulders bubble so hero quote buttons stay clear.
+   Full torso stays on desktop. */
 @media (max-width: 767px) {
-  .camille-stage { width: 168px; height: 290px; }
-  .camille-cutout { height: 300px; }
-  section[aria-label="Introduction"] {
-    padding-bottom: 18rem;
+  .camille-widget {
+    right: 12px !important;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    flex-direction: column;
+    align-items: flex-end;
   }
-  body { padding-bottom: 2rem; }
+  .camille-stage {
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #1a1612;
+    border: 3px solid #fff;
+    box-shadow: 0 8px 20px rgba(15,12,8,.35);
+  }
+  .camille-ground { display: none; }
+  .camille-stage picture { display: block; width: 100%; height: 100%; }
+  .camille-cutout {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+    object-fit: cover;
+    object-position: 50% 12%;
+    filter: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .camille-parallax,
+  .camille-sway,
+  .camille-breathe,
+  .camille-react { transform-origin: 50% 50%; }
+  .camille-talk { margin-bottom: 8px !important; }
+  .camille-panel {
+    margin-bottom: 8px !important;
+    width: min(22rem, calc(100vw - 1.5rem)) !important;
+    max-height: min(32rem, calc(70vh - 4rem)) !important;
+  }
+  section[aria-label="Introduction"] {
+    padding-bottom: 5.5rem;
+  }
 }
