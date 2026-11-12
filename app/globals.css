@@ -398,10 +398,10 @@ section[aria-label="Introduction"] .hero-copy {
   }
 }
 
-/* ===== Camille full-torso chat launcher (Nov 12) ===== */
-.camille-widget { pointer-events: none; }
-.camille-widget > * { pointer-events: auto; }
-.camille-stage {
+/* ===== Gigi full-torso chat launcher (Nov 12) ===== */
+.gigi-widget { pointer-events: none; }
+.gigi-widget > * { pointer-events: auto; }
+.gigi-stage {
   width: 300px;
   height: 480px;
   border: 0;
@@ -414,15 +414,15 @@ section[aria-label="Introduction"] .hero-copy {
   overflow: visible;
   cursor: pointer;
 }
-.camille-stage:focus { outline: none; }
-.camille-stage:focus-visible {
+.gigi-stage:focus { outline: none; }
+.gigi-stage:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 4px;
 }
-.camille-ground {
+.gigi-ground {
   display: none;
 }
-.camille-cutout {
+.gigi-cutout {
   position: absolute;
   left: 50%;
   bottom: 0;
@@ -440,12 +440,12 @@ section[aria-label="Introduction"] .hero-copy {
    background) so the sticky quote bar and hero CTAs stay clear.
    Full torso stays on desktop. No extra motion on phones. */
 @media (max-width: 767px) {
-  .camille-widget {
+  .gigi-widget {
     right: 8px !important;
     flex-direction: column;
     align-items: flex-end;
   }
-  .camille-stage {
+  .gigi-stage {
     width: 108px;
     height: 148px;
     overflow: hidden;
@@ -456,9 +456,9 @@ section[aria-label="Introduction"] .hero-copy {
     appearance: none;
     -webkit-appearance: none;
   }
-  .camille-ground { display: none; }
-  .camille-stage picture { display: block; width: 100%; height: 100%; }
-  .camille-cutout {
+  .gigi-ground { display: none; }
+  .gigi-stage picture { display: block; width: 100%; height: 100%; }
+  .gigi-cutout {
     position: absolute;
     left: 50%;
     bottom: 0;
@@ -472,8 +472,8 @@ section[aria-label="Introduction"] .hero-copy {
     -webkit-mask-image: linear-gradient(to bottom, #000 78%, rgba(0,0,0,.4) 90%, transparent 100%);
     mask-image: linear-gradient(to bottom, #000 78%, rgba(0,0,0,.4) 90%, transparent 100%);
   }
-  .camille-talk { margin-bottom: 8px !important; }
-  .camille-panel {
+  .gigi-talk { margin-bottom: 8px !important; }
+  .gigi-panel {
     margin-bottom: 8px !important;
     width: min(22rem, calc(100vw - 1.5rem)) !important;
     max-height: min(32rem, calc(100dvh - var(--gigi-bottom, 0px) - 14rem)) !important;

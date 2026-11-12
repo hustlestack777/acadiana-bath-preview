@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { DesignLink } from "@/components/design-link";
-import { CamilleCutout, CamilleFace } from "@/components/camille-avatar";
+import { GigiCutout, GigiFace } from "@/components/gigi-cutout";
 import {
   CHAT_AGENT_NAME,
   CHAT_ANSWERS,
@@ -347,10 +347,9 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
     <div
       ref={widgetRef}
       data-gigi-widget=""
-      data-camille-widget=""
       data-map-tuck={mapClear || open ? undefined : "1"}
       className={cn(
-        "camille-widget fixed right-0 z-40 flex flex-row items-end justify-end md:right-4 md:bottom-0",
+        "gigi-widget fixed right-0 z-40 flex flex-row items-end justify-end md:right-4 md:bottom-0",
         "transition-transform duration-300 ease-out motion-reduce:transition-none",
         open && "is-open",
         typing && "is-typing",
@@ -362,13 +361,13 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
     >
       {open ? (
         <section
-          className="camille-panel mb-3 mr-1 flex max-h-[min(32rem,70vh)] w-[min(22rem,calc(100vw-7.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl md:mb-40 md:w-[min(22rem,calc(100vw-22rem))]"
+          className="gigi-panel mb-3 mr-1 flex max-h-[min(32rem,70vh)] w-[min(22rem,calc(100vw-7.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl md:mb-40 md:w-[min(22rem,calc(100vw-22rem))]"
           aria-label={`Chat with ${CHAT_AGENT_NAME}`}
           data-testid="ai-chat"
         >
           <header className="flex items-start justify-between gap-3 border-b border-border bg-fig px-4 py-3 text-fig-foreground">
             <div className="flex items-start gap-3">
-              <CamilleFace size={48} alt="" className="shrink-0" />
+              <GigiFace size={48} alt="" className="shrink-0" />
               <div>
                 <p className="text-base font-semibold leading-5">{CHAT_AGENT_NAME}</p>
                 <p className="mt-0.5 text-xs leading-4 text-fig-muted">{GIGI_HEADER_SUBLINE}</p>
@@ -386,7 +385,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
                 className={cn("flex items-end gap-2", turn.role === "you" ? "justify-end" : "justify-start")}
               >
                 {turn.role === "assistant" ? (
-                  <CamilleFace size={28} alt="" className="mb-0.5 shrink-0" />
+                  <GigiFace size={28} alt="" className="mb-0.5 shrink-0" />
                 ) : null}
                 <p
                   className={cn(
@@ -447,7 +446,7 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
       ) : null}
       {showBubble ? (
         <div
-          className="camille-talk mb-2 max-w-[min(15.5rem,calc(100vw-8rem))] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-200 md:mb-44"
+          className="gigi-talk mb-2 max-w-[min(15.5rem,calc(100vw-8rem))] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-200 md:mb-44"
           data-testid="gigi-greeting"
         >
           <div className="relative rounded-2xl rounded-br-md border border-border bg-card px-3 py-2 pr-8 text-card-foreground shadow-lg">
@@ -477,13 +476,13 @@ export function ChatWidget({ raised = false }: { raised?: boolean }) {
         <button
           type="button"
           onClick={() => (open ? setOpen(false) : openChat())}
-          className="camille-stage relative shrink-0 bg-transparent"
+          className="gigi-stage relative shrink-0 bg-transparent"
           aria-expanded={open}
           aria-label={`Chat with ${CHAT_AGENT_NAME}`}
           data-testid="gigi-launcher"
         >
-          <span className="camille-ground" aria-hidden="true" />
-          <CamilleCutout loadFull={open} />
+          <span className="gigi-ground" aria-hidden="true" />
+          <GigiCutout loadFull={open} />
         </button>
       ) : null}
     </div>
