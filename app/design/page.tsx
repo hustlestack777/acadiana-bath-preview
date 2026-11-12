@@ -20,7 +20,7 @@ export default async function DesignPage({ searchParams }: { searchParams: Promi
   const style = typeof params.style === "string" ? params.style : "";
   const look = typeof params.look === "string" ? params.look : "";
   return (
-    <SiteShell>
+    <SiteShell formPage>
       <main id="content" tabIndex={-1}>
         <section className="mx-auto w-full max-w-3xl px-5 pb-8 pt-6 md:pt-12">
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">{designCopy.cta}</p>
