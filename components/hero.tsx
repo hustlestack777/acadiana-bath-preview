@@ -3,12 +3,10 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ConsultLink } from "@/components/consult-link";
 import { DesignLink } from "@/components/design-link";
-import { DesignIdeaTag } from "@/components/design-idea-tag";
 import {
   HERO_LONGEST_HEADLINE,
   HERO_SLIDES,
   heroSrcSet,
-  isDesignIdeaHero,
 } from "@/lib/hero-slides";
 import {
   brand,
@@ -132,10 +130,6 @@ export function Hero() {
         <div className="home-hero-scrim absolute inset-0" />
       </div>
 
-      {isDesignIdeaHero(SLIDES[visibleIndex].n) ? (
-        <DesignIdeaTag className="left-4 top-24 z-20 sm:left-6 sm:top-28" />
-      ) : null}
-
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-6xl flex-col justify-end px-5 pb-28 pt-24 md:pb-12 md:pt-28">
         <h1
           className="home-hero-title relative mt-0 max-w-5xl font-heading text-[clamp(1.85rem,6.4vw,5.8rem)] leading-[0.96] font-semibold text-[#f6f1e6]"
@@ -144,19 +138,12 @@ export function Hero() {
           <span className="invisible block" aria-hidden="true">
             {HERO_LONGEST_HEADLINE}
           </span>
-          {SLIDES.map((slide, index) => (
-            <span
-              key={slide.n}
-              className="absolute inset-0 transition-opacity duration-[2000ms] ease-in-out"
-              style={{ opacity: index === visibleIndex ? 1 : 0 }}
-              aria-hidden={index !== visibleIndex}
-            >
-              {slide.headline}
-            </span>
-          ))}
+          <span className="absolute inset-0">
+            {SLIDES[visibleIndex].headline}
+          </span>
         </h1>
         <p className="hero-copy mt-3 max-w-xl text-base leading-7 text-[#f6f1e6] sm:mt-6 sm:text-lg sm:leading-8">{heroSubhead}</p>
-        <div className="mt-5 flex flex-col gap-3 sm:mt-8 sm:flex-row">
+        <div className="mt-5 flex flex-col gap-3 max-md:pe-32 sm:mt-8 sm:flex-row" data-hero-ctas="">
           <ConsultLink
             className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 text-base font-semibold text-primary-foreground shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 sm:h-14"
             data-testid="hero-cta"
@@ -169,11 +156,11 @@ export function Hero() {
             {heroDesignCta}
           </DesignLink>
         </div>
-        <a href={brand.phoneHref} className="hero-copy mt-3 inline-block text-sm font-semibold text-[#f6f1e6] underline underline-offset-4">
+        <a href={brand.phoneHref} className="hero-copy mt-3 inline-block text-sm font-semibold text-[#f6f1e6] underline underline-offset-4 max-md:pe-32">
           {brand.phone}
         </a>
-        <p className="hero-copy mt-3 max-w-xl text-sm text-[#e4d8b4]">{trustLine}</p>
-        <p className="hero-copy mt-2 max-w-xl text-sm font-semibold tracking-wide text-[#e4d8b4]" data-testid="hero-quote-line">
+        <p className="hero-copy mt-3 max-w-xl text-sm text-[#e4d8b4] max-md:pe-32">{trustLine}</p>
+        <p className="hero-copy mt-2 max-w-xl text-sm font-semibold tracking-wide text-[#e4d8b4] max-md:pe-32" data-testid="hero-quote-line">
           {heroQuoteLine}
         </p>
         <div className="mt-3 flex flex-wrap items-end justify-between gap-4 border-t border-white/20 pe-36 pt-3 md:pe-0">
