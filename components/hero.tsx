@@ -130,7 +130,7 @@ export function Hero() {
         <div className="home-hero-scrim absolute inset-0" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-6xl flex-col justify-end px-5 pb-28 pt-24 md:pb-12 md:pt-28">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-6xl flex-col justify-end px-5 pb-16 pt-24 md:pb-12 md:pt-28">
         <h1
           className="home-hero-title relative mt-0 max-w-5xl font-heading text-[clamp(1.85rem,6.4vw,5.8rem)] leading-[0.96] font-semibold text-[#f6f1e6]"
           data-testid="hero-title"
@@ -163,7 +163,7 @@ export function Hero() {
         <p className="hero-copy mt-2 max-w-xl text-sm font-semibold tracking-wide text-[#e4d8b4] max-md:pe-32" data-testid="hero-quote-line">
           {heroQuoteLine}
         </p>
-        <div className="mt-3 flex flex-wrap items-end justify-between gap-4 border-t border-white/20 pe-36 pt-3 md:pe-0">
+        <div className="mt-3 flex flex-col items-start gap-2 border-t border-white/20 pe-36 pt-3 md:flex-row md:items-end md:gap-8 md:pe-0">
           <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/80">
             {services.map((service) => (
               <li key={service}>{service}</li>
