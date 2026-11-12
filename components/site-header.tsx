@@ -17,6 +17,7 @@ const LINKS = [
   { href: "/#ideas", label: "Ideas" },
   { href: "/gallery", label: "Gallery" },
   { href: "/faq", label: "FAQ" },
+  { href: "/about", label: "About" },
 ];
 
 export function SiteHeader() {

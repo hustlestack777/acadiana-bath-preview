@@ -1,7 +1,7 @@
 import { cn } from "cn";
 
-const HINT = "Save Justin's number so you know it's him when he calls.";
-const LABEL = "Save Justin's Contact";
+const HINT = "Save the Acadiana Bathrooms and Countertops number so you know it's us when we call.";
+const LABEL = "Save Acadiana Bathrooms and Countertops";
 
 export function SaveJustinContact({
   className,

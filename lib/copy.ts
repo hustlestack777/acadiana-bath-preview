@@ -142,7 +142,7 @@ export const lead = {
   subhead:
     "Tell us about your project and the best day and time to reach you. We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.",
   submit: "Get My Free Quote",
-  thanks: "You're all set. We'll call you in the one-hour window you picked to discuss your project. Save Justin's number so you know it's him calling: (337) 522-0023.",
+  thanks: "You're all set. We'll call you in the one-hour window you picked to discuss your project. Save the Acadiana Bathrooms and Countertops number so you know it's us calling: (337) 522-0023.",
   savedNote: "Nothing to pay today.",
   savedTitle: "Got it!",
   photosTitle: "Their photos",
