@@ -43,8 +43,8 @@ export function businessJsonLd() {
     areaServed: SCHEMA_AREA_SERVED,
     priceRange: SCHEMA_PRICE_RANGE,
     sameAs: [...SITE_SAME_AS],
-    // No address: Justin has no public storefront yet (a Broussard warehouse is pending).
-    // TODO(Justin): add the confirmed public address and hours when ready.
+    // No address: there is no public storefront yet (a Broussard warehouse is pending).
+    // TODO: add the confirmed public address and hours when ready.
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Bathroom remodeling services",

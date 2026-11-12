@@ -32,7 +32,7 @@ export type RoomId =
   | "hallway"
   | "other";
 
-/** Installed planning bands per standard opening, until Justin supplies his rates. */
+/** Installed planning bands per standard opening, until installed rates are supplied. */
 export const MATERIAL_BANDS: Record<MaterialId, { low: number; high: number; label: string }> = {
   vinyl: { low: 450, high: 1350, label: "vinyl" },
   "fiberglass-wood": { low: 400, high: 2200, label: "fiberglass or wood" },
@@ -202,7 +202,7 @@ export function windowLeadNotes(input: {
     .map((id) => ROOMS.find((item) => item.id === id)?.name)
     .filter(Boolean)
     .join(", ");
-  const count = input.standardCount == null ? "Unsure — Justin will count at the measure" : String(input.standardCount);
+  const count = input.standardCount == null ? "Unsure — we will count at the measure" : String(input.standardCount);
   const lines = [
     `Standard windows: ${count}`,
     input.streetViewSuggested != null ? `Street View suggestion (customer confirmed or edited): ${input.streetViewSuggested}` : "",

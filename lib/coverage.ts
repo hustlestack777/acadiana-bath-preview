@@ -1,6 +1,6 @@
 /**
  * Service area. Based in Lafayette, serving Acadiana and South Louisiana.
- * There is no allow-list: any town or ZIP is accepted on every form, and Justin confirms the visit.
+ * There is no allow-list: any town or ZIP is accepted on every form, and the team confirms the visit.
  * MAIN_TOWNS only feeds suggestions and visible town lists.
  * Focus markets set 11/11/2026. Do not list North Shore, New Orleans, or DeRidder.
  */

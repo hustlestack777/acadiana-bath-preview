@@ -1,4 +1,4 @@
-/** Style cards for the Design My Bathroom tool. Images are AI examples, never Justin's jobs. */
+/** Style cards for the Design My Bathroom tool. Images are AI examples, never real job photos. */
 export type DesignStyle = {
   key: string;
   /** Boogie's image number (boogie_NN in /workspace/abc_build/ai_photos), or "ss" for ss_walkin_stylecard. Used by lib/budget.ts. */

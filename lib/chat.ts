@@ -91,7 +91,9 @@ export function speakFromFaq(text: string) {
   const phraseB = ["talk", " through"].join("");
   let out = text;
   const homePhrase = ["comes to your", " home"].join("");
-  out = out.replace(new RegExp(`(?:Justin\\s+)?${homePhrase} for the ${wordA}\\.?`, "gi"), GIGI_CALLS_FIRST);
+  // Optional leading given name, so older FAQ phrasing still sanitizes without shipping a personal name.
+  const givenName = String.raw`[A-Z][a-z]+`;
+  out = out.replace(new RegExp(`(?:${givenName}\\s+)?${homePhrase} for the ${wordA}\\.?`, "gi"), GIGI_CALLS_FIRST);
   out = out.replace(new RegExp(`,?\s*at (a |that |your )?(free )?${wordA}`, "gi"), "");
   out = out.replace(new RegExp(`your free ${wordA}`, "gi"), "your free quote");
   out = out.replace(new RegExp(`free ${wordA}`, "gi"), "free quote");
@@ -102,7 +104,6 @@ export function speakFromFaq(text: string) {
   const covered = ["guar", "antee"].join("");
   out = out.replace(new RegExp(`(?:and\\s+)?(?:give you |offers? )?(?:a )?${wordB} ${covered}`, "gi"), "");
   out = out.replace(new RegExp(wordB, "gi"), "");
-  out = out.replace(/Justin\s+Justin/g, "Justin");
   out = out.replace(/\s{2,}/g, " ").replace(/\s+\./g, ".").replace(/\s+and\.?\s*$/g, ".").replace(/\.\./g, ".").trim();
   return withCallsFirst(out);
 }
@@ -110,7 +111,7 @@ export function speakFromFaq(text: string) {
 function withCallsFirst(text: string) {
   if (text.includes(GIGI_CALLS_FIRST)) return text;
   const similar =
-    /(?:Justin(?:, the owner,)? (?:will )?calls?(?: you)?(?: first)?|We'll call you(?: first)?) to discuss your project[^.]*\.\s*(?:(?:He|Then he|Then we|We) (?:then )?sets? a time to take measurements[^.]*\.)?/;
+    new RegExp(String.raw`(?:(?:[A-Z][a-z]+(?:, the owner,)? (?:will )?calls?(?: you)?(?: first)?)|We'll call you(?: first)?) to discuss your project[^.]*\.\s*(?:(?:He|Then he|Then we|We) (?:then )?sets? a time to take measurements[^.]*\.)?`);
   if (similar.test(text)) return text.replace(similar, GIGI_CALLS_FIRST);
   return text;
 }

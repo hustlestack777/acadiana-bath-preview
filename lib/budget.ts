@@ -1,5 +1,5 @@
 /**
- * Budget question for /design and the consult forms. Justin will refine this.
+ * Budget question for /design and the consult forms. These ranges may be refined later.
  * These are the visitor's own budget ranges (their answer), not our prices.
  * `order` lists Boogie image numbers (the `boogie` field in lib/design-styles.ts), best fit first.
  */

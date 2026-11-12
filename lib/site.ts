@@ -2,10 +2,10 @@
  * Canonical business facts for header, footer, schema, robots and llms.txt.
  * Keep name and phone identical everywhere they appear.
  *
- * TODO(Justin): add a public business address only after Justin confirms a storefront.
+ * TODO: add a public business address only after a storefront is confirmed.
  * Until then, schema stays area-only (no address). A Broussard warehouse is pending.
- * TODO(Justin): add the Google Business Profile URL (schema sameAs) after verification.
- * TODO(Justin): add opening hours when Justin confirms them.
+ * TODO: add the Google Business Profile URL (schema sameAs) after verification.
+ * TODO: add opening hours when they are confirmed.
  */
 
 import { brand } from "./copy";
