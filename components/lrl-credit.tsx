@@ -166,7 +166,7 @@ export function LrlCredit() {
                   <label className={labelClass} htmlFor={phoneId}>Best phone number</label>
                   <input id={phoneId} name="phone" className={field} type="tel" inputMode="tel" autoComplete="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} />
                   <p className="mt-2 text-xs leading-5 text-muted-foreground">
-                    By submitting, you agree Shaun may call or text you about your request. Msg and data rates may apply.{" "}
+                    By submitting, you agree Shaun may call or email you about your request.{" "}
                     <a href="/lrl-privacy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
                       Privacy note
                     </a>

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const LAST_UPDATED = "November 11, 2026";
+const LAST_UPDATED = "November 12, 2026";
 
 export default function LrlPrivacyPage() {
   return (
@@ -27,8 +27,9 @@ export default function LrlPrivacyPage() {
             the services needed to deliver the message (such as email).
           </p>
           <p>
-            If you share a phone number, Shaun may call or text you about your request. Message and data rates may apply.
-            You can ask him to stop at any time by telling him, or by emailing{" "}
+            We don&apos;t send text messages right now. If you share a phone number or email, Shaun may reply by phone
+            or email. If we add texting later, we&apos;ll ask for your consent first and update this page. You can
+            ask him to stop at any time by telling him, or by emailing{" "}
             <a href="mailto:shaun@lagniapperealmlabs.com" className="underline underline-offset-4">
               shaun@lagniapperealmlabs.com
             </a>.

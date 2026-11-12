@@ -179,7 +179,7 @@ export const paymentNote =
   "Pick whatever fits today. Nothing here checks your credit.";
 
 export const consentLabel =
-  "I agree that Acadiana Bathrooms and Countertops may contact me about this project request by phone, text, or email.";
+  "I agree that Acadiana Bathrooms and Countertops may contact me about this project request by phone or email.";
 
 export const callTimeNote =
   "Pick a good time to call. We'll use this to plan our call to you."

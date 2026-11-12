@@ -232,14 +232,14 @@ test("the lead email records the exact consent checkbox, page path, and timestam
   const email = sample({
     consent: true,
     consentAt: when,
-    consentText: 'Checkbox on /estimate: "I agree that Acadiana Bathrooms and Countertops may contact me about this project request by phone, text, or email."',
+    consentText: 'Checkbox on /estimate: "I agree that Acadiana Bathrooms and Countertops may contact me about this project request by phone or email."',
   });
   assert.match(email.html, /Consent/);
   assert.match(email.html, /Yes, Nov 9, 5:14 PM/);
   assert.match(email.html, /Checkbox on \/estimate/);
   assert.match(
     email.html,
-    /I agree that Acadiana Bathrooms and Countertops may contact me about this project request by phone, text, or email/,
+    /I agree that Acadiana Bathrooms and Countertops may contact me about this project request by phone or email/,
   );
   assert.match(email.text, /Checkbox on \/estimate/);
 });

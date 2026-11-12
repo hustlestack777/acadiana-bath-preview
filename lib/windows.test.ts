@@ -16,7 +16,7 @@ test("button text is a single constant", () => {
 test("consent text matches the approved wording", () => {
   assert.equal(
     WINDOWS_CONSENT_TEXT,
-    "By submitting, you agree Acadiana Bathrooms may call or text you about your quote, including automated texts. Msg & data rates may apply. Reply STOP to opt out.",
+    "By submitting, you agree Acadiana Bathrooms may contact you about your quote by phone or email.",
   );
 });
 

@@ -89,7 +89,7 @@ test("the customer confirmation is short, signed, and has no banned claims", () 
   assert.match(email.text, /Thanks for reaching out to Acadiana Bathrooms\./);
   assert.match(email.text, /We'll call you Wednesday, Nov 11 between 9 AM and 10 AM CT to discuss your project\./);
   assert.match(email.text, /Save Justin's number so you'll know it's him: \(337\) 522-0023\./);
-  assert.match(email.text, /You can call or text him there anytime\./);
+  assert.match(email.text, /You can call him there anytime\./);
   assert.match(email.text, /Save Justin's Contact: https:\/\/abclafayette\.com\/justin\.vcf/);
   assert.match(email.text, /What happens next: We'll call you to discuss your project and set a time to take measurements\. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then\./);
   assert.match(email.text, /Talk soon,\nAcadiana Bathrooms · abclafayette\.com/);
