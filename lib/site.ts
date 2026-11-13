@@ -55,7 +55,7 @@ export const SITE_SAME_AS = ["https://www.facebook.com/profile.php?id=6159606958
 
 /**
  * Parishes highlighted on Boogie's service map, plus any parish that contains
- * one of the 20 town pages. Used as AdministrativeArea nodes in areaServed.
+ * one of the listed towns. Used as AdministrativeArea nodes in areaServed.
  * Do not add St. Tammany, Tangipahoa, Orleans, Jefferson, or Beauregard.
  */
 export const SCHEMA_PARISHES = [
@@ -67,6 +67,7 @@ export const SCHEMA_PARISHES = [
   "St. Landry",
   "Calcasieu",
   "Jefferson Davis",
+  "Allen",
   "Evangeline",
   "Rapides",
   "East Baton Rouge",
@@ -139,10 +140,15 @@ const PARISH_BY_TOWN: Record<string, (typeof SCHEMA_PARISHES)[number]> = {
   Youngsville: "Lafayette",
   Broussard: "Lafayette",
   Carencro: "Lafayette",
+  Scott: "Lafayette",
   Opelousas: "St. Landry",
+  Eunice: "St. Landry",
+  "Ville Platte": "Evangeline",
   "New Iberia": "Iberia",
   Crowley: "Acadia",
+  Rayne: "Acadia",
   Jennings: "Jefferson Davis",
+  Kinder: "Allen",
   "Lake Charles": "Calcasieu",
   Sulphur: "Calcasieu",
   Westlake: "Calcasieu",
@@ -169,7 +175,7 @@ export function cityPlace(name: string): SchemaPlace {
 
 /**
  * areaServed for schema: every mapped parish as an AdministrativeArea, plus
- * the 20 town pages as City nodes. Do not add North Shore, New Orleans,
+ * the listed towns as City nodes. Do not add North Shore, New Orleans,
  * or DeRidder/Beauregard.
  */
 export const SCHEMA_AREA_SERVED: SchemaPlace[] = [

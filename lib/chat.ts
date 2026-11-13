@@ -356,7 +356,7 @@ function factReply(text: string) {
   if (asksAboutPledge(text) || /warrant|refund|labor|workmanship|product fail/.test(text)) {
     return answers.warranty;
   }
-  if (/town|area|cover|lafayette|houma|baton|alexandria|zip|prairie|gonzales|where/.test(text)) {
+  if (/town|area|cover|lafayette|houma|baton|alexandria|zip|prairie|gonzales|kinder|eunice|ville platte|scott|rayne|where/.test(text)) {
     return answers.area;
   }
   if (/quote|photo|picture|exact/.test(text)) return answers.quote;
