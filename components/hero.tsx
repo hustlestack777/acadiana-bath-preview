@@ -145,7 +145,7 @@ export function Hero() {
         <p className="hero-copy mt-3 max-w-xl text-base leading-7 text-[#f6f1e6] sm:mt-6 sm:text-lg sm:leading-8">{heroSubhead}</p>
         <div className="mt-5 flex flex-col gap-3 max-md:pe-32 sm:mt-8 sm:flex-row" data-hero-ctas="">
           <ConsultLink
-            className="inline-flex h-12 items-center justify-center rounded-full bg-bronze px-8 text-base font-semibold text-bronze-foreground shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 hover:bg-bronze-hover sm:h-14"
+            className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-full bg-bronze px-5 text-sm font-semibold text-bronze-foreground shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 hover:bg-bronze-hover sm:h-14 sm:px-8 sm:text-base"
             data-testid="hero-cta"
           >
             {hero.primary}
