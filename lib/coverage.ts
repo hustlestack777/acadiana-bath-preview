@@ -6,7 +6,7 @@
  */
 
 export const SERVICE_AREA =
-  "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Lafayette, Youngsville, Broussard, Carencro, Opelousas, New Iberia, Crowley, Jennings, Sulphur, Westlake, Moss Bluff, Pineville, Prairieville, Gonzales and Plaquemine, and from Alexandria down to Houma and Thibodaux, north to about Gillis.";
+  "Serving Acadiana and South Louisiana, from Lake Charles to Baton Rouge, including Lafayette, Scott, Youngsville, Broussard, Carencro, Opelousas, Eunice, Ville Platte, Kinder, New Iberia, Crowley, Rayne, Jennings, Sulphur, Westlake, Moss Bluff, Pineville, Prairieville, Gonzales and Plaquemine, and from Alexandria down to Houma and Thibodaux, north to about Gillis.";
 
 export const OUTSIDE_AREA = "Outside our area? Ask for a quote.";
 
@@ -15,10 +15,15 @@ export const MAIN_TOWNS = [
   "Youngsville",
   "Broussard",
   "Carencro",
+  "Scott",
   "Opelousas",
+  "Eunice",
+  "Ville Platte",
   "New Iberia",
   "Crowley",
+  "Rayne",
   "Jennings",
+  "Kinder",
   "Lake Charles",
   "Sulphur",
   "Westlake",
