@@ -150,7 +150,7 @@ test("sitemap lists public pages, includes lastmod, and omits town pages until g
   assert.equal(urls.some((url) => url.includes("/serving-")), false);
 
   const live = buildSitemap(true).map((entry) => entry.url);
-  assert.equal(towns.length, 20);
+  assert.equal(towns.length, 25);
   for (const town of towns) {
     assert.ok(live.some((url) => url.endsWith(townPath(town.slug))), town.slug);
   }
