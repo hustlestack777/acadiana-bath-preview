@@ -144,7 +144,6 @@ export function SiteHeader() {
           )}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          aria-hidden={open}
           tabIndex={open ? -1 : 0}
           onClick={() => setOpen((value) => !value)}
         >
@@ -161,6 +160,7 @@ export function SiteHeader() {
             </Link>
             <button
               type="button"
+              autoFocus
               className="inline-flex size-11 items-center justify-center rounded-full border border-border"
               onClick={() => setOpen(false)}
             >
