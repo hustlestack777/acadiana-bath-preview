@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Menu, X } from "lucide-react";
 import { MaisonLogo } from "@/components/logo";
 import { brand, hero, heroDesignCta } from "@/lib/copy";
@@ -151,7 +152,8 @@ export function SiteHeader() {
           <Menu />
         </button>
       </div>
-      {open ? (
+      {/* Portal to <body>: the header's backdrop-blur makes it the containing block for fixed children, which clipped this panel to the header height. */}
+      {open && typeof document !== "undefined" ? createPortal(
         <div id="mobile-nav" className="fixed inset-0 z-50 overflow-y-auto bg-background px-5 py-4 text-foreground md:hidden">
           <div className="flex items-center justify-between">
             <Link href="/" aria-label={brand.name} onClick={(event) => { goHome(event); setOpen(false); }}>
@@ -196,7 +198,8 @@ export function SiteHeader() {
               {brand.phone}
             </a>
           </div>
-        </div>
+        </div>,
+        document.body,
       ) : null}
     </header>
   );
