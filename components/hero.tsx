@@ -169,7 +169,7 @@ export function Hero() {
               <li key={service}>{service}</li>
             ))}
           </ul>
-          <a href="#paths" data-testid="hero-scroll" className="inline-flex items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/90 max-md:absolute max-md:left-5 max-md:top-[calc(100svh-3.25rem)] max-md:z-20 max-md:drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+          <a href="#paths" data-testid="hero-scroll" className="inline-flex items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/90 max-md:hidden">
             <span className="scroll-line block h-8 w-px bg-white/80" aria-hidden="true" />
             Scroll
           </a>
