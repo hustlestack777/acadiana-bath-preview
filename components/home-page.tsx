@@ -84,7 +84,7 @@ export function HomePage() {
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-bronze px-6 text-base font-medium text-bronze-foreground hover:bg-bronze-hover">
+            <ConsultLink className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-full bg-bronze px-6 text-base font-medium text-bronze-foreground hover:bg-bronze-hover">
               {hero.primary}
             </ConsultLink>
             <DesignLink className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-full border border-white/70 px-6 text-base font-medium">

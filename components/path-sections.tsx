@@ -44,7 +44,7 @@ export function PathHero({
         <h1 className="hero-copy mt-3 max-w-4xl font-heading text-[clamp(2.15rem,7vw,6.6rem)] leading-[0.95] font-medium">{title}</h1>
         <p className="hero-copy mt-3 max-w-xl text-base leading-7 sm:mt-5 sm:text-lg sm:leading-8">{support}</p>
         <div className="mt-5 flex flex-col gap-3 sm:mt-8 sm:flex-row">
-          <ConsultLink className="inline-flex h-12 items-center justify-center rounded-full bg-bronze px-8 text-base font-semibold text-bronze-foreground shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 hover:bg-bronze-hover sm:h-14">
+          <ConsultLink className="inline-flex h-12 items-center justify-center whitespace-nowrap rounded-full bg-bronze px-5 text-sm font-semibold text-bronze-foreground shadow-xl shadow-black/30 transition-transform hover:-translate-y-0.5 hover:bg-bronze-hover sm:h-14 sm:px-8 sm:text-base">
             {hero.primary}
           </ConsultLink>
           <DesignLink
