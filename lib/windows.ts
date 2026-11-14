@@ -24,7 +24,7 @@ export type StyleId = "single-hung" | "double-hung" | "picture" | "bay-bow" | "s
 
 export type RoomId =
   | "living"
-  | "kitchen"
+  | "living-area"
   | "dining"
   | "bedrooms"
   | "bathrooms"
@@ -47,7 +47,7 @@ export const BAY_BOW_BAND = { low: 2000, high: 8000, openHigh: true };
 export const STYLES: { id: StyleId; name: string; blurb: string }[] = [
   { id: "single-hung", name: "Single-hung", blurb: "The bottom sash opens. A common, straightforward replacement." },
   { id: "double-hung", name: "Double-hung", blurb: "Both sashes slide, and many tilt in for cleaning. The most requested style." },
-  { id: "picture", name: "Picture", blurb: "A fixed pane that doesn't open. Often used for a view or over a kitchen sink." },
+  { id: "picture", name: "Picture", blurb: "A fixed pane that doesn't open. Often used for a view or over a sink." },
   { id: "bay-bow", name: "Bay or bow", blurb: "Projects from the wall and adds light and space. Priced as its own opening." },
   { id: "slider", name: "Slider", blurb: "Opens side to side. A good fit for wider, shorter openings." },
   { id: "casement", name: "Casement", blurb: "Cranks open from the side and seals tightly when closed." },
@@ -81,7 +81,7 @@ export const MATERIALS: { id: MaterialId; name: string; blurb: string }[] = [
 
 export const ROOMS: { id: RoomId; name: string }[] = [
   { id: "living", name: "Living room" },
-  { id: "kitchen", name: "Kitchen" },
+  { id: "living-area", name: "Living area" },
   { id: "dining", name: "Dining room" },
   { id: "bedrooms", name: "Bedrooms" },
   { id: "bathrooms", name: "Bathrooms" },
