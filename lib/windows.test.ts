@@ -5,9 +5,15 @@ import {
   formatRange,
   GET_MY_CUSTOM_QUOTE,
   parseWindowCount,
+  WINDOW_PRICE_LINE,
   WINDOWS_CONSENT_TEXT,
   windowLeadSubject,
 } from "./windows";
+
+test("public window pricing does not use the bathroom starting price", () => {
+  assert.equal(WINDOW_PRICE_LINE, "Window pricing depends on how many windows you need and their size. Get an estimate.");
+  assert.equal(/\$5K|\$5,000|\b5,?000\b|Starting at|free|licensed|kitchen/i.test(WINDOW_PRICE_LINE), false);
+});
 
 test("button text is a single constant", () => {
   assert.equal(GET_MY_CUSTOM_QUOTE, "Get My Custom Quote");

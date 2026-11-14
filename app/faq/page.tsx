@@ -21,7 +21,10 @@ export default function FaqPage() {
           <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">FAQ</p>
           <h1 className="mt-3 max-w-4xl font-heading text-4xl leading-[1.05] md:text-6xl">{faqPageTitle}</h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">{faqPageIntro}</p>
-          <CoverageMap size="compact" />
+          <p className="mt-4 text-lg font-medium" data-testid="starting-price">
+            Starting at $5K
+          </p>
+          <CoverageMap size="compact" clearRight />
         </section>
         <FaqSection faqs={faqVisible} moreFaqs={faqMore} heading="Questions" className="bg-transparent pt-4 md:pt-6" />
         <WarrantySection />

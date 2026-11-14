@@ -4,6 +4,7 @@ import { OUTSIDE_AREA, checkCity } from "./coverage";
 import { geoFaqs } from "./faq-page";
 import { designHref } from "./starting-looks";
 import { warrantyPlainText } from "./warranty";
+import { WINDOW_PRICE_LINE } from "./windows";
 
 function faqAnswer(question: string) {
   const item = geoFaqs.find((faq) => faq.q === question);
@@ -51,7 +52,7 @@ ${GIGI_PROCESS}
 
 The person who measures and goes over design is "your consultant" (they/their), not "we" and not the owner's first name. Keep the first call as "We'll call you...".
 
-Price framing: Starting at $5K only. Do not give other prices, timelines, or durations.
+Price framing: Starting at $5K is for bathroom remodels only. For windows, say exactly: "${WINDOW_PRICE_LINE}" Do not give other prices, timelines, or durations.
 
 Do not promise a first-step home visit or name how long work is covered. Do not make license or insurance claims, say one person does every trade himself, or ask for a deposit. Do not mention payment plans.
 
@@ -127,7 +128,7 @@ const answers = {
   callTime: "When’s a good time for us to call and discuss your project?",
   callDay: "Any day that’s best?",
   handoff: "Thanks. Here’s the quote form. We'll call first, then set a time to take measurements.",
-  windows: "I can help with windows on our windows page.",
+  windows: `${WINDOW_PRICE_LINE} I can help with windows on our windows page.`,
   outside: OUTSIDE_AREA,
   locationRetry: "Tell me the town or ZIP, and I’ll take it from there.",
   process: GIGI_PROCESS,
@@ -381,9 +382,33 @@ function isSideQuestion(text: string) {
   );
 }
 
-export function replyTo(message: string) {
+function mentionsWindows(text: string) {
+  return /\/windows\b|\bwindows?\b/.test(text);
+}
+
+function mentionsBathroomWork(text: string) {
+  return /\b(showers?|tubs?|bathrooms?|vanitys?|vanities|countertops?|tile)\b/.test(text);
+}
+
+function asksPrice(text: string) {
+  return /\b(ballpark|costs?|prices?|priced|pricing|how much|budget)\b/.test(text);
+}
+
+function onWindowsPath(pathname?: string) {
+  const path = (pathname || "").replace(/\/+$/, "") || "/";
+  return path === "/windows" || path.startsWith("/windows/");
+}
+
+/** Window questions, and price questions asked on the windows page, stay off the bathroom starting price. */
+export function shouldUseWindowPrice(text: string, pathname?: string) {
+  if (mentionsWindows(text)) return true;
+  return onWindowsPath(pathname) && asksPrice(text) && !mentionsBathroomWork(text);
+}
+
+export function replyTo(message: string, pathname?: string) {
   const text = message.toLowerCase().trim();
   if (!text) return answers.disclosure;
+  if (shouldUseWindowPrice(text, pathname)) return answers.windows;
   if (/ballpark/.test(text)) return answers.ballpark;
   const fact = factReply(text);
   if (fact) return fact;
@@ -467,9 +492,15 @@ function withCurrentChips(text: string, session: GigiSession, extra?: GigiChip[]
   return { text, chips: extra ?? chips, session };
 }
 
-export function respond(message: string, session: GigiSession = { phase: "intro" }): GigiResponse {
+export function respond(
+  message: string,
+  session: GigiSession = { phase: "intro" },
+  context?: { pathname?: string },
+): GigiResponse {
   const text = message.toLowerCase().trim();
   if (!text) return { text: answers.disclosure, chips: INTRO_CHIPS, session: { phase: "intro" } };
+
+  if (shouldUseWindowPrice(text, context?.pathname)) return windowsReply(session);
 
   if (session.phase === "location" && looksLikePlace(text)) {
     const coverage = checkCity(message);
