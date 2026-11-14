@@ -11,6 +11,7 @@ import { cn } from "cn";
 import { ConsultLink } from "@/components/consult-link";
 import { DesignLink } from "@/components/design-link";
 import { scheduleHashScroll } from "@/components/hash-scroll";
+import { FacebookLink } from "@/components/social-link";
 
 const LINKS = [
   { href: "/solid-surface", label: "Solid surface", shortLabel: "Solid Surface" },
@@ -22,7 +23,7 @@ const LINKS = [
   { href: "/about", label: "About" },
 ];
 
-export function SiteHeader() {
+export function SiteHeader({ offset = false }: { offset?: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -81,7 +82,8 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-40 transition-colors duration-300",
+        "fixed inset-x-0 z-40 transition-colors duration-300",
+        offset ? "top-10" : "top-0",
         overHero
           ? "bg-gradient-to-b from-black/80 via-black/55 to-transparent text-[#f6f1e6]"
           : "border-b border-border bg-background/95 text-foreground backdrop-blur-md",
@@ -135,6 +137,12 @@ export function SiteHeader() {
             {hero.primary}
           </ConsultLink>
         </div>
+        <FacebookLink
+          className={cn(
+            "md:hidden",
+            overHero ? "border-white/40 bg-black/20 text-white" : "border-border bg-card text-foreground",
+          )}
+        />
         <button
           type="button"
           className={cn(
@@ -197,6 +205,7 @@ export function SiteHeader() {
             <a href={brand.phoneHref} className="text-center text-sm font-semibold">
               {brand.phone}
             </a>
+            <FacebookLink className="mx-auto border-border bg-card text-foreground" />
           </div>
         </div>,
         document.body,

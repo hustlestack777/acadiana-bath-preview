@@ -10,17 +10,16 @@
 
 import { brand } from "./copy";
 import { MAIN_TOWNS, SERVICE_AREA } from "./coverage";
+import { publicCanonical } from "./getpros";
 
 /** The preview stays noindex until this is exactly "true" and the service is redeployed. */
 export const SITE_INDEXABLE = process.env.SITE_INDEXABLE === "true";
 
 export const SITE_URL = (process.env.SITE_URL ?? "https://acadiana-bathrooms.onrender.com").replace(/\/$/, "");
 
-/** Relative canonical path. Next resolves it against metadataBase (SITE_URL). */
+/** Canonical URL on the public site. The lead-machine host uses the same targets. */
 export function pageCanonical(path: string) {
-  if (!path || path === "/") return "/";
-  const normalized = path.startsWith("/") ? path : `/${path}`;
-  return normalized.replace(/\/+$/, "");
+  return publicCanonical(path);
 }
 
 /** Visible name — same string as the header, footer and schema `name`. */
