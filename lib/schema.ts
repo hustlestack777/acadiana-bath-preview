@@ -23,6 +23,7 @@ import {
   cityPlace,
 } from "./site";
 import { townPath, type TownPageContent } from "./towns";
+import { WINDOW_PRICE_LINE } from "./windows";
 
 export type FaqItem = { q: string; a: string; link?: { text: string; href: string } };
 
@@ -49,7 +50,7 @@ export function businessJsonLd() {
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Bathroom remodeling services",
-      itemListElement: VISIBLE_SERVICES.map((service) => ({
+      itemListElement: VISIBLE_SERVICES.filter((service) => !service.url.endsWith("/windows")).map((service) => ({
         "@type": "Service",
         name: service.name,
         serviceType: service.serviceType,
@@ -112,6 +113,15 @@ export const customTileServiceJsonLd = () =>
     serviceType: "Custom tile bathroom remodeling",
     description: tilePath.support,
     url: `${SITE_URL}/custom-tile`,
+  });
+
+/** Window replacement is priced by count and size, so this node has no priceRange. */
+export const windowServiceJsonLd = () =>
+  serviceJsonLd({
+    name: "Window replacement",
+    serviceType: "Window replacement and installation",
+    description: WINDOW_PRICE_LINE,
+    url: `${SITE_URL}/windows`,
   });
 
 /** Lafayette walk-in page. areaServed is Lafayette only. */

@@ -11,6 +11,7 @@ import {
   faqPageJsonLd,
   solidSurfaceServiceJsonLd,
   townAreaJsonLd,
+  windowServiceJsonLd,
 } from "./schema";
 import { MAIN_TOWNS, OUTSIDE_AREA } from "./coverage";
 import { AI_SEARCH_USER_AGENTS, EXCLUDED_SERVICE_AREAS, SCHEMA_PARISHES, SCHEMA_PRICE_RANGE, SCHEMA_SERVICE_AREA, SITE_NAME, SITE_PHONE, SITE_SAME_AS, SITE_SHORT_NAME, SITE_TELEPHONE, VISIBLE_SERVICES } from "./site";
@@ -47,9 +48,13 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   assert.equal(data.hasOfferCatalog["@type"], "OfferCatalog");
   const serviceNames = data.hasOfferCatalog.itemListElement.map((item: { name: string }) => item.name);
   for (const service of VISIBLE_SERVICES) {
+    if (service.url.endsWith("/windows")) {
+      assert.equal(serviceNames.includes(service.name), false, service.name);
+      continue;
+    }
     assert.ok(serviceNames.includes(service.name), service.name);
   }
-  assert.ok(serviceNames.includes("Window replacement"));
+  assert.equal(serviceNames.includes("Window replacement"), false);
   assert.deepEqual(data.sameAs, [...SITE_SAME_AS]);
   assert.deepEqual(assertSafeJsonLd(data), []);
   const names = JSON.stringify(data.areaServed);
@@ -73,6 +78,20 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   }
   assert.equal(names.includes("Jefferson Parish"), false);
   assert.equal(data.description.includes("Jefferson Parish"), false);
+});
+
+test("window service JSON-LD has no bathroom starting price", () => {
+  const data = windowServiceJsonLd();
+  const blob = JSON.stringify(data);
+  assert.equal(data["@type"], "Service");
+  assert.equal(data.name, "Window replacement");
+  assert.match(data.url, /\/windows$/);
+  assert.equal(data.description, "Window pricing depends on how many windows you need and their size. Get an estimate.");
+  assert.equal("priceRange" in data, false);
+  assert.equal("offers" in data, false);
+  assert.equal(/\$5K|\$5,000|\b5,?000\b|Starting at/i.test(blob), false);
+  assert.equal(/\bfree\b|\blicensed\b|\bkitchen\b/i.test(data.description), false);
+  assert.deepEqual(assertSafeJsonLd(data), []);
 });
 
 test("service JSON-LD is present for both service paths and has no reviews", () => {

@@ -4,6 +4,10 @@
 
 import { SERVICE_AREA } from "./coverage";
 
+/** Public window price line. No dollar amount: one window is far below a bathroom remodel. */
+export const WINDOW_PRICE_LINE =
+  "Window pricing depends on how many windows you need and their size. Get an estimate.";
+
 export const GET_MY_CUSTOM_QUOTE = "Get My Custom Quote";
 
 export const WINDOWS_CONSENT_TEXT =
