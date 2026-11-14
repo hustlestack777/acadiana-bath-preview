@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { DesignLink } from "@/components/design-link";
 import { GigiCutout, GigiFace } from "@/components/gigi-cutout";
+import { advanceGigiLook, type GigiLook } from "@/lib/gigi-looks";
 import {
   CHAT_AGENT_NAME,
   CHAT_ANSWERS,
@@ -149,6 +150,7 @@ function reservedDockRect(bottomOffset: number, withBubble: boolean) {
 export function ChatWidget({ raised = false, formPage = false }: { raised?: boolean; formPage?: boolean }) {
   const pathname = usePathname() || "/";
   const allowBubble = shouldShowGreeting(pathname);
+  const [look, setLook] = useState<GigiLook | null>(null);
   const [open, setOpen] = useState(false);
   const [typing, setTyping] = useState(false);
   const [draft, setDraft] = useState("");
@@ -167,6 +169,14 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
   const bubbleReadyRef = useRef(false);
   const bubbleHiddenRef = useRef(true);
   const openRef = useRef(false);
+
+  useLayoutEffect(() => {
+    try {
+      setLook(advanceGigiLook(window.localStorage));
+    } catch {
+      setLook("gigi-tiles");
+    }
+  }, []);
 
   useEffect(() => {
     bubbleReadyRef.current = bubbleReady;
@@ -368,7 +378,7 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
         >
           <header className="flex items-start justify-between gap-3 border-b border-border bg-fig px-4 py-3 text-fig-foreground">
             <div className="flex items-start gap-3">
-              <GigiFace size={48} alt="" className="shrink-0" />
+              <GigiFace look={look} size={48} alt="" className="shrink-0" />
               <div>
                 <p className="text-base font-semibold leading-5">{CHAT_AGENT_NAME}</p>
                 <p className="mt-0.5 text-xs leading-4 text-fig-muted">{GIGI_HEADER_SUBLINE}</p>
@@ -386,7 +396,7 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
                 className={cn("flex items-end gap-2", turn.role === "you" ? "justify-end" : "justify-start")}
               >
                 {turn.role === "assistant" ? (
-                  <GigiFace size={28} alt="" className="mb-0.5 shrink-0" />
+                  <GigiFace look={look} size={28} alt="" className="mb-0.5 shrink-0" />
                 ) : null}
                 <p
                   className={cn(
@@ -483,7 +493,7 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
           data-testid="gigi-launcher"
         >
           <span className="gigi-ground" aria-hidden="true" />
-          <GigiCutout loadFull={open} />
+          <GigiCutout look={look} loadFull={open} />
         </button>
       ) : null}
     </div>
