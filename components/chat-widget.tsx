@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { DesignLink } from "@/components/design-link";
 import { GigiCutout, GigiFace } from "@/components/gigi-cutout";
-import { advanceGigiLook, type GigiLook } from "@/lib/gigi-looks";
+import { advanceGigiLook, advanceGigiWindowLook, isWindowsPath, type GigiLook } from "@/lib/gigi-looks";
 import {
   CHAT_AGENT_NAME,
   CHAT_ANSWERS,
@@ -170,13 +170,14 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
   const bubbleHiddenRef = useRef(true);
   const openRef = useRef(false);
 
+  const windowsPage = isWindowsPath(pathname);
   useLayoutEffect(() => {
     try {
-      setLook(advanceGigiLook(window.localStorage));
+      setLook(windowsPage ? advanceGigiWindowLook(window.localStorage) : advanceGigiLook(window.localStorage));
     } catch {
-      setLook("gigi-tiles");
+      setLook(windowsPage ? "gigi-windows-black" : "gigi-tiles");
     }
-  }, []);
+  }, [windowsPage]);
 
   useEffect(() => {
     bubbleReadyRef.current = bubbleReady;

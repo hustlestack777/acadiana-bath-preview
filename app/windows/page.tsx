@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function WindowsPage() {
   return (
-    <SiteShell chat={false}>
+    <SiteShell>
       <main id="content" tabIndex={-1}>
         <WindowsTool />
       </main>
