@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { aboutRedirectPath } from "@/lib/about-redirect";
+import { getProsRewritePath, isGetProsHost } from "@/lib/getpros";
 import { isIndexableHost } from "@/lib/indexable-host";
 
 /**
@@ -8,7 +9,17 @@ import { isIndexableHost } from "@/lib/indexable-host";
  * and robots.txt, so crawlers do not follow mixed signals.
  */
 export function middleware(request: NextRequest) {
-  const indexable = isIndexableHost(request.headers.get("host"));
+  const forwarded = request.headers.get("x-forwarded-host");
+  const host = request.headers.get("host");
+  const indexable = isIndexableHost(forwarded) || isIndexableHost(host);
+  const rewritePath = getProsRewritePath(isGetProsHost(forwarded) ? forwarded : host, request.nextUrl.pathname);
+  if (rewritePath) {
+    const url = request.nextUrl.clone();
+    url.pathname = rewritePath;
+    const rewrite = NextResponse.rewrite(url);
+    if (!indexable) rewrite.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return rewrite;
+  }
   const aboutTo = aboutRedirectPath(request.nextUrl.pathname);
   if (aboutTo) {
     const url = request.nextUrl.clone();

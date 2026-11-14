@@ -8,6 +8,7 @@ test("only the public domain and www are indexable", () => {
   assert.equal(isIndexableHost("ABCLAFAYETTE.COM"), true);
   assert.equal(isIndexableHost("www.abclafayette.com:443"), true);
   assert.equal(isIndexableHost("acadiana-bathrooms.onrender.com"), false);
+  assert.equal(isIndexableHost("abc.getpros.xyz"), false);
   assert.equal(isIndexableHost("localhost:3000"), false);
   assert.equal(isIndexableHost(""), false);
   assert.equal(isIndexableHost(null), false);
