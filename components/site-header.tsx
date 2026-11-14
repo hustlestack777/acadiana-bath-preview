@@ -26,7 +26,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const home = pathname === "/" || pathname === "/solid-surface" || pathname === "/custom-tile";
+  const home = pathname === "/" || pathname === "/solid-surface" || pathname === "/custom-tile" || pathname === "/walk-in-shower-lafayette";
   const consult = pathname === "/estimate";
   const overHero = home && !scrolled && !open;
 

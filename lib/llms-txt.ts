@@ -27,7 +27,7 @@ ${SITE_NAME} is a bathroom remodeling company based in Lafayette, Louisiana. ${S
 - Free Quote (${SITE_URL}/estimate)
 - Window estimates (${SITE_URL}/windows)
 
-${heroQuoteLine} Most projects $7,000 to $30,000+. Tell us about your project and the best day and time to reach you. We'll call you first to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.
+${heroQuoteLine} Most projects $5,000 to $30,000+. Tell us about your project and the best day and time to reach you. We'll call you first to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.
 
 ## Service area
 ${SCHEMA_SERVICE_AREA}
@@ -37,6 +37,7 @@ ${OUTSIDE_AREA}
 ## Key pages
 ${page("/", "Home")}
 ${page("/solid-surface", "Solid surface showers and tub walls")}
+${page("/walk-in-shower-lafayette", "Walk-in showers in Lafayette")}
 ${page("/custom-tile", "Custom tile showers and bathrooms")}
 ${page("/gallery", "Gallery")}
 ${page("/design", "Design My Bathroom")}

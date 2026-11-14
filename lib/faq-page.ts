@@ -18,7 +18,7 @@ export function faqHowItWorksInTown(town: string) {
 export const geoFaqs = [
   {
     q: "How much does a bathroom remodel cost in South Louisiana?",
-    a: "Starting at $7K, with most projects $7,000 to $30,000+, depending on the size of the room and the finishes you love. See your new bathroom before you spend a dime. We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.",
+    a: "Starting at $5K, with most projects $5,000 to $30,000+, depending on the size of the room and the finishes you love. See your new bathroom before you spend a dime. We'll call you to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.",
     link: { text: "See your new bathroom", href: "/design" },
   },
   {
@@ -43,7 +43,7 @@ export const geoFaqs = [
   },
   {
     q: "How much does a walk-in shower cost in Louisiana?",
-    a: "Bathroom remodels starting at $7K, with most projects $7,000 to $30,000+. The exact number is given when your consultant takes measurements and looks at the space, the materials, and the work involved. A simple refresh and a fully custom walk-in with handmade tile or a quartzite vanity are priced differently, so we price your project to your room and your finishes. Use Design My Bathroom or the quote form, tell us the best day and time to reach you, and we'll call to discuss your project and set a time to take measurements. When your consultant measures, you'll get your exact price right then.",
+    a: "Bathroom remodels starting at $5K, with most projects $5,000 to $30,000+. The exact number is given when your consultant takes measurements and looks at the space, the materials, and the work involved. A simple refresh and a fully custom walk-in with handmade tile or a quartzite vanity are priced differently, so we price your project to your room and your finishes. Use Design My Bathroom or the quote form, tell us the best day and time to reach you, and we'll call to discuss your project and set a time to take measurements. When your consultant measures, you'll get your exact price right then.",
   },
   {
     q: "Do you have an office in my town?",
@@ -75,7 +75,7 @@ export const geoFaqs = [
   },
   {
     q: "How do I get a quote?",
-    a: "Use Design My Bathroom on the site, fill out the quote form, or call (337) 522-0023. You can also send a photo of your shower. Tell us the best day and time to reach you. We'll call you to discuss your project and set a time to take measurements. When your consultant measures, you'll get your exact price right then. Starting at $7K, with most projects $7,000 to $30,000+.",
+    a: "Use Design My Bathroom on the site, fill out the quote form, or call (337) 522-0023. You can also send a photo of your shower. Tell us the best day and time to reach you. We'll call you to discuss your project and set a time to take measurements. When your consultant measures, you'll get your exact price right then. Starting at $5K, with most projects $5,000 to $30,000+.",
   },
   {
     q: "Can I see a design before we start?",

@@ -23,6 +23,7 @@ export function PathHero({
   position = "center",
   children,
   trust = trustLine,
+  price = priceRange,
 }: {
   position?: string;
   image: string;
@@ -34,6 +35,7 @@ export function PathHero({
   ctaHref: string;
   children?: ReactNode;
   trust?: string;
+  price?: string;
 }) {
   return (
     <section className="relative min-h-[92svh] overflow-hidden bg-[#14261f] text-[#f6f1e6]" aria-label="Introduction">
@@ -57,8 +59,8 @@ export function PathHero({
         <a href={brand.phoneHref} className="hero-copy mt-3 inline-block text-sm font-semibold text-[#f6f1e6] underline underline-offset-4">
           {brand.phone}
         </a>
-        <p className="hero-copy mt-3 max-w-xl text-sm text-[#e4d8b4]">{trust}</p>
-        <p className="hero-copy mt-2 max-w-xl text-sm leading-6 text-white/90" data-testid="price-range">{priceRange}</p>
+        <p className="hero-copy mt-3 max-w-xl text-sm text-[#e4d8b4] max-md:pe-28">{trust}</p>
+        <p className="hero-copy mt-2 max-w-xl text-sm leading-6 text-white/90 max-md:pe-28" data-testid="price-range">{price}</p>
         {children}
       </div>
     </section>
@@ -116,6 +118,12 @@ export function PathChooser() {
     <section id="paths" className="rise mx-auto w-full max-w-6xl px-5 py-20 md:py-28">
       <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Choose your path</p>
       <h2 className="mt-3 max-w-3xl text-4xl leading-[1.05] md:text-6xl">Two ways to a bathroom you love.</h2>
+      <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">
+        <a href="/walk-in-shower-lafayette" className="font-medium underline underline-offset-4">
+          Walk-in showers in Lafayette
+        </a>{" "}
+        include solid surface or custom tile, niches, seating, and glass. Starting at $5K.
+      </p>
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {cards.map((card) => (
           <article

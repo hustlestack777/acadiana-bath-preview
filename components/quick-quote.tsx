@@ -12,7 +12,9 @@ import { CallWindowFields } from "@/components/call-window-fields";
 import { appendAttribution } from "@/components/lead-attribution";
 import { CallbackConfirmation } from "@/components/callback-confirmation";
 
-type Path = "solid" | "tile";
+type Path = "solid" | "tile" | "walk-in";
+
+const WALK_IN_PAGE = "/walk-in-shower-lafayette";
 
 const field =
   "h-12 w-full rounded-xl border border-input bg-card px-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring/60";
@@ -21,8 +23,12 @@ const label = "text-sm font-medium";
 /** One-page quote form for a path. Posts to the same /api/leads route as /estimate. */
 export function QuickQuote({ path }: { path: Path }) {
   const isTile = path === "tile";
-  const options = pathProjects.filter((item) => item.id.startsWith(isTile ? "tile-" : "ss-"));
-  const sourcePage = isTile ? "/custom-tile" : "/solid-surface";
+  const isWalkIn = path === "walk-in";
+  const options = isWalkIn
+    ? pathProjects.filter((item) => item.id === "ss-tub-to-shower" || item.id === "ss-shower-walls" || item.id === "tile-shower")
+    : pathProjects.filter((item) => item.id.startsWith(isTile ? "tile-" : "ss-"));
+  const sourcePage = isWalkIn ? WALK_IN_PAGE : isTile ? "/custom-tile" : "/solid-surface";
+  const pathLabel = isWalkIn ? "Walk-in shower" : isTile ? "Custom tile" : "Solid surface";
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -70,7 +76,7 @@ export function QuickQuote({ path }: { path: Path }) {
     const preferred = form.phone.trim() ? "phone" : "email";
     const grout = GROUT_COLORS.find((color) => color.code === form.grout);
     const features = [
-      `Path: ${isTile ? "Custom tile" : "Solid surface"} quote form`,
+      `Path: ${pathLabel} quote form`,
       grout ? `Grout color pick: ${groutLabel(grout)} (screen color approximate)` : "",
       form.notes.trim(),
     ]
@@ -141,6 +147,7 @@ export function QuickQuote({ path }: { path: Path }) {
     };
     for (const [key, value] of Object.entries(values)) body.set(key, value);
     appendAttribution(body, sourcePage);
+    if (isWalkIn) body.set("sourcePage", sourcePage);
     try {
       const response = await fetch("/api/leads", { method: "POST", body });
       const data = (await response.json().catch(() => null)) as {
@@ -364,7 +371,7 @@ export function QuickQuote({ path }: { path: Path }) {
             rows={3}
             maxLength={400}
             className="mt-1 w-full rounded-xl border border-input bg-card px-3 py-2 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
-            placeholder={isTile ? "Zellige in sage, patterned floor, arched niche…" : "Current tub size, colors you like, a seat…"}
+            placeholder={isTile ? "Zellige in sage, patterned floor, arched niche…" : isWalkIn ? "A niche, a seat, solid surface or tile…" : "Current tub size, colors you like, a seat…"}
             value={form.notes}
             onChange={(e) => set("notes", e.target.value)}
           />
@@ -412,7 +419,7 @@ export function QuickQuote({ path }: { path: Path }) {
         disabled={status === "sending"}
         className="inline-flex h-14 items-center justify-center rounded-full bg-bronze px-8 text-base font-semibold text-bronze-foreground shadow-lg shadow-bronze/25 transition-transform hover:-translate-y-0.5 hover:bg-bronze-hover disabled:opacity-60"
       >
-        {status === "sending" ? "Sending…" : isTile ? "Get My Free Tile Quote" : "Get my solid surface quote"}
+        {status === "sending" ? "Sending…" : isWalkIn ? "Get My Free Quote" : isTile ? "Get My Free Tile Quote" : "Get my solid surface quote"}
       </button>
       <p className="text-center text-xs text-muted-foreground">
         Free quote. Nothing to pay today. When your consultant measures, you&apos;ll get your exact price right then.{" "}

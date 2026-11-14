@@ -72,6 +72,13 @@ export default function SolidSurfacePage() {
                   </li>
                 ))}
               </ul>
+              <p className="mt-6 leading-7 text-muted-foreground">
+                Planning a walk-in shower in Lafayette? See{" "}
+                <a href="/walk-in-shower-lafayette" className="font-medium underline underline-offset-4">
+                  Walk-in showers in Lafayette
+                </a>
+                .
+              </p>
             </div>
           </div>
         </section>

@@ -653,7 +653,7 @@ const LAYOUT_ALIASES: Record<string, string> = {
   "tub to shower": "tub-to-shower",
 };
 
-export const STARTING_AT = "Starting at $7K";
+export const STARTING_AT = "Starting at $5K";
 
 export function findLayout(key: string) {
   const resolved = LAYOUT_ALIASES[key.trim().toLowerCase()] || key;

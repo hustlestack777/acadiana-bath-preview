@@ -3,7 +3,7 @@
  * licenses, timelines or brand names that the site must not publish.
  */
 
-import { faqs as homeFaqs, solidPath, tilePath } from "./copy";
+import { faqs as homeFaqs, solidPath, tilePath, walkInPage } from "./copy";
 import { warrantyPlainText } from "./warranty";
 import { OUTSIDE_AREA } from "./coverage";
 import {
@@ -19,6 +19,7 @@ import {
   SITE_SAME_AS,
   SITE_URL,
   VISIBLE_SERVICES,
+  WALK_IN_SHOWER_URL,
   cityPlace,
 } from "./site";
 import { townPath, type TownPageContent } from "./towns";
@@ -112,6 +113,17 @@ export const customTileServiceJsonLd = () =>
     description: tilePath.support,
     url: `${SITE_URL}/custom-tile`,
   });
+
+/** Lafayette walk-in page. areaServed is Lafayette only. */
+export const walkInShowerServiceJsonLd = () => ({
+  ...serviceJsonLd({
+    name: "Walk-in showers in Lafayette",
+    serviceType: "Custom walk-in showers",
+    description: walkInPage.schemaDescription,
+    url: WALK_IN_SHOWER_URL,
+  }),
+  areaServed: cityPlace("Lafayette"),
+});
 
 export function faqPageJsonLd(faqs: readonly FaqItem[]) {
   return {
