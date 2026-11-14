@@ -1,14 +1,27 @@
-import { SITE_SAME_AS } from "./site";
+import { GOOGLE_BUSINESS_URL, SITE_SAME_AS } from "./site";
 
-/** Profiles already listed for schema.org sameAs. No other network is added. */
-export function facebookProfile(): string | null {
+export type SocialProfile = {
+  href: string;
+  label: string;
+  kind: "facebook" | "google";
+};
+
+/** Icons only for profiles already listed in schema sameAs. */
+export function socialProfiles(): SocialProfile[] {
+  const profiles: SocialProfile[] = [];
   for (const href of SITE_SAME_AS) {
+    let host = "";
     try {
-      const host = new URL(href).hostname.replace(/^www\./, "").toLowerCase();
-      if (host === "facebook.com") return href;
+      host = new URL(href).hostname.replace(/^www\./, "").toLowerCase();
     } catch {
-      /* skip a bad URL */
+      continue;
     }
+    if (host === "facebook.com") profiles.push({ href, label: "Facebook", kind: "facebook" });
+    else if (href === GOOGLE_BUSINESS_URL) profiles.push({ href, label: "Acadiana Bathrooms on Google", kind: "google" });
   }
-  return null;
+  return profiles;
+}
+
+export function facebookProfile() {
+  return socialProfiles().find((profile) => profile.kind === "facebook")?.href ?? null;
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SocialLinks } from "@/components/social-link";
 import { BATH_QUOTE_LABEL, BATH_QUOTE_NOTE, PUBLIC_SITE_ORIGIN, WINDOWS_QUOTE_LABEL } from "@/lib/getpros";
 
 /** Two quote doors for the lead-machine host. Windows carries no price. */
@@ -29,6 +30,7 @@ export function GetProsHub() {
         </a>
         .
       </p>
+      <SocialLinks className="mt-4" itemClassName="border-border text-foreground" />
     </main>
   );
 }

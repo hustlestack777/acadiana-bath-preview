@@ -11,7 +11,7 @@ import { cn } from "cn";
 import { ConsultLink } from "@/components/consult-link";
 import { DesignLink } from "@/components/design-link";
 import { scheduleHashScroll } from "@/components/hash-scroll";
-import { FacebookLink } from "@/components/social-link";
+import { SocialLinks } from "@/components/social-link";
 
 const LINKS = [
   { href: "/solid-surface", label: "Solid surface", shortLabel: "Solid Surface" },
@@ -94,7 +94,8 @@ export function SiteHeader({ offset = false }: { offset?: boolean }) {
       </a>
       <div className={cn("mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-5 sm:gap-4", scrolled ? "py-2" : "py-3 sm:py-3.5")}>
         <Link href="/" aria-label={brand.name} className={cn("min-w-0", overHero ? "text-[#f6f1e6]" : undefined)} onClick={goHome}>
-          <MaisonLogo compact={!overHero} onDark={overHero} />
+          <MaisonLogo compact className="md:hidden" onDark={overHero} />
+          <MaisonLogo compact={!overHero} onDark={overHero} className="hidden md:inline-flex" />
         </Link>
         <nav className="hidden items-center gap-4 lg:flex" aria-label="Primary">
           {LINKS.map((link) => (
@@ -137,11 +138,9 @@ export function SiteHeader({ offset = false }: { offset?: boolean }) {
             {hero.primary}
           </ConsultLink>
         </div>
-        <FacebookLink
-          className={cn(
-            "md:hidden",
-            overHero ? "border-white/40 bg-black/20 text-white" : "border-border bg-card text-foreground",
-          )}
+        <SocialLinks
+          className="shrink-0 md:hidden"
+          itemClassName={overHero ? "border-white/40 bg-black/20 text-white" : "border-border bg-card text-foreground"}
         />
         <button
           type="button"
@@ -205,7 +204,7 @@ export function SiteHeader({ offset = false }: { offset?: boolean }) {
             <a href={brand.phoneHref} className="text-center text-sm font-semibold">
               {brand.phone}
             </a>
-            <FacebookLink className="mx-auto border-border bg-card text-foreground" />
+            <SocialLinks className="justify-center" itemClassName="border-border bg-card text-foreground" />
           </div>
         </div>,
         document.body,
