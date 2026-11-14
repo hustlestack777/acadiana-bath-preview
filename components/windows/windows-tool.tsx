@@ -228,6 +228,9 @@ export function WindowsTool() {
           <h1 tabIndex={-1} data-step-heading className="mt-3 font-heading text-[clamp(2.4rem,7vw,4.2rem)] leading-[0.98]">
             Get a ballpark for new windows. We&apos;ll call to discuss your windows, then set a time to take measurements for the real quote.
           </h1>
+          <p className="mt-4 text-lg font-medium" data-testid="starting-price">
+            Starting at $5K
+          </p>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{SERVICE_AREA_WINDOWS}</p>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">{OUTSIDE_AREA}</p>
           <p className="mt-4 text-base leading-7 text-foreground">

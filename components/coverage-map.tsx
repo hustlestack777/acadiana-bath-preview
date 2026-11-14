@@ -2,16 +2,20 @@
 
 type CoverageMapProps = {
   size?: "full" | "compact";
+  /** Keep the right edge clear of the tucked chat launcher. */
+  clearRight?: boolean;
 };
 
-export function CoverageMap({ size = "full" }: CoverageMapProps) {
+export function CoverageMap({ size = "full", clearRight = false }: CoverageMapProps) {
   const compact = size === "compact";
   return (
     <figure
       className={
-        compact
-          ? "mx-auto mt-8 w-full max-w-5xl max-md:max-w-none max-md:-me-[var(--chat-gutter,0px)] max-md:w-[calc(100%+var(--chat-gutter,0px))]"
-          : "mx-auto mt-8 w-full max-w-6xl max-md:max-w-none max-md:-me-[var(--chat-gutter,0px)] max-md:w-[calc(100%+var(--chat-gutter,0px))]"
+        clearRight
+          ? "coverage-map-clear"
+          : compact
+            ? "mx-auto mt-8 w-full max-w-5xl max-md:max-w-none max-md:-me-[var(--chat-gutter,0px)] max-md:w-[calc(100%+var(--chat-gutter,0px))]"
+            : "mx-auto mt-8 w-full max-w-6xl max-md:max-w-none max-md:-me-[var(--chat-gutter,0px)] max-md:w-[calc(100%+var(--chat-gutter,0px))]"
       }
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
