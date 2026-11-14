@@ -43,6 +43,7 @@ export function SiteFooter() {
           <p className="mt-3 text-sm leading-6">{services.join(" · ")}</p>
           <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
             <a href="/solid-surface" className="underline underline-offset-4">Solid surface</a>
+            <a href="/walk-in-shower-lafayette" className="underline underline-offset-4">Walk-in showers</a>
             <a href="/custom-tile" className="underline underline-offset-4">Custom tile</a>
             <a href="/custom-tile#grout" className="underline underline-offset-4">Grout colors</a>
             <a href="/gallery" className="underline underline-offset-4">Gallery</a>

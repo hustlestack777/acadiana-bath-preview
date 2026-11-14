@@ -25,6 +25,8 @@ export type TownPageContent = {
   faqs: readonly TownFaq[];
   /** Extra cities this page also covers, for areaServed only. */
   alsoServes?: readonly string[];
+  /** In-body link to a related service page. */
+  related?: { href: string; before: string; label: string; after: string };
 };
 
 export function townPath(slug: string): string {
@@ -79,6 +81,12 @@ export const towns: TownPageContent[] = [
       "We work with homeowners in River Ranch, the Saint Streets, Sterling Grove, Bendel Gardens, Greenbriar, and the Oil Center area.",
     ],
     nearby: ["youngsville", "broussard", "carencro", "scott", "opelousas"],
+    related: {
+      href: "/walk-in-shower-lafayette",
+      before: "For a walk-in shower or a tub-to-shower conversion, see ",
+      label: "Walk-in showers in Lafayette",
+      after: ".",
+    },
     servicesTitle: "What we build for Lafayette homes",
     services: servicesCore,
     sections: [quoteSection()],

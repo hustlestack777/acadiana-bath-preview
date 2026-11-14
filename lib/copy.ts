@@ -249,6 +249,66 @@ export const solidPath = {
   formBody: "A few quick questions, and we'll call to discuss your project and set a time to take measurements.",
 } as const;
 
+export const walkInPage = {
+  path: "/walk-in-shower-lafayette",
+  title: "Walk-In Showers in Lafayette, LA",
+  documentTitle: "Walk-In Showers in Lafayette, LA | Acadiana Bathrooms and Countertops",
+  description:
+    "Walk-in showers and tub-to-shower conversions in Lafayette, LA. Solid surface or custom tile, with niches, seating and glass. Starting at $7K. Call (337) 522-0023.",
+  schemaDescription:
+    "Walk-in showers and tub-to-shower conversions in Lafayette, Louisiana. Solid surface or custom tile, with niches, seating, and glass.",
+  eyebrow: "Lafayette, Louisiana",
+  support:
+    "A walk-in shower or a tub-to-shower conversion, in solid surface or custom tile, with niches, seating, and glass.",
+  price: "Starting at $7K",
+  includesTitle: "What a walk-in shower includes",
+  includes: [
+    {
+      title: "Solid surface or custom tile",
+      body: "Solid surface gives you clean lines and almost no grout. Custom tile gives you color, texture and pattern.",
+    },
+    {
+      title: "Niches",
+      body: "Niches where you need them.",
+    },
+    {
+      title: "Seating",
+      body: "A bench if you want one, and an entry with no step when the space allows.",
+    },
+    {
+      title: "Glass",
+      body: "Clear glass, such as a frameless door or panel.",
+    },
+  ],
+  conversionTitle: "Tub-to-shower conversions",
+  conversionBody: "Swap a tub you step over for a walk-in shower.",
+  townsTitle: "Towns around Lafayette",
+  townsIntro: "Towns we serve include",
+  formTitle: "Walk-in shower quote",
+  formBody: "A few quick questions, and we'll call to discuss your project and set a time to take measurements.",
+  faqs: [
+    {
+      q: "What does a walk-in shower or tub-to-shower conversion include?",
+      a: "Solid surface or custom tile, niches, seating when you want a bench, and glass. A tub-to-shower conversion swaps a tub you step over for a walk-in shower.",
+    },
+    {
+      q: "How much does a walk-in shower cost?",
+      a: "Starting at $7K. The exact number is given when your consultant takes measurements and looks at the space, the materials, and the work involved. Use the quote form or call (337) 522-0023.",
+      link: { text: "quote form", href: "/estimate" },
+    },
+    {
+      q: "Which towns around Lafayette do you serve?",
+      a: "Lafayette, Broussard, Youngsville, Carencro, Scott, and nearby Opelousas. See every town we serve for the full list.",
+      link: { text: "See every town we serve", href: "/areas" },
+    },
+    {
+      q: "How do I get a quote?",
+      a: "Use the quote form or call (337) 522-0023. Tell us about your project and the best day and time to reach you. We'll call to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.",
+      link: { text: "quote form", href: "/estimate" },
+    },
+  ],
+} as const;
+
 export const tilePath = {
   slug: "/custom-tile",
   eyebrow: "Path two · Custom tile",

@@ -28,6 +28,15 @@ export function TownPage({ town }: { town: TownPageContent }) {
             </a>
             .
           </p>
+          {town.related ? (
+            <p>
+              {town.related.before}
+              <a href={town.related.href} className="underline underline-offset-4">
+                {town.related.label}
+              </a>
+              {town.related.after}
+            </p>
+          ) : null}
           {nearby.length ? (
             <p>
               Nearby:{" "}

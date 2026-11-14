@@ -42,8 +42,12 @@ export const SITE_LOGO_URL = `${SITE_URL}${SITE_LOGO_PATH}`;
 /** schema.org priceRange. Public copy leads with Starting at $7K; JSON-LD stays in dollars as $7,000 to $30,000+. */
 export const SCHEMA_PRICE_RANGE = "$7,000 to $30,000+";
 
+/** Lafayette walk-in shower page. Canonical public URL, including in homepage JSON-LD. */
+export const WALK_IN_SHOWER_PATH = "/walk-in-shower-lafayette";
+export const WALK_IN_SHOWER_URL = `${brand.websiteHref}${WALK_IN_SHOWER_PATH}`;
+
 export const VISIBLE_SERVICES = [
-  { name: "Custom showers", serviceType: "Custom walk-in showers", url: SITE_URL },
+  { name: "Custom showers", serviceType: "Custom walk-in showers", url: WALK_IN_SHOWER_URL },
   { name: "Custom tile", serviceType: "Custom tile bathroom remodeling", url: `${SITE_URL}/custom-tile` },
   { name: "Quartz and quartzite countertops", serviceType: "Quartz and quartzite bathroom countertops", url: SITE_URL },
   { name: "Solid surface showers and tub walls", serviceType: "Solid surface bathroom remodeling", url: `${SITE_URL}/solid-surface` },
@@ -187,6 +191,7 @@ export const SCHEMA_AREA_SERVED: SchemaPlace[] = [
 export const INDEXABLE_PATHS = [
   "/",
   "/solid-surface",
+  WALK_IN_SHOWER_PATH,
   "/custom-tile",
   "/gallery",
   "/design",

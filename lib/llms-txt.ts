@@ -37,6 +37,7 @@ ${OUTSIDE_AREA}
 ## Key pages
 ${page("/", "Home")}
 ${page("/solid-surface", "Solid surface showers and tub walls")}
+${page("/walk-in-shower-lafayette", "Walk-in showers in Lafayette")}
 ${page("/custom-tile", "Custom tile showers and bathrooms")}
 ${page("/gallery", "Gallery")}
 ${page("/design", "Design My Bathroom")}

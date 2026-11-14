@@ -303,7 +303,11 @@ export const galleryPagePhotos: Photo[] = [
   },
 ];
 
+/** Manufacturer walk-in photographs already on the site. Never presented as completed jobs. */
+export const walkInPhotos: Photo[] = galleryPhotos.filter((photo) => photo.caption === "Walk-in shower");
+
 /** AI-generated example images (docs/image-sources.md). Never presented as completed jobs. */
+
 export const solidPhotos: Photo[] = [
   looks.tm10,
   looks.tm11,
