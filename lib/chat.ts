@@ -1,11 +1,11 @@
-import { callbackWindow } from "./call-window";
-import { brand, care, hero } from "./copy";
-import { OUTSIDE_AREA, checkCity } from "./coverage";
+import { enforceOutput, isOffTopic, renderCorePrompt } from "./chat-core";
+import { brand, care, hero, priceRange } from "./copy";
+import { OUTSIDE_AREA, MAIN_TOWNS } from "./coverage";
 import { geoFaqs } from "./faq-page";
+import { gigiBrand } from "./gigi-brand";
 import { designHref } from "./starting-looks";
-import { matchProduct, PRODUCT_PRICE_RULE, type ProductMatch } from "./gigi-product";
+import { matchProduct, type ProductMatch } from "./gigi-product";
 import { warrantyPlainText } from "./warranty";
-import { WINDOW_PRICE_LINE } from "./windows";
 
 function faqAnswer(question: string) {
   const item = geoFaqs.find((faq) => faq.q === question);
@@ -41,29 +41,14 @@ export const GIGI_CALLS_FIRST =
 export const GIGI_PROCESS =
   `${GIGI_CALLS_FIRST} When you're ready to move forward, we manage your project from design to the finished bathroom.`;
 
-/** Rules the consultant follows for every reply, including free-typed questions. There is no live model prompt beyond this. */
-export const GIGI_SYSTEM_PROMPT = `You are ${CHAT_AGENT_NAME}, the design consultant for Acadiana Bathrooms. Be professional, warm, and local — a trusted advisor, never corny.
-
-Speak as the company: use "we", "our team", or "Acadiana Bathrooms". Do not name a person as the owner. If asked who owns the company, say exactly: "We are Acadiana Bathrooms and Countertops."
-
-Pace: keep it conversational and concise. Take this one beat at a time. Ask only one or two things at a time, never a list of questions. Send one short message and wait for their reply before the next. Never send two or three messages in a row.
+/** Shared core prompt plus Gigi's process. The live model uses the same renderCorePrompt. */
+export const GIGI_SYSTEM_PROMPT = `${renderCorePrompt(gigiBrand)}
 
 How the work happens, always in this order:
 ${GIGI_PROCESS}
 
-The person who measures and goes over design is "your consultant" (they/their), not "we" and not the owner's first name. Keep the first call as "We'll call you...".
-
-Price framing: ${PRODUCT_PRICE_RULE} Do not give other prices. Do not invent a duration for the work. In-stock tile from Riad Tile typically ships in about 6 to 12 days.
-
-Do not promise a first-step home visit or name how long work is covered. Do not make license or insurance claims, say one person does every trade himself, or ask for a deposit. Do not mention payment plans.
-
 If asked about standing behind the work, say exactly: "${warrantyPlainText}"
-
-Out of area, say exactly: "Outside our area? Ask for a quote." For granite, only: "We do not install granite." Phone: (337) 522-0023. No street address.
-
-You know tile, quartz, quartzite and marble, solid surface, layouts, and windows. We install The Onyx Collection shower panels, bases, and accessories, and Onyx is a preferred material. We work with Pella, TileBar, Riad Tile, Flooret, and Wallism. We use Mapei grout and caulk colors. Do not say we work with any other brand, and do not call us a Pella factory store. Never recommend or offer granite. Never make a license or insurance claim, and never describe coverage as lasting for life. Never offer to text or ask anyone to text.
-
-When it is natural — someone asking about counters, stone, tile or a layout — suggest the upgraded stone (quartzite or marble over basic quartz) and a better layout, with one honest line on why (more depth and a more natural look), then close with setting a time to take measurements. No pressure, no fake urgency, no fake scarcity, and do not invent facts. Make the next step easy: Get My Free Quote, Design My Bathroom, or set a time to take measurements.`;
+Out of area, say exactly: "Outside our area? Ask for a quote." Phone: (337) 522-0023.`;
 
 const FAQ_WITH_PROCESS = new Set([
   "How much does a bathroom remodel cost in South Louisiana?",
@@ -120,8 +105,8 @@ function withCallsFirst(text: string) {
 
 const answers = {
   disclosure:
-    `Hey! I’m ${CHAT_AGENT_NAME}, the design consultant for Acadiana Bathrooms. What can I help you with?`,
-  ballpark: "Starting at $5K. What are you thinking about?",
+    `Hi, I’m ${CHAT_AGENT_NAME}, Acadiana Bathrooms' AI design assistant. Tell me what you're picturing and I'll help you think it through.`,
+  ballpark: `${priceRange.split(". Tell us")[0]}. You'll get the exact price when we measure.`,
   project: "What are you thinking about?",
   look: "What’s the look?",
   location: "Where's the home?",
@@ -129,7 +114,10 @@ const answers = {
   callTime: "When’s a good time for us to call and discuss your project?",
   callDay: "Any day that’s best?",
   handoff: "Thanks. Here’s the quote form. We'll call first, then set a time to take measurements.",
-  windows: `${WINDOW_PRICE_LINE} The material and the glass matter too. I won't use the bathroom starting price for windows. Get an estimate on our windows page.`,
+  windows:
+    "Window pricing depends on how many you need, the size of each one, the material, and the glass. I don't have one number for that. The estimate on our windows page is where we sort it out.",
+  windowsAgain:
+    "A couple of bedroom windows and a wide living-room unit are different jobs, and the glass changes it again. Tell me how many and a rough size, or start the estimate on our windows page.",
   outside: OUTSIDE_AREA,
   locationRetry: "Tell me the town or ZIP, and I’ll take it from there.",
   process: GIGI_PROCESS,
@@ -152,7 +140,7 @@ const answers = {
   compare:
     "I stick to what Acadiana Bathrooms and Countertops offers. We'll go over your options when we call.",
   human: `I’m ${CHAT_AGENT_NAME}, an AI assistant and the design consultant for ${brand.name}. Tap Get My Free Quote or Design My Bathroom, and we'll call you.`,
-  fallback: `I answer from what’s on this site, and I’m ${CHAT_AGENT_NAME}, an AI assistant, not a person on our team. For your own bathroom, tap Get My Free Quote or Design My Bathroom, and we'll call you. This chat isn’t saved.`,
+  fallback: `I can help you picture the bathroom, from penny tile and geometric floors to a solid-surface shower, or line up a free quote. What are you hoping to change?`,
 } as const;
 
 export const CHAT_ANSWERS = answers;
@@ -165,7 +153,7 @@ export type GigiChip = {
   focusInput?: boolean;
 };
 
-export type GigiPhase = "intro" | "project" | "look" | "location" | "offer" | "callTime" | "callDay";
+export type GigiPhase = "intro" | "project" | "look" | "location" | "offer" | "callTime" | "callDay" | "contact";
 
 export type GigiSession = {
   phase: GigiPhase;
@@ -174,6 +162,17 @@ export type GigiSession = {
   location?: string;
   callTime?: "morning" | "afternoon" | "evening";
   callDay?: "weekday" | "weekend" | "any";
+  helpful?: number;
+  asked?: string[];
+  quoteOffered?: boolean;
+  ownerIntroduced?: boolean;
+  name?: string;
+  phone?: string;
+  material?: string;
+  placement?: string;
+  lookWaived?: boolean;
+  offTopicTurns?: number;
+  windowPriceTold?: boolean;
 };
 
 export const SOMETHING_ELSE_CHIP: GigiChip = { label: "Something else", focusInput: true };
@@ -407,101 +406,177 @@ export function shouldUseWindowPrice(text: string, pathname?: string) {
 }
 
 export function replyTo(message: string, pathname?: string) {
-  const text = message.toLowerCase().trim();
-  if (!text) return answers.disclosure;
-  const product = matchProduct(text);
-  if (product) return product.text;
-  if (shouldUseWindowPrice(text, pathname)) return answers.windows;
-  if (/ballpark/.test(text)) return answers.ballpark;
-  const fact = factReply(text);
-  if (fact) return fact;
-  if (/^(hi|hello|hey)\b/.test(text)) return answers.disclosure;
-  return answers.fallback;
+  return respond(message, { phase: "intro" }, { pathname }).text;
 }
 
 export type GigiResponse = { text: string; chips: GigiChip[]; session: GigiSession };
 
-function startBallpark(session: GigiSession): GigiResponse {
+const WINDOW_CHIPS: GigiChip[] = [
+  { label: "Get an estimate", href: "/windows" },
+  { label: "See windows", href: "/windows" },
+];
+
+const PENNY_CHIPS: GigiChip[] = [
+  { label: "Shower floor", message: "Penny tile on the shower floor" },
+  { label: "A whole wall", message: "Penny tile on the whole wall" },
+  { label: "Not sure yet", message: "Not sure yet" },
+];
+
+const IDEA_CHIPS: GigiChip[] = [
+  { label: "Penny tile floor", message: "Penny tile on the shower floor" },
+  { label: "Herringbone", message: "What about herringbone?" },
+  { label: "Solid surface", message: "What about a solid-surface shower?" },
+];
+
+const PRICE_CHIPS: GigiChip[] = [
+  { label: "A shower", message: "A shower remodel" },
+  { label: "The whole bathroom", message: "The whole bathroom" },
+  { label: "Not sure yet", message: "Not sure yet" },
+];
+
+function cloneSession(session: GigiSession): GigiSession {
+  return { ...session, asked: [...(session.asked ?? [])] };
+}
+
+function volunteeredTown(message: string) {
+  const text = message.trim();
+  if (!text || /\?/.test(text) || text.length > 40) return null;
+  if (isOutsideArea(text)) return text;
+  const stripped = text.replace(/,?\s*(la|louisiana)\.?$/i, "").trim();
+  const known = MAIN_TOWNS.find((town) => town.toLowerCase() === stripped.toLowerCase());
+  if (known) return known;
+  if (/^\d{5}(-\d{4})?$/.test(stripped)) return stripped;
+  return null;
+}
+
+function wantsQuote(text: string) {
+  if (/\b(photo|picture|exact quote)\b/.test(text) && !/\bfree quote\b|\bget (me )?a quote\b/.test(text)) return false;
+  return /\b(free quote|get (me )?a quote|quote me|set up a quote|i want a quote)\b/.test(text);
+}
+
+function affirms(text: string) {
+  return /^(yes|yeah|yep|sure|ok|okay|please)\b/.test(text);
+}
+
+function isNotSure(text: string) {
+  return /^(not sure( yet)?|i.?m not sure\b|idk\b|i don.?t know\b|no idea\b|unsure\b)/.test(text);
+}
+
+function generalKnowledge(text: string) {
+  if (/capital of france/.test(text)) return "Paris is the capital of France.";
+  if (/capital of louisiana/.test(text)) return "Baton Rouge is the capital of Louisiana.";
+  if (/\bweather\b/.test(text)) return "I can't see the weather from here.";
+  if (/\bpizza\b|\brestaurant\b/.test(text)) return "I don't want to invent a restaurant recommendation.";
+  return null;
+}
+
+function noteFacts(session: GigiSession, text: string) {
+  if (/\bpenny\b/.test(text)) session.material = "penny tile";
+  if (/\bherringbone\b/.test(text)) session.material = "herringbone";
+  if (/\bchevron\b/.test(text)) session.material = "chevron";
+  if (/\barabesque\b/.test(text)) session.material = "arabesque";
+  if (/\bhex/.test(text)) session.material = session.material || "hex";
+  if (/shower floor|on the floor|underfoot/.test(text)) session.placement = "shower floor";
+  if (/whole wall|on the wall|accent wall/.test(text)) session.placement = "wall";
+  if (/\bwindows?\b/.test(text) && !mentionsBathroomWork(text)) session.project = "Windows";
+  if (/\b(bathroom|shower|tub)\b/.test(text)) session.project = session.project === "Windows" ? session.project : "Bathroom";
+  if (/whole bathroom|full bathroom/.test(text)) session.project = "Full bathroom";
+  if (isNotSure(text)) session.lookWaived = true;
+}
+
+function priceFollowUp(session: GigiSession) {
+  if (session.material === "penny tile" && !session.placement) return "Are you thinking penny tile for the shower floor or a whole wall?";
+  if (session.placement === "shower floor") return "Want to keep the penny tile on the floor and use a larger tile on the walls?";
+  if (!session.project || session.project === "Bathroom") return "Are you thinking about a shower, or the whole bathroom?";
+  return "";
+}
+
+function priceBody(session: GigiSession) {
+  const base = answers.ballpark;
+  if (session.material === "penny tile") {
+    return `${base} Penny tile is custom tile, so how much of it you use moves the number too.`;
+  }
+  return base;
+}
+
+function contactAsk(session: GigiSession) {
+  const need = [
+    session.name ? "" : "your name",
+    session.phone ? "" : "your phone number",
+    session.callTime ? "" : "the best time to call",
+  ].filter(Boolean);
+  if (!need.length) return "";
+  if (need.length === 3) return "Send me your name, your phone number, and the best time to call.";
+  if (need.length === 1) return `I still need ${need[0]}.`;
+  return `I still need ${need[0]} and ${need[1]}.`;
+}
+
+function readContact(message: string, session: GigiSession) {
+  const phoneMatch = message.match(/\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);
+  if (phoneMatch) {
+    const phone = phoneMatch[0];
+    const blocked = enforceOutput(phone, {
+      userText: message,
+      windows: false,
+      offTopic: false,
+      ownerIntroduced: true,
+      asked: [],
+      pack: gigiBrand,
+    }).violations.includes("private-phone");
+    if (!blocked) session.phone = phone;
+  }
+  const time = parseCallTime(message);
+  if (time) session.callTime = time;
+  const day = parseCallDay(message);
+  if (day) session.callDay = day;
+  const named = message.match(/\b(?:my name is|i'm|i am|this is)\s+([A-Za-z]+(?:\s+[A-Za-z]+)?)/i);
+  if (named) session.name = named[1];
+  else if (phoneMatch) {
+    const before = message.slice(0, phoneMatch.index).replace(/[,]/g, " ").trim();
+    if (before && /[a-z]/i.test(before) && before.length < 40 && !/\b(morning|afternoon|evening|quote)\b/i.test(before)) {
+      session.name = before;
+    }
+  }
+}
+
+function deliver(body: string, chips: GigiChip[], session: GigiSession, message: string, pathname?: string): GigiResponse {
+  const next = cloneSession(session);
+  noteFacts(next, message.toLowerCase());
+  const helpful = (next.helpful ?? 0) + 1;
+  next.helpful = helpful;
+  let text = body.trim();
+  const windows = next.project === "Windows" || shouldUseWindowPrice(message, pathname);
+  if (!next.quoteOffered && helpful >= 3 && next.phase !== "contact" && !windows && !wantsQuote(message.toLowerCase())) {
+    text = `${text} If you want a free quote, send your name, phone, and the best time to call.`;
+    next.quoteOffered = true;
+  }
+  const guarded = enforceOutput(text, {
+    userText: message,
+    windows: shouldUseWindowPrice(message, pathname) || (next.project === "Windows" && !mentionsBathroomWork(message)),
+    offTopic: isOffTopic(message, gigiBrand),
+    ownerIntroduced: Boolean(next.ownerIntroduced),
+    asked: next.asked ?? [],
+    pack: gigiBrand,
+  });
+  next.ownerIntroduced = guarded.ownerIntroduced;
+  next.asked = guarded.asked;
+  return { text: guarded.text, chips, session: next };
+}
+
+function windowPriceReply(session: GigiSession): GigiResponse {
+  const again = Boolean(session.windowPriceTold);
   return {
-    text: answers.ballpark,
-    chips: PROJECT_CHIPS,
-    session: { ...session, phase: "project" },
+    text: again ? answers.windowsAgain : answers.windows,
+    chips: WINDOW_CHIPS,
+    session: { ...session, project: "Windows", windowPriceTold: true },
   };
 }
 
-function askLook(session: GigiSession, project: string): GigiResponse {
-  return {
-    text: answers.look,
-    chips: LOOK_CHIPS,
-    session: { ...session, phase: "look", project },
-  };
-}
-
-function askLocation(session: GigiSession, look: string): GigiResponse {
-  return {
-    text: answers.location,
-    chips: LOCATION_CHIPS,
-    session: { ...session, phase: "location", look },
-  };
-}
-
-function closeWithOffer(session: GigiSession, location: string): GigiResponse {
-  const next = { ...session, phase: "offer" as const, location };
-  return { text: answers.offer, chips: offerChips(next), session: next };
-}
-
-function askCallTime(session: GigiSession): GigiResponse {
-  const next = { ...session, phase: "callTime" as const };
-  return { text: answers.callTime, chips: CALL_TIME_CHIPS, session: next };
-}
-
-function askCallDay(session: GigiSession, callTime: NonNullable<GigiSession["callTime"]>): GigiResponse {
-  const next = { ...session, phase: "callDay" as const, callTime };
-  return { text: answers.callDay, chips: CALL_DAY_CHIPS, session: next };
-}
-
-function finishHandoff(session: GigiSession, callDay: NonNullable<GigiSession["callDay"]>): GigiResponse {
-  const next = { ...session, phase: "offer" as const, callDay };
-  const window = callbackWindow(callDay, session.callTime || "");
-  const text = window
-    ? `Thanks. Here's the quote form. After you submit, we'll call you ${window.phrase} to discuss your project. Save the Acadiana Bathrooms and Countertops number so you know it's us calling: (337) 522-0023.`
-    : answers.handoff;
-  return { text, chips: handoffChips(next), session: next };
-}
-
-function windowsReply(session: GigiSession, text: string = answers.windows): GigiResponse {
-  return {
-    text,
-    chips: [
-      { label: "Get an estimate", href: "/windows" },
-      { label: "See windows", href: "/windows" },
-    ],
-    session: { ...session, phase: "intro", project: "Windows" },
-  };
-}
-
-function answerProduct(session: GigiSession, match: ProductMatch): GigiResponse {
-  if (match.topic === "window") return windowsReply(session, match.text);
-  if (session.phase !== "intro") return withCurrentChips(match.text, session);
-  return { text: match.text, chips: NEXT_STEP_CHIPS, session };
-}
-
-function withCurrentChips(text: string, session: GigiSession, extra?: GigiChip[]): GigiResponse {
-  const chips =
-    session.phase === "project"
-      ? PROJECT_CHIPS
-      : session.phase === "look"
-        ? LOOK_CHIPS
-        : session.phase === "offer"
-          ? offerChips(session)
-          : session.phase === "callTime"
-            ? CALL_TIME_CHIPS
-            : session.phase === "callDay"
-              ? CALL_DAY_CHIPS
-              : session.phase === "location"
-                ? LOCATION_CHIPS
-                : INTRO_CHIPS;
-  return { text, chips: extra ?? chips, session };
+function chipsFor(match: ProductMatch | null, session: GigiSession): GigiChip[] {
+  if (match?.topic === "window" || session.project === "Windows") return WINDOW_CHIPS;
+  if (match?.id === "penny" || session.material === "penny tile") return PENNY_CHIPS;
+  if (match?.id === "geometric") return IDEA_CHIPS;
+  return NEXT_STEP_CHIPS;
 }
 
 export function respond(
@@ -510,105 +585,94 @@ export function respond(
   context?: { pathname?: string },
 ): GigiResponse {
   const text = message.toLowerCase().trim();
-  if (!text) return { text: answers.disclosure, chips: INTRO_CHIPS, session: { phase: "intro" } };
+  const next = cloneSession(session);
+  if (!text) return { text: answers.disclosure, chips: INTRO_CHIPS, session: next };
+  noteFacts(next, text);
+
+  if (shouldUseWindowPrice(text, context?.pathname)) return windowPriceReply(next);
+
+  if (next.phase === "contact" || (next.quoteOffered && affirms(text) && !isNotSure(text))) {
+    readContact(message, next);
+    next.phase = "contact";
+    if (next.name && next.phone && next.callTime) {
+      return deliver(
+        `Thanks, ${next.name}. I have ${next.phone}, and ${next.callTime} works. Here's the quote form.`,
+        [{ label: "Get my free quote", href: estimateHrefForSession(next) }],
+        next,
+        message,
+        context?.pathname,
+      );
+    }
+    const ask = contactAsk(next);
+    return deliver(ask, CALL_TIME_CHIPS.filter((chip) => chip.message), next, message, context?.pathname);
+  }
+
+  if (isOutsideArea(message) && message.trim().length < 48 && !message.includes("?")) {
+    return { text: answers.outside, chips: [{ label: "Get my free quote", message: "Get my free quote" }], session: next };
+  }
 
   const product = matchProduct(text);
-  if (product) return answerProduct(session, product);
-
-  if (shouldUseWindowPrice(text, context?.pathname)) return windowsReply(session);
-
-  if (session.phase === "location" && looksLikePlace(text)) {
-    const coverage = checkCity(message);
-    if (coverage.status === "invalid" || coverage.status === "empty") {
-      return { text: answers.locationRetry, chips: LOCATION_CHIPS, session };
-    }
-    if (isOutsideArea(message)) {
-      const next = { ...session, phase: "offer" as const, location: message.trim() };
-      return { text: answers.outside, chips: offerChips(next), session: next };
-    }
-    const name = coverage.status === "supported" ? coverage.name : message.trim();
-    return closeWithOffer(session, name);
+  if (product && !asksPrice(text)) {
+    return deliver(product.text, chipsFor(product, next), next, message, context?.pathname);
   }
 
-  if (isSideQuestion(text) && session.phase !== "intro") {
-    const fact = factReply(text);
-    if (fact) return withCurrentChips(fact, session);
+  if (isNotSure(text)) {
+    next.lookWaived = true;
+    const ideas = next.material === "penny tile"
+      ? "That's a fine place to start. Penny tile on the shower floor with a larger tile on the walls is the pairing I like most. Penny tile up the wall is the bolder version, and a solid-surface shower is the path with almost no grout. Which of those sounds closest?"
+      : "You don't have to know yet. Three looks people love: penny tile on the shower floor with a larger wall tile, herringbone or chevron if you want a geometric pattern, or a solid-surface shower with almost no grout. Which of those sounds closest?";
+    return deliver(ideas, IDEA_CHIPS, next, message, context?.pathname);
   }
 
-  if (/ballpark/.test(text) || (session.phase === "intro" && /^(how much|cost|price|budget)\b/.test(text))) {
-    return startBallpark(session);
+  if (asksPrice(text) || /ballpark/.test(text)) {
+    if (next.project === "Windows" || next.windowPriceTold) return windowPriceReply(next);
+    const follow = priceFollowUp(next);
+    const already = (next.asked ?? []).some((item) => item.toLowerCase().includes(follow.toLowerCase().slice(0, 24)));
+    const body = `${priceBody(next)}${follow && !already ? ` ${follow}` : ""}`;
+    return deliver(body, PRICE_CHIPS, next, message, context?.pathname);
   }
 
-  if (session.phase === "intro" && (/\/windows\b|\bwindows?\b/.test(text) || text === "windows")) {
-    return windowsReply(session);
+  if (wantsQuote(text)) {
+    next.phase = "contact";
+    next.quoteOffered = true;
+    return deliver(`Yes. A free quote is the easy next step. ${contactAsk(next)}`, CALL_TIME_CHIPS.filter((chip) => chip.message), next, message, context?.pathname);
   }
 
-  if (session.phase === "project") {
-    const project = matchProject(text);
-    if (project === "Windows") return windowsReply(session);
-    if (project) return askLook(session, project);
-    return askLook(session, message.trim());
-  }
-
-  if (session.phase === "look") {
-    const look = matchLook(text) ?? message.trim();
-    return askLocation(session, look);
-  }
-
-  if (session.phase === "offer") {
-    if (/design|redesign|photo|preview/.test(text) && !/quote/.test(text)) {
-      return {
-        text: "You can preview a look in your own space first.",
-        chips: offerChips(session),
-        session,
-      };
-    }
-    if (/quote|yes|call|measure/.test(text)) {
-      return askCallTime(session);
-    }
-    return withCurrentChips(answers.offer, session);
-  }
-
-  if (session.phase === "callTime") {
-    const callTime = parseCallTime(text);
-    if (!callTime) {
-      return { text: answers.callTime, chips: CALL_TIME_CHIPS, session };
-    }
-    return askCallDay(session, callTime);
-  }
-
-  if (session.phase === "callDay") {
-    const callDay = parseCallDay(text);
-    if (!callDay) {
-      return { text: answers.callDay, chips: CALL_DAY_CHIPS, session };
-    }
-    return finishHandoff(session, callDay);
-  }
+  if (product) return deliver(product.text, chipsFor(product, next), next, message, context?.pathname);
 
   const fact = factReply(text);
-  if (fact && !/ballpark/.test(text)) {
-    const startFlow = session.phase === "intro" && /cost|price|how much|budget|range/.test(text);
-    if (startFlow) return startBallpark(session);
-    return { text: fact, chips: NEXT_STEP_CHIPS, session };
+  if (fact && !asksPrice(text)) return deliver(fact, NEXT_STEP_CHIPS, next, message, context?.pathname);
+
+  const known = generalKnowledge(text);
+  if (known || (isOffTopic(text, gigiBrand) && /\?/.test(text))) {
+    next.offTopicTurns = (next.offTopicTurns ?? 0) + 1;
+    const lead = known ?? "I don't want to guess at that.";
+    return deliver(`${lead} I'm here for the bathroom design, and a free quote is easy when you want one. What are you hoping to change in the room?`, IDEA_CHIPS, next, message, context?.pathname);
   }
 
-  if (session.phase === "intro") {
-    const project = matchProject(text);
-    if (project === "Windows") return windowsReply(session);
-    if (project) {
-      return {
-        text: `Starting at $5K. ${answers.look}`,
-        chips: LOOK_CHIPS,
-        session: { ...session, phase: "look", project },
-      };
-    }
+  const town = volunteeredTown(message);
+  if (town) {
+    next.location = isOutsideArea(town) ? town : town;
+    if (isOutsideArea(message)) return { text: answers.outside, chips: [{ label: "Get my free quote", message: "Get my free quote" }], session: next };
+    return deliver(`${town} is in the area we cover. What are you hoping to change in the bathroom?`, PRICE_CHIPS, next, message, context?.pathname);
   }
 
   if (/^(hi|hello|hey)\b/.test(text)) {
-    return { text: answers.disclosure, chips: INTRO_CHIPS, session: { phase: "intro" } };
+    return { text: "Good to meet you. Are you thinking about a bathroom, or windows?", chips: INTRO_CHIPS, session: next };
   }
 
-  return { text: answers.fallback, chips: NEXT_STEP_CHIPS, session };
+  if (/\b(hours|are you open|when are you open)\b/.test(text)) {
+    return deliver("Call (337) 522-0023 and we'll set a time. I don't want to invent shop hours.", NEXT_STEP_CHIPS, next, message, context?.pathname);
+  }
+
+  const project = matchProject(text);
+  if (project === "Windows") return windowPriceReply(next);
+  if (project) {
+    next.project = project;
+    return deliver(`A ${project.toLowerCase()} is work we do. Penny tile on the floor, a herringbone or chevron wall, or a solid-surface shower are the directions I suggest most. Which of those sounds closest?`, IDEA_CHIPS, next, message, context?.pathname);
+  }
+
+  return deliver(answers.fallback, NEXT_STEP_CHIPS, next, message, context?.pathname);
 }
 
 export const LOCATION_QUESTION = answers.location;

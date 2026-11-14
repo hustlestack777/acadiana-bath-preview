@@ -315,22 +315,34 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
     setOpen(true);
   }
 
-  function ask(message: string) {
+  async function ask(message: string) {
     const trimmed = message.trim();
     if (!trimmed) return;
     const currentSession = session;
+    const history = [...turns, { role: "you" as const, text: trimmed }].slice(-8);
     setTurns((current) => [...current, { role: "you", text: trimmed }]);
     setDraft("");
-    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const wait = reduce ? 0 : 420;
     setTyping(true);
-    window.setTimeout(() => {
-      const result = respond(trimmed, currentSession, { pathname });
+    const local = () => respond(trimmed, currentSession, { pathname });
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: trimmed, session: currentSession, pathname, history }),
+      });
+      const data = (await response.json()) as { text?: string; chips?: GigiChip[]; session?: GigiSession };
+      if (!response.ok || !data.text || !data.session) throw new Error("fallback");
+      setTurns((current) => [...current, { role: "assistant", text: data.text! }]);
+      setSession(data.session);
+      setChips(data.chips ?? []);
+    } catch {
+      const result = local();
       setTurns((current) => [...current, { role: "assistant", text: result.text }]);
       setSession(result.session);
       setChips(result.chips);
+    } finally {
       setTyping(false);
-    }, wait);
+    }
   }
 
   function onChip(chip: GigiChip) {

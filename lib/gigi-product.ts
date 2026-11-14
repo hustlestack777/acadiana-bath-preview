@@ -6,7 +6,7 @@ const WINDOW_NEXT =
 
 export type ProductTopic = "bath" | "window";
 
-export type ProductMatch = { text: string; topic: ProductTopic };
+export type ProductMatch = { text: string; topic: ProductTopic; id?: string };
 
 const OTHER_ROOM = ["kit", "chen"].join("");
 
@@ -18,7 +18,7 @@ export function matchProduct(message: string): ProductMatch | null {
   if (new RegExp(OTHER_ROOM, "i").test(text)) {
     return {
       topic: "bath",
-      text: `We focus on bathrooms, and we also do window estimates. Get My Free Quote, or get a window estimate, and we'll take it from there.`,
+      text: `We focus on bathrooms, and we also do window estimates. We don't remodel kitchens. Is there a bathroom or some windows I can help with?`,
     };
   }
 
@@ -215,6 +215,62 @@ export function matchProduct(message: string): ProductMatch | null {
     return {
       topic: "bath",
       text: `When the floor height and the drain allow it, yes. Your consultant checks that when they measure. ${BATH_NEXT}`,
+    };
+  }
+
+  if (/\bpenny\b/.test(text)) {
+    return {
+      id: "penny",
+      topic: "bath",
+      text: `Penny tile is the little round mosaic, about the size of a penny, set on mesh sheets. It looks great on a shower floor, where the grout joints give wet feet more grip, and it can cover a whole wall or a short accent if you want that vintage dotted look. Grout does a lot of the work: a darker color hides soap film and makes each circle pop, and a color close to the tile reads softer. Slope the floor to the drain so water doesn't sit in those joints. We use Mapei grout, and {{owner}} does custom tile. You can pick penny tile for the floor or the wall in Design My Bathroom. Are you thinking penny tile for the shower floor or a whole wall?`,
+    };
+  }
+
+  if (/\bherringbone\b/.test(text)) {
+    return {
+      id: "geometric",
+      topic: "bath",
+      text: `Herringbone is a zigzag of rectangular tiles, each one meeting the next at a right angle. It looks beautiful on a shower wall and as a floor, and it reads more detailed than a big straight tile. {{owner}} does custom tile, including herringbone, chevron, and arabesque. Do you want that zigzag on the floor or on the wall?`,
+    };
+  }
+
+  if (/\bchevron\b/.test(text)) {
+    return {
+      id: "geometric",
+      topic: "bath",
+      text: `Chevron is the continuous V, with the tile ends cut so the points meet. It feels a little sharper and more modern than herringbone, which is a broken zigzag. Both work on a shower wall or a floor, and {{owner}} does that custom tile. Are you picturing chevron on the wall or underfoot?`,
+    };
+  }
+
+  if (/\barabesque\b|\bdiamond mosaic\b/.test(text)) {
+    return {
+      id: "geometric",
+      topic: "bath",
+      text: `Arabesque is the curved lantern shape, often with a small diamond at the joints. It is a classic marble-mosaic look for a floor or a feature wall, and it pairs well with a calmer field tile. {{owner}} does custom tile, and Design My Bathroom has arabesque as a floor and a wall choice. Do you want it underfoot or as the accent wall?`,
+    };
+  }
+
+  if (/\b(hexagon|hex tile|hex mosaic)\b/.test(text)) {
+    return {
+      id: "geometric",
+      topic: "bath",
+      text: `Hex is the six-sided mosaic. It is a classic shower floor, and a black or light hex also works as a lower-wall accent. The grout joints add grip under wet feet. {{owner}} does custom tile, and hex is one of the floor choices in Design My Bathroom. Are you thinking hex for the floor or the wall?`,
+    };
+  }
+
+  if (/\blarge[- ]format\b|\bbig tile\b/.test(text)) {
+    return {
+      id: "geometric",
+      topic: "bath",
+      text: `Large-format tile has fewer grout lines, so a shower wall or a dry floor reads calmer and a little bigger. On a shower floor I still want enough texture for wet feet, so a big polished slab is better on the wall than underfoot. {{owner}} does custom tile, and large porcelain is one of the floor choices in Design My Bathroom. Are you using the big tile on the walls or the floor?`,
+    };
+  }
+
+  if (/\bgeometric\b/.test(text)) {
+    return {
+      id: "geometric",
+      topic: "bath",
+      text: `Geometric tile is the patterned side of the catalog: herringbone, chevron, and arabesque or diamond mosaics, plus hex. Herringbone is a broken zigzag, chevron is a continuous V, and arabesque is the curved lantern. {{owner}} does custom tile, and Design My Bathroom has each of those for the floor and for a wall or accent. Which of those shapes are you drawn to?`,
     };
   }
 
