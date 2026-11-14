@@ -580,3 +580,28 @@ section[aria-label="Introduction"] .hero-copy {
 .text-\[\#6b5a2a\] {
   color: var(--bronze);
 }
+
+/* FAQ map stays clear of tucked Gigi. She peeks 64px from the right edge. */
+.coverage-map-clear {
+  margin-top: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 64rem;
+}
+@media (max-width: 767px) {
+  .coverage-map-clear {
+    max-width: none;
+    margin-left: 0;
+    margin-right: calc(-1 * var(--chat-gutter, 0px) + 5.5rem);
+    width: calc(100% + var(--chat-gutter, 0px) - 5.5rem);
+  }
+}
+@media (min-width: 768px) and (max-width: 1279px) {
+  .coverage-map-clear {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 7rem;
+    width: calc(100% - 7rem);
+  }
+}

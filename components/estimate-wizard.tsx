@@ -394,6 +394,9 @@ export function EstimateWizard() {
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#e4d8b4]">{hero.eyebrow}</p>
           <h1 className="mt-3 max-w-xl text-5xl leading-[0.95] md:text-7xl">{lead.title}</h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-white/85">{lead.subhead}</p>
+          <p className="hero-copy mt-4 max-w-xl text-sm font-semibold tracking-wide text-[#e4d8b4]" data-testid="starting-price">
+            Starting at $5K
+          </p>
           <p className="mt-4 text-sm text-white/85">
             Prefer a shorter form?{" "}
             <a href="/solid-surface#solid-quote" className="underline underline-offset-4">Solid surface quote</a>
