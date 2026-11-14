@@ -4,7 +4,6 @@
  *
  * TODO: add a public business address only after a storefront is confirmed.
  * Until then, schema stays area-only (no address). A Broussard warehouse is pending.
- * TODO: add the Google Business Profile URL (schema sameAs) after verification.
  * TODO: add opening hours when they are confirmed.
  */
 
@@ -53,8 +52,12 @@ export const VISIBLE_SERVICES = [
   { name: "Window replacement", serviceType: "Window replacement and installation", url: `${SITE_URL}/windows` },
 ] as const;
 
-/** Official profiles for schema.org sameAs. */
-export const SITE_SAME_AS = ["https://www.facebook.com/profile.php?id=61596069587015"] as const;
+/** Official profiles for schema.org sameAs. This is the only Google listing. */
+export const GOOGLE_BUSINESS_URL = "https://g.page/r/CQ1cF9_r2_6dEBM";
+export const SITE_SAME_AS = [
+  "https://www.facebook.com/profile.php?id=61596069587015",
+  GOOGLE_BUSINESS_URL,
+] as const;
 
 /**
  * Parishes highlighted on Boogie's service map, plus any parish that contains

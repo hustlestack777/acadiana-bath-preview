@@ -5,7 +5,7 @@ import { SERVICE_AREA } from "@/lib/coverage";
 import { ConsultLink } from "@/components/consult-link";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
 import { townPath, towns } from "@/lib/towns";
-import { FacebookLink } from "@/components/social-link";
+import { SocialLinks } from "@/components/social-link";
 
 export function SiteFooter() {
   return (
@@ -16,7 +16,7 @@ export function SiteFooter() {
           <p className="mt-4 text-sm leading-6 text-fig-muted">
             Custom bathroom remodels, from design to the finished bathroom. {SERVICE_AREA} Start with Design My Bathroom or a free quote.
           </p>
-          <FacebookLink className="mt-4 border-white/25 text-secondary-foreground hover:bg-white/10" />
+          <SocialLinks className="mt-4" itemClassName="border-white/25 text-secondary-foreground hover:bg-white/10" />
         </div>
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Call or email</p>
