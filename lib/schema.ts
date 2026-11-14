@@ -29,7 +29,8 @@ export type FaqItem = { q: string; a: string; link?: { text: string; href: strin
 
 export const BUSINESS_ID = `${SITE_URL}/#business`;
 
-export function businessJsonLd() {
+export function businessJsonLd(options?: { includePriceRange?: boolean }) {
+  const includePriceRange = options?.includePriceRange !== false;
   return {
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
@@ -43,7 +44,7 @@ export function businessJsonLd() {
     image: SITE_LOGO_URL,
     description: `Bathroom remodels from ${SITE_NAME}. ${SCHEMA_SERVICE_AREA} ${OUTSIDE_AREA} See your new bathroom free: Design My Bathroom.`,
     areaServed: SCHEMA_AREA_SERVED,
-    priceRange: SCHEMA_PRICE_RANGE,
+    ...(includePriceRange ? { priceRange: SCHEMA_PRICE_RANGE } : {}),
     sameAs: [...SITE_SAME_AS],
     // No address: there is no public storefront yet (a Broussard warehouse is pending).
     // TODO: add the confirmed public address and hours when ready.

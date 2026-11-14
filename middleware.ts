@@ -40,7 +40,9 @@ export function middleware(request: NextRequest) {
       },
     });
   }
-  const response = NextResponse.next();
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", request.nextUrl.pathname);
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
   if (!indexable) {
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
   }

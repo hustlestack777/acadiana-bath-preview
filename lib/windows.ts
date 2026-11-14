@@ -18,6 +18,13 @@ export const BUTTON_SUB =
 
 export const WINDOWS_SOURCE_PAGE = "/windows";
 
+/** True for /windows and any page under it. The bathroom price does not belong here. */
+export function isWindowsContentPath(pathname: string) {
+  const pathOnly = (pathname.split("?")[0] ?? pathname).split("#")[0] ?? pathname;
+  const trimmed = pathOnly.length > 1 ? pathOnly.replace(/\/+$/, "") : pathOnly;
+  return trimmed === "/windows" || trimmed.startsWith("/windows/");
+}
+
 export const SERVICE_AREA_WINDOWS = SERVICE_AREA;
 
 export const MAX_STANDARD_STEPPER = 30;

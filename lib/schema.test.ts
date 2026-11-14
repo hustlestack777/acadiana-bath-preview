@@ -80,6 +80,14 @@ test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   assert.equal(data.description.includes("Jefferson Parish"), false);
 });
 
+test("windows pages omit the bathroom priceRange from the business node", () => {
+  const data = businessJsonLd({ includePriceRange: false });
+  const blob = JSON.stringify(data);
+  assert.equal("priceRange" in data, false);
+  assert.equal(blob.includes("$5"), false);
+  assert.equal(businessJsonLd().priceRange, SCHEMA_PRICE_RANGE);
+});
+
 test("window service JSON-LD has no bathroom starting price", () => {
   const data = windowServiceJsonLd();
   const blob = JSON.stringify(data);
