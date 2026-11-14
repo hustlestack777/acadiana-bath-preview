@@ -178,7 +178,12 @@ test("assistant answers stay inside the published facts", () => {
   assert.match(replyTo("What's a ballpark price?"), /materials/i);
   assert.doesNotMatch(replyTo("What's a ballpark price?"), /What are you thinking about/);
   assert.equal(replyTo("how much do windows cost"), CHAT_ANSWERS.windows);
-  assert.match(replyTo("how much do windows cost"), new RegExp(WINDOW_PRICE_LINE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(replyTo("how much do windows cost"), /how many/i);
+  assert.match(replyTo("how much do windows cost"), /size/i);
+  assert.match(replyTo("how much do windows cost"), /material/i);
+  assert.match(replyTo("how much do windows cost"), /glass/i);
+  assert.match(replyTo("how much do windows cost"), /windows page/i);
+  assert.doesNotMatch(replyTo("how much do windows cost"), /bathroom starting price/i);
   assert.equal(/\$5K|\$5,000/.test(replyTo("how much do windows cost")), false);
   assert.equal(replyTo("how much", "/windows"), CHAT_ANSWERS.windows);
   assert.match(replyTo("how much is a shower"), /Starting at \$5K/);
@@ -214,7 +219,8 @@ test("Gigi walks through the quote flow with matching chips", () => {
 
   const windows = respond("Windows", start.session);
   assert.match(windows.text, /windows page/i);
-  assert.match(windows.text, new RegExp(WINDOW_PRICE_LINE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(windows.text, /material/i);
+  assert.match(windows.text, /glass/i);
   assert.equal(/\$5K|\$5,000/.test(windows.text), false);
   assert.equal(windows.chips.some((chip) => chip.href === "/windows"), true);
 

@@ -54,9 +54,16 @@ test("a ballpark question states Starting at $5K and why it varies", () => {
 test("a windows price question never says $5K", () => {
   const first = respond("how much are new windows?");
   assert.equal(priceLeak.test(first.text), false);
-  assert.match(first.text, /how many windows/i);
+  assert.match(first.text, /how many/i);
   assert.match(first.text, /size/i);
+  assert.match(first.text, /material/i);
+  assert.match(first.text, /glass/i);
+  assert.match(first.text, /windows page/i);
+  assert.doesNotMatch(first.text, /bathroom starting price/i);
+  assert.equal((first.text.match(/Get an estimate/g) ?? []).length, 0);
   const second = respond("just a ballpark", first.session);
+  assert.notEqual(second.text, first.text);
+  assert.match(second.text, /bedroom|living-room|glass/i);
   assert.equal(priceLeak.test(second.text), false);
   assert.doesNotMatch(second.text, /Starting at/i);
 });

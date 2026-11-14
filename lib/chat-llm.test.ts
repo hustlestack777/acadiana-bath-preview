@@ -7,7 +7,7 @@ test("the daily spend kill switch uses the scripted reply and does not call the 
   resetSpend();
   let called = false;
   const result = await gigiTurn("penny tile?", { phase: "intro" }, {}, {
-    env: { XAI_API_KEY: "present", CHAT_DAILY_USD_CAP: "0" } as NodeJS.ProcessEnv,
+    env: { NODE_ENV: "test", XAI_API_KEY: "present", CHAT_DAILY_USD_CAP: "0" },
     fetchImpl: async () => {
       called = true;
       throw new Error("should not call");
@@ -16,13 +16,13 @@ test("the daily spend kill switch uses the scripted reply and does not call the 
   assert.equal(called, false);
   assert.equal(result.source, "fallback");
   assert.match(result.text, /penny/i);
-  assert.equal(spendBlocked({ CHAT_DAILY_USD_CAP: "0" } as NodeJS.ProcessEnv), true);
+  assert.equal(spendBlocked({ NODE_ENV: "test", CHAT_DAILY_USD_CAP: "0" }), true);
   resetSpend();
 });
 
 test("a missing model key is reported by env var name and falls back", async () => {
   const result = await gigiTurn("hello", { phase: "intro" }, {}, {
-    env: {} as NodeJS.ProcessEnv,
+    env: { NODE_ENV: "test" },
     fetchImpl: async () => {
       throw new Error("should not call");
     },

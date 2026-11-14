@@ -39,9 +39,12 @@ test("argon and Zion gas get the same window answer", () => {
 test("a window price question depends on count and size", () => {
   for (const question of ["how much are windows?", "How much do windows cost?"]) {
     const answer = replyTo(question);
-    assert.equal(answer.includes(WINDOW_PRICE_LINE), true, question);
-    assert.match(answer, /how many windows/i, question);
-    assert.match(answer, /their size/i, question);
+    assert.match(answer, /how many/i, question);
+    assert.match(answer, /size/i, question);
+    assert.match(answer, /material/i, question);
+    assert.match(answer, /glass/i, question);
+    assert.match(answer, /windows page/i, question);
+    assert.doesNotMatch(answer, /bathroom starting price/i, question);
     assert.equal(starting.test(answer), false, question);
     assert.equal(otherRoom.test(answer), false, question);
     const chat = respond(question);
@@ -90,7 +93,7 @@ test("product answers stay off banned claims", () => {
     const answer = replyTo(prompt);
     assert.equal(banned.test(answer), false, prompt);
     assert.equal(otherRoom.test(answer), false, prompt);
-    assert.equal(matchProduct(prompt) !== null || answer.includes(WINDOW_PRICE_LINE), true, prompt);
+    assert.equal(matchProduct(prompt) !== null || /windows page/i.test(answer), true, prompt);
     if (matchProduct(prompt)?.topic === "window" || /window/i.test(prompt)) {
       assert.equal(starting.test(answer), false, prompt);
       assert.equal(phonePromise.test(answer), false, prompt);

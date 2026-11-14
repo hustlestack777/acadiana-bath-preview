@@ -6,7 +6,6 @@ import { gigiBrand } from "./gigi-brand";
 import { designHref } from "./starting-looks";
 import { matchProduct, type ProductMatch } from "./gigi-product";
 import { warrantyPlainText } from "./warranty";
-import { WINDOW_PRICE_LINE } from "./windows";
 
 function faqAnswer(question: string) {
   const item = geoFaqs.find((faq) => faq.q === question);
@@ -115,7 +114,10 @@ const answers = {
   callTime: "When’s a good time for us to call and discuss your project?",
   callDay: "Any day that’s best?",
   handoff: "Thanks. Here’s the quote form. We'll call first, then set a time to take measurements.",
-  windows: `${WINDOW_PRICE_LINE} The material and the glass matter too. I won't use the bathroom starting price for windows. Get an estimate on our windows page.`,
+  windows:
+    "Window pricing depends on how many you need, the size of each one, the material, and the glass. I don't have one number for that. The estimate on our windows page is where we sort it out.",
+  windowsAgain:
+    "A couple of bedroom windows and a wide living-room unit are different jobs, and the glass changes it again. Tell me how many and a rough size, or start the estimate on our windows page.",
   outside: OUTSIDE_AREA,
   locationRetry: "Tell me the town or ZIP, and I’ll take it from there.",
   process: GIGI_PROCESS,
@@ -170,6 +172,7 @@ export type GigiSession = {
   placement?: string;
   lookWaived?: boolean;
   offTopicTurns?: number;
+  windowPriceTold?: boolean;
 };
 
 export const SOMETHING_ELSE_CHIP: GigiChip = { label: "Something else", focusInput: true };
@@ -560,6 +563,15 @@ function deliver(body: string, chips: GigiChip[], session: GigiSession, message:
   return { text: guarded.text, chips, session: next };
 }
 
+function windowPriceReply(session: GigiSession): GigiResponse {
+  const again = Boolean(session.windowPriceTold);
+  return {
+    text: again ? answers.windowsAgain : answers.windows,
+    chips: WINDOW_CHIPS,
+    session: { ...session, project: "Windows", windowPriceTold: true },
+  };
+}
+
 function chipsFor(match: ProductMatch | null, session: GigiSession): GigiChip[] {
   if (match?.topic === "window" || session.project === "Windows") return WINDOW_CHIPS;
   if (match?.id === "penny" || session.material === "penny tile") return PENNY_CHIPS;
@@ -577,10 +589,7 @@ export function respond(
   if (!text) return { text: answers.disclosure, chips: INTRO_CHIPS, session: next };
   noteFacts(next, text);
 
-  if (shouldUseWindowPrice(text, context?.pathname)) {
-    next.project = "Windows";
-    return { text: answers.windows, chips: WINDOW_CHIPS, session: next };
-  }
+  if (shouldUseWindowPrice(text, context?.pathname)) return windowPriceReply(next);
 
   if (next.phase === "contact" || (next.quoteOffered && affirms(text) && !isNotSure(text))) {
     readContact(message, next);
@@ -616,7 +625,7 @@ export function respond(
   }
 
   if (asksPrice(text) || /ballpark/.test(text)) {
-    if (next.project === "Windows") return { text: answers.windows, chips: WINDOW_CHIPS, session: next };
+    if (next.project === "Windows" || next.windowPriceTold) return windowPriceReply(next);
     const follow = priceFollowUp(next);
     const already = (next.asked ?? []).some((item) => item.toLowerCase().includes(follow.toLowerCase().slice(0, 24)));
     const body = `${priceBody(next)}${follow && !already ? ` ${follow}` : ""}`;
@@ -657,7 +666,7 @@ export function respond(
   }
 
   const project = matchProject(text);
-  if (project === "Windows") return { text: answers.windows, chips: WINDOW_CHIPS, session: { ...next, project: "Windows" } };
+  if (project === "Windows") return windowPriceReply(next);
   if (project) {
     next.project = project;
     return deliver(`A ${project.toLowerCase()} is work we do. Penny tile on the floor, a herringbone or chevron wall, or a solid-surface shower are the directions I suggest most. Which of those sounds closest?`, IDEA_CHIPS, next, message, context?.pathname);
