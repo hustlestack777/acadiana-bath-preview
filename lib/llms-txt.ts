@@ -3,6 +3,7 @@ import { warrantyPlainText } from "./warranty";
 import { MAIN_TOWNS, OUTSIDE_AREA } from "./coverage";
 import { townPath, towns } from "./towns";
 import { SCHEMA_SERVICE_AREA, SITE_EMAIL, SITE_NAME, SITE_PHONE, SITE_URL } from "./site";
+import { WINDOW_PRICE_LINE } from "./windows";
 
 export function llmsTxt(): string {
   const page = (path: string, label: string) => `- ${label}: ${SITE_URL}${path}`;
@@ -25,9 +26,9 @@ ${SITE_NAME} is a bathroom remodeling company based in Lafayette, Louisiana. ${S
 - Custom tile showers and bathrooms, including zellige, patterned floors and grout colors you choose (${SITE_URL}/custom-tile)
 - Bathroom design previews from your own photos (${SITE_URL}/design)
 - Free Quote (${SITE_URL}/estimate)
-- Window estimates (${SITE_URL}/windows)
+- Window estimates (${SITE_URL}/windows). ${WINDOW_PRICE_LINE}
 
-${heroQuoteLine} Most projects $5,000 to $30,000+. Tell us about your project and the best day and time to reach you. We'll call you first to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.
+Bathroom remodels: ${heroQuoteLine} Most projects $5,000 to $30,000+. Tell us about your project and the best day and time to reach you. We'll call you first to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.
 
 ## Service area
 ${SCHEMA_SERVICE_AREA}

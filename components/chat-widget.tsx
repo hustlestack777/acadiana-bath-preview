@@ -324,7 +324,7 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
     const wait = reduce ? 0 : 420;
     setTyping(true);
     window.setTimeout(() => {
-      const result = respond(trimmed, currentSession);
+      const result = respond(trimmed, currentSession, { pathname });
       setTurns((current) => [...current, { role: "assistant", text: result.text }]);
       setSession(result.session);
       setChips(result.chips);

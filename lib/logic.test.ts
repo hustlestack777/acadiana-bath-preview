@@ -6,6 +6,7 @@ import { validateDetails, validateExtras, validateStreet, validateZip } from "./
 import { leadNotifyRecipients, validateLead } from "./leads";
 import { priceRange, projects } from "./copy";
 import { warrantyPlainText } from "./warranty";
+import { WINDOW_PRICE_LINE } from "./windows";
 
 const pledge = ["guar", "antee"].join("");
 const quarriedPhrase = ["real", "stone"].join(" ");
@@ -175,6 +176,11 @@ test("assistant answers stay inside the published facts", () => {
   assert.equal(/AI assistant/i.test(CHAT_ANSWERS.disclosure), false);
   assert.match(replyTo("What's a ballpark price?"), /Starting at \$5K/);
   assert.match(replyTo("What's a ballpark price?"), /What are you thinking about/);
+  assert.equal(replyTo("how much do windows cost"), CHAT_ANSWERS.windows);
+  assert.match(replyTo("how much do windows cost"), new RegExp(WINDOW_PRICE_LINE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.equal(/\$5K|\$5,000/.test(replyTo("how much do windows cost")), false);
+  assert.equal(replyTo("how much", "/windows"), CHAT_ANSWERS.windows);
+  assert.match(replyTo("how much is a shower"), /Starting at \$5K/);
 });
 
 test("Gigi's greeting bubble copy and page rules", () => {
@@ -215,7 +221,18 @@ test("Gigi walks through the quote flow with matching chips", () => {
 
   const windows = respond("Windows", start.session);
   assert.match(windows.text, /windows page/i);
+  assert.match(windows.text, new RegExp(WINDOW_PRICE_LINE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.equal(/\$5K|\$5,000/.test(windows.text), false);
   assert.equal(windows.chips.some((chip) => chip.href === "/windows"), true);
+
+  const windowPrice = respond("how much do windows cost");
+  assert.equal(windowPrice.text, CHAT_ANSWERS.windows);
+  assert.equal(/\$5K|\$5,000/.test(windowPrice.text), false);
+
+  const onWindows = respond("how much", { phase: "intro" }, { pathname: "/windows" });
+  assert.equal(onWindows.text, CHAT_ANSWERS.windows);
+  const showerOnWindows = respond("how much is a shower remodel", { phase: "intro" }, { pathname: "/windows" });
+  assert.match(showerOnWindows.text, /Starting at \$5K/);
 
   const project = respond("Tub to shower", start.session);
   assert.equal(project.text, CHAT_ANSWERS.look);
@@ -311,6 +328,8 @@ test("Gigi explains the process the same way for free-typed questions", () => {
   assert.match(GIGI_SYSTEM_PROMPT, /trusted advisor/);
   assert.match(GIGI_SYSTEM_PROMPT, /Take this one beat at a time/);
   assert.match(GIGI_SYSTEM_PROMPT, /never a list of questions/);
+  assert.match(GIGI_SYSTEM_PROMPT, /bathroom remodels only/);
+  assert.match(GIGI_SYSTEM_PROMPT, new RegExp(WINDOW_PRICE_LINE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });
 
 test("Gigi's spoken answers avoid banned consult and claim wording", () => {
