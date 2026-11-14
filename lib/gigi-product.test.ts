@@ -7,6 +7,8 @@ import { WINDOW_PRICE_LINE } from "./windows";
 const banned = /licensed|insured|lifetime|consultation|dealer|factory-direct|authorized/i;
 const otherRoom = new RegExp(["kit", "chen"].join(""), "i");
 const starting = /\$5K|\$5,000|Starting at \$5K/i;
+const phonePromise = /I(?:'|’)ll call|I will call|call you back|we(?:'|’)ll call/i;
+const hiddenPhone = "337-405-9945";
 
 test("a zellige question names the handmade tile and the confirmed suppliers", () => {
   const answer = replyTo("What is zellige tile?");
@@ -25,7 +27,9 @@ test("argon and Zion gas get the same window answer", () => {
     assert.match(answer, /inert gas/i, question);
     assert.match(answer, /windows page/i, question);
     assert.equal(starting.test(answer), false, question);
+    assert.equal(phonePromise.test(answer), false, question);
     assert.equal(banned.test(answer), false, question);
+    assert.equal(answer.includes(hiddenPhone), false, question);
     const chat = respond(question);
     assert.equal(chat.text, answer);
     assert.equal(chat.chips.some((chip) => chip.href === "/windows"), true);
@@ -89,6 +93,8 @@ test("product answers stay off banned claims", () => {
     assert.equal(matchProduct(prompt) !== null || answer.includes(WINDOW_PRICE_LINE), true, prompt);
     if (matchProduct(prompt)?.topic === "window" || /window/i.test(prompt)) {
       assert.equal(starting.test(answer), false, prompt);
+      assert.equal(phonePromise.test(answer), false, prompt);
     }
+    assert.equal(answer.includes(hiddenPhone), false, prompt);
   }
 });

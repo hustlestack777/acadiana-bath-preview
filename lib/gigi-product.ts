@@ -2,7 +2,7 @@ import { WINDOW_PRICE_LINE } from "./windows";
 
 const BATH_NEXT = "Get My Free Quote, and your consultant will go over it when they measure.";
 const WINDOW_NEXT =
-  "Get an estimate on our windows page, and we'll call to discuss your windows, then set a time to take measurements for the real quote.";
+  "Get an estimate on our windows page, then set a time to take measurements for the real quote.";
 
 export type ProductTopic = "bath" | "window";
 

@@ -129,7 +129,7 @@ const answers = {
   callTime: "When’s a good time for us to call and discuss your project?",
   callDay: "Any day that’s best?",
   handoff: "Thanks. Here’s the quote form. We'll call first, then set a time to take measurements.",
-  windows: `${WINDOW_PRICE_LINE} The material and the glass matter too. I won't use the bathroom starting price for windows. Get an estimate on our windows page, and we'll call to discuss your windows, then set a time to take measurements for the real quote.`,
+  windows: `${WINDOW_PRICE_LINE} The material and the glass matter too. I won't use the bathroom starting price for windows. Get an estimate on our windows page.`,
   outside: OUTSIDE_AREA,
   locationRetry: "Tell me the town or ZIP, and I’ll take it from there.",
   process: GIGI_PROCESS,
