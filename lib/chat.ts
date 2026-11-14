@@ -3,6 +3,7 @@ import { brand, care, hero } from "./copy";
 import { OUTSIDE_AREA, checkCity } from "./coverage";
 import { geoFaqs } from "./faq-page";
 import { designHref } from "./starting-looks";
+import { matchProduct, PRODUCT_PRICE_RULE, type ProductMatch } from "./gigi-product";
 import { warrantyPlainText } from "./warranty";
 import { WINDOW_PRICE_LINE } from "./windows";
 
@@ -52,7 +53,7 @@ ${GIGI_PROCESS}
 
 The person who measures and goes over design is "your consultant" (they/their), not "we" and not the owner's first name. Keep the first call as "We'll call you...".
 
-Price framing: Starting at $5K is for bathroom remodels only. For windows, say exactly: "${WINDOW_PRICE_LINE}" Do not give other prices, timelines, or durations.
+Price framing: ${PRODUCT_PRICE_RULE} Do not give other prices. Do not invent a duration for the work. In-stock tile from Riad Tile typically ships in about 6 to 12 days.
 
 Do not promise a first-step home visit or name how long work is covered. Do not make license or insurance claims, say one person does every trade himself, or ask for a deposit. Do not mention payment plans.
 
@@ -60,7 +61,7 @@ If asked about standing behind the work, say exactly: "${warrantyPlainText}"
 
 Out of area, say exactly: "Outside our area? Ask for a quote." For granite, only: "We do not install granite." Phone: (337) 522-0023. No street address.
 
-You know tile, quartz, quartzite and marble, and layouts. Never recommend or offer granite. Never make a license or insurance claim, and never describe coverage as lasting for life. Never offer to text or ask anyone to text.
+You know tile, quartz, quartzite and marble, solid surface, layouts, and windows. We install The Onyx Collection shower panels, bases, and accessories, and Onyx is a preferred material. We work with Pella, TileBar, Riad Tile, Flooret, and Wallism. We use Mapei grout and caulk colors. Do not say we work with any other brand, and do not call us a Pella factory store. Never recommend or offer granite. Never make a license or insurance claim, and never describe coverage as lasting for life. Never offer to text or ask anyone to text.
 
 When it is natural — someone asking about counters, stone, tile or a layout — suggest the upgraded stone (quartzite or marble over basic quartz) and a better layout, with one honest line on why (more depth and a more natural look), then close with setting a time to take measurements. No pressure, no fake urgency, no fake scarcity, and do not invent facts. Make the next step easy: Get My Free Quote, Design My Bathroom, or set a time to take measurements.`;
 
@@ -128,7 +129,7 @@ const answers = {
   callTime: "When’s a good time for us to call and discuss your project?",
   callDay: "Any day that’s best?",
   handoff: "Thanks. Here’s the quote form. We'll call first, then set a time to take measurements.",
-  windows: `${WINDOW_PRICE_LINE} I can help with windows on our windows page.`,
+  windows: `${WINDOW_PRICE_LINE} The material and the glass matter too. I won't use the bathroom starting price for windows. Get an estimate on our windows page.`,
   outside: OUTSIDE_AREA,
   locationRetry: "Tell me the town or ZIP, and I’ll take it from there.",
   process: GIGI_PROCESS,
@@ -408,6 +409,8 @@ export function shouldUseWindowPrice(text: string, pathname?: string) {
 export function replyTo(message: string, pathname?: string) {
   const text = message.toLowerCase().trim();
   if (!text) return answers.disclosure;
+  const product = matchProduct(text);
+  if (product) return product.text;
   if (shouldUseWindowPrice(text, pathname)) return answers.windows;
   if (/ballpark/.test(text)) return answers.ballpark;
   const fact = factReply(text);
@@ -466,12 +469,21 @@ function finishHandoff(session: GigiSession, callDay: NonNullable<GigiSession["c
   return { text, chips: handoffChips(next), session: next };
 }
 
-function windowsReply(session: GigiSession): GigiResponse {
+function windowsReply(session: GigiSession, text: string = answers.windows): GigiResponse {
   return {
-    text: answers.windows,
-    chips: [{ label: "See windows", href: "/windows" }, ...NEXT_STEP_CHIPS.filter((chip) => chip.href !== "/windows")],
+    text,
+    chips: [
+      { label: "Get an estimate", href: "/windows" },
+      { label: "See windows", href: "/windows" },
+    ],
     session: { ...session, phase: "intro", project: "Windows" },
   };
+}
+
+function answerProduct(session: GigiSession, match: ProductMatch): GigiResponse {
+  if (match.topic === "window") return windowsReply(session, match.text);
+  if (session.phase !== "intro") return withCurrentChips(match.text, session);
+  return { text: match.text, chips: NEXT_STEP_CHIPS, session };
 }
 
 function withCurrentChips(text: string, session: GigiSession, extra?: GigiChip[]): GigiResponse {
@@ -499,6 +511,9 @@ export function respond(
 ): GigiResponse {
   const text = message.toLowerCase().trim();
   if (!text) return { text: answers.disclosure, chips: INTRO_CHIPS, session: { phase: "intro" } };
+
+  const product = matchProduct(text);
+  if (product) return answerProduct(session, product);
 
   if (shouldUseWindowPrice(text, context?.pathname)) return windowsReply(session);
 
