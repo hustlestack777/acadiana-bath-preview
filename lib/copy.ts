@@ -64,7 +64,7 @@ export const trustLine =
 export const trustLineFollow =
   "Free quote. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.";
 
-export const heroQuoteLine = "Starting at $7K · Free quote.";
+export const heroQuoteLine = "Starting at $5K · Free quote.";
 
 export const editorial = {
   eyebrow: "The room, considered",
@@ -254,13 +254,13 @@ export const walkInPage = {
   title: "Walk-In Showers in Lafayette, LA",
   documentTitle: "Walk-In Showers in Lafayette, LA | Acadiana Bathrooms and Countertops",
   description:
-    "Walk-in showers and tub-to-shower conversions in Lafayette, LA. Solid surface or custom tile, with niches, seating and glass. Starting at $7K. Call (337) 522-0023.",
+    "Walk-in showers and tub-to-shower conversions in Lafayette, LA. Solid surface or custom tile, with niches, seating and glass. Starting at $5K. Call (337) 522-0023.",
   schemaDescription:
     "Walk-in showers and tub-to-shower conversions in Lafayette, Louisiana. Solid surface or custom tile, with niches, seating, and glass.",
   eyebrow: "Lafayette, Louisiana",
   support:
     "A walk-in shower or a tub-to-shower conversion, in solid surface or custom tile, with niches, seating, and glass.",
-  price: "Starting at $7K",
+  price: "Starting at $5K",
   includesTitle: "What a walk-in shower includes",
   includes: [
     {
@@ -293,7 +293,7 @@ export const walkInPage = {
     },
     {
       q: "How much does a walk-in shower cost?",
-      a: "Starting at $7K. The exact number is given when your consultant takes measurements and looks at the space, the materials, and the work involved. Use the quote form or call (337) 522-0023.",
+      a: "Starting at $5K. The exact number is given when your consultant takes measurements and looks at the space, the materials, and the work involved. Use the quote form or call (337) 522-0023.",
       link: { text: "quote form", href: "/estimate" },
     },
     {
@@ -404,4 +404,4 @@ export const ideas = {
 
 /** Approved price wording (Shaun, 11/12/2026). Used in chat and on the path pages. */
 export const priceRange =
-  "Starting at $7K, with most projects $7,000 to $30,000+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";
+  "Starting at $5K, with most projects $5,000 to $30,000+, depending on size, materials and layout. Tell us about your project and the best day and time to reach you. We'll call to discuss your project, your style and what you have in mind, then set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then. When you're ready to move forward, we manage your project from design to the finished bathroom.";

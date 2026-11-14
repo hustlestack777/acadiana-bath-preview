@@ -18,7 +18,7 @@ test("walk-in shower service JSON-LD is Lafayette and the public page", () => {
   assert.equal("address" in data, false);
   assert.equal("streetAddress" in data, false);
   assert.deepEqual(assertSafeJsonLd(data), []);
-  assert.equal(walkInPage.price, "Starting at $7K");
+  assert.equal(walkInPage.price, "Starting at $5K");
   assert.equal(walkInPage.path, WALK_IN_SHOWER_PATH);
   const catalog = businessJsonLd().hasOfferCatalog.itemListElement.find(
     (item: { serviceType: string; url: string }) => item.serviceType === "Custom walk-in showers",

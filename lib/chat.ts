@@ -51,7 +51,7 @@ ${GIGI_PROCESS}
 
 The person who measures and goes over design is "your consultant" (they/their), not "we" and not the owner's first name. Keep the first call as "We'll call you...".
 
-Price framing: Starting at $7K only. Do not give other prices, timelines, or durations.
+Price framing: Starting at $5K only. Do not give other prices, timelines, or durations.
 
 Do not promise a first-step home visit or name how long work is covered. Do not make license or insurance claims, say one person does every trade himself, or ask for a deposit. Do not mention payment plans.
 
@@ -119,7 +119,7 @@ function withCallsFirst(text: string) {
 const answers = {
   disclosure:
     `Hey! I’m ${CHAT_AGENT_NAME}, the design consultant for Acadiana Bathrooms. What can I help you with?`,
-  ballpark: "Starting at $7K. What are you thinking about?",
+  ballpark: "Starting at $5K. What are you thinking about?",
   project: "What are you thinking about?",
   look: "What’s the look?",
   location: "Where's the home?",
@@ -551,7 +551,7 @@ export function respond(message: string, session: GigiSession = { phase: "intro"
     if (project === "Windows") return windowsReply(session);
     if (project) {
       return {
-        text: `Starting at $7K. ${answers.look}`,
+        text: `Starting at $5K. ${answers.look}`,
         chips: LOOK_CHIPS,
         session: { ...session, phase: "look", project },
       };

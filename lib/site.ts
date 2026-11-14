@@ -39,8 +39,8 @@ export const SITE_EMAIL = brand.email;
 export const SITE_LOGO_PATH = "/brand/logo.png";
 export const SITE_LOGO_URL = `${SITE_URL}${SITE_LOGO_PATH}`;
 
-/** schema.org priceRange. Public copy leads with Starting at $7K; JSON-LD stays in dollars as $7,000 to $30,000+. */
-export const SCHEMA_PRICE_RANGE = "$7,000 to $30,000+";
+/** schema.org priceRange. Public copy leads with Starting at $5K; JSON-LD stays in dollars as $5,000 to $30,000+. */
+export const SCHEMA_PRICE_RANGE = "$5,000 to $30,000+";
 
 /** Lafayette walk-in shower page. Canonical public URL, including in homepage JSON-LD. */
 export const WALK_IN_SHOWER_PATH = "/walk-in-shower-lafayette";

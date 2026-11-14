@@ -109,7 +109,7 @@ test("FAQPage schema is built only from the visible questions passed in", () => 
   }
   const cost = geoFaqs.find((faq) => faq.q === "How much does a bathroom remodel cost in South Louisiana?");
   assert.ok(cost);
-  assert.match(cost.a, /Starting at \$7K, with most projects \$7,000 to \$30,000\+/);
+  assert.match(cost.a, /Starting at \$5K, with most projects \$5,000 to \$30,000\+/);
   assert.match(cost.a, /See your new bathroom before you spend a dime/);
   assert.match(cost.a, /you'll get your exact price right then/);
   assert.equal(cost.link?.text, "See your new bathroom");

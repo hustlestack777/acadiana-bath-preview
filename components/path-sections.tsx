@@ -122,7 +122,7 @@ export function PathChooser() {
         <a href="/walk-in-shower-lafayette" className="font-medium underline underline-offset-4">
           Walk-in showers in Lafayette
         </a>{" "}
-        include solid surface or custom tile, niches, seating, and glass. Starting at $7K.
+        include solid surface or custom tile, niches, seating, and glass. Starting at $5K.
       </p>
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {cards.map((card) => (
