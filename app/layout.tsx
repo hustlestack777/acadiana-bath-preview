@@ -8,6 +8,7 @@ import { LeadAttributionTracker } from "@/components/lead-attribution";
 import { businessJsonLd } from "@/lib/schema";
 import { isIndexableHost } from "@/lib/indexable-host";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
+import { isWindowsContentPath } from "@/lib/windows";
 
 
 const outfit = Outfit({
@@ -81,14 +82,15 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const pathname = (await headers()).get("x-pathname") ?? "";
   return (
     <html
       lang="en"
       className={`${outfit.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <JsonLd data={businessJsonLd()} />
+        <JsonLd data={businessJsonLd({ includePriceRange: !isWindowsContentPath(pathname) })} />
         <LeadAttributionTracker />
         {children}
       </body>
