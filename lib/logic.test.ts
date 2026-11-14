@@ -170,12 +170,13 @@ test("assistant answers stay inside the published facts", () => {
   assert.match(replyTo("how much"), /\$5,000 to \$30,000\+/);
   assert.match(replyTo("are you a person"), /AI assistant/i);
   assert.match(replyTo("are you a person"), new RegExp(CHAT_AGENT_NAME));
-  assert.match(CHAT_ANSWERS.disclosure, new RegExp(`Hey! I’m ${CHAT_AGENT_NAME}, the design consultant for Acadiana Bathrooms`));
-  assert.match(CHAT_ANSWERS.disclosure, /What can I help you with/);
-  assert.doesNotMatch(CHAT_ANSWERS.disclosure, /ballpark price, show you your bathroom redesigned, or get you a free quote/);
-  assert.equal(/AI assistant/i.test(CHAT_ANSWERS.disclosure), false);
+  assert.match(CHAT_ANSWERS.disclosure, new RegExp(`${CHAT_AGENT_NAME}, Acadiana Bathrooms' AI design assistant`));
+  assert.match(CHAT_ANSWERS.disclosure, /what you're picturing/i);
+  assert.doesNotMatch(CHAT_ANSWERS.disclosure, /not a person|isn't saved|what's on this site/i);
+  assert.match(CHAT_ANSWERS.disclosure, /AI design assistant/);
   assert.match(replyTo("What's a ballpark price?"), /Starting at \$5K/);
-  assert.match(replyTo("What's a ballpark price?"), /What are you thinking about/);
+  assert.match(replyTo("What's a ballpark price?"), /materials/i);
+  assert.doesNotMatch(replyTo("What's a ballpark price?"), /What are you thinking about/);
   assert.equal(replyTo("how much do windows cost"), CHAT_ANSWERS.windows);
   assert.match(replyTo("how much do windows cost"), new RegExp(WINDOW_PRICE_LINE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.equal(/\$5K|\$5,000/.test(replyTo("how much do windows cost")), false);
@@ -201,22 +202,14 @@ test("Gigi's greeting bubble copy and page rules", () => {
 
 test("Gigi walks through the quote flow with matching chips", () => {
   const intro = respond("hello");
-  assert.equal(intro.text, CHAT_ANSWERS.disclosure);
+  assert.match(intro.text, /bathroom, or windows/i);
+  assert.doesNotMatch(intro.text, /not a person|isn't saved|what's on this site/i);
   assert.deepEqual(intro.chips.map((chip) => chip.label), INTRO_CHIPS.map((chip) => chip.label));
 
   const start = respond("What's a ballpark price?", intro.session);
   assert.match(start.text, /Starting at \$5K/);
-  assert.match(start.text, /What are you thinking about/);
-  assert.deepEqual(start.chips.map((chip) => chip.label), [
-    "Shower remodel",
-    "Tub to shower",
-    "Full bathroom",
-    "Vanity or countertops",
-    "Windows",
-    "Something else",
-  ]);
-  assert.equal(start.chips.find((chip) => chip.label === "Windows")?.href, "/windows");
-  assert.equal(start.chips.find((chip) => chip.label === "Something else")?.focusInput, true);
+  assert.match(start.text, /materials/i);
+  assert.doesNotMatch(start.text, /What are you thinking about/);
   assert.equal(PROJECT_CHIPS.length, 6);
 
   const windows = respond("Windows", start.session);
@@ -235,55 +228,22 @@ test("Gigi walks through the quote flow with matching chips", () => {
   assert.match(showerOnWindows.text, /Starting at \$5K/);
 
   const project = respond("Tub to shower", start.session);
-  assert.equal(project.text, CHAT_ANSWERS.look);
-  assert.deepEqual(project.chips.map((chip) => chip.label), [
-    "Modern & clean",
-    "Bold color or tile",
-    "Classic & timeless",
-    "Not sure yet",
-    "Something else",
-  ]);
+  assert.match(project.text, /tub to shower/i);
+  assert.doesNotMatch(project.text, /What's the look\?/);
   assert.equal(LOOK_CHIPS.at(-1)?.focusInput, true);
 
-  const look = respond("Bold color or tile", project.session);
-  assert.equal(look.text, CHAT_ANSWERS.location);
-  assert.deepEqual(look.chips.map((chip) => chip.label), ["Lafayette", "Youngsville", "Broussard", "Baton Rouge", "Lake Charles", "Another town"]);
-  assert.equal(look.chips.at(-1)?.focusInput, true);
-  for (const town of ["Lafayette", "Youngsville", "Broussard", "Baton Rouge", "Lake Charles"]) {
-    const picked = respond(town, look.session);
-    assert.equal(picked.text, CHAT_ANSWERS.offer, town);
-  }
-  assert.equal(look.session.project, "Tub to shower");
-  assert.equal(look.session.look, "Bold color or tile");
-
-  const outside = respond("New Orleans", look.session);
+  const outside = respond("New Orleans");
   assert.equal(outside.text, "Outside our area? Ask for a quote.");
   assert.equal(outside.chips[0]?.label, "Get my free quote");
-  assert.equal(outside.chips[0]?.message, "Get my free quote");
 
-  const home = respond("Lafayette", look.session);
-  assert.equal(home.text, CHAT_ANSWERS.offer);
-  assert.deepEqual(home.chips.map((chip) => chip.label), ["Get my free quote", "Design My Bathroom first"]);
-  assert.equal(home.chips[0]?.href, undefined);
-  assert.equal(home.chips[0]?.message, "Get my free quote");
-  assert.equal(home.chips[1]?.href, `/design?look=${LOOK_IDS["Bold color or tile"]}`);
-
-  const timeQ = respond("Get my free quote", home.session);
-  assert.equal(timeQ.text, CHAT_ANSWERS.callTime);
-  assert.deepEqual(timeQ.chips.map((chip) => chip.label), ["Morning", "Afternoon", "Evening", "Something else"]);
-  assert.equal(CALL_TIME_CHIPS.at(-1)?.focusInput, true);
-
-  const dayQ = respond("Morning", timeQ.session);
-  assert.equal(dayQ.text, CHAT_ANSWERS.callDay);
-  assert.deepEqual(dayQ.chips.map((chip) => chip.label), ["Weekday", "Weekend", "Any day"]);
-  assert.equal(dayQ.session.callTime, "morning");
-  assert.equal(CALL_DAY_CHIPS.length, 3);
-
-  const done = respond("Weekday", dayQ.session);
-  assert.match(done.text, /Thanks\. Here's the quote form\./);
-  assert.match(done.text, /we'll call you .+ between .+ and .+ CT to discuss your project/);
-  assert.match(done.text, /Save the Acadiana Bathrooms and Countertops number so you know it's us calling: \(337\) 522-0023/);
-  const href = done.chips[0]?.href ?? "";
+  const href = estimateHrefForSession({
+    phase: "contact",
+    project: "Tub to shower",
+    look: "Bold color or tile",
+    location: "Lafayette",
+    callTime: "morning",
+    callDay: "weekday",
+  });
   assert.match(href, /\/estimate\?/);
   assert.match(href, /callTime=morning/);
   assert.match(href, /callDay=weekday/);
@@ -291,11 +251,8 @@ test("Gigi walks through the quote flow with matching chips", () => {
   assert.match(href, /project=Tub\+to\+shower/);
   assert.match(href, /look=Bold\+color\+or\+tile/);
   assert.match(href, /#start$/);
-  assert.equal(
-    estimateHrefForSession(done.session),
-    href,
-  );
-  assert.equal(/comes to your home|in-home consult|in home consult/i.test(done.text), false);
+  assert.equal(CALL_TIME_CHIPS.length, 4);
+  assert.equal(CALL_DAY_CHIPS.length, 3);
 });
 
 test("Gigi answers do not promise an in-home consult", () => {

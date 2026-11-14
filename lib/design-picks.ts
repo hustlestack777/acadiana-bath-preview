@@ -257,6 +257,39 @@ export const designLayouts: DesignLayout[] = [
 
 export const designWalls: DesignWall[] = [
   {
+    key: "penny",
+    name: "Penny tile",
+    blurb: "Round mosaic dots, on a wall or accent.",
+    image: "/images/design-picks/penny-wall.webp",
+    alt: "Walk-in shower wall covered in glossy white penny-round mosaic tile with brass fixtures.",
+    path: "custom-tile",
+    project: "tile-shower",
+    family: "patterned-tile",
+    spec: "glossy white penny-round mosaic wall tile, about one inch circles on mesh, with light grout, a recessed niche",
+  },
+  {
+    key: "chevron",
+    name: "Chevron",
+    blurb: "A continuous V up the wall.",
+    image: "/images/design-picks/chevron-wall.webp",
+    alt: "Walk-in shower with matte white chevron wall tile in a continuous V and a black valve.",
+    path: "custom-tile",
+    project: "tile-shower",
+    family: "patterned-tile",
+    spec: "matte white chevron wall tile laid in a continuous V, a recessed niche",
+  },
+  {
+    key: "arabesque",
+    name: "Arabesque",
+    blurb: "Lantern mosaic with small diamonds.",
+    image: "/images/design-picks/arabesque-wall.webp",
+    alt: "Shower accent wall in white marble arabesque lantern mosaic with small diamond accents and brass fixtures.",
+    path: "custom-tile",
+    project: "tile-shower",
+    family: "patterned-tile",
+    spec: "white marble arabesque lantern mosaic wall tile with small diamond accents, a recessed niche",
+  },
+  {
     key: "zellige",
     name: "Green zellige",
     blurb: "Glossy handmade-look green tile.",
@@ -358,6 +391,38 @@ export const designWalls: DesignWall[] = [
 ];
 
 export const designFloors: DesignFloor[] = [
+  {
+    key: "penny",
+    name: "Penny tile",
+    blurb: "Round mosaic dots underfoot.",
+    image: "/images/design-picks/penny-floor.webp",
+    alt: "Glossy white penny-round mosaic shower floor with light grout and a round brass drain.",
+    spec: "glossy white penny-round mosaic floor tile, about one inch circles, sloped to the drain",
+  },
+  {
+    key: "herringbone",
+    name: "Herringbone",
+    blurb: "A broken zigzag of rectangles.",
+    image: "/images/design-picks/herringbone-floor.webp",
+    alt: "White marble herringbone mosaic shower floor with a round brass drain.",
+    spec: "small white marble herringbone mosaic floor tile",
+  },
+  {
+    key: "chevron",
+    name: "Chevron",
+    blurb: "Planks meeting in a continuous V.",
+    image: "/images/design-picks/chevron-floor.webp",
+    alt: "White marble chevron floor tile in a continuous V with a square brass drain.",
+    spec: "white marble or porcelain chevron floor tile in a continuous V",
+  },
+  {
+    key: "arabesque",
+    name: "Arabesque",
+    blurb: "Lantern shapes and little diamonds.",
+    image: "/images/design-picks/arabesque-floor.webp",
+    alt: "Honed white marble arabesque lantern mosaic floor with small diamond accents.",
+    spec: "honed white marble arabesque lantern mosaic floor tile with small diamond accents",
+  },
   {
     key: "porcelain",
     name: "Large porcelain",

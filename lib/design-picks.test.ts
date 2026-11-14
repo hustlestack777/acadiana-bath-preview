@@ -3,7 +3,9 @@ import { test } from "node:test";
 import {
   STARTING_AT,
   composeSpec,
+  designFloors,
   designLabel,
+  designWalls,
   findLayout,
   layoutAllowsFixtureChange,
   leadFeatureLines,
@@ -13,6 +15,21 @@ import {
 } from "./design-picks";
 
 const sample = () => resolvePicks({ layout: "walk-in", wall: "zellige", floor: "hex", finish: "brass" });
+
+test("floor and wall pickers include penny tile and geometric shapes", () => {
+  for (const key of ["penny", "hex", "herringbone", "chevron", "arabesque", "porcelain", "mosaic", "encaustic", "wood-look"]) {
+    const floor = designFloors.find((item) => item.key === key);
+    assert.ok(floor, key);
+    assert.match(floor!.image, /\.webp$/);
+    assert.ok(floor!.alt.length > 12);
+  }
+  for (const key of ["penny", "herringbone", "chevron", "arabesque", "black-hex"]) {
+    const wall = designWalls.find((item) => item.key === key);
+    assert.ok(wall, key);
+    assert.match(wall!.image, /\.webp$/);
+    assert.ok(wall!.alt.length > 12);
+  }
+});
 
 test("walk-in is an alias for tub-to-shower and resolves the v3 test picks", () => {
   assert.equal(findLayout("walk-in")?.key, "tub-to-shower");
