@@ -1,3 +1,4 @@
+import { GoogleReviews } from "@/components/google-reviews";
 import { PhotoGallery } from "@/components/photo-gallery";
 import { Hero } from "@/components/hero";
 import { ConsultLink } from "@/components/consult-link";
@@ -69,6 +70,8 @@ export function HomePage() {
           <p className="mt-4 max-w-2xl text-sm leading-6 text-fig-muted">{area.outside}</p>
         </div>
       </section>
+
+      <GoogleReviews />
 
       <section id="talk" className="relative overflow-hidden bg-[#14261f] text-[#f6f1e6]">
         <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 py-20 md:flex-row md:items-end md:justify-between md:py-28">

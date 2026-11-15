@@ -26,6 +26,25 @@ import { cn } from "cn";
 
 type Turn = { role: "assistant" | "you"; text: string };
 
+/** Make a shared URL tappable. Assistant copy stays plain text otherwise. */
+function ChatText({ text }: { text: string }) {
+  const parts = text.split(/(https?:\/\/[^\s]+)/g);
+  return parts.map((part, index) =>
+    part.startsWith("http") ? (
+      <a key={index} href={part} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+        {part.split(/(\/|\?|&)/).map((piece, pieceIndex) => (
+          <span key={pieceIndex}>
+            {piece}
+            {piece === "/" || piece === "?" || piece === "&" ? <wbr /> : null}
+          </span>
+        ))}
+      </a>
+    ) : (
+      <span key={index}>{part}</span>
+    ),
+  );
+}
+
 const GREETING_KEY = "gigi-greeting";
 const DESKTOP_MQ = "(min-width: 768px)";
 
@@ -405,7 +424,7 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
                     turn.role === "assistant" ? "bg-muted text-foreground" : "bg-primary text-primary-foreground",
                   )}
                 >
-                  {turn.text}
+                  {turn.role === "assistant" ? <ChatText text={turn.text} /> : turn.text}
                 </p>
               </div>
             ))}

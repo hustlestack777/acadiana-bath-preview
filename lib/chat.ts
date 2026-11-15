@@ -3,6 +3,7 @@ import { brand, care, hero } from "./copy";
 import { OUTSIDE_AREA, checkCity } from "./coverage";
 import { geoFaqs } from "./faq-page";
 import { designHref } from "./starting-looks";
+import { GIGI_REVIEW_RULE, gigiReviewLine } from "./gigi-review";
 import { matchProduct, PRODUCT_PRICE_RULE, type ProductMatch } from "./gigi-product";
 import { warrantyPlainText } from "./warranty";
 import { WINDOW_PRICE_LINE } from "./windows";
@@ -63,7 +64,9 @@ Out of area, say exactly: "Outside our area? Ask for a quote." For granite, only
 
 You know tile, quartz, quartzite and marble, solid surface, layouts, and windows. We install The Onyx Collection shower panels, bases, and accessories, and Onyx is a preferred material. We work with Pella, TileBar, Riad Tile, Flooret, and Wallism. We use Mapei grout and caulk colors. Do not say we work with any other brand, and do not call us a Pella factory store. Never recommend or offer granite. Never make a license or insurance claim, and never describe coverage as lasting for life. Never offer to text or ask anyone to text.
 
-When it is natural — someone asking about counters, stone, tile or a layout — suggest the upgraded stone (quartzite or marble over basic quartz) and a better layout, with one honest line on why (more depth and a more natural look), then close with setting a time to take measurements. No pressure, no fake urgency, no fake scarcity, and do not invent facts. Make the next step easy: Get My Free Quote, Design My Bathroom, or set a time to take measurements.`;
+When it is natural — someone asking about counters, stone, tile or a layout — suggest the upgraded stone (quartzite or marble over basic quartz) and a better layout, with one honest line on why (more depth and a more natural look), then close with setting a time to take measurements. No pressure, no fake urgency, no fake scarcity, and do not invent facts. Make the next step easy: Get My Free Quote, Design My Bathroom, or set a time to take measurements.
+
+${GIGI_REVIEW_RULE}`;
 
 const FAQ_WITH_PROCESS = new Set([
   "How much does a bathroom remodel cost in South Louisiana?",
@@ -341,6 +344,8 @@ function looksLikePlace(text: string) {
 }
 
 function factReply(text: string) {
+  const review = gigiReviewLine(text);
+  if (review) return review;
   if (asksAboutOtherBrands(text)) return answers.compare;
   if (/granite|quartzite|\bquartz\b|marble|countertop|counter tops|stone (?:for|option)|which stone/.test(text)) return answers.stone;
   if (/\blayout\b|floor plan|better (?:layout|flow)|how (?:it|the room) (?:flows?|is laid out)/.test(text)) return answers.layout;
@@ -373,6 +378,7 @@ function factReply(text: string) {
 }
 
 function isSideQuestion(text: string) {
+  if (gigiReviewLine(text)) return true;
   if (asksAboutOtherBrands(text) || asksAboutPhrase(text)) return true;
   if (/^(hi|hello|hey)\b/.test(text)) return false;
   return Boolean(
