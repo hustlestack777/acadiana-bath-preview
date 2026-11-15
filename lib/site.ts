@@ -54,6 +54,21 @@ export const VISIBLE_SERVICES = [
 
 /** Official profiles for schema.org sameAs. This is the only Google listing. */
 export const GOOGLE_BUSINESS_URL = "https://g.page/r/CQ1cF9_r2_6dEBM";
+
+/**
+ * Public Google review summary. Update these two numbers when the listing changes.
+ * Do not publish review quotes, reviewer names, or any other count.
+ */
+export const GOOGLE_REVIEWS = {
+  rating: 5,
+  count: 2,
+} as const;
+
+/** The only Google place id for this business. Do not substitute another listing. */
+export const GOOGLE_PLACE_ID = "ChIJy8M1qHT6IA4RDVwX3-vb_p0";
+
+export const GOOGLE_REVIEWS_READ_URL = `https://search.google.com/local/reviews?placeid=${GOOGLE_PLACE_ID}`;
+export const GOOGLE_WRITE_REVIEW_URL = `https://search.google.com/local/writereview?placeid=${GOOGLE_PLACE_ID}`;
 export const SITE_SAME_AS = [
   "https://www.facebook.com/profile.php?id=61596069587015",
   GOOGLE_BUSINESS_URL,

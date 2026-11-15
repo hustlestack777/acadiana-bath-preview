@@ -6,6 +6,7 @@ import { ConsultLink } from "@/components/consult-link";
 import { WindowsQuoteLine } from "@/components/windows-quote-line";
 import { townPath, towns } from "@/lib/towns";
 import { SocialLinks } from "@/components/social-link";
+import { GOOGLE_WRITE_REVIEW_URL } from "@/lib/site";
 
 export function SiteFooter() {
   return (
@@ -16,7 +17,18 @@ export function SiteFooter() {
           <p className="mt-4 text-sm leading-6 text-fig-muted">
             Custom bathroom remodels, from design to the finished bathroom. {SERVICE_AREA} Start with Design My Bathroom or a free quote.
           </p>
-          <SocialLinks className="mt-4" itemClassName="border-white/25 text-secondary-foreground hover:bg-white/10" />
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <SocialLinks itemClassName="border-white/25 text-secondary-foreground hover:bg-white/10" />
+            <a
+              href={GOOGLE_WRITE_REVIEW_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm underline underline-offset-4"
+              data-testid="footer-leave-review"
+            >
+              Leave a review
+            </a>
+          </div>
         </div>
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Call or email</p>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ConsultLink } from "@/components/consult-link";
+import { GoogleReviews } from "@/components/google-reviews";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { ExampleGrid, PathHero } from "@/components/path-sections";
@@ -166,6 +167,8 @@ export default function WalkInShowerLafayettePage() {
         </section>
 
         <FaqSection faqs={walkInPage.faqs} heading="Walk-in shower questions" />
+
+        <GoogleReviews />
 
         <section id="walk-in-quote" className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 md:grid-cols-12 md:py-28">
           <div className="md:col-span-5">
