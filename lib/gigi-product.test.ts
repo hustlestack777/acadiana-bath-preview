@@ -62,6 +62,28 @@ test("Pella is named as a partner, and unconfirmed brands are not claimed", () =
   assert.equal(/we work with Kohler/i.test(fixture), false);
 });
 
+test("solid surface is the main recommendation and is not plastic", () => {
+  for (const question of [
+    "What's solid surface?",
+    "Is it acrylic?",
+    "Is this fiberglass or PVC?",
+    "Do you use plastic shower surrounds?",
+  ]) {
+    const answer = replyTo(question);
+    assert.match(answer, /engineered stone/i, question);
+    assert.match(answer, /not plastic, acrylic, fiberglass, or PVC/i, question);
+    assert.match(answer, /minimal grout/i, question);
+    assert.match(answer, /main recommendation/i, question);
+    assert.equal(otherRoom.test(answer), false, question);
+    assert.equal(banned.test(answer), false, question);
+    assert.equal(starting.test(answer), false, question);
+    assert.equal(matchProduct(question)?.topic, "bath", question);
+  }
+  const windowFiberglass = replyTo("Is Impervia the Pella fiberglass line?");
+  assert.match(windowFiberglass, /Pella/);
+  assert.equal(/main recommendation/i.test(windowFiberglass), false);
+});
+
 test("product answers stay off banned claims", () => {
   const prompts = [
     "What is zellige?",
@@ -76,6 +98,8 @@ test("product answers stay off banned claims", () => {
     "What is Onyx made of?",
     "How do I clean an Onyx shower?",
     "Do you use Onyx?",
+    "What's solid surface?",
+    "Is it acrylic?",
     "Is vinyl plank okay in a bathroom?",
     "Can I put wallpaper in a bathroom?",
     "Do you do frameless glass?",

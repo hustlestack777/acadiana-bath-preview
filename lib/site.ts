@@ -45,10 +45,10 @@ export const WALK_IN_SHOWER_PATH = "/walk-in-shower-lafayette";
 export const WALK_IN_SHOWER_URL = `${brand.websiteHref}${WALK_IN_SHOWER_PATH}`;
 
 export const VISIBLE_SERVICES = [
+  { name: "Solid surface walls and bases", serviceType: "Solid surface bathroom remodeling", url: `${SITE_URL}/solid-surface` },
   { name: "Custom showers", serviceType: "Custom walk-in showers", url: WALK_IN_SHOWER_URL },
   { name: "Custom tile", serviceType: "Custom tile bathroom remodeling", url: `${SITE_URL}/custom-tile` },
   { name: "Quartz and quartzite countertops", serviceType: "Quartz and quartzite bathroom countertops", url: SITE_URL },
-  { name: "Solid surface showers and tub walls", serviceType: "Solid surface bathroom remodeling", url: `${SITE_URL}/solid-surface` },
   { name: "Window replacement", serviceType: "Window replacement and installation", url: `${SITE_URL}/windows` },
 ] as const;
 

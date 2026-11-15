@@ -42,7 +42,7 @@ export function businessJsonLd(options?: { includePriceRange?: boolean }) {
     email: SITE_EMAIL,
     logo: SITE_LOGO_URL,
     image: SITE_LOGO_URL,
-    description: `Bathroom remodels from ${SITE_NAME}. ${SCHEMA_SERVICE_AREA} ${OUTSIDE_AREA} See your new bathroom free: Design My Bathroom.`,
+    description: `Bathroom remodels from ${SITE_NAME}. Our main draw is solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. ${SCHEMA_SERVICE_AREA} ${OUTSIDE_AREA} See your new bathroom free: Design My Bathroom.`,
     areaServed: SCHEMA_AREA_SERVED,
     ...(includePriceRange ? { priceRange: SCHEMA_PRICE_RANGE } : {}),
     sameAs: [...SITE_SAME_AS],
@@ -102,7 +102,7 @@ export function serviceJsonLd(input: {
 
 export const solidSurfaceServiceJsonLd = () =>
   serviceJsonLd({
-    name: "Solid surface showers and tub walls",
+    name: "Solid surface walls and bases",
     serviceType: "Solid surface bathroom remodeling",
     description: `${solidPath.support} ${warrantyPlainText}`,
     url: `${SITE_URL}/solid-surface`,

@@ -4,7 +4,7 @@ import { LookImage } from "@/components/look-image";
 import { LookLink } from "@/components/look-link";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { brand, hero, heroDesignCta, ideas, priceRange, solidPath, tilePath, trustLine, trustLineFollow } from "@/lib/copy";
+import { brand, hero, heroDesignCta, ideas, pathChooser, priceRange, solidPath, tilePath, trustLine, trustLineFollow } from "@/lib/copy";
 import type { Photo } from "@/lib/images";
 import { findStartingLookBySrc } from "@/lib/starting-looks";
 import { cn } from "cn";
@@ -111,18 +111,18 @@ export function ExampleGrid({ photos, className, title }: { photos: Photo[]; cla
 /** Two big path cards. Used on home. */
 export function PathChooser() {
   const cards = [
-    { ...solidPath, image: "/images/ai/ss-walkin.webp", alt: "Warm-white solid surface walk-in shower with frameless glass and brass fixtures.", tag: "Affordable · Fewer grout lines" },
-    { ...tilePath, image: "/images/home/tile-card.webp", alt: "Tiled walk-in shower through an arched opening, with two arched niches, a bench, and brass fixtures.", tag: "Designer · Fully custom" },
+    { ...solidPath, image: "/images/ai/ss-walkin.webp", alt: "Warm-white solid surface walk-in shower with frameless glass and brass fixtures.", tag: pathChooser.solidTag },
+    { ...tilePath, image: "/images/home/tile-card.webp", alt: "Tiled walk-in shower through an arched opening, with two arched niches, a bench, and brass fixtures.", tag: pathChooser.tileTag },
   ];
   return (
     <section id="paths" className="rise mx-auto w-full max-w-6xl px-5 py-20 md:py-28">
-      <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">Choose your path</p>
-      <h2 className="mt-3 max-w-3xl text-4xl leading-[1.05] md:text-6xl">Two ways to a bathroom you love.</h2>
+      <p className="accent-rule text-xs font-semibold uppercase tracking-[0.22em] text-brass">{pathChooser.eyebrow}</p>
+      <h2 className="mt-3 max-w-3xl text-4xl leading-[1.05] md:text-6xl">{pathChooser.title}</h2>
       <p className="mt-4 max-w-2xl leading-7 text-muted-foreground">
         <a href="/walk-in-shower-lafayette" className="font-medium underline underline-offset-4">
           Walk-in showers in Lafayette
         </a>{" "}
-        include solid surface or custom tile, niches, seating, and glass. Starting at $5K.
+        {pathChooser.intro}
       </p>
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {cards.map((card) => (

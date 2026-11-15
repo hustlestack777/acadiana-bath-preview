@@ -35,7 +35,7 @@ export const geoFaqs = [
   },
   {
     q: "What do you install?",
-    a: "We remodel bathrooms: custom walk-in showers, tile (including handmade zellige), quartz, quartzite and marble, and solid-surface walls and showers. We do not install granite. We match the right materials to your room and your budget.",
+    a: "We remodel bathrooms. Our main draw is solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. We also do custom walk-in showers, tile (including handmade zellige, penny, hexagon and large-format), quartz, quartzite and marble. We do not install granite. We match the right materials to your room and your budget.",
   },
   {
     q: "Do you work outside your service area?",
@@ -51,11 +51,11 @@ export const geoFaqs = [
   },
   {
     q: "What does Acadiana Bathrooms do?",
-    a: "We remodel bathrooms: custom walk-in showers, tile (including handmade zellige), quartz, quartzite and marble, and solid-surface walls and showers. We do not install granite. We'll call to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.",
+    a: "We remodel bathrooms. Our main draw is solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. We also do custom walk-in showers, tile (including handmade zellige, penny, hexagon and large-format), quartz, quartzite and marble. We do not install granite. We'll call to discuss your project and set a time to take measurements. When your consultant measures, they'll go over design options with you, and you'll get your exact price right then.",
   },
   {
     q: "What materials do you use?",
-    a: "For seamless walls, we install solid surface, and Onyx is a preferred material. For tile, think handmade zellige, patterned floors and stone-look slabs, plus quartz, quartzite and marble. We match the right materials to your room and your budget.",
+    a: "Our main recommendation is solid surface walls and bases in engineered stone, with minimal grout that's easy to clean and less grout to mold or stain. This is not plastic, acrylic, fiberglass, or PVC. Onyx is a preferred material. For tile, think handmade zellige, penny, hexagon, large-format, patterned floors and stone-look slabs, plus quartz, quartzite and marble. We match the right materials to your room and your budget.",
   },
   {
     q: "What is zellige tile?",
@@ -71,7 +71,7 @@ export const geoFaqs = [
   },
   {
     q: "What is a solid-surface shower?",
-    a: "Solid surface is a seamless, non-porous material for shower walls and surrounds. It can take clean lines and even a soft arch, without a full grid of grout. People choose it when they want a calm, easy-to-wipe look. It can also be combined with tile or stone at the vanity. Your consultant brings options when they take measurements.",
+    a: "Solid surface is engineered stone for shower walls and bases, with minimal grout that's easy to clean and less grout to mold or stain. This is not plastic, acrylic, fiberglass, or PVC. It can take clean lines and even a soft arch, without a full grid of grout. Custom tile is a secondary option when you want color, texture or pattern. Your consultant brings options when they take measurements.",
   },
   {
     q: "How do I get a quote?",
