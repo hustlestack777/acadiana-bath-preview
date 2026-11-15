@@ -148,6 +148,16 @@ export function matchProduct(message: string): ProductMatch | null {
     };
   }
 
+  if (
+    /(solid[\s-]?surface|engineered stone|acrylic|fiberglass|fibreglass|\bpvc\b|plastic (?:shower|surround|tub|insert|liner)|is it plastic)/.test(text) &&
+    !/window|pane|pella|impervia/.test(text)
+  ) {
+    return {
+      topic: "bath",
+      text: `Our main recommendation is solid surface walls and bases in engineered stone, with minimal grout that's easy to clean and less grout to mold or stain. This is not plastic, acrylic, fiberglass, or PVC. Custom tile is a secondary option when you want color, texture, or pattern. Onyx is a preferred material. ${BATH_NEXT}`,
+    };
+  }
+
   if (/mapei|ultracolor|flexcolor|kerapoxy|\bgrout\b/.test(text)) {
     return {
       topic: "bath",

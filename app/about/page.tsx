@@ -9,7 +9,7 @@ import { pageCanonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: `${brand.name} is a bathroom remodeling company based in Lafayette, Louisiana. Custom showers, tile, quartz, quartzite and marble, planned carefully for your space. ${heroQuoteLine}`,
+  description: `${brand.name} is a bathroom remodeling company based in Lafayette, Louisiana. Our main draw is solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. ${heroQuoteLine}`,
 
   alternates: { canonical: pageCanonical("/about") },
 };
@@ -33,9 +33,11 @@ export default function AboutPage() {
           <section>
             <h2>What we do</h2>
             <p className="mt-3">
-              Custom showers, tile, quartz, quartzite and marble, planned carefully for your space. That includes
-              showers, tubs, lavatories, flooring, toilets, wallpaper, and window replacement. We plan every detail
-              with you and manage your project from design to the finished bathroom. {heroQuoteLine}
+              Our main draw is solid surface walls and bases in engineered stone, with minimal grout — not plastic,
+              acrylic, fiberglass, or PVC. We also do custom tile, quartz, quartzite and marble, planned carefully
+              for your space. That includes showers, tubs, lavatories, flooring, toilets, wallpaper, and window
+              replacement. We plan every detail with you and manage your project from design to the finished bathroom.{" "}
+              {heroQuoteLine}
             </p>
           </section>
 

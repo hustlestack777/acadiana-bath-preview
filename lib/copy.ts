@@ -30,7 +30,7 @@ export const hero = {
   eyebrow: "Lafayette, Louisiana",
   title: "Bring a little beautiful to every day.",
   support:
-    "From seamless solid surface, where Onyx is a preferred material, to handmade tile, quartz, quartzite and marble, we match the right materials to your space and your budget.",
+    "Our main draw is solid surface walls and bases in engineered stone, with minimal grout — easy to clean, and less grout to mold or stain. This is not plastic, acrylic, fiberglass, or PVC. Handmade tile, quartz, quartzite and marble are also options, and we match the right materials to your space and your budget.",
   primary: "Get My Free Quote",
   secondary: "(337) 522-0023",
 } as const;
@@ -51,7 +51,7 @@ export const heroHeadlines = [
 export const heroHeadlineReduced = "Your bathroom shouldn't be boring.";
 
 export const heroSubhead =
-  `Custom showers, tile, quartz, quartzite and marble, planned carefully for your space. ${SERVICE_AREA}`;
+  `Our main draw is solid surface walls and bases in engineered stone, with minimal grout — easy to clean, and less grout to mold or stain. This is not plastic, acrylic, fiberglass, or PVC. Custom tile is a secondary option. ${SERVICE_AREA}`;
 
 export const heroDesignCta = "Design My Bathroom";
 
@@ -66,6 +66,10 @@ export const trustLineFollow =
 
 export const heroQuoteLine = "Starting at $5K · Free quote.";
 
+/** Default site and Open Graph description. */
+export const siteDescription =
+  "Solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. Custom showers and tile from Acadiana Bathrooms and Countertops in Lafayette, serving Acadiana and South Louisiana. Free quote, and see your new bathroom free with Design My Bathroom.";
+
 export const editorial = {
   eyebrow: "The room, considered",
   title: "Less stepping over. More stepping into.",
@@ -79,17 +83,17 @@ export const reasons = [
   },
   {
     title: "Style you choose.",
-    body: "Zellige, patterned floors, quartz, quartzite or seamless solid surface. Bold or calm, it's your call.",
+    body: "Solid surface walls and bases in engineered stone are the main draw. Custom tile — including penny, hexagon, and large-format — plus quartz, quartzite or marble, if you want that look.",
   },
   {
     title: "Easy to live with.",
-    body: "Low-grout options and finishes chosen to stand up to South Louisiana humidity.",
+    body: "Minimal grout lines mean a shower that's easy to clean, with less grout to mold or stain, and finishes chosen to stand up to South Louisiana humidity.",
   },
 ] as const;
 
 export const material = {
-  title: "Tile or solid surface? We'll help you choose.",
-  body: "Solid surface gives you clean lines and almost no grout. Custom tile gives you color, texture and pattern. We lay out the look, the budget and the upkeep of each, so you choose with confidence.",
+  title: "Start with solid surface. Tile if you want the pattern.",
+  body: "Solid surface walls and bases in engineered stone are our main draw: clean lines, minimal grout, easy to clean, and less grout to mold or stain. This is not plastic, acrylic, fiberglass, or PVC. Custom tile — including penny, hexagon, and large-format — is a secondary choice when you want color, texture and pattern.",
   close:
     "Find the look that feels like home. When your consultant measures, they'll go over materials and design options with you.",
 } as const;
@@ -225,22 +229,22 @@ export const pathProjects = [
 export const solidPath = {
   slug: "/solid-surface",
   eyebrow: "Path one · Solid surface",
-  cardTitle: "Solid surface showers & tub walls",
-  cardBody: "The affordable, low-grout route. Tub-to-shower conversions and fresh shower or tub walls that wipe clean.",
-  title: "Clean lines. Less grout. Less to scrub.",
+  cardTitle: "Solid surface walls and bases",
+  cardBody: "Our main draw: engineered stone walls and bases with minimal grout. Easy to clean, and less grout to mold or stain — not plastic, acrylic, fiberglass, or PVC.",
+  title: "Engineered stone. Minimal grout. Easy to clean.",
   support:
-    "Seamless walls, soft arches, and almost no grout to scrub, in a wide range of colors and finishes. We'll help you pick the one that fits your space and budget.",
+    "Solid surface walls and bases in engineered stone, with minimal grout that's easy to clean and less grout to mold or stain. This is not plastic, acrylic, fiberglass, or PVC. We'll help you pick the color and finish that fits your space and budget.",
   cta: "Get a solid surface quote",
-  whyTitle: "Why most customers start here",
+  whyTitle: "Why this is our main draw",
   why: [
-    { title: "Less grout", body: "Large panels mean far fewer grout lines than a tiled wall." },
-    { title: "The right material", body: "Onyx is a preferred material, and we install other quality solid surface options too, so your walls fit your style and your budget." },
+    { title: "Minimal grout", body: "Large panels mean far fewer grout lines than a tiled wall, so there's less grout to mold or stain and the shower is easier to clean." },
+    { title: "Engineered stone, not plastic", body: "This is engineered stone, not plastic, acrylic, fiberglass, or PVC. Onyx is a preferred material, and we install other quality solid surface options too, so your walls and bases fit your style and your budget." },
     { title: "Easy care", body: "A simple weekly cleaning is enough." },
   ],
   servicesTitle: "What this path covers",
   services: [
-    { title: "Tub-to-shower conversions", body: "Swap a tub you step over for a walk-in shower." },
-    { title: "Shower walls", body: "New walls for an existing shower, with niches and a seat if the space allows." },
+    { title: "Tub-to-shower conversions", body: "Swap a tub you step over for a walk-in shower, with solid surface walls and a base." },
+    { title: "Shower walls and bases", body: "New walls and a base for an existing shower, with niches and a seat if the space allows." },
     { title: "Tub walls and surrounds", body: "Keep the tub and refresh the walls around it." },
   ],
   warranty: warrantyStandBehind,
@@ -254,18 +258,18 @@ export const walkInPage = {
   title: "Walk-In Showers in Lafayette, LA",
   documentTitle: "Walk-In Showers in Lafayette, LA | Acadiana Bathrooms and Countertops",
   description:
-    "Walk-in showers and tub-to-shower conversions in Lafayette, LA. Solid surface or custom tile, with niches, seating and glass. Starting at $5K. Call (337) 522-0023.",
+    "Walk-in showers and tub-to-shower conversions in Lafayette, LA. Solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. Custom tile is also available. Starting at $5K. Call (337) 522-0023.",
   schemaDescription:
-    "Walk-in showers and tub-to-shower conversions in Lafayette, Louisiana. Solid surface or custom tile, with niches, seating, and glass.",
+    "Walk-in showers and tub-to-shower conversions in Lafayette, Louisiana. Solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. Custom tile is also available, along with niches, seating, and glass.",
   eyebrow: "Lafayette, Louisiana",
   support:
-    "A walk-in shower or a tub-to-shower conversion, in solid surface or custom tile, with niches, seating, and glass.",
+    "A walk-in shower or a tub-to-shower conversion. Our main draw is solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. Custom tile is a secondary option, with niches, seating, and glass.",
   price: "Starting at $5K",
   includesTitle: "What a walk-in shower includes",
   includes: [
     {
-      title: "Solid surface or custom tile",
-      body: "Solid surface gives you clean lines and almost no grout. Custom tile gives you color, texture and pattern.",
+      title: "Solid surface walls and bases",
+      body: "Engineered stone, with minimal grout that's easy to clean and less grout to mold or stain. This is not plastic, acrylic, fiberglass, or PVC. Custom tile — including penny, hexagon, and large-format — is a secondary choice.",
     },
     {
       title: "Niches",
@@ -289,7 +293,7 @@ export const walkInPage = {
   faqs: [
     {
       q: "What does a walk-in shower or tub-to-shower conversion include?",
-      a: "Solid surface or custom tile, niches, seating when you want a bench, and glass. A tub-to-shower conversion swaps a tub you step over for a walk-in shower.",
+      a: "Our main draw is solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. Custom tile is a secondary option. Niches, seating when you want a bench, and glass are available. A tub-to-shower conversion swaps a tub you step over for a walk-in shower.",
     },
     {
       q: "How much does a walk-in shower cost?",
@@ -307,6 +311,15 @@ export const walkInPage = {
       link: { text: "quote form", href: "/estimate" },
     },
   ],
+} as const;
+
+export const pathChooser = {
+  eyebrow: "Choose your path",
+  title: "Start with solid surface, or go custom tile.",
+  intro:
+    "include solid surface walls and bases in engineered stone, with minimal grout, as the main draw. Custom tile is a secondary option. Niches, seating, and glass are available. Starting at $5K.",
+  solidTag: "Main draw · Engineered stone · Minimal grout",
+  tileTag: "Designer · Fully custom",
 } as const;
 
 export const tilePath = {

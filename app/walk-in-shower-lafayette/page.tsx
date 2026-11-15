@@ -66,7 +66,7 @@ export default function WalkInShowerLafayettePage() {
                 <p className="font-heading text-3xl text-primary">0{index + 1}</p>
                 <h3 className="mt-3 text-2xl">{item.title}</h3>
                 <p className="mt-3 leading-7 text-muted-foreground">{item.body}</p>
-                {item.title === "Solid surface or custom tile" ? (
+                {item.title === "Solid surface walls and bases" ? (
                   <p className="mt-4 text-sm leading-6">
                     <a href="/solid-surface" className="font-medium underline underline-offset-4">
                       Solid surface

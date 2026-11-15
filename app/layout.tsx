@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { LeadAttributionTracker } from "@/components/lead-attribution";
 import { businessJsonLd } from "@/lib/schema";
 import { isIndexableHost } from "@/lib/indexable-host";
+import { siteDescription } from "@/lib/copy";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
 import { isWindowsContentPath } from "@/lib/windows";
 
@@ -32,7 +33,7 @@ const siteMetadata: Metadata = {
     template: "%s · Acadiana Bathrooms and Countertops",
   },
   description:
-    "Custom showers, tile and solid surface remodels from Acadiana Bathrooms and Countertops. Based in Lafayette, serving Acadiana and South Louisiana. Free quote, and see your new bathroom free with Design My Bathroom.",
+    siteDescription,
   robots: SITE_INDEXABLE ? { index: true, follow: true } : { index: false, follow: false },
   icons: {
     icon: [
@@ -45,7 +46,7 @@ const siteMetadata: Metadata = {
   openGraph: {
     title: "Acadiana Bathrooms and Countertops",
     description:
-      "Custom showers, tile and solid surface remodels from Acadiana Bathrooms and Countertops. Based in Lafayette, serving Acadiana and South Louisiana. Free quote, and see your new bathroom free with Design My Bathroom.",
+      siteDescription,
     url: "/",
     siteName: "Acadiana Bathrooms and Countertops",
     type: "website",
@@ -62,7 +63,7 @@ const siteMetadata: Metadata = {
     card: "summary_large_image",
     title: "Acadiana Bathrooms and Countertops",
     description:
-      "Custom showers, tile and solid surface remodels from Acadiana Bathrooms and Countertops. Based in Lafayette, serving Acadiana and South Louisiana. Free quote, and see your new bathroom free with Design My Bathroom.",
+      siteDescription,
     images: ["/brand/og-image.png"],
   },
 };

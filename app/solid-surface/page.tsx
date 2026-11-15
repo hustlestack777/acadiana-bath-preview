@@ -11,9 +11,9 @@ import { solidSurfaceServiceJsonLd } from "@/lib/schema";
 import { pageCanonical } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Solid surface showers and tub walls",
+  title: "Solid surface walls and bases",
   description:
-    "Tub-to-shower conversions and solid surface shower and tub walls across Acadiana and South Louisiana. Less grout. Free quote. See your new bathroom with Design My Bathroom.",
+    "Solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. Tub-to-shower conversions across Acadiana and South Louisiana. Free quote. See your new bathroom with Design My Bathroom.",
 
   alternates: { canonical: pageCanonical("/solid-surface") },
 };
