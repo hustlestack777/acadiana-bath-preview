@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { WindowsTool } from "../components/windows/windows-tool";
 import {
   computeWindowEstimate,
   formatRange,
@@ -9,6 +12,13 @@ import {
   WINDOWS_CONSENT_TEXT,
   windowLeadSubject,
 } from "./windows";
+
+test("windows start step is HTML and does not use the bathroom starting price", () => {
+  const html = renderToStaticMarkup(createElement(WindowsTool));
+  assert.match(html, /data-testid="windows-start"/);
+  assert.match(html, /Window pricing depends on how many windows/);
+  assert.equal(/\$5K|\$5,000|priceRange|\blicensed\b|\bkitchen\b/i.test(html), false);
+});
 
 test("public window pricing does not use the bathroom starting price", () => {
   assert.equal(WINDOW_PRICE_LINE, "Window pricing depends on how many windows you need and their size. Get an estimate.");

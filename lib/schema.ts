@@ -13,31 +13,33 @@ import {
   SITE_EMAIL,
   SITE_LOGO_URL,
   SITE_NAME,
-  SITE_PHONE,
   SITE_SHORT_NAME,
   SITE_TELEPHONE,
   SITE_SAME_AS,
-  SITE_URL,
   VISIBLE_SERVICES,
   WALK_IN_SHOWER_URL,
   cityPlace,
 } from "./site";
 import { townPath, type TownPageContent } from "./towns";
 import { WINDOW_PRICE_LINE } from "./windows";
+import { PUBLIC_SITE_ORIGIN, publicCanonical } from "./getpros";
+
+/** schema.org types for the business. GeneralContractor is the more specific type. */
+export const BUSINESS_TYPES = ["HomeAndConstructionBusiness", "GeneralContractor"] as const;
 
 export type FaqItem = { q: string; a: string; link?: { text: string; href: string } };
 
-export const BUSINESS_ID = `${SITE_URL}/#business`;
+export const BUSINESS_ID = `${PUBLIC_SITE_ORIGIN}/#business`;
 
 export function businessJsonLd(options?: { includePriceRange?: boolean }) {
   const includePriceRange = options?.includePriceRange !== false;
   return {
     "@context": "https://schema.org",
-    "@type": "HomeAndConstructionBusiness",
+    "@type": [...BUSINESS_TYPES],
     "@id": BUSINESS_ID,
     name: SITE_NAME,
     alternateName: SITE_SHORT_NAME,
-    url: SITE_URL,
+    url: PUBLIC_SITE_ORIGIN,
     telephone: SITE_TELEPHONE,
     email: SITE_EMAIL,
     logo: SITE_LOGO_URL,
@@ -68,11 +70,17 @@ export function townAreaJsonLd(town: TownPageContent) {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: town.title,
-    url: `${SITE_URL}${townPath(town.slug)}`,
+    url: publicCanonical(townPath(town.slug)),
     description: `${town.intro[0]} ${OUTSIDE_AREA}`,
     about: { "@id": BUSINESS_ID },
-    areaServed: places,
-    // Area served only. Do not add a local street address or branch office.
+    // areaServed belongs on Service, not WebPage.
+    mainEntity: {
+      "@type": "Service",
+      name: `Bathroom remodeling in ${town.name}`,
+      serviceType: "Bathroom remodeling",
+      provider: { "@id": BUSINESS_ID },
+      areaServed: places,
+    },
   };
 }
 
@@ -91,10 +99,10 @@ export function serviceJsonLd(input: {
     url: input.url,
     provider: {
       "@id": BUSINESS_ID,
-      "@type": "HomeAndConstructionBusiness",
+      "@type": [...BUSINESS_TYPES],
       name: SITE_NAME,
       telephone: SITE_TELEPHONE,
-      url: SITE_URL,
+      url: PUBLIC_SITE_ORIGIN,
     },
     areaServed: SCHEMA_AREA_SERVED,
   };
@@ -105,7 +113,7 @@ export const solidSurfaceServiceJsonLd = () =>
     name: "Solid surface walls and bases",
     serviceType: "Solid surface bathroom remodeling",
     description: `${solidPath.support} ${warrantyPlainText}`,
-    url: `${SITE_URL}/solid-surface`,
+    url: publicCanonical("/solid-surface"),
   });
 
 export const customTileServiceJsonLd = () =>
@@ -113,7 +121,7 @@ export const customTileServiceJsonLd = () =>
     name: "Custom tile showers and bathrooms",
     serviceType: "Custom tile bathroom remodeling",
     description: tilePath.support,
-    url: `${SITE_URL}/custom-tile`,
+    url: publicCanonical("/custom-tile"),
   });
 
 /** Window replacement is priced by count and size, so this node has no priceRange. */
@@ -122,7 +130,7 @@ export const windowServiceJsonLd = () =>
     name: "Window replacement",
     serviceType: "Window replacement and installation",
     description: WINDOW_PRICE_LINE,
-    url: `${SITE_URL}/windows`,
+    url: publicCanonical("/windows"),
   });
 
 /** Lafayette walk-in page. areaServed is Lafayette only. */

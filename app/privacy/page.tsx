@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/site-shell";
 import { brand } from "@/lib/copy";
+import { metadataTitle, pageMeta } from "@/lib/page-meta";
 import { pageCanonical } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "How Acadiana Bathrooms and Countertops handles the information you share when you ask for a quote.",
+const meta = pageMeta("/privacy");
 
+export const metadata: Metadata = {
+  title: metadataTitle(meta),
+  description: meta.description,
   alternates: { canonical: pageCanonical("/privacy") },
 };
 

@@ -9,7 +9,7 @@
 
 import { brand } from "./copy";
 import { MAIN_TOWNS, SERVICE_AREA } from "./coverage";
-import { publicCanonical } from "./getpros";
+import { PUBLIC_SITE_ORIGIN, publicCanonical } from "./getpros";
 
 /** The preview stays noindex until this is exactly "true" and the service is redeployed. */
 export const SITE_INDEXABLE = process.env.SITE_INDEXABLE === "true";
@@ -35,7 +35,8 @@ export const SITE_TELEPHONE = "+1-337-522-0023";
 
 export const SITE_EMAIL = brand.email;
 export const SITE_LOGO_PATH = "/brand/logo.png";
-export const SITE_LOGO_URL = `${SITE_URL}${SITE_LOGO_PATH}`;
+/** Logo on the public canonical host, so JSON-LD does not point at a preview domain. */
+export const SITE_LOGO_URL = `${PUBLIC_SITE_ORIGIN}${SITE_LOGO_PATH}`;
 
 /** schema.org priceRange. Public copy leads with Starting at $5K; JSON-LD stays in dollars as $5,000 to $30,000+. */
 export const SCHEMA_PRICE_RANGE = "$5,000 to $30,000+";
@@ -45,11 +46,11 @@ export const WALK_IN_SHOWER_PATH = "/walk-in-shower-lafayette";
 export const WALK_IN_SHOWER_URL = `${brand.websiteHref}${WALK_IN_SHOWER_PATH}`;
 
 export const VISIBLE_SERVICES = [
-  { name: "Solid surface walls and bases", serviceType: "Solid surface bathroom remodeling", url: `${SITE_URL}/solid-surface` },
+  { name: "Solid surface walls and bases", serviceType: "Solid surface bathroom remodeling", url: publicCanonical("/solid-surface") },
   { name: "Custom showers", serviceType: "Custom walk-in showers", url: WALK_IN_SHOWER_URL },
-  { name: "Custom tile", serviceType: "Custom tile bathroom remodeling", url: `${SITE_URL}/custom-tile` },
-  { name: "Quartz and quartzite countertops", serviceType: "Quartz and quartzite bathroom countertops", url: SITE_URL },
-  { name: "Window replacement", serviceType: "Window replacement and installation", url: `${SITE_URL}/windows` },
+  { name: "Custom tile", serviceType: "Custom tile bathroom remodeling", url: publicCanonical("/custom-tile") },
+  { name: "Quartz and quartzite countertops", serviceType: "Quartz and quartzite bathroom countertops", url: PUBLIC_SITE_ORIGIN },
+  { name: "Window replacement", serviceType: "Window replacement and installation", url: publicCanonical("/windows") },
 ] as const;
 
 /** Official profiles for schema.org sameAs. This is the only Google listing. */
@@ -133,15 +134,19 @@ export const AI_SEARCH_USER_AGENTS = [
   "GPTBot",
   "OAI-SearchBot",
   "ChatGPT-User",
-  "Google-Extended",
-  "Googlebot",
-  "Bingbot",
-  "PerplexityBot",
-  "Perplexity-User",
   "ClaudeBot",
   "Claude-SearchBot",
   "Claude-User",
+  "PerplexityBot",
+  "Perplexity-User",
+  "Google-Extended",
+  "Googlebot",
+  "Bingbot",
   "Applebot",
+  "Applebot-Extended",
+  "GrokBot",
+  "xAI-Grok",
+  "xAI-SearchBot",
 ] as const;
 
 export type SchemaPlace = {

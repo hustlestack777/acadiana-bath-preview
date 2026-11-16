@@ -6,6 +6,7 @@ import { llmsTxt } from "./llms-txt";
 import { buildRobots } from "./robots-config";
 import {
   assertSafeJsonLd,
+  BUSINESS_TYPES,
   businessJsonLd,
   customTileServiceJsonLd,
   faqPageJsonLd,
@@ -32,7 +33,10 @@ const requiredCities = [
 
 test("business JSON-LD is a service-area HomeAndConstructionBusiness", () => {
   const data = businessJsonLd();
-  assert.equal(data["@type"], "HomeAndConstructionBusiness");
+  assert.deepEqual(data["@type"], [...BUSINESS_TYPES]);
+  assert.equal(data.url, "https://abclafayette.com");
+  assert.equal(data["@id"], "https://abclafayette.com/#business");
+  assert.equal(data.logo, "https://abclafayette.com/brand/logo.png");
   assert.equal(data.name, brand.name);
   assert.equal(data.name, SITE_NAME);
   assert.equal(data.alternateName, SITE_SHORT_NAME);
@@ -93,7 +97,7 @@ test("window service JSON-LD has no bathroom starting price", () => {
   const blob = JSON.stringify(data);
   assert.equal(data["@type"], "Service");
   assert.equal(data.name, "Window replacement");
-  assert.match(data.url, /\/windows$/);
+  assert.equal(data.url, "https://abclafayette.com/windows");
   assert.equal(data.description, "Window pricing depends on how many windows you need and their size. Get an estimate.");
   assert.equal("priceRange" in data, false);
   assert.equal("offers" in data, false);
@@ -115,6 +119,8 @@ test("service JSON-LD is present for both service paths and has no reviews", () 
   assert.deepEqual(assertSafeJsonLd(tile), []);
   assert.equal(solid.provider.name, brand.name);
   assert.equal(solid.provider.telephone, SITE_TELEPHONE);
+  assert.deepEqual(solid.provider["@type"], [...BUSINESS_TYPES]);
+  assert.equal(solid.provider.url, "https://abclafayette.com");
 });
 
 test("FAQPage schema is built only from the visible questions passed in", () => {
@@ -154,6 +160,9 @@ test("go-live robots.txt allows AI crawlers and advertises the sitemap", () => {
   const rules = Array.isArray(live.rules) ? live.rules : [live.rules];
   const agents = rules.map((rule) => rule.userAgent);
   for (const agent of AI_SEARCH_USER_AGENTS) {
+    assert.ok(agents.includes(agent), agent);
+  }
+  for (const agent of ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "PerplexityBot", "Google-Extended", "Applebot-Extended", "GrokBot", "xAI-Grok", "xAI-SearchBot"]) {
     assert.ok(agents.includes(agent), agent);
   }
   assert.ok(agents.includes("*"));
@@ -198,8 +207,12 @@ test("cleared FAQ and town copy has no windows mentions and town schema is area-
     const data = townAreaJsonLd(town);
     assert.equal(data["@type"], "WebPage");
     assert.equal("address" in data, false);
+    assert.equal("areaServed" in data, false);
+    assert.equal(data.mainEntity["@type"], "Service");
+    assert.match(JSON.stringify(data.mainEntity.areaServed), new RegExp(town.name));
     assert.equal(JSON.stringify(data).includes("streetAddress"), false);
     assert.match(data.url, new RegExp(`/serving-${town.slug}$`));
+    assert.equal(data.url.startsWith("https://abclafayette.com/"), true);
     assert.deepEqual(assertSafeJsonLd(data), []);
   }
 });
@@ -210,8 +223,16 @@ test("llms.txt summarizes the business without banned claims", () => {
   assert.match(text, /\(337\) 522-0023/);
   assert.match(text, /\/solid-surface/);
   assert.match(text, /\/custom-tile/);
-  assert.match(text, /\/estimate/);
   assert.match(text, /\/windows/);
+  assert.equal(text.includes("/estimate"), false);
+  assert.equal(text.includes("/design"), false);
+  assert.equal(text.includes("/api/"), false);
+  assert.equal(text.includes("/bath"), false);
+  assert.equal(/street view|upload a photo|how the quote tool/i.test(text), false);
+  assert.equal(/answers the phone|\bkitchen\b|\blicensed\b/i.test(text), false);
+  const windowLine = text.split("\n").find((line) => line.includes("/windows"));
+  assert.ok(windowLine);
+  assert.equal(/\$5K|\$5,000|priceRange/i.test(windowLine), false);
   assert.match(text, /Lagniappe Realm Labs LLC/);
   assert.equal(text.includes(SCHEMA_SERVICE_AREA), true);
   for (const excluded of EXCLUDED_SERVICE_AREAS) {

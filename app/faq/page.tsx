@@ -4,12 +4,14 @@ import { FaqSection } from "@/components/faq-section";
 import { SiteShell } from "@/components/site-shell";
 import { WarrantySection } from "@/components/warranty-section";
 import { faqMore, faqPageIntro, faqPageTitle, faqVisible } from "@/lib/faq-page";
+import { metadataTitle, pageMeta } from "@/lib/page-meta";
 import { pageCanonical } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: faqPageTitle,
-  description: faqPageIntro,
+const meta = pageMeta("/faq");
 
+export const metadata: Metadata = {
+  title: metadataTitle(meta),
+  description: meta.description,
   alternates: { canonical: pageCanonical("/faq") },
 };
 

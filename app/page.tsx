@@ -6,9 +6,14 @@ import { SiteShell } from "@/components/site-shell";
 import type { Metadata } from "next";
 import { isGetProsRequest } from "@/lib/getpros";
 import { FIRST_HERO_PRELOAD } from "@/lib/hero-slides";
+import { metadataTitle, pageMeta } from "@/lib/page-meta";
 import { pageCanonical } from "@/lib/site";
 
+const homeMeta = pageMeta("/");
+
 export const metadata: Metadata = {
+  title: metadataTitle(homeMeta),
+  description: homeMeta.description,
   alternates: { canonical: pageCanonical("/") },
 };
 

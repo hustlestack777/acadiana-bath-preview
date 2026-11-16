@@ -5,12 +5,14 @@ import { SiteShell } from "@/components/site-shell";
 import { ConsultLink } from "@/components/consult-link";
 import { gallery, hero, heroDesignCta } from "@/lib/copy";
 import { galleryPagePhotos } from "@/lib/images";
+import { metadataTitle, pageMeta } from "@/lib/page-meta";
 import { pageCanonical } from "@/lib/site";
 
+const meta = pageMeta("/gallery");
+
 export const metadata: Metadata = {
-  title: "Gallery",
-  description:
-    "Bathroom remodel looks we can build across Acadiana and South Louisiana, from custom tile to solid surface. Free quote. See your new bathroom with Design My Bathroom.",
+  title: metadataTitle(meta),
+  description: meta.description,
   alternates: { canonical: pageCanonical("/gallery") },
 };
 

@@ -5,12 +5,15 @@ import { SiteShell } from "@/components/site-shell";
 import { CHAT_AGENT_NAME } from "@/lib/chat";
 import { brand, heroDesignCta, heroQuoteLine, quoteCta } from "@/lib/copy";
 import { OUTSIDE_AREA, SERVICE_AREA } from "@/lib/coverage";
+import { metadataTitle, pageMeta } from "@/lib/page-meta";
 import { pageCanonical } from "@/lib/site";
+import { WINDOW_PRICE_LINE } from "@/lib/windows";
+
+const meta = pageMeta("/about");
 
 export const metadata: Metadata = {
-  title: "About",
-  description: `${brand.name} is a bathroom remodeling company based in Lafayette, Louisiana. Our main draw is solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. ${heroQuoteLine}`,
-
+  title: metadataTitle(meta),
+  description: meta.description,
   alternates: { canonical: pageCanonical("/about") },
 };
 
@@ -35,10 +38,10 @@ export default function AboutPage() {
             <p className="mt-3">
               Our main draw is solid surface walls and bases in engineered stone, with minimal grout — not plastic,
               acrylic, fiberglass, or PVC. We also do custom tile, quartz, quartzite and marble, planned carefully
-              for your space. That includes showers, tubs, lavatories, flooring, toilets, wallpaper, and window
-              replacement. We plan every detail with you and manage your project from design to the finished bathroom.{" "}
-              {heroQuoteLine}
+              for your space. That includes showers, tubs, lavatories, flooring, toilets and wallpaper. We plan every
+              detail with you and manage your project from design to the finished bathroom. {heroQuoteLine}
             </p>
+            <p className="mt-3">We also replace windows. {WINDOW_PRICE_LINE}</p>
           </section>
 
           <section>
