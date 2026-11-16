@@ -178,7 +178,7 @@ export const designStyles: DesignStyle[] = [
     name: "Cobalt color drench",
     blurb: "Deep blue tile wrapped all around.",
     image: "/images/design/cobalt.webp",
-    alt: "Cobalt-blue tile shower and walls with brass fixtures.",
+    alt: "Cobalt-blue tile on the walls and ceiling, with a small white Carrara hex floor and brass fixtures.",
     path: "custom-tile",
     project: "tile-bathroom",
     spec: "deep cobalt-blue glossy square tile on the shower walls only, from the floor line to the ceiling, a separate small honed white Carrara marble hexagon mosaic shower floor, frameless clear glass, brushed brass fixture finish. Do not put the blue tile on the floor.",
