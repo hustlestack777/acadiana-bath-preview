@@ -168,7 +168,10 @@ export function buildEditPrompt(style: DesignStyle, scan: RoomScan, layout?: Des
   const footprint = layout
     ? "the wet area stays in the same place in the room, following the conversion above"
     : "same tub or shower footprint";
-  return `<IMAGE_0> is a homeowner's bathroom photo. Show this same bathroom remodeled with the conversion and finishes they picked: ${style.spec} ${conversion} Match the colors, texture and finish of <IMAGE_1>, which is a material sample only; take nothing else from it. Use clear shower glass in place of any old curtain or framed door. Update the vanity top only if a vanity is visible, and update the finish of the faucets, handles and lights.
+  const floorSample = style.floorSample
+    ? " <IMAGE_2> is the shower floor they picked. Cover only the shower floor with that exact material, shape and color. Take nothing else from <IMAGE_2>."
+    : "";
+  return `<IMAGE_0> is a homeowner's bathroom photo. Show this same bathroom remodeled with the conversion and finishes they picked: ${style.spec} ${conversion} Match the colors, texture and finish of <IMAGE_1>, which is a material sample only; take nothing else from it.${floorSample} Use clear shower glass in place of any old curtain or framed door. Update the vanity top only if a vanity is visible, and update the finish of the faucets, handles and lights.
 ${keep}
 Fixtures found in the photo:
 ${inventory}
@@ -182,17 +185,37 @@ async function styleReference(style: DesignStyle) {
   return readFile(file);
 }
 
+/** Image parameters for the edit call. The floor swatch is the third image when the pick has one. */
+export function editPayloadImages(photoUrl: string, wallUrl: string, floorUrl?: string) {
+  const images: Array<{ type: "image_url"; url: string }> = [
+    { type: "image_url", url: photoUrl },
+    { type: "image_url", url: wallUrl },
+  ];
+  if (floorUrl) images.push({ type: "image_url", url: floorUrl });
+  return images;
+}
+
+async function floorReference(style: DesignStyle) {
+  const sample = style.floorSample;
+  if (!sample || !sample.startsWith("/images/design-picks/") || sample.includes("..")) return null;
+  const file = path.join(process.cwd(), "public", sample.slice(1));
+  const bytes = await readFile(file);
+  return sharp(bytes).rotate().jpeg({ quality: 85 }).toBuffer();
+}
+
 export async function editRoom(photo: Buffer, style: DesignStyle, scan: RoomScan, layout?: DesignLayout) {
   const reference = await styleReference(style);
+  const floor = await floorReference(style);
   const json = await xai(
     "/images/edits",
     {
       model: IMAGE_MODEL,
       prompt: buildEditPrompt(style, scan, layout),
-      images: [
-        { type: "image_url", url: dataUri(photo, "image/jpeg") },
-        { type: "image_url", url: dataUri(reference, "image/jpeg") },
-      ],
+      images: editPayloadImages(
+        dataUri(photo, "image/jpeg"),
+        dataUri(reference, "image/jpeg"),
+        floor ? dataUri(floor, "image/jpeg") : undefined,
+      ),
       response_format: "b64_json",
       ...(IMAGE_MODEL.includes("2.0") ? { quality: IMAGE_QUALITY } : {}),
     },
