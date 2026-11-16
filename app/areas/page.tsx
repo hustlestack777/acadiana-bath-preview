@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { AreasPage } from "@/components/areas-page";
 import { SiteShell } from "@/components/site-shell";
-import { SERVICE_AREA } from "@/lib/coverage";
+import { metadataTitle, pageMeta } from "@/lib/page-meta";
 import { pageCanonical } from "@/lib/site";
 
+const meta = pageMeta("/areas");
+
 export const metadata: Metadata = {
-  title: "Areas we serve",
-  description: `Bathroom remodels from Acadiana Bathrooms and Countertops. ${SERVICE_AREA}`,
+  title: metadataTitle(meta),
+  description: meta.description,
   alternates: { canonical: pageCanonical("/areas") },
 };
 

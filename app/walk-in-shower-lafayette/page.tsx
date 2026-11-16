@@ -12,16 +12,19 @@ import { designCopy } from "@/lib/design-styles";
 import { designWalls } from "@/lib/design-picks";
 import { heroSlides, walkInPhotos } from "@/lib/images";
 import { walkInShowerServiceJsonLd } from "@/lib/schema";
+import { metadataTitle, pageMeta } from "@/lib/page-meta";
 import { pageCanonical } from "@/lib/site";
 import { getTown, townPath } from "@/lib/towns";
 
+const meta = pageMeta("/walk-in-shower-lafayette");
+
 export const metadata: Metadata = {
-  title: { absolute: walkInPage.documentTitle },
-  description: walkInPage.description,
+  title: metadataTitle(meta),
+  description: meta.description,
   alternates: { canonical: pageCanonical(walkInPage.path) },
   openGraph: {
-    title: walkInPage.documentTitle,
-    description: walkInPage.description,
+    title: meta.title,
+    description: meta.description,
     url: pageCanonical(walkInPage.path),
   },
 };

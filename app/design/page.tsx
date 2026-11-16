@@ -2,16 +2,19 @@ import type { Metadata } from "next";
 import { SiteShell } from "@/components/site-shell";
 import { DesignTool } from "@/components/design/design-tool";
 import { designCopy } from "@/lib/design-styles";
+import { metadataTitle, pageMeta } from "@/lib/page-meta";
 import { pageCanonical } from "@/lib/site";
 
+const meta = pageMeta("/design");
+
 export const metadata: Metadata = {
-  title: "Design My Bathroom",
-  description: "Pick a look, snap your shower, and see your new bathroom in your own space before you spend a dime. Free quote across Acadiana and South Louisiana.",
+  title: metadataTitle(meta),
+  description: meta.description,
   alternates: { canonical: pageCanonical("/design") },
   openGraph: {
     url: "/design",
-    title: "Design My Bathroom",
-    description: "Pick a look, snap your shower, and see your new bathroom in your own space before you spend a dime. Free quote across Acadiana and South Louisiana.",
+    title: meta.title,
+    description: meta.description,
   },
 };
 

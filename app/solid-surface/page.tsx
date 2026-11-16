@@ -8,13 +8,14 @@ import { brand, solidPath, trustLineFollow } from "@/lib/copy";
 import { solidPhotos } from "@/lib/images";
 import { JsonLd } from "@/components/json-ld";
 import { solidSurfaceServiceJsonLd } from "@/lib/schema";
+import { metadataTitle, pageMeta } from "@/lib/page-meta";
 import { pageCanonical } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Solid surface walls and bases",
-  description:
-    "Solid surface walls and bases in engineered stone, with minimal grout — not plastic, acrylic, fiberglass, or PVC. Tub-to-shower conversions across Acadiana and South Louisiana. Free quote. See your new bathroom with Design My Bathroom.",
+const meta = pageMeta("/solid-surface");
 
+export const metadata: Metadata = {
+  title: metadataTitle(meta),
+  description: meta.description,
   alternates: { canonical: pageCanonical("/solid-surface") },
 };
 

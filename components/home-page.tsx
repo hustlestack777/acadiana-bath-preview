@@ -1,3 +1,4 @@
+import { FaqSection } from "@/components/faq-section";
 import { GoogleReviews } from "@/components/google-reviews";
 import { PhotoGallery } from "@/components/photo-gallery";
 import { Hero } from "@/components/hero";
@@ -10,6 +11,7 @@ import {
   area,
   brand,
   close,
+  faqs,
   gallery,
   hero,
   heroDesignCta,
@@ -70,6 +72,8 @@ export function HomePage() {
           <p className="mt-4 max-w-2xl text-sm leading-6 text-fig-muted">{area.outside}</p>
         </div>
       </section>
+
+      <FaqSection faqs={faqs} moreHref="/faq" moreLabel="See all questions" />
 
       <GoogleReviews />
 

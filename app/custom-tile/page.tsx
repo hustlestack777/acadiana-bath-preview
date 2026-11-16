@@ -7,13 +7,14 @@ import { brand, tilePath } from "@/lib/copy";
 import { tileHero, tilePhotos } from "@/lib/images";
 import { JsonLd } from "@/components/json-ld";
 import { customTileServiceJsonLd } from "@/lib/schema";
+import { metadataTitle, pageMeta } from "@/lib/page-meta";
 import { pageCanonical } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Custom tile showers and bathrooms",
-  description:
-    "Custom tile showers and bathrooms across Acadiana and South Louisiana: zellige, patterned floors and grout colors you choose. Free quote. See your new bathroom with Design My Bathroom.",
+const meta = pageMeta("/custom-tile");
 
+export const metadata: Metadata = {
+  title: metadataTitle(meta),
+  description: meta.description,
   alternates: { canonical: pageCanonical("/custom-tile") },
 };
 
