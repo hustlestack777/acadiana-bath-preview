@@ -49,7 +49,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Deep-green zellige-look tile shower with brass fixtures and frameless glass.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "deep green glossy handmade zellige-look square wall tile with thin light grout, a recessed niche, small light hex mosaic shower floor, frameless clear glass, brushed brass fixture finish",
+    spec: "deep green glossy handmade zellige-look square wall tile with thin light grout, from the floor line to the ceiling on the walls only, a recessed niche, a separate small light hex mosaic shower floor that is not zellige, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "curbless",
@@ -126,7 +126,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Blush pink zellige-look tile walls with a light wood vanity and brass fixtures.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "blush pink glossy handmade zellige-look square wall tile in the shower, light warm floor tile, frameless clear glass, brushed brass fixture finish",
+    spec: "blush pink glossy handmade zellige-look square wall tile from the floor line to the ceiling on the walls only, a separate light warm floor tile that is not zellige, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "butter",
@@ -137,7 +137,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Butter-yellow zellige-look shower tile with brass fixtures and a light vanity.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "soft butter-yellow glossy handmade zellige-look square wall tile in the shower, light cream floor tile, frameless clear glass, brushed brass fixture finish",
+    spec: "soft butter-yellow glossy handmade zellige-look square wall tile from the floor line to the ceiling on the walls only, a separate light cream floor tile that is not zellige, frameless clear glass, brushed brass fixture finish",
   },
   {
     key: "checker",
@@ -170,7 +170,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Emerald-green zellige-look tile shower with a linear drain and brass fixtures.",
     path: "custom-tile",
     project: "tile-shower",
-    spec: "rich emerald-green glossy handmade zellige-look wall tile floor to ceiling in the shower, one recessed niche, light floor tile, frameless clear glass panel, brushed brass fixture finish",
+    spec: "rich emerald-green glossy handmade zellige-look wall tile from the floor line to the ceiling on the walls only, one recessed niche, a separate light floor tile that is not zellige, frameless clear glass panel, brushed brass fixture finish",
   },
   {
     key: "cobalt",
@@ -178,10 +178,10 @@ export const designStyles: DesignStyle[] = [
     name: "Cobalt color drench",
     blurb: "Deep blue tile wrapped all around.",
     image: "/images/design/cobalt.webp",
-    alt: "Cobalt-blue tile shower and walls with brass fixtures.",
+    alt: "Cobalt-blue tile on the walls and ceiling, with a small white Carrara hex floor and brass fixtures.",
     path: "custom-tile",
     project: "tile-bathroom",
-    spec: "deep cobalt-blue glossy square tile on the shower walls and floor, frameless clear glass, brushed brass fixture finish",
+    spec: "deep cobalt-blue glossy square tile on the shower walls only, from the floor line to the ceiling, a separate small honed white Carrara marble hexagon mosaic shower floor, frameless clear glass, brushed brass fixture finish. Do not put the blue tile on the floor.",
   },
   {
     key: "terracotta",
@@ -203,7 +203,7 @@ export const designStyles: DesignStyle[] = [
     alt: "Quartzite-look vanity top under deep green glossy tile and a brass mirror.",
     path: "custom-tile",
     project: "tile-bathroom",
-    spec: "deep green glossy handmade zellige-look wall tile, a warm quartzite-look stone vanity top if a vanity is visible in the photo, matching green tile in the shower, frameless clear glass, brushed brass fixture finish",
+    spec: "deep green glossy handmade zellige-look wall tile from the floor line to the ceiling on the walls only, a warm quartzite-look stone vanity top if a vanity is visible in the photo, frameless clear glass, brushed brass fixture finish. Do not put zellige on the floor.",
   },
 ];
 

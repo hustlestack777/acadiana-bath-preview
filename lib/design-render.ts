@@ -169,7 +169,7 @@ export function buildEditPrompt(style: DesignStyle, scan: RoomScan, layout?: Des
     ? "the wet area stays in the same place in the room, following the conversion above"
     : "same tub or shower footprint";
   const floorSample = style.floorSample
-    ? " <IMAGE_2> is the shower floor they picked. Cover only the shower floor with that exact material, shape and color. Take nothing else from <IMAGE_2>."
+    ? ` <IMAGE_2> is the shower floor they picked. Cover only the shower floor with that exact material, shape and color${style.spec.includes("Size:") ? ", and that size" : ""}. Take nothing else from <IMAGE_2>.`
     : "";
   return `<IMAGE_0> is a homeowner's bathroom photo. Show this same bathroom remodeled with the conversion and finishes they picked: ${style.spec} ${conversion} Match the colors, texture and finish of <IMAGE_1>, which is a material sample only; take nothing else from it.${floorSample} Use clear shower glass in place of any old curtain or framed door. Update the vanity top only if a vanity is visible, and update the finish of the faucets, handles and lights.
 ${keep}
