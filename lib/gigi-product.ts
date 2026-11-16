@@ -109,7 +109,7 @@ export function matchProduct(message: string): ProductMatch | null {
   if (/zellige/.test(text) && /floor/.test(text)) {
     return {
       topic: "bath",
-      text: `Zellige is a strong wall tile. It can be used in a wet area when the shower is waterproofed, and some people use it on a light-traffic floor. For a shower floor I usually want more grip, a mosaic or a textured porcelain, and I keep the zellige on the walls where the light can hit it. ${BATH_NEXT}`,
+      text: `Zellige stays on the walls, from the floor to the ceiling. It is not a shower floor. For the floor I want a mosaic or a textured porcelain with grip, and I keep the zellige on the walls where the light can hit it. ${BATH_NEXT}`,
     };
   }
 

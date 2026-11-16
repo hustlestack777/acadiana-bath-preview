@@ -56,6 +56,8 @@ export type DesignFloor = {
   shape: string;
   /** Exact color the render prompt must name. */
   color: string;
+  /** Tile size the render prompt must name, when the pick has one. */
+  size?: string;
   spec: string;
   /** Close-up swatch sent as the floor image on the render request. */
   sample?: boolean;
@@ -273,7 +275,7 @@ export const designWalls: DesignWall[] = [
     path: "custom-tile",
     project: "tile-shower",
     family: "zellige",
-    spec: "deep green glossy handmade zellige-look square wall tile with thin light grout, a recessed niche",
+    spec: "deep green glossy handmade zellige-look square wall tile with thin light grout, from the floor line to the ceiling on the walls only, a recessed niche",
   },
   {
     key: "calacatta",
@@ -423,14 +425,28 @@ export const designFloors: DesignFloor[] = [
   },
   {
     key: "marble-hex",
-    name: "Carrara hex",
-    blurb: "White Carrara marble hex.",
+    name: "Small hex mosaic",
+    blurb: "Small Carrara hex mosaic.",
     image: "/images/design-picks/carrara-hex.webp",
-    alt: "Close-up of honed white Carrara marble hexagon mosaic with soft gray veining and light gray grout.",
+    alt: "Close-up of a small honed white Carrara marble hexagon mosaic with soft gray veining and light gray grout.",
+    material: "honed white Carrara marble",
+    shape: "hexagon mosaic",
+    color: "white with soft gray veining and light gray grout",
+    size: "small mosaic",
+    spec: "small honed white Carrara marble hexagon mosaic shower floor tile with soft gray veining and light gray grout",
+    sample: true,
+  },
+  {
+    key: "marble-hex-3",
+    name: "3-inch Carrara hex",
+    blurb: "Larger honed Carrara hex.",
+    image: "/images/design-picks/carrara-hex-3.webp",
+    alt: "Close-up of 3-inch honed white Carrara marble hexagon tile with soft gray veining and light gray grout.",
     material: "honed white Carrara marble",
     shape: "hexagon",
     color: "white with soft gray veining and light gray grout",
-    spec: "small honed white Carrara marble hexagon mosaic shower floor tile with soft gray veining and light gray grout",
+    size: "3 inch",
+    spec: "3-inch honed white Carrara marble hexagon shower floor tile with soft gray veining and light gray grout",
     sample: true,
   },
   {
@@ -748,6 +764,7 @@ export function findWall(key: string) {
 }
 
 export function findFloor(key: string) {
+  if (/zellige/i.test(key)) return null;
   return designFloors.find((item) => item.key === key) ?? null;
 }
 
@@ -777,10 +794,13 @@ export function parsePicks(raw: unknown): DesignPicksInput | null {
   return { layout: findLayout(layout)!.key, wall, floor, finish, budget };
 }
 
-/** Material, shape and color the image edit must apply to the shower floor. */
+/** Material, shape, color and size the image edit must apply to the shower floor. */
 export function floorPrompt(floor: DesignFloor) {
-  return `Floor: ${floor.spec}. Material: ${floor.material}. Shape: ${floor.shape}. Color: ${floor.color}.`;
+  const size = floor.size ? ` Size: ${floor.size}.` : "";
+  return `Floor: ${floor.spec}. Material: ${floor.material}. Shape: ${floor.shape}. Color: ${floor.color}.${size}`;
 }
+
+const ZELLIGE_WALLS_ONLY = "Zellige is walls only, from the floor to the ceiling. Do not put zellige on the floor.";
 
 export function composeSpec(picks: ResolvedPicks, startingLook?: StartingLook | null) {
   const inspiration = startingLook
@@ -790,6 +810,7 @@ export function composeSpec(picks: ResolvedPicks, startingLook?: StartingLook | 
     inspiration,
     picks.layout.prompt,
     `Walls: ${picks.wall.spec}.`,
+    /zellige/i.test(`${picks.wall.key} ${picks.wall.name} ${picks.wall.spec}`) ? ZELLIGE_WALLS_ONLY : "",
     floorPrompt(picks.floor),
     `Fixture finish: ${picks.finish.spec}.`,
     "Do not use granite.",
