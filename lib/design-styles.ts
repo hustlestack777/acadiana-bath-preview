@@ -13,6 +13,8 @@ export type DesignStyle = {
   project: string;
   /** What the render should build. Surfaces only; never prices or claims. */
   spec: string;
+  /** Public close-up of the picked shower floor. Sent as IMAGE_2 when set. */
+  floorSample?: string;
 };
 
 export const designStyles: DesignStyle[] = [

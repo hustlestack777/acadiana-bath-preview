@@ -221,7 +221,7 @@ export const startingLooks: StartingLook[] = [
     src: "/images/home/penny-drain.webp",
     alt: "Brass square decorative drain set flush in white penny round tile.",
     path: "/custom-tile",
-    floor: "mosaic",
+    floor: "classic-penny",
     finish: "brass",
     promptHint: "Use a white penny-round mosaic floor with a decorative drain if a drain is visible.",
   },

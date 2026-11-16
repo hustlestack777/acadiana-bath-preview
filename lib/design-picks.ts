@@ -50,7 +50,15 @@ export type DesignFloor = {
   blurb: string;
   image: string;
   alt: string;
+  /** Exact material the render prompt must name. */
+  material: string;
+  /** Exact tile shape the render prompt must name. */
+  shape: string;
+  /** Exact color the render prompt must name. */
+  color: string;
   spec: string;
+  /** Close-up swatch sent as the floor image on the render request. */
+  sample?: boolean;
 };
 
 export type DesignFinish = {
@@ -364,6 +372,9 @@ export const designFloors: DesignFloor[] = [
     blurb: "Clean large-format stone-look tile.",
     image: "/images/design/curbless.webp",
     alt: "Light stone-look large porcelain floor in a walk-in shower with a linear drain.",
+    material: "porcelain",
+    shape: "large-format rectangle",
+    color: "light warm-grey or cream stone-look",
     spec: "large-format light warm-grey or cream stone-look porcelain floor tile",
   },
   {
@@ -372,6 +383,9 @@ export const designFloors: DesignFloor[] = [
     blurb: "Honed marble mosaic underfoot.",
     image: "/images/design-picks/marble-mosaic.webp",
     alt: "Honed white Carrara basketweave mosaic floor under a freestanding tub.",
+    material: "honed Carrara marble",
+    shape: "basketweave mosaic",
+    color: "white with gray accents",
     spec: "honed white Carrara or marble-look basketweave mosaic floor tile",
   },
   {
@@ -380,6 +394,9 @@ export const designFloors: DesignFloor[] = [
     blurb: "A classic hex mosaic floor.",
     image: "/images/design-picks/zellige-hex.webp",
     alt: "Honed marble hex shower floor under a green zellige walk-in shower.",
+    material: "honed light marble or stone-look tile",
+    shape: "hexagon mosaic",
+    color: "light neutral stone",
     spec: "small honed light marble or stone-look hex mosaic floor tile",
   },
   {
@@ -388,6 +405,9 @@ export const designFloors: DesignFloor[] = [
     blurb: "A patterned floor with a little personality.",
     image: "/images/design-picks/encaustic.webp",
     alt: "Terracotta, sage and cream star-pattern encaustic-look floor under a clawfoot tub.",
+    material: "patterned ceramic",
+    shape: "star or encaustic pattern",
+    color: "terracotta, sage and cream",
     spec: "terracotta, sage and cream star-pattern or encaustic-look floor tile",
   },
   {
@@ -396,7 +416,46 @@ export const designFloors: DesignFloor[] = [
     blurb: "Warm wood-look planks, made for wet rooms.",
     image: "/images/ai/ideas/flooret-04-white-oak-tub.webp",
     alt: "Light wood-look plank floor around a freestanding tub.",
+    material: "wood-look porcelain",
+    shape: "plank",
+    color: "light white oak",
     spec: "light white-oak wood-look porcelain plank floor tile",
+  },
+  {
+    key: "marble-hex",
+    name: "Carrara hex",
+    blurb: "White Carrara marble hex.",
+    image: "/images/design-picks/carrara-hex.webp",
+    alt: "Close-up of honed white Carrara marble hexagon mosaic with soft gray veining and light gray grout.",
+    material: "honed white Carrara marble",
+    shape: "hexagon",
+    color: "white with soft gray veining and light gray grout",
+    spec: "small honed white Carrara marble hexagon mosaic shower floor tile with soft gray veining and light gray grout",
+    sample: true,
+  },
+  {
+    key: "marble-penny",
+    name: "Marble penny",
+    blurb: "Round Carrara marble pennies.",
+    image: "/images/design-picks/marble-penny.webp",
+    alt: "Close-up of honed white Carrara marble penny-round mosaic with soft gray veining and light gray grout.",
+    material: "honed white Carrara marble",
+    shape: "penny round",
+    color: "white with soft gray veining and light gray grout",
+    spec: "small honed white Carrara marble penny-round mosaic shower floor tile with soft gray veining and light gray grout",
+    sample: true,
+  },
+  {
+    key: "classic-penny",
+    name: "Classic penny",
+    blurb: "White pennies, dark grout.",
+    image: "/images/design-picks/classic-penny.webp",
+    alt: "Close-up of glossy white ceramic penny-round mosaic with dark charcoal grout.",
+    material: "glossy glazed ceramic",
+    shape: "penny round",
+    color: "white tile with dark charcoal grout",
+    spec: "classic glossy white ceramic penny-round mosaic shower floor tile with dark charcoal grout",
+    sample: true,
   },
 ];
 
@@ -694,6 +753,11 @@ export function parsePicks(raw: unknown): DesignPicksInput | null {
   return { layout: findLayout(layout)!.key, wall, floor, finish, budget };
 }
 
+/** Material, shape and color the image edit must apply to the shower floor. */
+export function floorPrompt(floor: DesignFloor) {
+  return `Floor: ${floor.spec}. Material: ${floor.material}. Shape: ${floor.shape}. Color: ${floor.color}.`;
+}
+
 export function composeSpec(picks: ResolvedPicks, startingLook?: StartingLook | null) {
   const inspiration = startingLook
     ? `The customer started from this inspiration look: ${startingLook.name}. ${startingLook.promptHint || startingLook.alt}`
@@ -702,7 +766,7 @@ export function composeSpec(picks: ResolvedPicks, startingLook?: StartingLook | 
     inspiration,
     picks.layout.prompt,
     `Walls: ${picks.wall.spec}.`,
-    `Floor: ${picks.floor.spec}.`,
+    floorPrompt(picks.floor),
     `Fixture finish: ${picks.finish.spec}.`,
     "Do not use granite.",
   ].filter(Boolean).join(" ");
@@ -728,6 +792,7 @@ export function styleFromPicks(picks: ResolvedPicks, startingLook?: StartingLook
     path: picks.wall.path,
     project: picks.wall.project,
     spec: composeSpec(picks, startingLook),
+    floorSample: picks.floor.sample ? picks.floor.image : undefined,
   };
 }
 
