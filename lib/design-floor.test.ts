@@ -36,12 +36,24 @@ const added = [
     shape: "penny round",
     color: "white tile with dark charcoal grout",
   },
+  {
+    key: "river-rock",
+    material: "natural river rock",
+    shape: "flat pebble",
+    color: "mixed warm gray, tan and charcoal with gray grout",
+  },
+  {
+    key: "dark-slate",
+    material: "honed dark charcoal slate",
+    shape: "small rectangle or square",
+    color: "dark charcoal with a natural cleft texture and dark grout",
+  },
 ] as const;
 
-test("existing shower floors stay first and the three new floors follow", () => {
+test("existing shower floors stay first and the added floors follow", () => {
   assert.deepEqual(
     designFloors.map((floor) => floor.key),
-    ["porcelain", "mosaic", "hex", "encaustic", "wood-look", "marble-hex", "marble-penny", "classic-penny"],
+    ["porcelain", "mosaic", "hex", "encaustic", "wood-look", "marble-hex", "marble-penny", "classic-penny", "river-rock", "dark-slate"],
   );
 });
 

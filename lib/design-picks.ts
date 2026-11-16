@@ -457,6 +457,30 @@ export const designFloors: DesignFloor[] = [
     spec: "classic glossy white ceramic penny-round mosaic shower floor tile with dark charcoal grout",
     sample: true,
   },
+  {
+    key: "river-rock",
+    name: "River rock",
+    blurb: "Smooth flat river stones.",
+    image: "/images/design-picks/river-rock.webp",
+    alt: "Close-up of smooth flat natural river stones in warm gray, tan and charcoal with gray grout.",
+    material: "natural river rock",
+    shape: "flat pebble",
+    color: "mixed warm gray, tan and charcoal with gray grout",
+    spec: "smooth flat natural river-rock pebble mosaic shower floor in mixed warm gray, tan and charcoal with gray grout",
+    sample: true,
+  },
+  {
+    key: "dark-slate",
+    name: "Dark slate",
+    blurb: "Honed charcoal slate.",
+    image: "/images/design-picks/dark-slate.webp",
+    alt: "Close-up of honed dark charcoal slate in small rectangles and squares with a natural cleft texture and dark grout.",
+    material: "honed dark charcoal slate",
+    shape: "small rectangle or square",
+    color: "dark charcoal with a natural cleft texture and dark grout",
+    spec: "honed dark charcoal slate shower floor with a natural cleft texture, in small rectangular and square tiles with dark grout",
+    sample: true,
+  },
 ];
 
 export const designFinishes: DesignFinish[] = [
