@@ -492,7 +492,7 @@ export async function updateLeadExtras(id: string, extras: LeadExtras) {
   };
 }
 
-export const DEFAULT_LEAD_NOTIFY_EMAIL = "acadianabathandcounter@gmail.com,shaun.brasher@gmail.com,shaun@lagniapperealmlabs.com";
+export const DEFAULT_LEAD_NOTIFY_EMAIL = "acadianabathandcounter@gmail.com,shaun.brasher@gmail.com,shaun@swampfiregrowth.com";
 
 /** Comma-separated LEAD_NOTIFY_EMAIL, trimmed. Empty pieces are dropped. */
 export function leadNotifyRecipients(raw = process.env.LEAD_NOTIFY_EMAIL || DEFAULT_LEAD_NOTIFY_EMAIL) {
