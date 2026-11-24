@@ -10,8 +10,6 @@ import {
   type GigiResponse,
   type GigiSession,
 } from "./chat";
-import { WINDOW_PRICE_LINE } from "./windows";
-
 const XAI_CHAT = "https://api.x.ai/v1/chat/completions";
 const DEFAULT_MODEL = "grok-4.20-0309-non-reasoning";
 export const GIGI_CHAT_TIMEOUT_MS = 18_000;
@@ -196,10 +194,8 @@ export function enforceGigiRules(message: string, pathname: string | undefined, 
   if (claimsFinalPrice(text) || hasOtherDollarAmount(text)) return PRICE_LINE;
   text = stripFree(text);
   if (!text) return null;
-  if (windowQuestion && asksMoney(message) && !text.includes(WINDOW_PRICE_LINE)) {
-    return `${text} ${WINDOW_PRICE_LINE} Get an estimate on our windows page.`.replace(/\s{2,}/g, " ").trim();
-  }
-  if (windowQuestion) return text;
+  // A window price that never mentions windows gets the canned line. One that already does is left as she said it.
+  if (windowQuestion && asksMoney(message) && !/window/i.test(text)) return CHAT_ANSWERS.windows;
   return withBridge(text);
 }
 
