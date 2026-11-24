@@ -17,9 +17,11 @@ import {
   GIGI_HEADER_SUBLINE,
   INTRO_CHIPS,
   greetingForPath,
+  prefersScriptedReply,
   respond,
   shouldShowGreeting,
   type GigiChip,
+  type GigiPhase,
   type GigiSession,
 } from "@/lib/chat";
 import { cn } from "cn";
@@ -46,6 +48,15 @@ function ChatText({ text }: { text: string }) {
 }
 
 const GREETING_KEY = "gigi-greeting";
+const GIGI_PHASES = new Set<GigiPhase>(["intro", "project", "look", "location", "offer", "callTime", "callDay"]);
+
+function isChipList(value: unknown): value is GigiChip[] {
+  return Array.isArray(value) && value.every((chip) => Boolean(chip) && typeof chip === "object" && typeof (chip as GigiChip).label === "string");
+}
+
+function isSession(value: unknown): value is GigiSession {
+  return Boolean(value) && typeof value === "object" && GIGI_PHASES.has((value as GigiSession).phase);
+}
 const DESKTOP_MQ = "(min-width: 768px)";
 
 type GreetingState = { line: string; status: "pending" | "shown" | "hidden" };
@@ -177,6 +188,7 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
   const [session, setSession] = useState<GigiSession>({ phase: "intro" });
   const [chips, setChips] = useState<GigiChip[]>(INTRO_CHIPS);
   const inputRef = useRef<HTMLInputElement>(null);
+  const busyRef = useRef(false);
   const [bubbleLine, setBubbleLine] = useState(GIGI_GREETING_LEAD);
   const [bubbleReady, setBubbleReady] = useState(false);
   const [bubbleHidden, setBubbleHidden] = useState(true);
@@ -334,22 +346,53 @@ export function ChatWidget({ raised = false, formPage = false }: { raised?: bool
     setOpen(true);
   }
 
-  function ask(message: string) {
+  function applyResult(result: { text: string; chips: GigiChip[]; session: GigiSession }) {
+    busyRef.current = false;
+    setTurns((current) => [...current, { role: "assistant", text: result.text }]);
+    setSession(result.session);
+    setChips(result.chips);
+    setTyping(false);
+  }
+
+  async function ask(message: string) {
     const trimmed = message.trim();
-    if (!trimmed) return;
+    if (!trimmed || busyRef.current) return;
     const currentSession = session;
+    const history = turns.slice(-8).map((turn) => ({
+      role: turn.role === "you" ? ("user" as const) : ("assistant" as const),
+      content: turn.text,
+    }));
+    busyRef.current = true;
     setTurns((current) => [...current, { role: "you", text: trimmed }]);
     setDraft("");
-    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const wait = reduce ? 0 : 420;
+    const scripted = respond(trimmed, currentSession, { pathname });
+    if (prefersScriptedReply(trimmed, currentSession)) {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      setTyping(true);
+      window.setTimeout(() => applyResult(scripted), reduce ? 0 : 420);
+      return;
+    }
     setTyping(true);
-    window.setTimeout(() => {
-      const result = respond(trimmed, currentSession, { pathname });
-      setTurns((current) => [...current, { role: "assistant", text: result.text }]);
-      setSession(result.session);
-      setChips(result.chips);
-      setTyping(false);
-    }, wait);
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: trimmed, session: currentSession, pathname, history }),
+        signal: AbortSignal.timeout(20_000),
+      });
+      const data = (await response.json().catch(() => null)) as {
+        text?: unknown;
+        chips?: unknown;
+        session?: unknown;
+      } | null;
+      if (!response.ok || !data || typeof data.text !== "string" || !isChipList(data.chips) || !isSession(data.session)) {
+        applyResult(scripted);
+        return;
+      }
+      applyResult({ text: data.text, chips: data.chips, session: data.session });
+    } catch {
+      applyResult(scripted);
+    }
   }
 
   function onChip(chip: GigiChip) {
