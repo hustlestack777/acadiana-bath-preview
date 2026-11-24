@@ -176,6 +176,15 @@ test("live replies keep the locked rules", async () => {
     assert.equal(/\$5K|\$5,000/.test(windows.text), false);
     assert.match(windows.text, new RegExp(WINDOW_PRICE_LINE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 
+    const windowsSpoken = await gigiLiveReply({
+      message: "how much do windows cost?",
+      fetchImpl: modelReply("Windows depend on how many you need and their size. Get an estimate."),
+    });
+    assert.equal((windowsSpoken.text.match(/Get an estimate/g) ?? []).length, 1);
+    assert.equal(windowsSpoken.text.includes(WINDOW_PRICE_LINE), false);
+    assert.match(windowsSpoken.text, /Justin to come take a look/);
+    assert.equal(/\$5K|\$5,000/.test(windowsSpoken.text), false);
+
     const phone = await gigiLiveReply({
       message: "can you call me?",
       fetchImpl: modelReply(`I'll call you this afternoon at ${hiddenPhone}.`),
