@@ -92,14 +92,14 @@ export function SiteFooter() {
           </a>
         </p>
         <a
-          href="https://lagniapperealmlabs.com/"
+          href="https://swampfiregrowth.com"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-3 inline-block max-w-[17rem] text-fig-muted no-underline sm:max-w-none"
         >
-          <span className="block text-[11px] leading-4 tracking-wide">Powered by Lagniappe Realm Labs</span>
+          <span className="block text-[11px] leading-4 tracking-wide">Powered by Swampfire Growth</span>
           <span className="mt-0.5 block text-[10px] leading-4 text-fig-muted/80">
-            Custom sites · Marketing · Design · Leads · Automation
+            Websites · AI agents · Leads
           </span>
         </a>
       </div>
