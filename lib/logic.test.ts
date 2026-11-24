@@ -17,7 +17,7 @@ test("lead notification accepts one address or a comma-separated list", () => {
   assert.deepEqual(leadNotifyRecipients("  ,  "), [
     "acadianabathandcounter@gmail.com",
     "shaun.brasher@gmail.com",
-    "shaun@lagniapperealmlabs.com",
+    "shaun@swampfiregrowth.com",
   ]);
 });
 

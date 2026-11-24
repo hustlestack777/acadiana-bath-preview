@@ -17,7 +17,7 @@ import {
 const notifyList = [
   JUSTIN_LEAD_EMAIL,
   SHAUN_CC_EMAIL,
-  "shaun@lagniapperealmlabs.com",
+  "shaun@swampfiregrowth.com",
 ];
 
 test("555 exchange numbers and Grok Bot inboxes are team test leads", () => {
@@ -47,7 +47,7 @@ test("real leads go To Justin and CC Shaun; test leads go to Shaun only", () => 
   });
   assert.equal(real.test, false);
   assert.deepEqual(real.to, [JUSTIN_LEAD_EMAIL]);
-  assert.deepEqual(real.cc, [SHAUN_CC_EMAIL, "shaun@lagniapperealmlabs.com"]);
+  assert.deepEqual(real.cc, [SHAUN_CC_EMAIL, "shaun@swampfiregrowth.com"]);
 
   const byPhone = leadNotificationRoute({
     phone: "337-555-0100",
