@@ -54,9 +54,10 @@ export default function PrivacyPage() {
           <section>
             <h2>Who sees it</h2>
             <p>
-              Your information goes to {brand.name} and our marketing partner, Lagniappe Realm Labs LLC, which helps run this website and follow up
-              on quote requests. We also use a few service providers to run the site, such as website hosting, email
-              delivery and address lookup. They handle your information only to provide those services to us.
+              Your information goes to {brand.name} and our marketing partner,{" "}
+              <a href="https://swampfiregrowth.com" className="underline underline-offset-4" target="_blank" rel="noopener noreferrer">
+                Swampfire Growth (a brand of Lagniappe Realm Labs LLC)
+              </a>{", which helps run this website and follow up on quote requests. We also use a few service providers to run the site, such as website hosting, email delivery and address lookup. They handle your information only to provide those services to us."}
             </p>
             <p className="mt-3 font-medium">We never sell your information.</p>
           </section>

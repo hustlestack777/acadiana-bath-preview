@@ -233,7 +233,8 @@ test("llms.txt summarizes the business without banned claims", () => {
   const windowLine = text.split("\n").find((line) => line.includes("/windows"));
   assert.ok(windowLine);
   assert.equal(/\$5K|\$5,000|priceRange/i.test(windowLine), false);
-  assert.match(text, /Lagniappe Realm Labs LLC/);
+  assert.match(text, /Swampfire Growth \(a brand of Lagniappe Realm Labs LLC\), https:\/\/swampfiregrowth\.com/);
+  assert.equal(text.includes("lagniapperealmlabs.com"), false);
   assert.equal(text.includes(SCHEMA_SERVICE_AREA), true);
   for (const excluded of EXCLUDED_SERVICE_AREAS) {
     assert.equal(text.includes(excluded), false, excluded);

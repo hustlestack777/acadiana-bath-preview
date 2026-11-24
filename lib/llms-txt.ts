@@ -50,6 +50,6 @@ ${page("/windows", "Windows")}
 ## Town pages
 ${townLines}
 
-Marketing partner: Lagniappe Realm Labs LLC, which helps run this website and follow up.
+Marketing partner: Swampfire Growth (a brand of Lagniappe Realm Labs LLC), https://swampfiregrowth.com, which helps run this website and follow up.
 `.trimEnd() + "\n";
 }
